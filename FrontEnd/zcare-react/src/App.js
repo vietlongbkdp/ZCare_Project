@@ -1,5 +1,5 @@
 import './App.css';
-import DoctorInfo from "./components/DoctorInfo/DoctorInfo.jsx";
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic.jsx";
 // import Header from "./components/Header/Header";
 // import Dashboard from "./components/Dashboard/Dashboard";
 
@@ -8,7 +8,7 @@ function App() {
     <>
       {/*<Header/>*/}
       {/*  <Dashboard/>*/}
-        <DoctorInfo/>
+        <DoctorInfoClinic/>
     </>
   );
 }
