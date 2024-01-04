@@ -1,10 +1,10 @@
 import './App.css';
-import Header from "./components/Header/Header";
+import MapRender from "./components/MapRender/MapRender";
 
 function App() {
   return (
     <>
-      <Header/>
+      <MapRender/>
     </>
   );
 }
