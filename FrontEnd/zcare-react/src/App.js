@@ -1,10 +1,11 @@
 import './App.css';
-import Header from "./components/Header/Header";
+
+import Project from "./components/Header/Header"
 
 function App() {
   return (
     <>
-      <Header/>
+      <Project/>
     </>
   );
 }
