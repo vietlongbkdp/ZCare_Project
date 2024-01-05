@@ -1,10 +1,9 @@
 import './App.css';
-import MapRender from "./components/MapRender/MapRender";
-
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic.jsx"
 function App() {
   return (
     <>
-      <MapRender/>
+        <DoctorInfoClinic/>
     </>
   );
 }
