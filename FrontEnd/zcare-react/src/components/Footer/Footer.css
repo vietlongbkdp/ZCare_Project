@@ -1,0 +1,12 @@
+.botFoot{
+    background-color: #64b9e5;
+    align-items: center;
+    color: white;
+}
+.botTop{
+    background-color: #efefef;
+}
+.footDetail p{
+    color: #64b9e5;
+    cursor: pointer;
+}

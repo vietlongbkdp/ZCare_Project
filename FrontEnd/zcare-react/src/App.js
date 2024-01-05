@@ -1,11 +1,12 @@
 import './App.css';
-import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic.jsx"
+import Header from "./components/Header/Header";
+import Footer from "./components/Footer/Footer";
 function App() {
   return (
     <>
-        <DoctorInfoClinic/>
+        <Header/>
+        <Footer/>
     </>
   );
 }
-
 export default App;
