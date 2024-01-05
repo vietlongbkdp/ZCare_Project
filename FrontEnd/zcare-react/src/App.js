@@ -1,8 +1,9 @@
 import './App.css';
+import Header from "./components/Header/Header";
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
+import Footer from "./components/Footer/Footer";
 
-import Project from "./components/Header/Header"
-
-function App() {
+export default function App() {
     return (
         <>
             <Header/>
