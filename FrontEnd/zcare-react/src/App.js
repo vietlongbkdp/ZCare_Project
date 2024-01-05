@@ -3,11 +3,11 @@ import './App.css';
 import Project from "./components/Header/Header"
 
 function App() {
-  return (
-    <>
-      <Project/>
-    </>
-  );
+    return (
+        <>
+            <Header/>
+            <DoctorInfoClinic/>
+            <Footer/>
+        </>
+    )
 }
-
-export default App;
