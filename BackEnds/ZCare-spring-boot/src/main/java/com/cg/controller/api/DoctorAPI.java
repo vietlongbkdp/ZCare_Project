@@ -1,4 +1,4 @@
-package com.cg.api;
+package com.cg.controller.api;
 
 import com.cg.model.Doctor;
 import com.cg.repository.IDoctorRepository;
