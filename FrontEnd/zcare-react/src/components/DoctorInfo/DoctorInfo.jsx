@@ -79,8 +79,8 @@ function DoctorInfo() {
                     </div>
                 </div>
             </div>
-            <div className={"container-fluid border-bottom"}>
-                <div className={"container pb-4"}>
+            <div className={"container-fluid border-bottom"} style={{backgroundColor:"rgb(248 250 250)"}}>
+                <div className={"container pb-4"} >
                     <div className={"d-flex flex-column"}>
                         <h6 className={"mt-4"}>Phó Giáo sư, Tiến sĩ, Bác sĩ Cao cấp Nguyễn Duy Hưng</h6>
                         <ul>
