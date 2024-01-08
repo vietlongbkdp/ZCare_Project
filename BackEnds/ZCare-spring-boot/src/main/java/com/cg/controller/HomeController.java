@@ -1,4 +1,4 @@
-package com.cg.controller.api;
+package com.cg.controller;
 
 public class HomeController {
 }
