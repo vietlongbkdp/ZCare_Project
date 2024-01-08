@@ -1,18 +1,14 @@
 import './App.css';
-import DoctorInfo from "./components/DoctorInfo/DoctorInfo";
-// import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic.jsx";
-// import Header from "./components/Header/Header";
-// import Dashboard from "./components/Dashboard/Dashboard";
+import Header from "./components/Header/Header";
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
+import Footer from "./components/Footer/Footer";
 
-function App() {
-  return (
-    <>
-      {/*<Header/>*/}
-      {/*  <Dashboard/>*/}
-      {/*  <DoctorInfoClinic/>*/}
-        <DoctorInfo/>
-    </>
-  );
+export default function App() {
+    return (
+        <>
+            <Header/>
+            <DoctorInfoClinic/>
+            <Footer/>
+        </>
+    )
 }
-
-export default App;

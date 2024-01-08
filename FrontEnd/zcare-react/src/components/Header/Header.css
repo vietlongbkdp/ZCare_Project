@@ -1,0 +1,26 @@
+.topHead{
+    background-color: #efefef;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.bodyHead{
+    background-color: #64b9e5;
+    color: white;
+    height: 80px;
+}
+.detailHead {
+    width: 55%;
+    align-items: center;
+}
+.detailHead p{
+    margin: auto;
+}
+.searchHead{
+    width: 15%;
+}
+.inputSearch{
+    max-width: 100%;
+}
+.detailHead p{
+    cursor: pointer;
+}

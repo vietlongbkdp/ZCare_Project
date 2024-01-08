@@ -24,6 +24,7 @@ public class Doctor {
     private String email;
     private String phone;
     private String doctorInfor;
+    private Date createAT;
 
     @OneToOne
     @JoinColumn(name="clinic_id")
