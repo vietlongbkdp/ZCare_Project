@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
-
+import {toast} from "react-toastify";
 const schema = yup.object({
     fullName: yup.string().required("tên không được để trống")
 })
@@ -15,9 +15,9 @@ function Cooperate() {
 
     const onSubmit = async (data) => {
         try {
-            const response = await axios.post('http://localhost:8080/api/cooperate', data);
-            console.log(response); // Xử lý phản hồi từ API nếu cần
-            reset(); // Đặt lại form sau khi gửi thành công
+            await axios.post('http://localhost:8080/api/cooperate', data);
+            toast.success("Gửi thông tin thành công")
+            reset();
         } catch (error) {
             console.error(error);
         }

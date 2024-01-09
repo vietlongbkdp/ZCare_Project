@@ -1,11 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { Button, Container, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import axios from 'axios';
+import {toast } from "react-toastify";
 
 function AdminCooperate() {
     const [cooperateList, setCooperateList] = useState([]);
+    const itemsPerPage = 10;
+    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
 
     useEffect(() => {
-        const getAllCooperate = async() =>{
+        const getAllCooperate = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/cooperate');
                 setCooperateList(response.data);
@@ -14,54 +18,85 @@ function AdminCooperate() {
             }
         };
         getAllCooperate();
-    }, []);
+    }, [currentPage,cooperateList]);
 
-    const handleClick=(id)=>{
-        console.log(id)
-    }
+    const handleClick = async (id) => {
+        try {
+            await axios.get(`http://localhost:8080/api/cooperate/${id}`);
+            toast.success("Xác nhận thành công");
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const currentCooperateList = cooperateList.slice(startIndex, endIndex);
 
     return (
-        <>
-            <div className={"container d-flex flex-column col-9 mt-4 mb-5 pb-5"}>
-               <h4 className={"d-flex justify-content-center"}>Danh sách hợp tác cùng ZCare</h4>
-                <table className="table table-striped table-hover ">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Tên</th>
-                        <th scope="col">Số Điện thoại</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Tên phòng khám</th>
-                        <th scope="col">Địa chỉ</th>
-                        <th scope="col">Nội dung</th>
-                        <th scope="col">Hành động</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {cooperateList.length > 0 ? (
-                        cooperateList.map((cooperate) => (
-                            <tr key={cooperate.id}>
-                                <th scope="row">{cooperate.id}</th>
-                                <td>{cooperate.fullName}</td>
-                                <td>{cooperate.phone}</td>
-                                <td>{cooperate.email}</td>
-                                <td>{cooperate.clinicName}</td>
-                                <td>{cooperate.address}</td>
-                                <td>{cooperate.content}</td>
-                                <td>
-                                    <button className={"btn btn-primary"} onClick={()=>{handleClick(cooperate.id)}}>Xác nhận</button>
-                                </td>
-                            </tr>
-                        ))
-                    ) : (
-                        <tr>
-                            <td colSpan="8">No data available</td>
-                        </tr>
-                    )}
-                    </tbody>
-                </table>
-            </div>
-        </>
+        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4, mb: 5, pb: 5 }}>
+            <Typography variant="h4" align="center" gutterBottom>
+                Danh sách hợp tác cùng ZCare
+            </Typography>
+            <TableContainer>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>#</TableCell>
+                            <TableCell>Tên</TableCell>
+                            <TableCell>Số Điện thoại</TableCell>
+                            <TableCell>Email</TableCell>
+                            <TableCell>Tên phòng khám</TableCell>
+                            <TableCell>Địa chỉ</TableCell>
+                            <TableCell>Nội dung</TableCell>
+                            <TableCell>Hành động</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentCooperateList.length > 0 ? (
+                            currentCooperateList.map((cooperate) => (
+                                <TableRow key={cooperate.id}>
+                                    <TableCell>{cooperate.id}</TableCell>
+                                    <TableCell>{cooperate.fullName}</TableCell>
+                                    <TableCell>{cooperate.phone}</TableCell>
+                                    <TableCell>{cooperate.email}</TableCell>
+                                    <TableCell>{cooperate.clinicName}</TableCell>
+                                    <TableCell>{cooperate.address}</TableCell>
+                                    <TableCell>{cooperate.content}</TableCell>
+                                    <TableCell>
+                                        <Button
+                                            variant={cooperate.status === 'SELECTED' ? 'outlined' : 'contained'}
+                                            color={cooperate.status === 'SELECTED' ? 'secondary' : 'primary'}
+                                            onClick={() => handleClick(cooperate.id)}
+                                            disabled={cooperate.status === 'SELECTED'}
+                                        >
+                                            {cooperate.status === 'SELECTED' ? 'Đã xác nhận' : 'Xác nhận'}
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={8}>No data available</TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <Pagination
+                count={Math.ceil(cooperateList.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+                showFirstButton
+                showLastButton
+                style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+            />
+        </Container>
     );
 }
 

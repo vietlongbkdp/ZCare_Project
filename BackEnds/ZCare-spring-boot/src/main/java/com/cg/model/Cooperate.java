@@ -14,7 +14,7 @@ import lombok.experimental.Accessors;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="Cooperates")
+@Table(name = "Cooperates")
 @Accessors(chain = true)
 public class Cooperate {
     @Id
@@ -26,6 +26,6 @@ public class Cooperate {
     private String clinicName;
     private String address;
     private String content;
-
-
+    @Enumerated(EnumType.STRING)
+    private EStatus status;
 }
