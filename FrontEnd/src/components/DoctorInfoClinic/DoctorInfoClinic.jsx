@@ -39,7 +39,7 @@ function DoctorInfoClinic() {
 
     return (
         <>
-          <div className={"container d-flex mt-2 rounded border shadow-sm p-4"}>
+          <div className={"container d-flex mt-2 rounded border shadow-sm col-9 p-4"}>
               <div className={"d-flex mt-2"}>
                   <div className={"d-flex flex-column justify-content-around col-6 border-end"} >
                       <div className={"d-flex justify-content-start mb-auto"}>
