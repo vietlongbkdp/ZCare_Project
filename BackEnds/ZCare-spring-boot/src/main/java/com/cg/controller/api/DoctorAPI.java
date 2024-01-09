@@ -28,7 +28,7 @@ public class DoctorAPI {
     }
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Doctor doctor){
-        Clinic clinic = clinicRepository.findById(doctor.getId()).get();
+//        Clinic clinic = clinicRepository.findById(doctor.getId()).get();
         Doctor createdoctor = doctorService.save(doctor);
         return new ResponseEntity<>(createdoctor,HttpStatus.OK);
 
