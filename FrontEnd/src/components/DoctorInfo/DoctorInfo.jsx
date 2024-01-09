@@ -1,8 +1,37 @@
-import React from 'react';
-import {Link} from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
 import "./Doctorinfo.css"
 
 function DoctorInfo() {
+
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [recentDates, setRecentDates] = useState([]);
+    const [selectedDate, setSelectedDate] = useState('');
+
+    useEffect(() => {
+        setCurrentDate(new Date());
+        const getRecentDates = () => {
+            const today = new Date();
+            const recentDates = [];
+            for (let i = 0; i < 3; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                recentDates.push(date);
+            }
+            setRecentDates(recentDates);
+        };
+        getRecentDates();
+    }, []);
+    const handleChange = (event) => {
+        setSelectedDate(event.target.value);
+    };
+    useEffect(() => {
+        if (selectedDate !== '') {
+            const selected = new Date(selectedDate);
+            setCurrentDate(selected);
+        }
+    }, [selectedDate]);
+
     return (
         <>
             <div className={"container-fluid border-bottom"}>
@@ -33,12 +62,27 @@ function DoctorInfo() {
                     <div className={"d-flex mt-5"}>
                         <div className={"d-flex flex-column col-6 border-end"}>
                             <div>
-                                <select className="select select-ghost w-full max-w-xs">
-                                    <option selected>Pick the best JS framework</option>
-                                    <option>Svelte</option>
-                                    <option>Vue</option>
-                                    <option>React</option>
-                                </select>
+                                <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
+                                    <InputLabel id="recent-dates-label">Ngày</InputLabel>
+                                    <Select
+                                        style={{color:"#0097e6"}}
+                                        labelId="recent-dates-label"
+                                        id="recent-dates-select"
+                                        value={selectedDate || currentDate.toLocaleDateString()}
+                                        onChange={handleChange}
+                                        label="Ngày"
+                                    >
+                                        {recentDates.map((date, index) => (
+                                            <MenuItem
+                                                key={index}
+                                                value={date.toLocaleDateString()}
+                                                selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
+                                            >
+                                                {date.toLocaleDateString()}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </div>
                             <div className={"d-flex mt-3"}>
                                 <span className={"me-2"}><i className="fa-regular fa-calendar-days"></i></span>
