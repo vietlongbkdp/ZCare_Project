@@ -23,7 +23,7 @@ export default function MapRender() {
                 map: googleMap,
                 title: "Địa chỉ cụ thể của bệnh viện",
                 label: {
-                    text: 'Bệnh viện TW huế',
+                    text: 'CodeGym Huế',
                     color: 'Black',
                     fontWeight: 'bold',
                     fontSize: '20px',
