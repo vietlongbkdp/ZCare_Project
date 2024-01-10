@@ -34,6 +34,8 @@ public class Doctor {
     private Clinic clinic;
 
     private String avatarImg;
+    @Column(columnDefinition = "integer default 0")
+    private Integer star;
 
     @ManyToOne
     private Speciality speciality;

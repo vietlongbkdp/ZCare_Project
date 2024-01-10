@@ -1,13 +1,5 @@
-import './App.css';
-// import AdminCooperate from "./components/Cooperate/AdminCooperate";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
-
-
-
-import User from "./components/doctor/TableDoctor"
+import User from "./components/Doctor/TableDoctor"
 import Pagerbase from "./components/Dashboard/Paperbase"
 import DoctorInfor from "./components/Cooperate/AdminCooperate"
 import {Route, Routes} from "react-router-dom";

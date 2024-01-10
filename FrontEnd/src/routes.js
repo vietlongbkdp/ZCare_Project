@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Index from "./components/doctor/TableDoctor";
+import Index from "./components/Doctor/TableDoctor";
 ;
 
 var routes = [

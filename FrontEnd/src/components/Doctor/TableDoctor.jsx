@@ -16,8 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 //     const handleCloseModal = () => {
 //         setShowModal(false);
 //     };
-//     const handleEditDoctor = (doctor) => {
-//         setSelectedDoctor(doctor);
+//     const handleEditDoctor = (Doctor) => {
+//         setSelectedDoctor(Doctor);
 //         setShowModal(true);
 //     };
 //

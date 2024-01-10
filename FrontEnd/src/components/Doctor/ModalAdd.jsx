@@ -5,7 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import {toast} from "react-toastify";
 
 // function MyModal({ show, handleClose }) {
-//     const [doctor, setDoctor] = useState({
+//     const [Doctor, setDoctor] = useState({
 //         id: 0,
 //         doctorName: '',
 //         position: '',
@@ -21,7 +21,7 @@ import {toast} from "react-toastify";
 //             headers: {
 //                 'Content-Type': 'application/json'
 //             },
-//             body: JSON.stringify(doctor)
+//             body: JSON.stringify(Doctor)
 //         })
 //             .then(response => response.json())
 //             .then(data => {
@@ -57,30 +57,30 @@ import {toast} from "react-toastify";
 //                         <div className="mb-3">
 //                             <label htmlFor="doctorName" className="form-label">Date of Birth</label>
 //                             <input type="text" className="form-control" id="doctorName" name="doctorName"
-//                                    value={doctor.doctorName}
+//                                    value={Doctor.doctorName}
 //                                    onChange={handleInputChange}/>
 //                         </div>
 //                         <div className="mb-3">
 //                             <label htmlFor="position" className="form-label">Date of Birth</label>
 //                             <input type="text" className="form-control" id="position" name="position"
-//                                    value={doctor.position}
+//                                    value={Doctor.position}
 //                                    onChange={handleInputChange}/>
 //                         </div>
 //
 //                         <div className="mb-3">
 //                             <label htmlFor="email" className="form-label">Email</label>
-//                             <input type="email" className="form-control" id="email" name="email" value={doctor.email}
+//                             <input type="email" className="form-control" id="email" name="email" value={Doctor.email}
 //                                    onChange={handleInputChange}/>
 //                         </div>
 //                         <div className="mb-3">
 //                             <label htmlFor="phone" className="form-label">Phone</label>
-//                             <input type="text" className="form-control" id="phone" name="phone" value={doctor.phone}
+//                             <input type="text" className="form-control" id="phone" name="phone" value={Doctor.phone}
 //                                    onChange={handleInputChange}/>
 //                         </div>
 //                         <div className="mb-3">
 //                             <label htmlFor="doctorInfo" className="form-label">Doctor Information</label>
 //                             <textarea className="form-control" id="doctorInfo" name="doctorInfo"
-//                                       value={doctor.doctorInfor} onChange={handleInputChange}/>
+//                                       value={Doctor.doctorInfor} onChange={handleInputChange}/>
 //                         </div>
 //
 //                     </form>
@@ -158,7 +158,7 @@ function MyModal({ show, handleClose, isEditMode, editedDoctor, update, setUpdat
 
 
     // const postData = () => {
-    //     const url = isEditMode ? `http://localhost:8080/api/doctor/${doctor.id}` : 'http://localhost:8080/api/doctor';
+    //     const url = isEditMode ? `http://localhost:8080/api/doctor/${Doctor.id}` : 'http://localhost:8080/api/doctor';
     //
     //     const method = isEditMode ? 'PATCH' : 'POST';
     //
@@ -167,7 +167,7 @@ function MyModal({ show, handleClose, isEditMode, editedDoctor, update, setUpdat
     //         headers: {
     //             'Content-Type': 'application/json'
     //         },
-    //         body: JSON.stringify(doctor)
+    //         body: JSON.stringify(Doctor)
     //     })
     //         .then(response => response.json())
     //         .then(data => {
@@ -180,7 +180,7 @@ function MyModal({ show, handleClose, isEditMode, editedDoctor, update, setUpdat
     // };
 
     // const postData = () => {
-    //     const url = isEditMode ? `http://localhost:8080/api/doctor/${doctor.id}` : 'http://localhost:8080/api/doctor';
+    //     const url = isEditMode ? `http://localhost:8080/api/doctor/${Doctor.id}` : 'http://localhost:8080/api/doctor';
     //
     //     const method = isEditMode ? 'PATCH' : 'POST';
     //
@@ -189,7 +189,7 @@ function MyModal({ show, handleClose, isEditMode, editedDoctor, update, setUpdat
     //         headers: {
     //             'Content-Type': 'application/json'
     //         },
-    //         body: JSON.stringify(doctor)
+    //         body: JSON.stringify(Doctor)
     //     })
     //         .then(response => response.json())
     //         .then(data => {
