@@ -8,15 +8,19 @@ import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 
 import MapRender from "./components/MapRender/MapRender";
-import App1 from "./components/Dashboard/AdminNav"
+// import App1 from "./components/Dashboard/AdminNav"
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
+import Clinic from "./components/Clinic/Clinic";
+import ClinicList from "./components/Clinic/ClinicList";
 export default function App() {
+
     return (
         <>
-            <App1/>
-            {/*<Header/>*/}
-            {/*<DoctorInfoClinic/>*/}
+            {/*<App1/>*/}
+            <Header/>
+                <ClinicList/>
             {/*<MapRender/>*/}
-            {/*<Footer/>*/}
+            <Footer/>
 
         </>
     )
