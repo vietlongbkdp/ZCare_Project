@@ -19,14 +19,17 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String doctorName;
-    private String position;
+
+    @ManyToOne
+    private Position position;
+
     private Date dob;
     private String email;
     private String phone;
     private String doctorInfor;
     private Date createAT;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="clinic_id")
     private Clinic clinic;
 

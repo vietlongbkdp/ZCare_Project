@@ -26,6 +26,7 @@ public class CooperateReqDTO {
                 .setEmail(email)
                 .setClinicName(clinicName)
                 .setAddress(address)
-                .setContent(content);
+                .setContent(content)
+                .setStatus(EStatus.AVAILABLE);
     }
 }
