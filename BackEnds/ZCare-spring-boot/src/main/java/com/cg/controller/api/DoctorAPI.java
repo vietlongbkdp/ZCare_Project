@@ -1,16 +1,11 @@
 package com.cg.controller.api;
-
-import com.cg.model.Clinic;
 import com.cg.model.Doctor;
 import com.cg.repository.IClinicRepository;
 import com.cg.repository.IDoctorRepository;
-import com.cg.service.doctor.IDoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.print.Doc;
 import java.util.List;
 
 @RestController
