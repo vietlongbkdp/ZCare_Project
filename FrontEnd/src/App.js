@@ -2,22 +2,30 @@ import './App.css';
 // import AdminCooperate from "./components/Cooperate/AdminCooperate";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import MusculoskeletalInfo from "./components/Specialist/MusculoskeletalInfo";
-import NerveInfo from "./components/Specialist/NerveInfo";
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
 
-import MapRender from "./components/MapRender/MapRender";
-import App1 from "./components/Dashboard/AdminNav"
+
+
+
+
+import User from "./components/doctor/TableDoctor"
+import Pagerbase from "./components/Dashboard/Paperbase"
+import DoctorInfor from "./components/Cooperate/AdminCooperate"
+import {Route, Routes} from "react-router-dom";
 export default function App() {
     return (
-        <>
-            <App1/>
-            {/*<Header/>*/}
-            {/*<DoctorInfoClinic/>*/}
-            {/*<MapRender/>*/}
-            {/*<Footer/>*/}
-
-        </>
+        <Routes>
+            <Route path={"admin"} element={<Pagerbase/>}>
+                <Route path={"user"} element={<User/>}></Route>
+                <Route path={"doctorInfor"} element={<DoctorInfor/>}></Route>
+            </Route>
+            <Route path={"cooperate"} element={<Pagerbase/>}>
+                {/*<Route path={"user"} element={<User/>}></Route>*/}
+                <Route path={"doctorInfor"} element={<DoctorInfor/>}></Route>
+            </Route>
+            <Route path={"user"} element={<Pagerbase/>}>
+                {/*<Route path={"user"} element={<User/>}></Route>*/}
+                <Route path={"doctorInfor"} element={<DoctorInfor/>}></Route>
+            </Route>
+        </Routes>
     )
 }
