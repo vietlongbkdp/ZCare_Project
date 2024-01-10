@@ -1,6 +1,8 @@
 package com.cg.service.doctor;
 
 import com.cg.model.Doctor;
+import com.cg.repository.IDoctorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,14 +13,16 @@ import java.util.Optional;
 @Transactional
 
 public class DoctorServiceImpl implements IDoctorService{
+    @Autowired
+    private IDoctorRepository iDoctorRepository;
     @Override
     public List<Doctor> findAll() {
-        return null;
+        return iDoctorRepository.findAll();
     }
 
     @Override
     public Optional<Doctor> findById(Long id) {
-        return Optional.empty();
+        return iDoctorRepository.findById(id);
     }
 
     @Override
