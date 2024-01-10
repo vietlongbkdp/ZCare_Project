@@ -1,6 +1,6 @@
 import './App.css';
-import 'react-toastify/dist/ReactToastify.css';
-import App1 from "./components/Dashboard/AdminNav"
+import Header from './components/Header/Header';
+import DoctorInfoClinic from './components/DoctorInfoClinic/DoctorInfoClinic';
 
 export default function App() {
     return (
