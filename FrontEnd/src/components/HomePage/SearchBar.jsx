@@ -10,13 +10,6 @@ export default function SearchBar() {
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
             <Stack direction='row' spacing={2} p={3} xs mdOffset={2} sx={{ borderRadius: '10px'}}>
                 <TextField
-                    size='small'
-                    sx={{
-                        fontSize: '10px',
-                        '& .MuiInputLabel-root': {
-                            fontSize: '14px',
-                        },
-                    }}
                     label='Tìm kiếm với tên bác sĩ'
                     InputProps={{
                         endAdornment: (
@@ -28,14 +21,13 @@ export default function SearchBar() {
                         )
                     }}
                 />
-                <FormControl sx={{ width: '300px' }} size='small'>
-                    <InputLabel sx={{ fontSize: '14px' }}>Phòng khám</InputLabel>
+                <FormControl sx={{ width: '300px' }} >
+                    <InputLabel>Phòng khám</InputLabel>
                     <Select
-                        size='small'
+                        
                         id="demo-simple-select"
                         value={clinic}
                         label='Phòng khám'
-                        sx={{ fontSize: '14px' }}
                     // onChange={handleChange}
                     >
                         <MenuItem>Phòng khám</MenuItem>
@@ -45,13 +37,13 @@ export default function SearchBar() {
                     </Select>
                 </FormControl>
 
-                <FormControl sx={{ width: '300px' }} size='small'>
-                    <InputLabel sx={{ fontSize: '14px' }}>Chuyên khoa</InputLabel>
+                <FormControl sx={{ width: '300px' }} >
+                    <InputLabel>Chuyên khoa</InputLabel>
                     <Select
                         id="demo-simple-select"
                         value={clinic}
                         label='Chuyên khoa'
-                        sx={{ fontSize: '14px' }}
+                
                     // onChange={handleChange}
                     >
                         <MenuItem>Chuyên khoa</MenuItem>

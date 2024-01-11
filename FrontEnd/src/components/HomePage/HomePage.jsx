@@ -5,6 +5,8 @@ import Poster from './Poster'
 import SearchBar from './SearchBar'
 import SpecialityListHome from './SpecialityListHome'
 import ClinicListHome from './ClinicListHome'
+import DoctorListHome from './DoctorListHome'
+import './homePage.css'
 
 export default function HomePage() {
     return (
@@ -14,6 +16,7 @@ export default function HomePage() {
                 <SearchBar/>
                 <SpecialityListHome/>
                 <ClinicListHome/>
+                <DoctorListHome/>
             <Footer/>
         </>
     )

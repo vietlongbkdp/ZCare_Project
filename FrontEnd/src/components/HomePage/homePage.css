@@ -1,0 +1,32 @@
+.slick-prev:before, .slick-next:before {
+  font-size: 50px;
+  color: #64b9e5;
+}
+
+.slick-prev, .slick-next {
+  z-index: 100;
+}
+
+.slick-next:before {
+  position: absolute;
+  bottom: -12px;
+  right: 0px;
+}
+
+.slick-prev:before {
+  position: absolute;
+  left: 0px;
+  bottom: -12px;
+}
+
+
+.slick-slide > div {
+  margin: 0 15px;
+}
+.slick-list {
+  margin: 0 -15px;
+}
+
+.clinic-title {
+  padding: 10px !important
+}
