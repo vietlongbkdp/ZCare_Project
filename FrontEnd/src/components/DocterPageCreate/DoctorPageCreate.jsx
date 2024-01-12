@@ -5,17 +5,14 @@ import Grid from "@mui/material/Grid";
 import {styled} from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {
-    Avatar,
-    Checkbox,
     FormControl,
-    FormControlLabel,
     InputLabel,
-    Link, MenuItem,
+     MenuItem,
     Paper,
     Select,
     TextField
 } from "@mui/material";
-import LockIcon from '@mui/icons-material/Lock';
+import {useForm} from "react-hook-form";
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -36,28 +33,22 @@ const Item = styled(Paper)(({theme}) => ({
     color: theme.palette.text.secondary,
 }));
 export default function DoctorPageCreate() {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const onSubmit = data => console.log(data);
     return (
         <>
             <Container>
                 <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
                     Create a new doctor
                 </Typography>
-                <Box sx={{width: '100%'}} mt={3}>
+                <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{width: '100%'}} mt={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={4} >
                             <Item>
                                 <Button component="label" sx={{borderRadius: 50}}>
                                     <img id={"blah"} style={{borderRadius: 100}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
                                          alt={"avatar"}/>
-                                    <VisuallyHiddenInput type="file" onChange={(event) => {
+                                    <VisuallyHiddenInput  {...register("avatar")} type="file" onChange={(event) => {
                                         document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])}}/>
                                 </Button>
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
@@ -70,33 +61,33 @@ export default function DoctorPageCreate() {
                         </Grid>
                         <Grid item xs={8}>
                             <Item >
-                                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                                    <Box  sx={{ mt: 3 }}>
                                         <Grid container spacing={2} >
                                             <Grid item xs={12} sm={6}>
                                                 <TextField
                                                     autoComplete="given-name"
-                                                    name="doctorName"
                                                     fullWidth
                                                     id="doctorName"
                                                     label="Full Name"
                                                     autoFocus
+                                                    {...register("doctorName")}
                                                 />
                                             </Grid>
                                             <Grid item xs={12} sm={6}>
                                                 <TextField
                                                     fullWidth
                                                     id="dob"
-                                                    name="dob"
                                                     type={"date"}
+                                                    {...register("dob")}
                                                 />
                                             </Grid>
                                             <Grid item xs={12} sm={6}>
                                                 <TextField
                                                     autoComplete="email"
-                                                    name="email"
                                                     fullWidth
                                                     id="email"
                                                     label="Email"
+                                                    {...register("email")}
                                                 />
                                             </Grid>
                                             <Grid item xs={12} sm={6}>
@@ -104,8 +95,8 @@ export default function DoctorPageCreate() {
                                                     fullWidth
                                                     id="phone"
                                                     label="Phone"
-                                                    name="phone"
                                                     autoComplete="phone"
+                                                    {...register("phone")}
                                                 />
                                             </Grid>
                                             <Grid item xs={12} sm={6}>
@@ -116,7 +107,7 @@ export default function DoctorPageCreate() {
                                                         id="clinic"
                                                         // value={0}
                                                         label="Clinic"
-                                                        name="clinic"
+                                                        {...register("clinic")}
                                                         // onChange={handleChange}
                                                     >
                                                         <MenuItem value={1}>Bệnh viện Đa khoa An Việt</MenuItem>
@@ -131,14 +122,14 @@ export default function DoctorPageCreate() {
                                                     <Select
                                                         labelId="specialityLabel"
                                                         id="speciality"
-                                                        name="speciality"
                                                         // value={0}
                                                         label="Speciality"
+                                                        {...register("speciality")}
                                                         // onChange={handleChange}
                                                     >
-                                                        <MenuItem value={10}>Thần Kinh</MenuItem>
-                                                        <MenuItem value={20}>Tai Mũi Họng</MenuItem>
-                                                        <MenuItem value={30}>Da Liễu</MenuItem>
+                                                        <MenuItem value={"Thần kinh"}>Thần Kinh</MenuItem>
+                                                        <MenuItem value={"Tai mũi họng"}>Tai Mũi Họng</MenuItem>
+                                                        <MenuItem value={"Da liễu"}>Da Liễu</MenuItem>
                                                     </Select>
                                                 </FormControl>
                                             </Grid>
@@ -148,15 +139,15 @@ export default function DoctorPageCreate() {
                                                     <Select
                                                         labelId="positionLabel"
                                                         id="position"
-                                                        name="position"
                                                         // value={0}
                                                         label="Position"
+                                                        {...register("position")}
                                                         // onChange={handleChange}
                                                     >
-                                                        <MenuItem value={1}>Giáo sư - Tiến Sĩ</MenuItem>
-                                                        <MenuItem value={2}>Phó giáo sư - Tiến Sĩ</MenuItem>
-                                                        <MenuItem value={3}>Tiến Sĩ - Bác Sĩ</MenuItem>
-                                                        <MenuItem value={4}>Bác Sĩ</MenuItem>
+                                                        <MenuItem value={"GS-TS"}>Giáo sư - Tiến Sĩ</MenuItem>
+                                                        <MenuItem value={"PGS-TS"}>Phó giáo sư - Tiến Sĩ</MenuItem>
+                                                        <MenuItem value={"TS-BS"}>Tiến Sĩ - Bác Sĩ</MenuItem>
+                                                        <MenuItem value={"BS"}>Bác Sĩ</MenuItem>
                                                     </Select>
                                                 </FormControl>
                                             </Grid>
