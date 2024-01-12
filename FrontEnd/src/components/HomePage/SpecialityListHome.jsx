@@ -40,7 +40,7 @@ export default function SpecialityListHome() {
   ]
   return (
     <Box sx={{
-      backgroundImage: `url('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705030268/moft21djy728rlfydi6g.jpg')`,
+      backgroundImage: `url('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705044346/lsfpeouonm9fyemv208u.jpg')`,
       backgroundRepeat: 'no-repeat',
       backgroundSize: 'cover',
       backgroundPosition: 'center'

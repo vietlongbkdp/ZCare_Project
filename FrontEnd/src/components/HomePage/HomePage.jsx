@@ -11,13 +11,13 @@ import './homePage.css'
 export default function HomePage() {
     return (
         <>
-            <Header/>
-                <Poster/>
-                <SearchBar/>
-                <SpecialityListHome/>
-                <ClinicListHome/>
-                <DoctorListHome/>
-            <Footer/>
+            {/* <Header />
+            <Poster />
+            <SearchBar />
+            <SpecialityListHome />
+            <ClinicListHome />
+            <DoctorListHome />
+            <Footer /> */}
         </>
     )
 }

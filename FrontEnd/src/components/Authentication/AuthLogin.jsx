@@ -10,8 +10,8 @@ import { Link } from 'react-router-dom';
 const schema = yup.object({
     email: yup.string()
         .email("Email phải đúng định dạng")
-        .required("email không được đêr trống"),
-    password:yup.string().required("mật khẩu không được để trống"),
+        .required("Email không được để trống"),
+    password:yup.string().required("Mật khẩu không được để trống"),
    
 })
 
@@ -68,7 +68,7 @@ function AuthLogin() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
                     <TextField id="outlined-basic"
-                     label="Email Address" 
+                     label="Email" 
                      {...register('email')}
                      name={"email"}
                      error={!!errors.email}

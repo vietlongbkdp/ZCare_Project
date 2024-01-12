@@ -21,16 +21,16 @@ import { Link } from 'react-router-dom';
 const schema = yup.object({
     fullName: yup.string()
         .min(5,"Tên phải tối thiểu 2 kí tự")
-        .required("tên không được để trống"),
+        .required("Tên không được để trống"),
     email: yup.string()
         .email("Email phải đứng định dạng")
-        .required("email không được đêr trống"),
+        .required("Email không được để trống"),
     phone: yup.string()
         .min(10, 'Số điện thoại tối thiểu phải 10 số')
         .required("Số điện thoại không được để trống"),
     address:yup.string().required("Địa chỉ không được để trống"),
     gender:yup.string().required("Giới tính không được để trống"),
-    password:yup.string().required("mật khẩu không được để trống"),
+    password:yup.string().required("Mật khẩu không được để trống"),
     dob:yup.string().required("Ngày sinh không được để trống")
 })
 

@@ -1,13 +1,20 @@
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import LoginAndRegister from "./components/Authentication/LoginAndRegister";
-import { BrowserRouter } from "react-router-dom";
+import HomePage from "./pages/Home/HomePage";
+import AuthLogin from "./components/Authentication/AuthLogin";
+import { Route, Routes } from "react-router-dom";
+import AuthRegister from './components/Authentication/AuthRegister';
+import ForgotPassword from './components/Authentication/ForgotPassword';
 
 export default function App() {
   return (
     <>
-      <LoginAndRegister />
-      <ToastContainer />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<AuthLogin />} />
+        <Route path="/register" element={<AuthRegister />} />
+        <Route path="/forgot" element={<ForgotPassword />} />
+        {/* <Route path="/dashboard" element={<Admin />} /> */}
+      </Routes>
     </>
   );
 }
