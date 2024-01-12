@@ -1,7 +1,6 @@
 import { Box, Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
-import { blueGrey } from '@mui/material/colors';
 
 export default function SearchBar() {
     const { clinic, setClinic } = useState();

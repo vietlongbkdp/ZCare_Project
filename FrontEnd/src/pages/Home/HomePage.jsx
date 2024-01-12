@@ -1,22 +1,18 @@
 import React from 'react'
 import Header from '../../components/Header/Header'
-import Poster from '../../components/HomePage/Poster'
-import SearchBar from '../../components/HomePage/SearchBar'
-import SpecialityListHome from '../../components/HomePage/SpecialityListHome'
-import ClinicListHome from '../../components/HomePage/ClinicListHome'
-import DoctorListHome from '../../components/HomePage/DoctorListHome'
 import Footer from '../../components/Footer/Footer'
-import '../../components/HomePage/homePage.css'
+import HomeContent from '../../components/HomeContent/HomeContent'
+import { Route, Routes } from 'react-router'
+import ClinicContent from '../../components/Clinic/ClinicContent'
 
 export default function HomePage() {
     return (
         <>
             <Header />
-            <Poster />
-            <SearchBar />
-            <SpecialityListHome />
-            <ClinicListHome />
-            <DoctorListHome />
+            <Routes>
+                <Route path="/" element={<HomeContent />} />
+                <Route path="/clinic-page" element={<ClinicContent/>} />
+            </Routes>
             <Footer />
         </>
     )

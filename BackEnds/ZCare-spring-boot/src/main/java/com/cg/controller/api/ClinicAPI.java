@@ -5,10 +5,7 @@ import com.cg.service.clinic.IClinicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,5 +19,20 @@ public class ClinicAPI {
     public ResponseEntity<?> getAllClinic() {
         List<Clinic> clinicList = clinicService.findAll();
         return new ResponseEntity<>(clinicList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getClinic (@PathVariable Long id){
+        Clinic clinic = clinicService.findById(id).get();
+        return new ResponseEntity<>(clinic,HttpStatus.OK);
+    }
+    @PostMapping
+    public ResponseEntity<?> createClinic(@RequestBody Clinic clinic){
+       try{
+           clinicService.save(clinic);
+           return new ResponseEntity<>(HttpStatus.OK);
+       }catch (Exception e) {
+           return new ResponseEntity<>("Failed to create clinic", HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 }
