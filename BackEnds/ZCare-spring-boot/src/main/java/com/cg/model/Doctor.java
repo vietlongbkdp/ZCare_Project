@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -28,6 +29,7 @@ public class Doctor {
     private String phone;
     private String doctorInfor;
     private Date createAT;
+    private BigDecimal fee;
 
     @ManyToOne
     @JoinColumn(name="clinic_id")

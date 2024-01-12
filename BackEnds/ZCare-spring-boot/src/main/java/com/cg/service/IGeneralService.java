@@ -1,5 +1,7 @@
 package com.cg.service;
 
+import com.cg.model.Clinic;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,7 +10,7 @@ public interface IGeneralService <E, T>{
 
     Optional<E> findById(T id);
 
-    void save(E e);
+    Clinic save(E e);
 
     void deleteById(T id);
 }

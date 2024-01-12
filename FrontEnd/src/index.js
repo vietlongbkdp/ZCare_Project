@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
   <BrowserRouter>
     <App />

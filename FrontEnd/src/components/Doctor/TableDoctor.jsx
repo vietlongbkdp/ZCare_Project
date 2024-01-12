@@ -16,8 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 //     const handleCloseModal = () => {
 //         setShowModal(false);
 //     };
-//     const handleEditDoctor = (doctor) => {
-//         setSelectedDoctor(doctor);
+//     const handleEditDoctor = (Doctor) => {
+//         setSelectedDoctor(Doctor);
 //         setShowModal(true);
 //     };
 //
@@ -227,7 +227,7 @@ function GetAllDoctor() {
                         <tr key={obj.id}>
                             <th scope="row">{obj.id}</th>
                             <td>{obj.doctorName}</td>
-                            <td>{obj.position.name}</td>
+                            <td></td>
                             <td>{formatDate(obj.dob)}</td>
                             <td>{obj.email}</td>
                             <td>{obj.phone}</td>

@@ -1,5 +1,6 @@
 package com.cg.service.position;
 
+import com.cg.model.Clinic;
 import com.cg.model.Position;
 import com.cg.repository.IPositionRepository;
 import jakarta.transaction.Transactional;
@@ -25,8 +26,9 @@ public class PositionService implements IPositionService{
     }
 
     @Override
-    public void save(Position position) {
+    public Clinic save(Position position) {
 
+        return null;
     }
 
     @Override

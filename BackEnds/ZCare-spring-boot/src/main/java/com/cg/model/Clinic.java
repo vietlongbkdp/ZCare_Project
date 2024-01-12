@@ -19,7 +19,6 @@ public class Clinic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String clinicName;
-    private BigDecimal fee;
     private String address;
     private String clinicInfor;
     private String clinicLogo;

@@ -21,12 +21,12 @@ public class ClinicService implements IClinicService{
 
     @Override
     public Optional<Clinic> findById(Long id) {
-        return Optional.empty();
+        return clinicRepository.findById(id);
     }
 
     @Override
-    public void save(Clinic clinic) {
-
+    public Clinic save(Clinic clinic) {
+         return clinicRepository.save(clinic);
     }
 
     @Override
