@@ -2,6 +2,7 @@ package com.cg.controller.api;
 
 import com.cg.model.Customer;
 import com.cg.model.DTO.CustomerReqDTO;
+import com.cg.model.DTO.EmailReqDTO;
 import com.cg.model.DTO.LoginDTO;
 import com.cg.model.User;
 import com.cg.service.Customer.CustomerService;
@@ -45,5 +46,15 @@ private UserService userService;
     public ResponseEntity<?> Register(@RequestBody CustomerReqDTO customerReqDTO){
         customerService.register(customerReqDTO);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("email")
+    public ResponseEntity<?> forgotPassword(@RequestBody EmailReqDTO emailReqDTO){
+        boolean isConfirmed= customerService.confirmEmail(emailReqDTO);
+        if (isConfirmed) {
+            return ResponseEntity.ok("Gửi mail thành công");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email không tồn tại");
+        }
     }
 }
