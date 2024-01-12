@@ -49,7 +49,6 @@ public class RatingService implements IRatingService{
         Customer customer = customerService.findById(1L).get();
         int star = Integer.parseInt(ratingReqDTO.getStar());
         String comment = ratingReqDTO.getComment();
-
         Rating rating = new Rating();
         rating.setStar(star);
         rating.setComment(comment);

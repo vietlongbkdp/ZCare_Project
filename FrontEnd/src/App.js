@@ -1,15 +1,13 @@
-import './App.css';
-import 'react-toastify/dist/ReactToastify.css';
-import Header from "./components/Header/Header";
-import Footer from "./components/Footer/Footer";
-import RatingDoctor from "./components/RatingDoctor/RatingDoctor";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import LoginAndRegister from "./components/Authentication/LoginAndRegister";
+import { BrowserRouter } from "react-router-dom";
 
 export default function App() {
-    return (
-        <>
-            <Header/>
-               <RatingDoctor/>
-            <Footer/>
-        </>
-    )
+  return (
+    <>
+      <LoginAndRegister />
+      <ToastContainer />
+    </>
+  );
 }
