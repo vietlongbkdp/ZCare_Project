@@ -18,6 +18,7 @@ import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
 import {Link} from "react-router-dom";
+import { useLocation } from 'react-router-dom';
 
 const categories = [
     {
@@ -30,10 +31,10 @@ const categories = [
             },
             { id: 'Database', icon: <DnsRoundedIcon /> },
             { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
-            { id: 'Hosting', icon: <PublicIcon /> , url: ""},
+            { id: 'Clinic', icon: <PublicIcon /> , url: ""},
             { id: 'Cooperate', icon: <SettingsEthernetIcon /> , url: "doctorInfor"},
             {
-                id: 'User',
+                id: 'Doctor',
                 icon: <SettingsInputComponentIcon />,
                 url: "user"
             },
@@ -45,6 +46,14 @@ const categories = [
             { id: 'Analytics', icon: <SettingsIcon /> },
             { id: 'Performance', icon: <TimerIcon /> },
             { id: 'Test Lab', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
+        ],
+    },
+    {
+        id: 'CUSTOMER',
+        children: [
+            { id: 'TOTAL', icon: <SettingsIcon /> },
+            { id: 'HISTORY', icon: <TimerIcon /> , url:"" },
+            { id: 'CUSTOMER', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
         ],
     },
 ];
@@ -65,6 +74,24 @@ const itemCategory = {
 };
 
 export default function Navigator(props) {
+    const location = useLocation();
+    const isAdmin = location.pathname.startsWith('/admin');
+    const isCooperate = location.pathname.startsWith('/cooperate');
+    const isUser = location.pathname.startsWith('/user');
+
+    let filteredCategories=[];
+
+    if (isAdmin) {
+        filteredCategories = categories.filter((category) => category.id === 'ADMIN');
+    } else if (isUser) {
+        filteredCategories = categories.filter((category) => category.id === 'CUSTOMER');
+    } else if (isCooperate) {
+        filteredCategories = categories.filter((category) => category.id === 'CLINIC-DOCTOR');
+    }
+    // const filteredCategories = categories.filter(
+    //     category => isAdmin ? category.id === 'ADMIN' : category.id === 'CLINIC-DOCTOR'
+    // );
+
     const { ...other } = props;
 
     return (
@@ -79,7 +106,7 @@ export default function Navigator(props) {
                     </ListItemIcon>
                     <ListItemText>Project Overview</ListItemText>
                 </ListItem>
-                {categories.map(({ id, children }) => (
+                {filteredCategories.map(({ id, children }) => (
                     <Box key={id} sx={{ bgcolor: '#101F33' }}>
                         <ListItem sx={{ py: 2, px: 3 }}>
                             <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>

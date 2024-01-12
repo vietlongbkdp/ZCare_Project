@@ -32,10 +32,10 @@ const categories = [
             {
                 id: 'Clinic',
                 icon: <PublicIcon />,
-                url: 'clinic',
+                url: 'doctorInfor',
                 fields: ['add', 'edit'],
                 children: [
-                    { id: 'Add', url: 'clinic/addClinic' },
+                    { id: 'Add', url: 'doctorInfor/add' },
                     { id: 'Edit', url: 'doctorInfor/edit' },
                 ],
             },
@@ -121,9 +121,9 @@ export default function Navigator(props) {
                                                 </AccordionSummary>
                                                 <AccordionDetails>
                                                     <List>
-                                                        {fields && fields.includes('addClinic') && (
+                                                        {fields && fields.includes('add') && (
                                                             <ListItem disablePadding>
-                                                                <Link to={`${url}/addClinic`}>
+                                                                <Link to={`${url}/add`}>
                                                                     <ListItemButton sx={item}>
                                                                         <ListItemIcon>
                                                                             {/*<span>Add</span>*/}

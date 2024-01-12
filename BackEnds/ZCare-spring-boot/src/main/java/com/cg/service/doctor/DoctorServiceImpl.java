@@ -1,5 +1,6 @@
 package com.cg.service.doctor;
 
+import com.cg.model.Clinic;
 import com.cg.model.Doctor;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,9 @@ public class DoctorServiceImpl implements IDoctorService{
     }
 
     @Override
-    public void save(Doctor doctor) {
+    public Clinic save(Doctor doctor) {
 
+        return null;
     }
 
     @Override
