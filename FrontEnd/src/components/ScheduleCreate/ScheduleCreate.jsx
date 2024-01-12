@@ -16,8 +16,8 @@ import FormLabel from '@mui/material/FormLabel';
 import Stack from "@mui/material/Stack";
 export default function ScheduleCreate(){
     const [dateCreate, setDateCreate] = useState({
-        startDateCreate : dayjs(),
-        endDateCreate: dayjs().add(7, 'day'),
+        startDateCreate : dayjs().add(1, 'day'),
+        endDateCreate: dayjs().add(8, 'day'),
         betweenDateCreate: 0,
         times: "15"
     })
@@ -41,12 +41,16 @@ export default function ScheduleCreate(){
                 const endDateString =  event.target[2].defaultValue
                 const endDate = dayjs(endDateString, "DD/MM/YYYY").format();
                 let betweenDate = changeToDate(Date.parse(endDate) - Date.parse(startDate))
-                setDateCreate({
-                    endDateCreate: Date.parse(endDate),
-                    startDateCreate: Date.parse(startDate),
-                    betweenDateCreate: betweenDate,
-                    times: timesImput
-                })
+                if((Date.parse(startDate) - dayjs()) > 0){
+                    setDateCreate({
+                        endDateCreate: Date.parse(endDate),
+                        startDateCreate: Date.parse(startDate),
+                        betweenDateCreate: betweenDate,
+                        times: timesImput
+                    })
+                }else{
+                    alert("Chọn ngày không hợp lệ, hãy bắt đầu từ ngày mai!!")
+                }
         };
     console.log(dateCreate)
     return(
@@ -95,6 +99,7 @@ export default function ScheduleCreate(){
                         </Box>
                 </Item>
                 <Item>
+
                 </Item>
             </Container>
     )
