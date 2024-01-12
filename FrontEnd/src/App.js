@@ -27,21 +27,6 @@ export default function App() {
         //     </Route>
         // </Routes>
 
-        // <Routes>
-        //     <Route path="admin" element={<Pagerbase />}>
-        //         <Route path="user" element={<User />} />
-        //         <Route path="doctorInfor" element={<DoctorInfor />}>
-        //             <Route path="add" element={<AddDoctor />} />
-        //             <Route path="edit" element={<AddDoctor />} />
-        //
-        //         </Route>
-        //     </Route>
-        //     <Route path="cooperate" element={<Pagerbase />}>
-        //         <Route path="doctorInfor" element={<DoctorInfor />} />
-        //     </Route>
-        //     <Route path="user" element={<Pagerbase />}>
-        //         <Route path="doctorInfor" element={<DoctorInfor />} />
-        //     </Route>
-        // </Routes>
     )
+
 }

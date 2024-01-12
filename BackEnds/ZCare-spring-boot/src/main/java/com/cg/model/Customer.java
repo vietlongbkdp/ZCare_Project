@@ -26,9 +26,6 @@ public class Customer {
     private String address;
     @Enumerated(EnumType.STRING)
     private EGender gender;
-    private String city;
-    private String district;
-    private String ward;
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;

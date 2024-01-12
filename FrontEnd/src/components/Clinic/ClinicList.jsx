@@ -13,31 +13,37 @@ function ClinicList() {
     //     color: theme.palette.text.secondary,
     // }));
     return (
-        <div>
-            <div >
-                <div className={"d-flex justify-content-center align-items-center "}>
-                        <Clinic/>
-                        <Clinic/>
-                </div>
-                <div className={"d-flex justify-content-center align-items-center "}>
-                        <Clinic/>
-                        <Clinic/>
-                </div>
-            </div>
-            {/*<Grid container spacing={2}>*/}
-            {/*    <Grid item xs={6}>*/}
-            {/*        <Item> <Clinic/></Item>*/}
-            {/*    </Grid>*/}
-            {/*    <Grid item xs={6}>*/}
-            {/*        <Item> <Clinic/></Item>*/}
-            {/*    </Grid>*/}
-            {/*    <Grid item xs={6}>*/}
-            {/*        <Item> <Clinic/></Item>*/}
-            {/*    </Grid>*/}
-            {/*    <Grid item xs={6}>*/}
-            {/*        <Item> <Clinic/></Item>*/}
-            {/*    </Grid>*/}
-            {/*</Grid>*/}
+        <div style={{ marginLeft: '60px', marginRight: '60px' }}>
+            {/*<div >*/}
+            {/*    <div className={"d-flex justify-content-center align-items-center "}>*/}
+            {/*            <Clinic/>*/}
+            {/*            <Clinic/>*/}
+            {/*    </div>*/}
+            {/*    <div className={"d-flex justify-content-center align-items-center "}>*/}
+            {/*            <Clinic/>*/}
+            {/*            <Clinic/>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+            <Grid container spacing={4} justifyContent={"center"} flexWrap="wrap">
+                <Grid item xs={5} >
+                     <Clinic/>
+                </Grid>
+                <Grid item xs={5}>
+                    <Clinic/>
+                </Grid>
+                <Grid item xs={5}>
+                    <Clinic/>
+                </Grid>
+                <Grid item xs={5}>
+                    <Clinic/>
+                </Grid>
+                <Grid item xs={5}>
+                    <Clinic/>
+                </Grid>
+                <Grid item xs={5}>
+                    <Clinic/>
+                </Grid>
+            </Grid>
         </div>
     );
 }
