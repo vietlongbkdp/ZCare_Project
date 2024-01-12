@@ -1,6 +1,5 @@
 package com.cg.service.speciality;
 
-import com.cg.model.Clinic;
 import com.cg.model.Speciality;
 import com.cg.repository.ISpecialityRepository;
 import jakarta.transaction.Transactional;
@@ -25,9 +24,8 @@ public class SpecialityService implements ISpecialityService {
     }
 
     @Override
-    public Clinic save(Speciality speciality) {
+    public void save(Speciality speciality) {
 
-        return null;
     }
 
     @Override

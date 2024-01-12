@@ -25,8 +25,8 @@ public class ClinicService implements IClinicService{
     }
 
     @Override
-    public Clinic save(Clinic clinic) {
-         return clinicRepository.save(clinic);
+    public void save(Clinic clinic) {
+        clinicRepository.save(clinic);
     }
 
     @Override

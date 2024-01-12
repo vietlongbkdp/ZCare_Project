@@ -1,6 +1,5 @@
 package com.cg.service.doctor;
 
-import com.cg.model.Clinic;
 import com.cg.model.Doctor;
 import com.cg.repository.IDoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,9 @@ public class DoctorServiceImpl implements IDoctorService{
     }
 
     @Override
-    public Clinic save(Doctor doctor) {
+    public void save(Doctor doctor) {
 
-        return null;
+
     }
 
     @Override
