@@ -39,7 +39,12 @@ export default function SpecialityListHome() {
     }
   ]
   return (
-    <Box bgcolor='#fff0fe' height={'670px'}>
+    <Box sx={{
+      backgroundImage: `url('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705030268/moft21djy728rlfydi6g.jpg')`,
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center'
+    }} height={'670px'}>
       <Box sx={{ display: 'flex', justifyContent: 'center', pt: '30px' }}>
         <LazyLoadImage src='https://res.cloudinary.com/dqcrxfewu/image/upload/v1704880692/xn2gns4ws8ul825zyfl3.png' width='70px' height='70px' />
       </Box>
@@ -53,7 +58,7 @@ export default function SpecialityListHome() {
         <Slider {...settings}>
           {
             specialityList.map((item, index) => (
-              <Card key={index} sx={{ borderRadius: '15px'}}>
+              <Card key={index} sx={{ borderRadius: '15px' }}>
                 <CardActionArea>
                   <CardMedia
                     component="img"
