@@ -1,11 +1,11 @@
-import CssBaseline from "@mui/material/CssBaseline";
-import DoctorPageCreate from "./components/DocterPageCreate/DoctorPageCreate"
 import * as React from "react";
+import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
+import {CssBaseline} from "@mui/material";
 export default function App() {
     return (
         <>
-            <CssBaseline />
-            <DoctorPageCreate/>
+            <CssBaseline/>
+            <ScheduleCreate/>
         </>
     )
 }

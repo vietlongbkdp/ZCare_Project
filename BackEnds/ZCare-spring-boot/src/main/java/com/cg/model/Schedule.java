@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -20,8 +20,9 @@ public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Date dateSchedule;
-    private LocalDateTime timeSchedule;
+    private LocalDate dateSchedule;
+    private LocalTime timeStart;
+    private LocalTime timeEnd;
     @Enumerated(EnumType.STRING)
     private EStatus status;
     @ManyToOne

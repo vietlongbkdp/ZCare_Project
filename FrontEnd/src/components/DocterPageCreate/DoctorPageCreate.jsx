@@ -5,17 +5,13 @@ import Grid from "@mui/material/Grid";
 import {styled} from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {
-    Avatar,
-    Checkbox,
     FormControl,
-    FormControlLabel,
     InputLabel,
-    Link, MenuItem,
+    MenuItem,
     Paper,
     Select,
     TextField
 } from "@mui/material";
-import LockIcon from '@mui/icons-material/Lock';
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -88,6 +84,10 @@ export default function DoctorPageCreate() {
                                                     id="dob"
                                                     name="dob"
                                                     type={"date"}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    label="Date of Birth"
                                                 />
                                             </Grid>
                                             <Grid item xs={12} sm={6}>
