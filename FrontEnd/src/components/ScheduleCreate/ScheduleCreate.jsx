@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import {Paper, Typography} from "@mui/material";
+import {Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {styled} from "@mui/material/styles";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -14,12 +14,21 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import Stack from "@mui/material/Stack";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import AddIcon from '@mui/icons-material/Add';
 export default function ScheduleCreate(){
     const [dateCreate, setDateCreate] = useState({
         startDateCreate : dayjs().add(1, 'day'),
         endDateCreate: dayjs().add(8, 'day'),
         betweenDateCreate: 0,
-        times: "15"
+        times: "15",
+        listBookingDetail: []
     })
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,25 +37,40 @@ export default function ScheduleCreate(){
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-    const changeToDate = (miliseconds) =>{
-        return (miliseconds/86400000)
+    const changeToDate = (milliseconds) =>{
+        return (milliseconds/86400000)
     }
         const handleSubmit = (event) => {
             event.preventDefault();
                 const data = new FormData(event.currentTarget)
-                const timesImput = parseInt(data.get('selectTime'))
+                const timesInput = parseInt(data.get('selectTime'))
                 const dayjs = require('dayjs');
                 const startDateString =  event.target[0].defaultValue
                 const startDate = dayjs(startDateString, "DD/MM/YYYY").format();
                 const endDateString =  event.target[2].defaultValue
                 const endDate = dayjs(endDateString, "DD/MM/YYYY").format();
                 let betweenDate = changeToDate(Date.parse(endDate) - Date.parse(startDate))
+                let listDateGet = []
+                for (let i = 0; i <= betweenDate; i++) {
+                    listDateGet.push(Date.parse(startDate) + 86400000*i);
+                    }
+                let listDayTrans = []
+                listDateGet.forEach(item => {
+                        let dateShow = `${dayjs(item).date()}/${dayjs(item).month() +1}/${dayjs(item).year()}`
+                    listDayTrans.push({
+                        dateCurrent: dayjs(item),
+                        dateShow: dateShow,
+                        listBooking: [],
+                        listHourSet: []
+                    })
+                })
                 if((Date.parse(startDate) - dayjs()) > 0){
                     setDateCreate({
                         endDateCreate: Date.parse(endDate),
                         startDateCreate: Date.parse(startDate),
                         betweenDateCreate: betweenDate,
-                        times: timesImput
+                        times: timesInput,
+                        listBookingDetail: listDayTrans
                     })
                 }else{
                     alert("Chọn ngày không hợp lệ, hãy bắt đầu từ ngày mai!!")
@@ -99,7 +123,32 @@ export default function ScheduleCreate(){
                         </Box>
                 </Item>
                 <Item>
-
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                                <TableRow>
+                                        <TableCell align="center">STT</TableCell>
+                                    <TableCell align="center">Ngày khám</TableCell>
+                                    <TableCell align="center">Chọn khoảng thời gian</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {dateCreate.listBookingDetail.map((value, index) => (
+                                    <TableRow
+                                        key={index}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell align="center" component="th" scope="row">{index +1}
+                                        </TableCell>
+                                        <TableCell align="center">{value.dateShow}</TableCell>
+                                        <TableCell align="right">
+                                            <Button sx={{borderRadius: 10}}><AddIcon sx={{ fontSize: 20 }}/></Button>
+                                        </TableCell>
+                                    </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Item>
             </Container>
     )
