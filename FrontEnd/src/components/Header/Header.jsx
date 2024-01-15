@@ -77,16 +77,16 @@ export default function Header() {
                 </div>
             </div>
             <div className={"d-flex justify-content-around fw-bold bodyHead"}>
-                <Link to='/' style={linkStyle}  className={"fs-2 d-flex homeHead"} >
+                <Link to='/home' style={linkStyle}  className={"fs-2 d-flex homeHead"} >
                     <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{ margin: "auto" }} />
                     <p style={{ margin: "auto" }}>ZCARE</p>
                 </Link>
                 <div className={"d-flex justify-content-between detailHead"}>
-                    <p><Link to='/' style={linkStyle}>TRANG CHỦ</Link></p>
-                    <p><Link to='/introduce' style={linkStyle}>GIỚI THIỆU</Link></p>
-                    <p><Link to='/clinic-page' style={linkStyle}>PHÒNG KHÁM</Link></p>
-                    <p><Link to='/speciality-page' style={linkStyle}>CHUYÊN KHOA</Link></p>
-                    <p><Link to='/contact' style={linkStyle}>LIÊN HỆ</Link></p>
+                    <p><Link to='/home' style={linkStyle}>TRANG CHỦ</Link></p>
+                    <p><Link to='/home/introduce' style={linkStyle}>GIỚI THIỆU</Link></p>
+                    <p><Link to='/home/clinic-page' style={linkStyle}>PHÒNG KHÁM</Link></p>
+                    <p><Link to='/home/speciality-page' style={linkStyle}>CHUYÊN KHOA</Link></p>
+                    <p><Link to='/home/cooperate' style={linkStyle}>HỢP TÁC</Link></p>
                 </div>
                 <div className={"searchHead my-auto"}>
                     <Search className={"inputSearch"}>
