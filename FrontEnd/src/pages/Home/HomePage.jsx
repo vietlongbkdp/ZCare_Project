@@ -11,7 +11,7 @@ export default function HomePage() {
             <Header />
             <Routes>
                 <Route path="/" element={<HomeContent />} />
-                <Route path="/clinic-page" element={<ClinicContent/>} />
+                <Route path="/home/clinic-page" element={<ClinicContent/>} />
             </Routes>
             <Footer />
         </>
