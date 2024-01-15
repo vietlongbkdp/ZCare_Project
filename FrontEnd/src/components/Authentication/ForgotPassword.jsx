@@ -21,7 +21,13 @@ export default function ForgotPassword() {
         resolver: yupResolver(schema)
     });
     const onSubmit = async (data) => {
-        console.log(data)
+      try {
+        const response = await axios.post('http://localhost:8080/api/customer/forgot', data);
+        console.log(response.data);
+        toast.success("Gửi xác nhận thành công");
+      } catch (error) {
+        toast.error("Mã xác nhận không đúng.");
+      } 
     };
 
 

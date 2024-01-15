@@ -3,6 +3,7 @@ package com.cg.controller.api;
 import com.cg.model.Customer;
 import com.cg.model.DTO.CustomerReqDTO;
 import com.cg.model.DTO.EmailReqDTO;
+import com.cg.model.DTO.ForgotPassword;
 import com.cg.model.DTO.LoginDTO;
 import com.cg.model.User;
 import com.cg.service.Customer.CustomerService;
@@ -49,7 +50,7 @@ private UserService userService;
     }
 
     @PostMapping("email")
-    public ResponseEntity<?> forgotPassword(@RequestBody EmailReqDTO emailReqDTO){
+    public ResponseEntity<?> senderEmail(@RequestBody EmailReqDTO emailReqDTO){
         boolean isConfirmed= customerService.confirmEmail(emailReqDTO);
         if (isConfirmed) {
             return ResponseEntity.ok("Gửi mail thành công");
@@ -57,4 +58,14 @@ private UserService userService;
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email không tồn tại");
         }
     }
+    @PostMapping("forgot")
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword forgotPassword){
+        boolean isConfirmed= customerService.forgotPassword(forgotPassword);
+        if (isConfirmed) {
+            return ResponseEntity.ok("Gửi xác nhận thành công");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã xác nhân không đúng");
+        }
+    }
+
 }

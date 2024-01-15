@@ -3,6 +3,7 @@ package com.cg.service.Customer;
 import com.cg.model.Customer;
 import com.cg.model.DTO.CustomerReqDTO;
 import com.cg.model.DTO.EmailReqDTO;
+import com.cg.model.DTO.ForgotPassword;
 import com.cg.model.User;
 import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.ERole;
@@ -85,5 +86,11 @@ public class CustomerService implements ICustomerService {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public boolean forgotPassword(ForgotPassword forgotPassword) {
+        User user = iUserRepository.findByFullName(forgotPassword.getEmail());
+        return user != null && (forgotPassword.getCode()).equals("58170");
     }
 }
