@@ -16,7 +16,22 @@ import {useForm} from "react-hook-form";
 import React, {useEffect} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
-
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+const schema = yup.object({
+    clinicName: yup.string()
+        .required("tên không được để trống")
+        .min(2,'Too short')
+        .max(50,'Too long'),
+    address: yup.string()
+        .required("tên không đuược để trống")
+        .min(2,'Too short')
+        .max(50,'Too long'),
+    clinicInfor: yup.string()
+        .required("tên không đuược để trống")
+        .min(2,'Too short')
+        .max(50,'Too long'),
+})
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -36,11 +51,14 @@ const Item = styled(Paper)(({theme}) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
-export default function DoctorPageCreate({setShow, setISupdate, clinicId}) {
+export default function DoctorPageCreate({setShow, setISupdate, clinicId, setShowContent, setShowCreate, setShowPage}) {
 
 
     const resetModal = () =>{
         setShow(false)
+        setShowContent(true)
+        setShowCreate(true)
+        setShowPage(true)
     }
 
 
@@ -60,15 +78,27 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId}) {
     },[clinicId]);
 
 
-    const updateClinic = async () => {
+    const updateClinic = async (data) => {
         try {
 
-        }catch (error){
-
+            await axios.patch(`http://localhost:8080/api/clinic/${clinicId}`, data);
+            toast.success("thành công")
+            reset();
+            setShowContent(true)
+            setShowCreate(true)
+            setShow(false)
+            setShowPage(true)
+            setISupdate(prev => !prev);
+        } catch (error) {
+            toast.error("thất bại")
         }
-    }
+    };
 
-    const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm(
+        {
+            resolver: yupResolver(schema)
+        }
+    );
 
     return (
         <>
@@ -106,6 +136,8 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId}) {
                                                 label="Clinic Name"
                                                 type={"text"}
                                                 autoFocus
+                                                error={Boolean(errors.clinicName)}
+                                                helperText={errors.clinicName?.message || ''}
                                                 {...register("clinicName")}
                                             />
                                         </Grid>
@@ -116,6 +148,8 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId}) {
                                                 id="address"
                                                 type={"text"}
                                                 label="Address"
+                                                error={Boolean(errors.address)}
+                                                helperText={errors.address?.message || ''}
                                                 {...register("address")}
                                             />
                                         </Grid>
@@ -126,6 +160,8 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId}) {
                                                 label="Information"
                                                 type={"text"}
                                                 autoComplete="information"
+                                                error={Boolean(errors.clinicInfor)}
+                                                helperText={errors.clinicInfor?.message || ''}
                                                 {...register("clinicInfor")}
                                             />
                                         </Grid>

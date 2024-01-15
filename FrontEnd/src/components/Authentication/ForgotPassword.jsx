@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Box, Typography, Checkbox, Button, TextField, Divider } from '@mui/material';
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -6,35 +6,63 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
-
+import { getValue } from '@testing-library/user-event/dist/utils';
 const schema = yup.object({
     email: yup.string()
         .email("Email phải đúng định dạng")
-        .required("email không được đêr trống"),
+        .required("email không được để trống"),
+        code: yup.string().required("Code không được để trống"),
 })
 export default function ForgotPassword() {
-
-    const {register, handleSubmit, formState: {errors},reset,setValue } = useForm({
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const [resendButtonDisabled, setResendButtonDisabled] = useState(false);
+    const [countdown, setCountdown] = useState(90);
+    const {register, handleSubmit, formState: {errors},reset, setValue, getValues } = useForm({
         resolver: yupResolver(schema)
     });
     const onSubmit = async (data) => {
-        console.log(data)
-        // try {
-        //     await axios.post('http://localhost:8080/api/customer/login', data);
-        //     toast.success("Đăng nhập thành công")
-        //     reset();
-        // } catch (error) {
-        //     if (error.response) {
-        //         const errorMessage = error.response.data;
-        //         toast.error(errorMessage);
-        //         reset();
-        //     } else {
-        //         toast.error("Đăng nhập thất bại");
-        //         reset();
-        //         console.error(error);
-        //     }
-        // }
+      try {
+        const response = await axios.post('http://localhost:8080/api/customer/forgot', data);
+        console.log(response.data);
+        toast.success("Gửi xác nhận thành công");
+      } catch (error) {
+        toast.error("Mã xác nhận không đúng.");
+      } 
     };
+
+
+    const handleClick = async () => {
+        try {
+          setIsButtonDisabled(true);
+          const emailValue = getValues('email');
+          if (!emailValue) {
+            toast.error("Vui lòng nhập email.");
+            return;
+          }
+          const response = await axios.post('http://localhost:8080/api/customer/email', { email: emailValue });
+          console.log(response.data);
+          toast.success("Mã xác nhận đã được gửi thành công!");
+          setResendButtonDisabled(true);
+          setCountdown(90);
+        } catch (error) {
+          toast.error("Đã xảy ra lỗi khi gửi mã xác nhận.");
+        } finally {
+          setIsButtonDisabled(false);
+        }
+      };
+
+      useEffect(() => {
+        if (countdown > 0) {
+          const timer = setTimeout(() => {
+            setCountdown(countdown - 1);
+          }, 1000);
+      
+          return () => clearTimeout(timer);
+        } else {
+          setResendButtonDisabled(false);
+        }
+      }, [countdown]);
+
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' , justifyContent: 'center',
@@ -58,65 +86,60 @@ export default function ForgotPassword() {
         }}
     >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="h5">Forgot Password</Typography>
+            <Typography variant="h5">Quên mật khẩu</Typography>
             <Link to="/register" style={{ textDecoration: 'none' }}>
-             Don't have an account?
+            Bạn chưa có tài khoản?
             </Link>
         </Box>
         <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
-            <TextField id="outlined-basic"
-             label="Email Address" 
-             {...register('email')}
-             name={"email"}
-             error={!!errors.email}
-             helperText={errors.email?.message}
-             type="email" 
-             variant="outlined" />
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
-            <TextField id="outlined-basic" 
-            {...register('password')}
-            name={"password"}
-            label="Password" 
-            type="password" 
+        <Box sx={{ display: 'flex', flexDirection: 'row', marginTop: '25px', gap: '10px', justifyContent:"space-between" , alignItems:"center"}}>
+            <Box>
+                <TextField
+            id="email"
+            label="Xác nhận email" 
+            {...register('email')}
+            name="email"
+            error={!!errors.email}
+            helperText={errors.email?.message}
+            type="email" 
             variant="outlined"
-            error={!!errors.password}
-            helperText={errors.password?.message} />
+            sx={{ flex: 1 ,width:"280px"}}
+            /></Box>
+           <Box>
+           {resendButtonDisabled ? (
+           <span>
+           Gửi lại mã sau: {Math.floor(countdown / 60)}:{countdown % 60}
+          </span>
+            ) : 
+        <Button
+        sx={{ width: 'fit-content', padding: '5px 16px', fontSize: '13px' }}
+        variant="contained"
+        disabled={isButtonDisabled}
+        onClick={handleClick}
+      >
+       Nhận mã
+     </Button>
+        }
+       </Box>
         </Box>
+       
+    <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
+        <TextField
+            {...register('code')}
+            name="code"
+            label="Nhập mã xác nhận" 
+            type="text"   
+            variant="outlined"
+            error={!!errors.code}
+            helperText={errors.code?.message}
+        />
+    </Box>
         <Box sx={{ marginTop: '16px' }}>
-            <Button type='submit' variant="contained" fullWidth>
-                Gửi Xác nhận
-            </Button>
+         <Button type="submit" variant="contained" fullWidth>
+        Gửi xác nhận
+        </Button>
         </Box>
         </form>
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-            <Divider flexItem sx={{ width: '30%' }} />
-            <Typography variant="body2" sx={{ px: '8px' }}>
-                Login with
-            </Typography>
-            <Divider flexItem sx={{ width: '30%' }} />
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '16px' }}>
-            <Button variant="outlined" fullWidth sx={{ marginRight: '8px' }}>
-    <span className="icon">
-      <i className="fab fa-google"></i>
-    </span>
-                Google
-            </Button>
-            <Button variant="outlined" fullWidth sx={{ marginRight: '8px' }}>
-    <span className="icon">
-      <i className="fab fa-twitter"></i>
-    </span>
-                Twitter
-            </Button>
-            <Button variant="outlined" fullWidth>
-    <span className="icon">
-      <i className="fab fa-facebook"></i>
-    </span>
-                Facebook
-            </Button>
-        </Box>
     </Box>
 </Box>
   )

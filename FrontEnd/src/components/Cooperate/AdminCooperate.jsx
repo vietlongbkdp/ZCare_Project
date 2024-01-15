@@ -6,7 +6,7 @@ import {toast } from "react-toastify";
 function AdminCooperate() {
     const [cooperateList, setCooperateList] = useState([]);
     const itemsPerPage = 10;
-    const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const getAllCooperate = async () => {

@@ -1,6 +1,5 @@
 package com.cg.service.Cooperate;
 
-import com.cg.model.Clinic;
 import com.cg.model.Cooperate;
 import com.cg.repository.ICooperateRepository;
 import jakarta.transaction.Transactional;
@@ -25,9 +24,9 @@ public class CooperateService implements ICooperateService{
     }
 
     @Override
-    public Clinic save(Cooperate cooperate) {
+    public void save(Cooperate cooperate) {
         iCooperateRepository.save(cooperate);
-        return null;
+
     }
 
     @Override

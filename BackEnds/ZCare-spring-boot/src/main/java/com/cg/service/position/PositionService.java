@@ -1,6 +1,5 @@
 package com.cg.service.position;
 
-import com.cg.model.Clinic;
 import com.cg.model.Position;
 import com.cg.repository.IPositionRepository;
 import jakarta.transaction.Transactional;
@@ -13,6 +12,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PositionService implements IPositionService{
+
     @Autowired
     private IPositionRepository positionRepository;
     @Override
@@ -22,13 +22,13 @@ public class PositionService implements IPositionService{
 
     @Override
     public Optional<Position> findById(Long id) {
-        return Optional.empty();
+        return positionRepository.findById(id);
     }
 
     @Override
-    public Clinic save(Position position) {
+    public void save(Position position) {
 
-        return null;
+
     }
 
     @Override

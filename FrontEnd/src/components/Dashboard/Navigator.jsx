@@ -17,30 +17,27 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
-import { Link } from 'react-router-dom';
+import {Link} from "react-router-dom";
 import { useLocation } from 'react-router-dom';
-import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const categories = [
     {
         id: 'ADMIN',
         children: [
-            { id: 'Authentication', icon: <PeopleIcon />, active: true },
-            { id: 'Database', icon: <DnsRoundedIcon /> },
-            { id: 'Storage', icon: <PermMediaOutlinedIcon /> },
             {
-                id: 'Clinic',
-                icon: <PublicIcon />,
-                url: 'clinic',
-                fields: ['add', 'edit'],
-                children: [
-                    { id: 'Add', url: 'clinic/addClinic' },
-                    { id: 'Edit', url: 'doctorInfor/edit' },
-                ],
+                id: 'Authentication',
+                icon: <PeopleIcon />,
+                active: true,
             },
-            { id: 'Cooperate', icon: <SettingsEthernetIcon />, url: 'doctorInfor' },
-            { id: 'Doctor', icon: <SettingsInputComponentIcon />, url: 'user' },
+            { id: 'Database', icon: <DnsRoundedIcon /> },
+            { id: 'ok', icon: <PermMediaOutlinedIcon /> },
+            { id: 'Clinic', icon: <PublicIcon /> , url: "clinic"},
+            { id: 'Cooperate', icon: <SettingsEthernetIcon /> , url: "doctorInfor"},
+            {
+                id: 'Doctor',
+                icon: <SettingsInputComponentIcon />,
+                url: "doctor"
+            },
         ],
     },
     {
@@ -48,15 +45,15 @@ const categories = [
         children: [
             { id: 'Analytics', icon: <SettingsIcon /> },
             { id: 'Performance', icon: <TimerIcon /> },
-            { id: 'Test Lab', icon: <PhonelinkSetupIcon />, url: 'doctorInfor' },
+            { id: 'Test Lab', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
         ],
     },
     {
         id: 'CUSTOMER',
         children: [
             { id: 'TOTAL', icon: <SettingsIcon /> },
-            { id: 'HISTORY', icon: <TimerIcon />, url: '' },
-            { id: 'CUSTOMER', icon: <PhonelinkSetupIcon />, url: 'doctorInfor' },
+            { id: 'HISTORY', icon: <TimerIcon /> , url:"" },
+            { id: 'CUSTOMER', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
         ],
     },
 ];
@@ -82,7 +79,7 @@ export default function Navigator(props) {
     const isCooperate = location.pathname.startsWith('/cooperate');
     const isUser = location.pathname.startsWith('/user');
 
-    let filteredCategories = [];
+    let filteredCategories=[];
 
     if (isAdmin) {
         filteredCategories = categories.filter((category) => category.id === 'ADMIN');
@@ -91,13 +88,18 @@ export default function Navigator(props) {
     } else if (isCooperate) {
         filteredCategories = categories.filter((category) => category.id === 'CLINIC-DOCTOR');
     }
+    // const filteredCategories = categories.filter(
+    //     category => isAdmin ? category.id === 'ADMIN' : category.id === 'CLINIC-DOCTOR'
+    // );
 
     const { ...other } = props;
 
     return (
         <Drawer variant="permanent" {...other}>
             <List disablePadding>
-                <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>Paperbase</ListItem>
+                <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
+                    Paperbase
+                </ListItem>
                 <ListItem sx={{ ...item, ...itemCategory }}>
                     <ListItemIcon>
                         <HomeIcon />
@@ -109,48 +111,12 @@ export default function Navigator(props) {
                         <ListItem sx={{ py: 2, px: 3 }}>
                             <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
                         </ListItem>
-                        {children.map(({ id: childId, url, icon, active, fields }) => (
+                        {children.map(({ id: childId, url, icon, active }) => (
                             <ListItem disablePadding key={childId}>
                                 <Link to={url}>
                                     <ListItemButton selected={active} sx={item}>
                                         <ListItemIcon>{icon}</ListItemIcon>
-                                        {childId === 'Clinic' ? (
-                                            <Accordion>
-                                                <AccordionSummary sx={{backgroundColor: '#101F33'}} expandIcon={<ExpandMoreIcon />}>
-                                                    {childId}
-                                                </AccordionSummary>
-                                                <AccordionDetails>
-                                                    <List>
-                                                        {fields && fields.includes('addClinic') && (
-                                                            <ListItem disablePadding>
-                                                                <Link to={`${url}/addClinic`}>
-                                                                    <ListItemButton sx={item}>
-                                                                        <ListItemIcon>
-                                                                            {/*<span>Add</span>*/}
-                                                                        </ListItemIcon>
-                                                                        <ListItemText sx={{color: 'black'}}>Add</ListItemText>
-                                                                    </ListItemButton>
-                                                                </Link>
-                                                            </ListItem>
-                                                        )}
-                                                        {fields && fields.includes('edit') && (
-                                                            <ListItem disablePadding sx={{backgroundColor: '#101F33'}}>
-                                                                <Link to={`${url}/edit`}>
-                                                                    <ListItemButton sx={item}>
-                                                                        <ListItemIcon>
-                                                                            {/*<span>Edit</span>*/}
-                                                                        </ListItemIcon>
-                                                                        <ListItemText sx={{color: 'black'}}>Edit</ListItemText>
-                                                                    </ListItemButton>
-                                                                </Link>
-                                                            </ListItem>
-                                                        )}
-                                                    </List>
-                                                </AccordionDetails>
-                                            </Accordion>
-                                        ) : (
-                                            <ListItemText>{childId}</ListItemText>
-                                        )}
+                                        <ListItemText>{childId}</ListItemText>
                                     </ListItemButton>
                                 </Link>
                             </ListItem>
