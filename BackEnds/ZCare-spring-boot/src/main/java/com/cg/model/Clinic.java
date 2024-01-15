@@ -18,9 +18,11 @@ public class Clinic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "clinic_name")
     private String clinicName;
-    private BigDecimal fee;
     private String address;
-    private String clinicInfor;
+    @Column(name = "clinic_info")
+    private String clinicInfo;
+    @Column(name = "clinic_logo")
     private String clinicLogo;
 }

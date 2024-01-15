@@ -1,11 +1,10 @@
 package com.cg.service.Cooperate;
 
 import com.cg.model.Cooperate;
-import com.cg.model.enumeration.EStatus;
 import com.cg.repository.ICooperateRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -27,6 +26,7 @@ public class CooperateService implements ICooperateService{
     @Override
     public void save(Cooperate cooperate) {
         iCooperateRepository.save(cooperate);
+
     }
 
     @Override

@@ -17,4 +17,5 @@ public class Speciality {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String specialtyName;
+    private String specialtyImage;
 }
