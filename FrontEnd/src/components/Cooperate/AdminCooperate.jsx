@@ -18,7 +18,7 @@ function AdminCooperate() {
             }
         };
         getAllCooperate();
-    }, [currentPage,cooperateList]);
+    }, [currentPage]);
 
     const handleClick = async (id) => {
         try {
