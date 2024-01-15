@@ -76,6 +76,9 @@ export default function ScheduleCreate(){
                     alert("Chọn ngày không hợp lệ, hãy bắt đầu từ ngày mai!!")
                 }
         };
+    const handleClickAddTimes = (event) =>{
+        console.log("Hello")
+    }
     console.log(dateCreate)
     return(
             <Container maxWidth="md">
@@ -144,7 +147,10 @@ export default function ScheduleCreate(){
                                         <TableCell align="right">
                                             <Button
                                                 sx={{borderRadius: 10}}
-                                                // onClick={handleClickAddTimes}
+                                                onClick={(event) =>{
+                                                    handleClickAddTimes(event)
+                                                }
+                                                }
                                             ><AddIcon sx={{ fontSize: 20 }}/></Button>
                                         </TableCell>
                                     </TableRow>
