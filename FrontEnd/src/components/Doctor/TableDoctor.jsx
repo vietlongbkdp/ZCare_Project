@@ -249,8 +249,7 @@ function GetAllDoctor() {
 
                                 <button type="button" className="btn btn-danger" style={{marginRight: "5px"}}
                                         onClick={() => handDelete(obj.id)}
-                                ><i
-                                    className="fa-solid fa-delete-left"></i></button>
+                                ><i className="fa-solid fa-delete-left"></i></button>
                             </td>
                         </tr>
                     ))

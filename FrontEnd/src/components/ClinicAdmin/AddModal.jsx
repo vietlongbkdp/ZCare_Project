@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid";
 import {styled} from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {
-    FormControl,
+    FormControl, FormHelperText,
     InputLabel,
     MenuItem,
     Paper,
@@ -16,6 +16,24 @@ import {useForm} from "react-hook-form";
 import React, {useState} from "react";
 import axios from "axios";
 import {toast} from "react-toastify";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+
+const schema = yup.object({
+    clinicName: yup.string()
+        .required("tên không được để trống")
+        .min(2,'Too short')
+        .max(50,'Too long'),
+    address: yup.string()
+        .required("tên không đuược để trống")
+        .min(2,'Too short')
+        .max(50,'Too long'),
+    clinicInfor: yup.string()
+        .required("tên không đuược để trống")
+        .min(2,'Too short')
+        .max(50,'Too long'),
+    })
+
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -35,20 +53,15 @@ const Item = styled(Paper)(({theme}) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
-export default function DoctorPageCreate({setShow, setISupdate}) {
+export default function DoctorPageCreate({setShow, setISupdate, setShowContent, setShowCreate, setShowPage}) {
 
 
     const resetModal = () =>{
         setShow(false)
+        setShowContent(true)
+        setShowCreate(true)
+        setShowPage(true)
     }
-
-    // const handInputChange = (e) => {
-    //     const {name, value} = e.target;
-    //     setClinic(prevClinic => ({
-    //         ...prevClinic,
-    //         [name]:value
-    //     }));
-    // }
 
     const createClinic = async (data) =>{
 
@@ -56,15 +69,23 @@ export default function DoctorPageCreate({setShow, setISupdate}) {
         console.log(data)
         try {
             await axios.post('http://localhost:8080/api/clinic', data);
+            toast.success("thành công")
             reset();
+            setShowContent(true)
+            setShowCreate(true)
             setShow(false);
+            setShowPage(true)
             setISupdate(pre => !pre);
 
         } catch (error) {
-            console.error(error);
+            toast.error("thất bại")
         }
     }
-    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm();
+    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm(
+        {
+            resolver: yupResolver(schema)
+        }
+    );
 
     return (
         <>
@@ -96,13 +117,15 @@ export default function DoctorPageCreate({setShow, setISupdate}) {
                                     <Grid container spacing={2} >
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                autoComplete="given-name"
+                                                autoComplete="clinicName"
                                                 fullWidth
                                                 id="clinicName"
                                                 label="Clinic Name"
-                                                type={"text"}
+                                                type="text"
                                                 autoFocus
-                                                {...register("clinicName")}
+                                                error={Boolean(errors.clinicName)}
+                                                helperText={errors.clinicName?.message || ''}
+                                                {...register('clinicName')}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -112,6 +135,8 @@ export default function DoctorPageCreate({setShow, setISupdate}) {
                                                 id="address"
                                                 type={"text"}
                                                 label="Address"
+                                                error={Boolean(errors.address)}
+                                                helperText={errors.address?.message || ''}
                                                 {...register("address")}
                                             />
                                         </Grid>
@@ -122,6 +147,8 @@ export default function DoctorPageCreate({setShow, setISupdate}) {
                                                 label="Information"
                                                 type={"text"}
                                                 autoComplete="information"
+                                                error={Boolean(errors.clinicInfor)}
+                                                helperText={errors.clinicInfor?.message || ''}
                                                 {...register("clinicInfor")}
                                             />
                                         </Grid>

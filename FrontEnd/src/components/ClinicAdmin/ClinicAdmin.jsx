@@ -15,6 +15,9 @@ import EditModal from "./EditModal"
 import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
+import Swal from 'sweetalert2'
+import {toast} from "react-toastify";
+import {Pagination} from "@mui/material";
 
 
 
@@ -40,12 +43,24 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CustomizedTables() {
 
+    const itemsPerPage = 7;
+    const [currentPage, setCurrentPage] = useState(1);
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [isupdate, setIsupdate] = useState(false);
     const [editClinic, setEditClinic] = useState(null)
    const [clinicList, setClinicList] = useState([]);
     const [clinicID, setClinicID] = useState()
+    const [showContent, setShowContent] = useState(true)
+    const [showCreate, setShowCreate] = useState(true)
+    const [showPage, setShowPage] = useState(true);
     useEffect(() => {
         const getClinics = async () => {
             try{
@@ -57,76 +72,131 @@ export default function CustomizedTables() {
 
         }
         getClinics();
-    }, [isupdate]);
+    }, [isupdate,clinicList,currentPage]);
 
+    const currentClinicList = clinicList.slice(startIndex, endIndex);
     const handleShowClinic = () => {
         setShowAddModal(true);
+        setShowContent(false)
+        setShowCreate(false)
+        setShowPage(false)
     }
 
     const handEditID= (id) => {
         setClinicID(id);
         setShowEditModal(true)
-        // const clinic = clinicList.find(item => item.id===id);
-        // setEditClinic(clinic)
+        setShowContent(false)
+        setShowCreate(false)
+        setShowPage(false)
     }
+
+    const handDelete = async (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (data) => {
+            if(data.isConfirmed){
+                try {
+                    await axios.delete(`http://localhost:8080/api/clinic/${id}`);
+                    toast.success("thành công")
+                    setIsupdate(pre => !pre);
+                }catch (error){
+                    toast.error("thất bại")
+                } Swal.fire({
+                    title: "Deleted!",
+                    text: "Your file has been deleted.",
+                    icon: "success"
+                });
+            }
+        })
+
+    }
+
     return (
        <>
-           {showEditModal && <EditModal
-               setShow={setShowEditModal}
-               setISupdate={setIsupdate}
-               clinicId = {clinicID}
-           />}
+
            <Box sx={{maxWidth: 1000}}>
-               <Button
+               {showCreate && <Button
                    type="submit"
                    variant="contained"
                    sx={{ mt: 3, mb: 1}}
                    onClick={handleShowClinic}
                >
                    Create
-               </Button>
+               </Button>}
                {showAddModal && <AddModal
                    setShow = {setShowAddModal}
                    setISupdate = {setIsupdate}
+                   setShowContent = {setShowContent}
+                   setShowCreate ={setShowCreate}
+                   setShowPage ={setShowPage}
                />}
-
-               <TableContainer component={Paper}>
-                   <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                       <TableHead>
-                           <TableRow>
-                               <StyledTableCell sx={{width: 10}}>#</StyledTableCell>
-                               <StyledTableCell align="right">FULLNAME</StyledTableCell>
-                               <StyledTableCell align="right">ADDRESS</StyledTableCell>
-                               <StyledTableCell align="right">INFORMATION</StyledTableCell>
-                               <StyledTableCell align="right">LOGO</StyledTableCell>
-                               <StyledTableCell align="right">ACTION</StyledTableCell>
-                           </TableRow>
-                       </TableHead>
-                       <TableBody>
-                           {clinicList.map((item) => (
-                               <StyledTableRow key={item.id}>
-                                   <StyledTableCell sx={{width: 10}} component="th" scope="row">
-                                       {item.id}
-                                   </StyledTableCell>
-                                   <StyledTableCell align="right">{item.clinicName}</StyledTableCell>
-                                   <StyledTableCell align="right">{item.address}</StyledTableCell>
-                                   <StyledTableCell align="right">{item.clinicInfor}</StyledTableCell>
-                                   <StyledTableCell align="right">
-                                       <img src={item.clinicLogo} alt="Clinic Logo" style={{width: '50px', height: '50px'}}/>
-                                   </StyledTableCell>
-                                   <StyledTableCell align="right" >
-                                       <Stack direction="row" spacing={1} justifyContent="flex-end">
-                                           <Button variant="contained" onClick={()=>handEditID(item.id)} sx={{width: 5}}><i className="fa-solid fa-pen-to-square"></i>
-                                           </Button>
-                                           <Button variant="outlined" startIcon={<DeleteIcon />} sx={{ marginLeft: 'auto' }}>
-                                           </Button>
-                                       </Stack>
-                                   </StyledTableCell>
-                               </StyledTableRow>
-                           ))}
-                       </TableBody>
-                   </Table>
-               </TableContainer>
+               {showEditModal && <EditModal
+                   setShow={setShowEditModal}
+                   setISupdate={setIsupdate}
+                   clinicId = {clinicID}
+                   setShowContent = {setShowContent}
+                   setShowCreate ={setShowCreate}
+                   setShowPage ={setShowPage}
+               />}
+               <Box >
+               {showContent &&
+                   <TableContainer  component={Paper}>
+                       <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                           <TableHead>
+                               <TableRow>
+                                   <StyledTableCell sx={{width: 10}}>#</StyledTableCell>
+                                   <StyledTableCell align="right">FULLNAME</StyledTableCell>
+                                   <StyledTableCell align="right">ADDRESS</StyledTableCell>
+                                   <StyledTableCell align="right">INFORMATION</StyledTableCell>
+                                   <StyledTableCell align="right">LOGO</StyledTableCell>
+                                   <StyledTableCell align="right">ACTION</StyledTableCell>
+                               </TableRow>
+                           </TableHead>
+                           <TableBody>
+                               {currentClinicList.map((item) => (
+                                   <StyledTableRow key={item.id}>
+                                       <StyledTableCell sx={{width: 10}} component="th" scope="row">
+                                           {item.id}
+                                       </StyledTableCell>
+                                       <StyledTableCell align="right">{item.clinicName}</StyledTableCell>
+                                       <StyledTableCell align="right">{item.address}</StyledTableCell>
+                                       <StyledTableCell align="right">{item.clinicInfor}</StyledTableCell>
+                                       <StyledTableCell align="right">
+                                           <img src={item.clinicLogo} alt="Clinic Logo" style={{width: '50px', height: '50px'}}/>
+                                       </StyledTableCell>
+                                       <StyledTableCell align="right" >
+                                           <Stack direction="row" spacing={1} justifyContent="flex-end">
+                                               <Button variant="contained" onClick={()=>handEditID(item.id)} sx={{width: 5}}><i className="fa-solid fa-pen-to-square"></i>
+                                               </Button>
+                                               <Button variant="outlined" color="error"
+                                                       onClick={() => handDelete(item.id)} sx={{marginLeft: 'auto'}}><i
+                                                   className="fa-solid fa-delete-left"></i>
+                                               </Button>
+                                           </Stack>
+                                       </StyledTableCell>
+                                   </StyledTableRow>
+                               ))}
+                           </TableBody>
+                       </Table>
+                   </TableContainer>
+               }
+               </Box>
+               {showPage &&
+                   <Pagination
+                   count={Math.ceil(clinicList.length / itemsPerPage)}
+                   page={currentPage}
+                   onChange={handlePageChange}
+                   color="primary"
+                   showFirstButton
+                   showLastButton
+                   style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+               />}
            </Box>
        </>
     );

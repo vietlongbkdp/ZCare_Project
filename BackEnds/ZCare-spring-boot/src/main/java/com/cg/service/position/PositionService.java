@@ -12,6 +12,7 @@ import java.util.Optional;
 @Service
 @Transactional
 public class PositionService implements IPositionService{
+
     @Autowired
     private IPositionRepository positionRepository;
     @Override
@@ -21,7 +22,7 @@ public class PositionService implements IPositionService{
 
     @Override
     public Optional<Position> findById(Long id) {
-        return Optional.empty();
+        return positionRepository.findById(id);
     }
 
     @Override

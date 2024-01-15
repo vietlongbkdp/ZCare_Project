@@ -20,11 +20,12 @@ public class SpecialityService implements ISpecialityService {
 
     @Override
     public Optional<Speciality> findById(Long id) {
-        return Optional.empty();
+        return specialityRepository.findById(id);
     }
 
     @Override
     public void save(Speciality speciality) {
+
 
     }
 

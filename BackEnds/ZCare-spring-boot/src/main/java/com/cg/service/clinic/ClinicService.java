@@ -26,11 +26,11 @@ public class ClinicService implements IClinicService{
 
     @Override
     public void save(Clinic clinic) {
-        clinicRepository.save(clinic);
+          clinicRepository.save(clinic);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        clinicRepository.deleteById(id);
     }
 }
