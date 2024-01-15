@@ -1,4 +1,4 @@
-package com.example.uploader;
+package com.cg.uploader;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

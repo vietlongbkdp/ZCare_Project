@@ -1,4 +1,4 @@
-package com.example.uploader;
+package com.cg.uploader;
 
 import lombok.Getter;
 import lombok.Setter;

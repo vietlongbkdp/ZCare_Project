@@ -26,6 +26,7 @@ public class ClinicAPI {
         Clinic clinic = clinicService.findById(id).get();
         return new ResponseEntity<>(clinic,HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<?> createClinic(@RequestBody Clinic clinic){
        try{
