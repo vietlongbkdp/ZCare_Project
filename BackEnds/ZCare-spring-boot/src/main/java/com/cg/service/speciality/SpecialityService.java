@@ -21,13 +21,13 @@ public class SpecialityService implements ISpecialityService {
 
     @Override
     public Optional<Speciality> findById(Long id) {
-        return Optional.empty();
+        return specialityRepository.findById(id);
     }
 
     @Override
-    public Clinic save(Speciality speciality) {
+    public void save(Speciality speciality) {
 
-        return null;
+
     }
 
     @Override

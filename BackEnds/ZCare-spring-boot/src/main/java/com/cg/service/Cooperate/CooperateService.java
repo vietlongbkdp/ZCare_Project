@@ -25,9 +25,9 @@ public class CooperateService implements ICooperateService{
     }
 
     @Override
-    public Clinic save(Cooperate cooperate) {
+    public void save(Cooperate cooperate) {
         iCooperateRepository.save(cooperate);
-        return null;
+
     }
 
     @Override

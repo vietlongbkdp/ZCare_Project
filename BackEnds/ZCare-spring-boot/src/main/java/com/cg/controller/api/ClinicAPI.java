@@ -35,4 +35,20 @@ public class ClinicAPI {
            return new ResponseEntity<>("Failed to create clinic", HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> editClinic(@PathVariable Long id, @RequestBody Clinic clinic){
+        Clinic clinic1 = clinicService.findById(id).get();
+        clinic1.setClinicName(clinic.getClinicName());
+        clinic1.setAddress(clinic.getAddress());
+        clinic1.setClinicInfo(clinic.getClinicInfo());
+        clinicService.save(clinic1);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteClinic(@PathVariable Long id){
+        clinicService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
