@@ -34,7 +34,7 @@ public class Booking {
     private Schedule schedule;
 
     private BigDecimal fee;
-    @ManyToOne
+    @OneToOne
     private Result result;
     @ManyToOne
     private Status status;
