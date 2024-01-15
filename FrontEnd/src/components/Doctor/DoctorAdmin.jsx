@@ -38,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-export default function CustomizedTables() {
+export default function DoctorAdmin() {
 
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);

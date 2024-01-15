@@ -8,15 +8,24 @@ import {toast} from "react-toastify";
 import { useForm } from 'react-hook-form';
 
 const schema = yup.object({
-    email: yup.string()
-        .email("Email phải đúng định dạng")
-        .required("email không được để trống"),
-        code: yup.string().required("Code không được để trống"),
+    password: yup.string()
+        .required("không được để trống"),
+        newPassword: yup.string().required("không được để trống"),
 })
 export default function ChangePassword() {
-    const {register, handleSubmit, formState: {errors},reset, setValue, getValues } = useForm({
+    const {register,watch, handleSubmit, formState: {errors},reset, setValue, getValues } = useForm({
         resolver: yupResolver(schema)
     });
+
+    const password = watch('password');
+    const newPassword = watch('newPassword');
+
+    const isPasswordMatch = password === newPassword;
+
+    const handleNewPasswordChange = (e) => {
+        const fieldName = e.target.name;
+        setValue(fieldName, e.target.value, { shouldValidate: true });
+      };
 
     const onSubmit = async (data) => {
         // try {
@@ -56,29 +65,33 @@ export default function ChangePassword() {
             </Link> */}
         </Box>
         <form onSubmit={handleSubmit(onSubmit)}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px'}}>
-                <TextField
-            label="Nhập mật khẩu mới" 
-            {...register('password')}
-            name="password"
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            type="password" 
-            variant="outlined"
-            />
-        </Box>
-       
-    <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
         <TextField
-            {...register('newPassword')}
-            name="code"
-            label="Xác nhận mật khẩu" 
-            type="password"   
-            variant="outlined"
-            error={!!errors.newPassword}
-            helperText={errors.newPassword?.message}
+         label="Nhập mật khẩu mới" 
+         {...register('password')}
+         name="password"
+         error={!!errors.password}
+         helperText={errors.password?.message}
+         type="password" 
+         variant="outlined"
+         />
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', marginTop: '25px' }}>
+       <TextField
+        {...register('newPassword')}
+        name="newPassword"
+        label="Xác nhận mật khẩu" 
+        type="password"   
+        variant="outlined"
+        error={!!errors.newPassword || (!!newPassword && !isPasswordMatch)}
+              helperText={
+                errors.newPassword?.message ||
+                (!!newPassword && !isPasswordMatch && 'Mật khẩu không khớp')
+              }
+        onChange={handleNewPasswordChange}
         />
-    </Box>
+       </Box>
         <Box sx={{ marginTop: '16px' }}>
          <Button type="submit" variant="contained" fullWidth>
         Gửi xác nhận
