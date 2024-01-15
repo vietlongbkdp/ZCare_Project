@@ -2,12 +2,14 @@ import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./pages/Home/HomePage";
 import AuthLogin from "./components/Authentication/AuthLogin";
 import { Route, Routes } from "react-router-dom";
-import AuthRegister from './components/Authentication/AuthRegister';
-import ForgotPassword from './components/Authentication/ForgotPassword';
+import AuthRegister from "./components/Authentication/AuthRegister";
+import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Doctor from "./components/Doctor/DoctorAdmin"
-import Pagerbase from "./components/Dashboard/Paperbase"
-import DoctorInfor from "./components/Cooperate/AdminCooperate"
-import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin"
+import Pagerbase from "./components/Dashboard/Paperbase";
+import DoctorInfor from "./components/Cooperate/AdminCooperate";
+import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
+import ChangePassword from "./components/Authentication/ChangePassword";
+
 
 export default function App() {
   return (
@@ -17,6 +19,7 @@ export default function App() {
         <Route path="/login" element={<AuthLogin />} />
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/admin" element={<Pagerbase />}>
           <Route path="doctor" element={<Doctor />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>

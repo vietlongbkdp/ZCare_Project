@@ -6,6 +6,7 @@ import com.cg.model.DTO.EmailReqDTO;
 import com.cg.model.DTO.ForgotPassword;
 import com.cg.model.DTO.LoginDTO;
 import com.cg.model.User;
+import com.cg.repository.IUserRepository;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.User.UserService;
 import com.cg.until.PasswordEncryptionUtil;
@@ -22,6 +23,8 @@ import java.util.List;
 public class CustomerAPI {
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private IUserRepository iUserRepository;
 @Autowired
 private UserService userService;
     @GetMapping
@@ -58,8 +61,19 @@ private UserService userService;
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email không tồn tại");
         }
     }
-    @PostMapping("forgot")
+    @PostMapping("forgot-password")
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword forgotPassword){
+        boolean isConfirmed= customerService.forgotPassword(forgotPassword);
+        if (isConfirmed) {
+            User user = iUserRepository.findByFullName(forgotPassword.getEmail());
+            Long userId=user.getId();
+            return ResponseEntity.ok(userId);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã xác nhân không đúng");
+        }
+    }
+    @PostMapping("change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ForgotPassword forgotPassword){
         boolean isConfirmed= customerService.forgotPassword(forgotPassword);
         if (isConfirmed) {
             return ResponseEntity.ok("Gửi xác nhận thành công");
@@ -67,5 +81,7 @@ private UserService userService;
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã xác nhân không đúng");
         }
     }
+
+
 
 }

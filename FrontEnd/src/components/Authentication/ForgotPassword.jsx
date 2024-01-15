@@ -5,8 +5,8 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
-import { getValue } from '@testing-library/user-event/dist/utils';
+import { Link,useHistory } from 'react-router-dom';
+
 const schema = yup.object({
     email: yup.string()
         .email("Email phải đúng định dạng")
@@ -22,8 +22,9 @@ export default function ForgotPassword() {
     });
     const onSubmit = async (data) => {
       try {
-        const response = await axios.post('http://localhost:8080/api/customer/forgot', data);
+        const response = await axios.post('http://localhost:8080/api/customer/forgot-password', data);
         console.log(response.data);
+        const UserId=response.data;
         toast.success("Gửi xác nhận thành công");
       } catch (error) {
         toast.error("Mã xác nhận không đúng.");
