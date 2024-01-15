@@ -4,7 +4,7 @@ import React from 'react'
 export default function IntroduceContent() {
     return (
         <>
-            <Container sx={{ minHeight:'500px', mt: 5 }}>
+            <Container sx={{ minHeight:'700px', mt: 5 }}>
                 <Typography variant='h4' sx={{color: 'red', mb:5, textAlign:'center'}}>Chào mừng bạn đến với hệ thống đặt lịch khám bệnh trực tuyến Z-CARE</Typography>
                 <Typography>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptates accusantium vel, magnam quasi magni error,
                     eaque repudiandae vitae aspernatur, saepe dolore facere rem fuga suscipit pariatur corporis similique molestiae totam

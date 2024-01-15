@@ -25,19 +25,23 @@ const categories = [
         id: 'ADMIN',
         children: [
             {
-                id: 'Authentication',
+                id: 'Bảng điều khiển ',
                 icon: <PeopleIcon />,
                 active: true,
             },
-            { id: 'Database', icon: <DnsRoundedIcon /> },
-            { id: 'ok', icon: <PermMediaOutlinedIcon /> },
-            { id: 'Clinic', icon: <PublicIcon /> , url: "clinic"},
-            { id: 'Cooperate', icon: <SettingsEthernetIcon /> , url: "doctorInfor"},
+            { id: 'Phòng khám', icon: <PublicIcon /> , url: "clinic"},
             {
-                id: 'Doctor',
+                id: 'Bác sĩ',
                 icon: <SettingsInputComponentIcon />,
                 url: "doctor"
             },
+            { id: 'Chuyên khoa', icon: <DnsRoundedIcon /> },
+            { id: 'Bệnh nhân', icon: <PermMediaOutlinedIcon /> },
+            { id: 'Lịch làm việc', icon: <PermMediaOutlinedIcon /> },
+            { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
+
+            { id: 'Liên hệ', icon: <SettingsEthernetIcon /> , url: "doctorInfor"},
+
         ],
     },
     {

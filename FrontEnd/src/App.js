@@ -4,7 +4,7 @@ import AuthLogin from "./components/Authentication/AuthLogin";
 import { Route, Routes } from "react-router-dom";
 import AuthRegister from './components/Authentication/AuthRegister';
 import ForgotPassword from './components/Authentication/ForgotPassword';
-import User from "./components/Doctor/TableDoctor"
+import Doctor from "./components/Doctor/DoctorAdmin"
 import Pagerbase from "./components/Dashboard/Paperbase"
 import DoctorInfor from "./components/Cooperate/AdminCooperate"
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin"
@@ -18,7 +18,7 @@ export default function App() {
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/admin" element={<Pagerbase />}>
-          <Route path="user" element={<User />}></Route>
+          <Route path="doctor" element={<Doctor />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
           <Route path="clinic" element={<ClinicAdmin />}></Route>
         </Route>
