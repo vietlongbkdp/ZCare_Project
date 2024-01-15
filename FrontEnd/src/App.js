@@ -8,6 +8,7 @@ import User from "./components/Doctor/TableDoctor"
 import Pagerbase from "./components/Dashboard/Paperbase"
 import DoctorInfor from "./components/Cooperate/AdminCooperate"
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin"
+import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
 
 export default function App() {
   return (
@@ -28,6 +29,8 @@ export default function App() {
         <Route path="/user" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
+
+        <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
     </>
   );
