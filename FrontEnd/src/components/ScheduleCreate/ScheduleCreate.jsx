@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import {Typography} from "@mui/material";
+import {Chip, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
 import {styled} from "@mui/material/styles";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
@@ -70,7 +70,6 @@ export default function ScheduleCreate() {
             listDayTrans.push({
                 dateCurrent: dayjs(item),
                 dateShow: dateShow,
-                listBooking: [],
                 listHourSet: []
             })
         })
@@ -97,16 +96,74 @@ export default function ScheduleCreate() {
             indexAdd: -1
         })
     }
-    const handleAddTimeSet = (event) =>{
-        let strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`
+    const getDetailByDuringTimes = (starTimes, endTimes, betweenTimes) =>{
+        let countDetails = (endTimes - starTimes)/(betweenTimes * 1000 *60)
+        return Math.floor(countDetails)
+    }
+    // const handleAddTimeSet = (event) =>{
+    //     let strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`
+    //     const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) -1
+    //     const listTimeDetail =[]
+    //     const startTimeGet = timeValueStart
+    //     const endTimeGet = timeValueEnd
+    //     setDateCreate({
+    //         ...dateCreate,
+    //         listBookingDetail: [
+    //             ...dateCreate.listBookingDetail,
+    //             dateCreate.listBookingDetail[indexSet] : {
+    //     ...dateCreate.listBookingDetail[indexSet],
+    //             dateCreate.listBookingDetail[indexSet].listHourSet: {
+    //                 hourSetShow: dateCreate.listBookingDetail[indexSet].listHourSet.push(strTimes),
+    //                 startTimeGet
+    //                 endTimeGet
+    //                 listDetail : listTimeDetail
+    //         }
+    //     }
+    // ]
+    // })
+    //     setIsAddTimes({
+    //         statusAdd: false,
+    //         indexAdd: -1
+    //     })
+    // };
+    const handleAddTimeSet = (event) => {
+        const strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`;
+        const startTimeGet = timeValueStart
+        const endTimeGet = timeValueEnd
+        const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText)-1;
+
+        const updatedListBookingDetail = [...dateCreate.listBookingDetail];
+        const updatedListHourSet = [...updatedListBookingDetail[indexSet].listHourSet, strTimes];
+
+        updatedListBookingDetail[indexSet] = {
+            ...updatedListBookingDetail[indexSet],
+            listHourSet: updatedListHourSet
+        };
 
         setDateCreate({
             ...dateCreate,
-            listBookingDetail: {
-                ...dateCreate.listBookingDetail,
-                listHourSet:  dateCreate.listBookingDetail.listHourSet.push(strTimes)
-            }
-        })
+            listBookingDetail: updatedListBookingDetail
+        });
+        console.log(getDetailByDuringTimes(startTimeGet, endTimeGet, dateCreate.times))
+    };
+    const handleDeleteTimes = (event) =>{
+        const timeDelete = event.target.closest(".chipTimes").firstChild.innerText;
+        const indexSetDelete = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
+        const updatedListBookingDetail = [...dateCreate.listBookingDetail];
+        const updatedListHourSet = updatedListBookingDetail[indexSetDelete].listHourSet.filter(item => item !== timeDelete);
+
+        updatedListBookingDetail[indexSetDelete] = {
+            ...updatedListBookingDetail[indexSetDelete],
+            listHourSet: updatedListHourSet
+        };
+
+        setDateCreate({
+            ...dateCreate,
+            listBookingDetail: updatedListBookingDetail
+        });
+    }
+    const handleClickTimes =(event) =>{
+        console.log(event.target.closest(".chipTimes").firstChild.innerText)
     }
     console.log(dateCreate)
     return (
@@ -178,7 +235,14 @@ export default function ScheduleCreate() {
                                     <TableCell align="center">{value.dateShow}</TableCell>
                                     <TableCell align="right">
                                         <Stack>
-                                            <Stack direction={"row"}>
+                                            <Stack direction={"row"} spacing={1}>
+                                                {dateCreate.listBookingDetail[index].listHourSet.map((valueTiny, indexTiny) =>(
+                                                    <Chip className={"chipTimes"} key={indexTiny} label={valueTiny} variant="outlined" onDelete={(event) =>{
+                                                        handleDeleteTimes(event)
+                                                    }} onClick={(event) =>{
+                                                        handleClickTimes(event)
+                                                    }}/>
+                                                ))}
                                                 <Button
                                                     sx={{borderRadius: 10}}
                                                     onClick={(event) => {
@@ -196,8 +260,6 @@ export default function ScheduleCreate() {
                                                         label="Giờ bắt đầu"
                                                         sx={{width: "50px"}}
                                                         value={timeValueStart}
-                                                        // onChange={(event) => console.log(event)
-                                                        // }
                                                         onAccept={(newValue) => setTimeValueStart(newValue)}
                                                         className={"startTimes"}
                                                     />
@@ -207,7 +269,6 @@ export default function ScheduleCreate() {
                                                         sx={{width: "50px"}}
                                                         className={"endTimes"}
                                                         onAccept={(newValue) => setTimeValueEnd(newValue)}
-                                                        // onChange={(newValue) => setValue(newValue)}
                                                     />
                                                 </DemoContainer>
                                             </LocalizationProvider>
