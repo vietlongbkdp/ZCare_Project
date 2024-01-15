@@ -142,7 +142,10 @@ export default function ScheduleCreate(){
                                         </TableCell>
                                         <TableCell align="center">{value.dateShow}</TableCell>
                                         <TableCell align="right">
-                                            <Button sx={{borderRadius: 10}}><AddIcon sx={{ fontSize: 20 }}/></Button>
+                                            <Button
+                                                sx={{borderRadius: 10}}
+                                                // onClick={handleClickAddTimes}
+                                            ><AddIcon sx={{ fontSize: 20 }}/></Button>
                                         </TableCell>
                                     </TableRow>
                                     ))}
