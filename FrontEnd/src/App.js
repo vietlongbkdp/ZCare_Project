@@ -10,7 +10,6 @@ import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin";
 
-
 export default function App() {
   return (
     <>

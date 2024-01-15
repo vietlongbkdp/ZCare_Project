@@ -61,8 +61,6 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
         setShowPage(true)
     }
 
-
-
     useEffect(() => {
         if(clinicId){
             const getClinic = async () => {
@@ -113,7 +111,7 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
                                 <Button component="label"  sx={{borderRadius: 50}}>
                                     <img id={"blah"}  style={{borderRadius: 100}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
                                          alt={"avatar"}/>
-                                    <VisuallyHiddenInput  {...register("avatar")} type="file" onChange={(event) => {
+                                    <VisuallyHiddenInput  {...register("avatarId")} type="file" onChange={(event) => {
                                         document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])}}/>
                                 </Button>
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
