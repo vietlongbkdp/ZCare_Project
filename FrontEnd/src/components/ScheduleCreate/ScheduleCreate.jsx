@@ -25,7 +25,6 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {TimePicker} from '@mui/x-date-pickers/TimePicker';
 import {LocalizationProvider} from "@mui/x-date-pickers";
-
 export default function ScheduleCreate() {
     const [dateCreate, setDateCreate] = useState([])
     const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6","Thứ 7", "Chủ Nhật"])
@@ -36,25 +35,80 @@ export default function ScheduleCreate() {
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
+    const [isAddTimes, setIsAddTimes] = useState({
+        statusAdd: false,
+        indexAdd: -1
+    })
+    const [timeValueStart, setTimeValueStart] = useState(null);
+    const [timeValueEnd, setTimeValueEnd] = useState(null);
     const handleDeleteWeekday =(event) =>{
         const strWeekdayDelete = event.target.closest(".chipWeekday").firstChild.innerText
         let listWeekdayUpdate = weekday.filter(item => item !== strWeekdayDelete)
         setWeekday(listWeekdayUpdate)
+    }
+    function handleDeleteTimes(event) {
+        const timeDelete = event.target.closest(".chipTimes").firstChild.innerText;
+        const indexSetDelete = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
+        const updatedDateCreate = [...dateCreate];
+        updatedDateCreate[indexSetDelete].listScheduleTimes = updatedDateCreate[indexSetDelete].listScheduleTimes.filter(item => item.scheduleTimeShow !== timeDelete);
+        setDateCreate(updatedDateCreate);
+    }
+    function handleClickTimes(event) {
+
     }
     const changeToDate = (milliseconds) => {
         return (milliseconds / 86400000)
     }
     const handleSubmit = (event) =>{
         event.preventDefault()
-        const listWeek = weekday
-        const listSchedule =[]
-        listWeek.forEach((value)=>{
-            listSchedule.push({
-                dayInWeek: value,
-                listDetailTimes: []
+            const listWeek = weekday
+            const listSchedule =[]
+            setIsAddTimes({
+                statusAdd: false,
+                indexAdd: -1
             })
+            listWeek.forEach((value)=>{
+                listSchedule.push({
+                    dayInWeek: value,
+                    listScheduleTimes: [],
+                    listDetailTimes: []
+                })
+            })
+            setDateCreate(listSchedule)
+        }
+    const handleClickAddTimes = (event) => {
+        setIsAddTimes({
+            statusAdd: true,
+            indexAdd: parseInt(event.target.closest(".recordDate").firstChild.innerText)-1
         })
-        setDateCreate(listSchedule)
+    }
+    const handleCancelTimeSet =() =>{
+        setIsAddTimes({
+            statusAdd: false,
+            indexAdd: -1
+        })
+        setTimeValueStart(null)
+        setTimeValueEnd(null)
+    }
+    const handleCreateSche = event => {
+        const strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`;
+        const startTimeGet = timeValueStart;
+        const endTimeGet = timeValueEnd;
+        const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
+        const newSchedule = {
+            scheduleTimeShow: strTimes,
+            scheduleStartTime: startTimeGet,
+            scheduleEndTime: endTimeGet
+        };
+        const updatedDateCreate = [...dateCreate];
+        updatedDateCreate[indexSet].listScheduleTimes.push(newSchedule);
+        setDateCreate(updatedDateCreate);
+        setTimeValueEnd(null)
+        setTimeValueStart(null)
+        setIsAddTimes({
+            statusAdd: false,
+            indexAdd: -1
+        })
     }
     const getDetailByDuringTimes = (starTimes, endTimes, betweenTimes) =>{
         let countDetails = Math.floor((endTimes - starTimes)/(betweenTimes * 1000 *60))
@@ -69,6 +123,8 @@ export default function ScheduleCreate() {
         return listTimeDetails
     }
     console.log(dateCreate)
+
+
 
     return (
         <Container maxWidth="md">
@@ -87,7 +143,7 @@ export default function ScheduleCreate() {
                         <FormControl>
                             <RadioGroup
                                 aria-labelledby="radioSelectTime"
-                                defaultValue={dateCreate.times}
+                                defaultValue={"15"}
                                 name="selectTime"
                                 row
                             >
@@ -127,39 +183,61 @@ export default function ScheduleCreate() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            { weekday.map((value, index) =>(
+                            { dateCreate.map((value, index) =>(
                                 <TableRow
                                     key={index}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                     className={"recordDate"}>
-                                    <TableCell align="center" component="th" scope="row">{index+1}</TableCell>
-                                    <TableCell align="center">{value}</TableCell>
+                                    <TableCell align="center" component="th" scope="row">{index + 1}
+                                    </TableCell>
+                                    <TableCell align="center">{value.dayInWeek}</TableCell>
                                     <TableCell align="right">
                                         <Stack>
-                                            <Stack direction={"row"}  className={"getTimes"}>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DemoContainer components={['TimePicker', 'TimePicker']} >
-                                                        <TimePicker
-                                                            label="Giờ bắt đầu"
-                                                            sx={{width: "50px"}}
-                                                            className={"startTimes"}
-                                                        />
-                                                        <TimePicker
-                                                            label="Giờ kết thúc"
-                                                            sx={{width: "50px"}}
-                                                            className={"endTimes"}
-
-                                                        />
-                                                    </DemoContainer>
-                                                </LocalizationProvider>
+                                            <Stack direction={"row"} spacing={1}>
+                                                {dateCreate[index]?.listScheduleTimes?.map((valueTiny, indexTiny) =>(
+                                                    <Chip className={"chipTimes"} key={indexTiny} label={valueTiny.scheduleTimeShow} variant="outlined" onDelete={(event) =>{
+                                                        handleDeleteTimes(event)
+                                                    }}/>
+                                                ))}
                                                 <Button
-                                                    sx={{borderRadius: 5, height: 50, margin: "10px"}}
-                                                ><AddCircleIcon
-                                                    sx={{fontSize: 30}} color={"success"}/></Button>
-                                                <Button
-                                                    sx={{borderRadius: 5, height: 50, margin: "10px"}}
-                                                ><CancelIcon sx={{fontSize: 30}} color={"error"}/></Button>
+                                                    sx={{borderRadius: 10}}
+                                                    onClick={(event) => {
+                                                        handleClickAddTimes(event)
+                                                    }
+                                                    }
+                                                ><AddIcon sx={{fontSize: 20}}/></Button>
                                             </Stack>
+                                            {
+                                                ((isAddTimes.statusAdd && (isAddTimes.indexAdd === index)) ? (
+                                                    <Stack direction={"row"}  className={"getTimes"}>
+                                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                            <DemoContainer components={['TimePicker', 'TimePicker']} >
+                                                                <TimePicker
+                                                                    label="Giờ bắt đầu"
+                                                                    sx={{width: "50px"}}
+                                                                    value={timeValueStart}
+                                                                    onAccept={(newValue) => setTimeValueStart(newValue)}
+                                                                    className={"startTimes"}
+                                                                />
+                                                                <TimePicker
+                                                                    label="Giờ kết thúc"
+                                                                    sx={{width: "50px"}}
+                                                                    value={timeValueEnd}
+                                                                    className={"endTimes"}
+                                                                    onAccept={(newValue) => setTimeValueEnd(newValue)}
+                                                                />
+                                                            </DemoContainer>
+                                                        </LocalizationProvider>
+                                                        <Button
+                                                            sx={{borderRadius: 5, height: 50, margin: "10px"}}
+                                                        ><AddCircleIcon
+                                                            sx={{fontSize: 30}} color={"success"} onClick={(event) =>{handleCreateSche(event)}}/></Button>
+                                                        <Button
+                                                            sx={{borderRadius: 5, height: 50, margin: "10px"}}
+                                                        ><CancelIcon sx={{fontSize: 30}} color={"error"} onClick={handleCancelTimeSet}/></Button>
+                                                    </Stack>
+                                                ) : "")
+                                            }
                                         </Stack>
                                     </TableCell>
                                 </TableRow>
