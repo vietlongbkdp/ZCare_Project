@@ -97,8 +97,16 @@ export default function ScheduleCreate() {
         })
     }
     const getDetailByDuringTimes = (starTimes, endTimes, betweenTimes) =>{
-        let countDetails = (endTimes - starTimes)/(betweenTimes * 1000 *60)
-        return Math.floor(countDetails)
+        let countDetails = Math.floor((endTimes - starTimes)/(betweenTimes * 1000 *60))
+        let listTimeDetails = []
+        for (let i=0; i<countDetails; i++){
+            let timeStartDetail = starTimes.add((betweenTimes * (i)), 'minute')
+            let timeEndDetail = starTimes.add((betweenTimes * (i+1)), 'minute')
+            listTimeDetails.push({
+                timeDetailShow: `${dayjs(timeStartDetail).format('HH:mm')} - ${dayjs(timeEndDetail).format('HH:mm')}`
+            })
+        }
+        return listTimeDetails
     }
     // const handleAddTimeSet = (event) =>{
     //     let strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`
