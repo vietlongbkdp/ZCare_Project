@@ -9,6 +9,7 @@ import Pagerbase from "./components/Dashboard/Paperbase";
 import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
+import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
 
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
       </Routes>
+      {/*<PageCustomerBooking/>*/}
     </>
   );
 }
