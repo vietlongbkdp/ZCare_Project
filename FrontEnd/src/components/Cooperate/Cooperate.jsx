@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
@@ -26,7 +27,6 @@ function Cooperate() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
   const onSubmit = async (data) => {
     try {
       await axios.post("http://localhost:8080/api/cooperate", data);
