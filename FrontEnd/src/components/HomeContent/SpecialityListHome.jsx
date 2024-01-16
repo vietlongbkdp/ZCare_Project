@@ -1,11 +1,13 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
 
 export default function SpecialityListHome() {
+  const [specialityList, setSpecialityList] = useState([]);
 
   const settings = {
     dots: true,
@@ -16,28 +18,39 @@ export default function SpecialityListHome() {
     margin: 2
   };
 
-  const specialityList = [
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101627-co-xuong-khop.png',
-      title: 'Cơ xương khớp'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101739-than-kinh.png',
-      title: 'Thần kinh'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w1920/2023/12/26/101713-tieu-hoa.png',
-      title: 'Tiêu hóa'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tim-mach.png',
-      title: 'Tim mạch'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tai-mui-hong.png',
-      title: 'Tai mũi họng'
-    }
-  ]
+  useEffect(() => {
+    // Gọi API để lấy dữ liệu từ cơ sở dữ liệu
+    axios.get('http://localhost:8080/api/speciality')
+        .then(response => {
+          setSpecialityList(response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+  }, []);
+
+  // const specialityList = [
+  //   {
+  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101627-co-xuong-khop.png',
+  //     title: 'Cơ xương khớp'
+  //   },
+  //   {
+  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101739-than-kinh.png',
+  //     title: 'Thần kinh'
+  //   },
+  //   {
+  //     image: 'https://cdn.bookingcare.vn/fo/w1920/2023/12/26/101713-tieu-hoa.png',
+  //     title: 'Tiêu hóa'
+  //   },
+  //   {
+  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tim-mach.png',
+  //     title: 'Tim mạch'
+  //   },
+  //   {
+  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tai-mui-hong.png',
+  //     title: 'Tai mũi họng'
+  //   }
+  // ]
   return (
     <Box sx={{
       backgroundImage: `url('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705044346/lsfpeouonm9fyemv208u.jpg')`,
@@ -63,12 +76,12 @@ export default function SpecialityListHome() {
                   <CardMedia
                     component="img"
                     height="200"
-                    image={item.image}
+                    image={item.specialtyImage}
                     alt="Error image"
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" align='center' >
-                      {item.title}
+                      {item.specialtyName}
                     </Typography>
                   </CardContent>
                 </CardActionArea>

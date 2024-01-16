@@ -1,10 +1,7 @@
 package com.cg.controller.api;
 
 import com.cg.model.Customer;
-import com.cg.model.DTO.CustomerReqDTO;
-import com.cg.model.DTO.EmailReqDTO;
-import com.cg.model.DTO.ForgotPassword;
-import com.cg.model.DTO.LoginDTO;
+import com.cg.model.DTO.*;
 import com.cg.model.User;
 import com.cg.repository.IUserRepository;
 import com.cg.service.Customer.CustomerService;
@@ -73,13 +70,11 @@ private UserService userService;
         }
     }
     @PostMapping("change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ForgotPassword forgotPassword){
-        boolean isConfirmed= customerService.forgotPassword(forgotPassword);
-        if (isConfirmed) {
-            return ResponseEntity.ok("Gửi xác nhận thành công");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã xác nhân không đúng");
-        }
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassword changePassword){
+        User user = iUserRepository.findById(changePassword.getUserId()).get();
+        user.setPassword(PasswordEncryptionUtil.encryptPassword(changePassword.getPassword()));
+        iUserRepository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

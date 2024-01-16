@@ -9,10 +9,7 @@ import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.ERole;
 import com.cg.repository.ICustomerRepository;
 import com.cg.repository.IUserRepository;
-import com.cg.until.EmailUntil;
-import com.cg.until.PassDate;
-import com.cg.until.PasswordEncryptionUtil;
-import com.cg.until.SendEmail;
+import com.cg.until.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +77,10 @@ public class CustomerService implements ICustomerService {
         if (user != null) {
             String email=emailReqDTO.getEmail();
             String title="Yêu cầu đặt lại mật khẩu";
-            String body= SendEmail.EmailResetPassword(user.getFullName());
+            String code = RandomCode.generateRandomCode(6);
+            user.setCode(code);
+            iUserRepository.save(user);
+            String body= SendEmail.EmailResetPassword(user.getFullName(),code);
             emailUntil.sendEmail(email,title,body);
             return true;
         } else {
@@ -91,6 +91,6 @@ public class CustomerService implements ICustomerService {
     @Override
     public boolean forgotPassword(ForgotPassword forgotPassword) {
         User user = iUserRepository.findByFullName(forgotPassword.getEmail());
-        return user != null && (forgotPassword.getCode()).equals("58170");
+        return user != null && (forgotPassword.getCode()).equals(user.getCode());
     }
 }

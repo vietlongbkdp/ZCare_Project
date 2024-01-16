@@ -10,6 +10,7 @@ import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 
+
 export default function App() {
   return (
     <>
@@ -18,7 +19,7 @@ export default function App() {
         <Route path="/login" element={<AuthLogin />} />
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="/change-password/:userId" element={<ChangePassword />} />
         <Route path="/admin" element={<Pagerbase />}>
           <Route path="user" element={<User />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
