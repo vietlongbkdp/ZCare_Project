@@ -39,7 +39,7 @@ public class AvatarService {
         return file;
     }
 
-    public void deleteImage(String id) {
-        avatarRepository.deleteById(id);
+    public void deleteImage(String fileUrl) {
+        avatarRepository.deleteByFileUrl(fileUrl);
     }
 }

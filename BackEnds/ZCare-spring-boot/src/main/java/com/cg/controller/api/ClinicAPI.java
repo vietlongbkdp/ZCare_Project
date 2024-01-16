@@ -1,6 +1,7 @@
 package com.cg.controller.api;
 
 import com.cg.model.Clinic;
+import com.cg.service.avatar.AvatarService;
 import com.cg.service.clinic.IClinicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import java.util.List;
 public class ClinicAPI {
     @Autowired
     public IClinicService clinicService;
+    @Autowired
+    public AvatarService avatarService;
     @GetMapping
     public ResponseEntity<?> getAllClinic() {
         List<Clinic> clinicList = clinicService.findAll();
@@ -39,17 +42,24 @@ public class ClinicAPI {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> editClinic(@PathVariable Long id, @RequestBody Clinic clinic){
-        Clinic clinic1 = clinicService.findById(id).get();
-        clinic1.setClinicName(clinic.getClinicName());
-        clinic1.setAddress(clinic.getAddress());
-        clinic1.setClinicInfo(clinic.getClinicInfo());
-        clinicService.save(clinic1);
+        Clinic editClinic = clinicService.findById(id).get();
+        String editClinicLogo = editClinic.getClinicLogo();
+        editClinic.setClinicName(clinic.getClinicName());
+        editClinic.setAddress(clinic.getAddress());
+        editClinic.setClinicInfo(clinic.getClinicInfo());
+        editClinic.setClinicLogo(clinic.getClinicLogo());
+        clinicService.save(editClinic);
+        if (!editClinicLogo.equals(clinic.getClinicLogo())) {
+            avatarService.deleteImage(editClinic.getClinicLogo());
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteClinic(@PathVariable Long id){
+        Clinic deleteClinic = clinicService.findById(id).get();
         clinicService.deleteById(id);
+        avatarService.deleteImage(deleteClinic.getClinicLogo());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

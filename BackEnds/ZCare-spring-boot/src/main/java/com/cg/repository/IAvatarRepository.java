@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IAvatarRepository extends JpaRepository<Avatar, String> {
     void deleteById(String id);
-
+    void deleteByFileUrl(String fileUrl);
 }
