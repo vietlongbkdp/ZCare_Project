@@ -89,26 +89,23 @@ export default function CustomizedTables() {
 
     const handDelete = async (id) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "Bạn có chắc chắn không?",
+            text: "Bạn sẽ không thể hoàn tác",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            cancelButtonText: 'Hủy',
+            confirmButtonText: "Đồng ý, xóa"
         }).then(async (data) => {
             if (data.isConfirmed) {
                 try {
                     await axios.delete(`http://localhost:8080/api/clinic/${id}`);
-                    toast.success("thành công")
+                    toast.success("Xóa phòng khám thành công")
                     setIsupdate(pre => !pre);
                 } catch (error) {
-                    toast.error("thất bại")
-                } Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                });
+                    toast.error("Xóa phòng khám thất bại")
+                }
             }
         })
 
@@ -116,7 +113,6 @@ export default function CustomizedTables() {
 
     return (
         <>
-
             <Box sx={{ maxWidth: 1000 }}>
                 {showCreate && <Button
                     type="submit"

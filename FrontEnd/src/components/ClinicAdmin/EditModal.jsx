@@ -52,8 +52,9 @@ const Item = styled(Paper)(({theme}) => ({
     color: theme.palette.text.secondary,
 }));
 export default function DoctorPageCreate({setShow, setISupdate, clinicId, setShowContent, setShowCreate, setShowPage}) {
-
-
+    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm({resolver: yupResolver(schema)});
+    let updateAvatar;
+    let presentAvatar;
     const resetModal = () =>{
         setShow(false)
         setShowContent(true)
@@ -64,12 +65,15 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
     useEffect(() => {
         if(clinicId){
             const getClinic = async () => {
-
                 const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`);
                 const result = await res.data;
                 setValue("clinicName", result.clinicName)
                 setValue("address", result.address)
                 setValue("clinicInfor", result.clinicInfor)
+                presentAvatar = result.clinicLogo;
+                updateAvatar = result.clinicLogo;
+                console.log(presentAvatar);
+                document.getElementById('blah').src = presentAvatar;
             }
             getClinic();
         }
@@ -77,10 +81,15 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
 
 
     const updateClinic = async (data) => {
+        if (presentAvatar === updateAvatar) {
+            data.clinicLogo = presentAvatar;
+            console.log("presentAvatar", presentAvatar);
+        } else {
+            data.clinicLogo = updateAvatar;
+        }
         try {
-
             await axios.patch(`http://localhost:8080/api/clinic/${clinicId}`, data);
-            toast.success("thành công")
+            toast.success("Sửa phòng khám thành công!")
             reset();
             setShowContent(true)
             setShowCreate(true)
@@ -88,15 +97,19 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
             setShowPage(true)
             setISupdate(prev => !prev);
         } catch (error) {
-            toast.error("thất bại")
+            toast.error("Sửa phòng khám thất bại!")
         }
     };
 
-    const { register, handleSubmit, watch, formState: { errors }, reset, setValue } = useForm(
-        {
-            resolver: yupResolver(schema)
-        }
-    );
+    const handleUpload = async (e) => {
+        let imagesImport = Array.from(e.target.files);
+
+        const formData = new FormData();
+        formData.append('image', imagesImport[0])
+        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        updateAvatar = await res.data.fileUrl
+        document.getElementById('blah').src = updateAvatar;
+    }
 
     return (
         <>
@@ -111,8 +124,8 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
                                 <Button component="label"  sx={{borderRadius: 50}}>
                                     <img id={"blah"}  style={{borderRadius: 100}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
                                          alt={"avatar"}/>
-                                    <VisuallyHiddenInput  {...register("avatarId")} type="file" onChange={(event) => {
-                                        document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])}}/>
+                                    <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
+                                        handleUpload(event) }} />
                                 </Button>
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
                                     Upload your Avatar
@@ -146,6 +159,7 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
                                                 id="address"
                                                 type={"text"}
                                                 label="Address"
+                                                autoFocus
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
                                                 {...register("address")}
@@ -157,6 +171,7 @@ export default function DoctorPageCreate({setShow, setISupdate, clinicId, setSho
                                                 id="information"
                                                 label="Information"
                                                 type={"text"}
+                                                autoFocus
                                                 autoComplete="information"
                                                 error={Boolean(errors.clinicInfor)}
                                                 helperText={errors.clinicInfor?.message || ''}

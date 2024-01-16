@@ -14,6 +14,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import ClinicEditor from './../CkEditor/ClinicEditor';
 
 const schema = yup.object({
     clinicName: yup.string()
@@ -70,7 +71,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
             data.clinicLogo = await res.data.fileUrl
 
             await axios.post('http://localhost:8080/api/clinic', data);
-            toast.success("thành công")
+            toast.success("Tạo phòng khám thành công!")
             reset();
             setShowContent(true)
             setShowCreate(true)
@@ -79,25 +80,15 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
             setISupdate(pre => !pre);
 
         } catch (error) {
-            toast.error("thất bại")
+            toast.error("Tạo phòng khám thất bại!")
         }
-    }
-
-    const handleUpload = async (e) => {
-        let imagesImport = Array.from(e.target.files);
-
-        const formData = new FormData();
-        formData.append('image', imagesImport[0])
-        const res = await axios.post('http://localhost:8080/api/avatar', formData)
-        const result = await res.data.fileUrl
-        document.getElementById('blah').src = result;
     }
 
     return (
         <>
             <Container>
                 <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
-                    Create a new clinic
+                    TẠO PHÒNG KHÁM
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(createClinic)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
@@ -109,17 +100,17 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         if (event.target.files && event.target.files[0]) {
                                             document.getElementById("blah").src = window.URL.createObjectURL(
-                                              event.target.files[0]
+                                                event.target.files[0]
                                             );
-                                          }
+                                        }
                                     }} />
                                 </Button>
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
-                                    Upload your Avatar
+                                    Tải ảnh phòng khám tại đây
                                 </Typography>
-                                <Typography fontSize={12} fontStyle={"italic"} mb={5}>
+                                {/* <Typography fontSize={12} fontStyle={"italic"} mb={5}>
                                     Allowed *.jpeg, *.jpg, *.png, *.gif max size of 3MB
-                                </Typography>
+                                </Typography> */}
                             </Item>
                         </Grid>
                         <Grid item xs={8}>
@@ -131,7 +122,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                                 autoComplete="clinicName"
                                                 fullWidth
                                                 id="clinicName"
-                                                label="Clinic Name"
+                                                label="Tên phòng khám"
                                                 type="text"
                                                 autoFocus
                                                 error={Boolean(errors.clinicName)}
@@ -145,23 +136,24 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                                 fullWidth
                                                 id="address"
                                                 type={"text"}
-                                                label="Address"
+                                                label="Địa chỉ"
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
                                                 {...register("address")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
+                                        <Grid item xs={12} sm={12}>
+                                            {/* <TextField
                                                 fullWidth
                                                 id="information"
-                                                label="Information"
+                                                label="Thông tin phòng khám"
                                                 type={"text"}
                                                 autoComplete="information"
                                                 error={Boolean(errors.clinicInfo)}
                                                 helperText={errors.clinicInfo?.message || ''}
                                                 {...register("clinicInfo")}
-                                            />
+                                            /> */}
+                                            <ClinicEditor />
                                         </Grid>
 
                                         <Grid item container xs={12} sm={6} justifyContent="flex-end" >
