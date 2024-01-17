@@ -16,6 +16,10 @@ public class Result {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String file;
+    private String fileName;
+    private String fileType;
+    @Lob
+    @Column(name = "file", columnDefinition = "LONGBLOB")
+    private byte[] file;
     private String note;
 }

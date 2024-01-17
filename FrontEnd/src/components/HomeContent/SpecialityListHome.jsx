@@ -19,7 +19,6 @@ export default function SpecialityListHome() {
   };
 
   useEffect(() => {
-    // Gọi API để lấy dữ liệu từ cơ sở dữ liệu
     axios.get('http://localhost:8080/api/speciality')
         .then(response => {
           setSpecialityList(response.data);
@@ -29,28 +28,6 @@ export default function SpecialityListHome() {
         });
   }, []);
 
-  // const specialityList = [
-  //   {
-  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101627-co-xuong-khop.png',
-  //     title: 'Cơ xương khớp'
-  //   },
-  //   {
-  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101739-than-kinh.png',
-  //     title: 'Thần kinh'
-  //   },
-  //   {
-  //     image: 'https://cdn.bookingcare.vn/fo/w1920/2023/12/26/101713-tieu-hoa.png',
-  //     title: 'Tiêu hóa'
-  //   },
-  //   {
-  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tim-mach.png',
-  //     title: 'Tim mạch'
-  //   },
-  //   {
-  //     image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tai-mui-hong.png',
-  //     title: 'Tai mũi họng'
-  //   }
-  // ]
   return (
     <Box sx={{
       backgroundImage: `url('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705044346/lsfpeouonm9fyemv208u.jpg')`,

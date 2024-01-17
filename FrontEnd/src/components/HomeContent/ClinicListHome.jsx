@@ -1,12 +1,13 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import axios from "axios";
 
 export default function ClinicListHome() {
-
+ const [ClinicList,setClinicList]=useState([]);
   const settings = {
     dots: true,
     infinite: true,
@@ -15,29 +16,15 @@ export default function ClinicListHome() {
     slidesToScroll: 1,
     margin: 2
   };
-
-  const specialityList = [
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2018/06/18/143606logo-phong-kham-viet-life.png',
-      title: 'Phòng khám Vietlife MRI Trần Bình Trọng'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2022/05/12/101707-logo-sg.png',
-      title: 'Phòng khám Đa khoa Saigon Healthcare'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2018/05/11/181208mediteclogo.jpeg',
-      title: 'Phòng khám Đa khoa Meditec'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2021/04/11/162940-logo-sihg.png',
-      title: 'Phòng khám đa khoa Singapore Indochina Healthcare Group (SIHG)'
-    },
-    {
-      image: 'https://cdn.bookingcare.vn/fo/w384/2021/03/16/112207-logo-golden-healthcarepng.png',
-      title: 'Phòng khám Đa khoa Quốc tế Golden Healthcare'
-    }
-  ]
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/clinic')
+            .then(response => {
+                setClinicList(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
   return (
     <Box bgcolor='#ffffff' height={'670px'}>
       <Box sx={{ display: 'flex', justifyContent: 'center', pt: '30px' }}>
@@ -52,7 +39,7 @@ export default function ClinicListHome() {
       <Box mx={10} mt={10} >
         <Slider {...settings} >
           {
-            specialityList.map((item, index) => (
+              ClinicList.map((item, index) => (
               <Card key={index} sx={{ borderRadius: '15px' }}>
                 <CardActionArea>
                   <Box sx={{ display: 'inline'}}>
@@ -60,13 +47,13 @@ export default function ClinicListHome() {
                       sx={{ padding: '20px', objectFit: 'contain' }}
                       component="img"
                       height="200"
-                      image={item.image}
+                      image={item.clinicLogo}
                       alt="Error image"
                     />
                   </Box>
                   <CardContent className='clinic-title'>
                     <Typography gutterBottom variant="h6" fontSize='1.2rem' align='center' height='70px' padding='10px'>
-                      {item.title}
+                      {item.clinicName}
                     </Typography>
                   </CardContent>
                 </CardActionArea>

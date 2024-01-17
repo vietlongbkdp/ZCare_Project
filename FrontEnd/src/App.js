@@ -9,6 +9,8 @@ import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin";
+import ResultList from "./components/Result/ResultList";
+import Result from "./components/Result/Result";
 
 
 
@@ -33,6 +35,7 @@ export default function App() {
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
       </Routes>
+    {/*<Result/>*/}
     </>
   );
 }
