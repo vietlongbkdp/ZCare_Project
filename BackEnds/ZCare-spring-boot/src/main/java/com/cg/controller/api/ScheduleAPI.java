@@ -33,16 +33,16 @@ public class ScheduleAPI {
     public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO scheduleDTO){
         Long idDoctor = scheduleDTO.getIdDoctor();
         Doctor doctors = doctorService.findById(idDoctor).get();
-        List<ScheduleWeekDTO> listSchedule = scheduleDTO.getListSchedule();
-        listSchedule.forEach((item) ->{
-            String weekday = item.getWeekdayGet();
-            List<DetailTimeDTO> detailTimeDTOList = item.getDetailTime();
-            detailTimeDTOList.forEach((items) ->{
+        List<ScheduleWeekDTO> listSchedules = scheduleDTO.getListSchedule();
+        for (ScheduleWeekDTO scheduleWeekDTO: listSchedules){
+            String weekday = scheduleWeekDTO.getWeekdayGet();
+            List<DetailTimeDTO> detailTimeDTOList = scheduleWeekDTO.getDetailTime();
+            for (DetailTimeDTO detailTimeDTO: detailTimeDTOList){
                 Schedule newSchedule = new Schedule();
-                newSchedule.setDoctor(doctors).setWeekday(EWeekday.valueOf(weekday)).setStatus(EStatus.AVAILABLE).setTimeItem(items.getTimeDetailShow());
+                newSchedule.setDoctor(doctors).setWeekday(EWeekday.getByWeekday(weekday)).setStatus(EStatus.AVAILABLE).setTimeItem(detailTimeDTO.getTimeDetailShow());
                 scheduleService.create(newSchedule);
-            });
-        });
+            }
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
