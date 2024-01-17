@@ -5,7 +5,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
 import { useForm } from 'react-hook-form';
-import { Link,useHistory } from 'react-router-dom';
+import { Link,useNavigate  } from 'react-router-dom';
 
 const schema = yup.object({
     email: yup.string()
@@ -17,6 +17,7 @@ export default function ForgotPassword() {
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [resendButtonDisabled, setResendButtonDisabled] = useState(false);
     const [countdown, setCountdown] = useState(90);
+    const navigate = useNavigate();
     const {register, handleSubmit, formState: {errors},reset, setValue, getValues } = useForm({
         resolver: yupResolver(schema)
     });
@@ -26,6 +27,7 @@ export default function ForgotPassword() {
         console.log(response.data);
         const UserId=response.data;
         toast.success("Gửi xác nhận thành công");
+        navigate(`/change-password/${UserId}`);
       } catch (error) {
         toast.error("Mã xác nhận không đúng.");
       } 

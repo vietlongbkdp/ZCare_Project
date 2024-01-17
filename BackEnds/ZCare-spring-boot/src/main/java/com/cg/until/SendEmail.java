@@ -9,10 +9,10 @@ public class SendEmail {
                 + "Trân trọng,\n"
                 + "ZCare Team";
     }
-    public static String EmailResetPassword(String username) {
+    public static String EmailResetPassword(String username, String code) {
         return "Kính gửi " + username + ",\n\n"
                 + "Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của mình.\n"
-                + "Vui lòng nhập mã 44561  để đặt lại mật khẩu:\n"
+                + "Vui lòng nhập mã " + code + " để đặt lại mật khẩu:\n"
                 + "Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.\n\n"
                 + "Trân trọng,\n"
                 + "ZCare Team";

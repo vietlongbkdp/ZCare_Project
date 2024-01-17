@@ -245,12 +245,10 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 <Select
                                                     labelId="specialityLabel"
                                                     id="speciality"
-                                                    // value={0}
                                                     label="Speciality"
                                                     error={Boolean(errors.speciality)}
                                                     helperText={errors.speciality?.message || ''}
                                                     {...register("speciality")}
-                                                // onChange={handleChange}
                                                 >
                                                     {specialityList.map((item) => (
                                                         <MenuItem value={item.id}>{item.specialtyName}</MenuItem>
