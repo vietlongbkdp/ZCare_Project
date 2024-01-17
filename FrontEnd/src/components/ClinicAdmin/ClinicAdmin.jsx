@@ -22,11 +22,13 @@ import { Pagination } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
+        backgroundColor: 'white',
+        color: theme.palette.common.black,
+        textAlign: 'left'
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
+        textAlign: 'left'
     },
 }));
 
@@ -113,14 +115,14 @@ export default function CustomizedTables() {
 
     return (
         <>
-            <Box sx={{ maxWidth: 1000 }}>
+            <Box>
                 {showCreate && <Button
                     type="submit"
                     variant="contained"
                     sx={{ mt: 3, mb: 1 }}
                     onClick={handleShowClinic}
                 >
-                    Create
+                    TẠO PHÒNG KHÁM
                 </Button>}
                 {showAddModal && <AddModal
                     setShow={setShowAddModal}
@@ -144,11 +146,14 @@ export default function CustomizedTables() {
                                 <TableHead>
                                     <TableRow>
                                         <StyledTableCell sx={{ width: 10 }}>#</StyledTableCell>
-                                        <StyledTableCell align="right">FULLNAME</StyledTableCell>
-                                        <StyledTableCell align="right">ADDRESS</StyledTableCell>
-                                        <StyledTableCell align="right">INFORMATION</StyledTableCell>
-                                        <StyledTableCell align="right">LOGO</StyledTableCell>
-                                        <StyledTableCell align="right">ACTION</StyledTableCell>
+                                        <StyledTableCell>LOGO</StyledTableCell>
+                                        <StyledTableCell>TÊN PHÒNG KHÁM</StyledTableCell>
+                                        <StyledTableCell>ĐỊA CHỈ</StyledTableCell>
+                                        <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
+                                        <StyledTableCell>HOTLINE</StyledTableCell>
+                                        <StyledTableCell>GPHD</StyledTableCell>
+                                        <StyledTableCell>THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell>CHỌN</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -157,17 +162,20 @@ export default function CustomizedTables() {
                                             <StyledTableCell sx={{ width: 10 }} component="th" scope="row">
                                                 {item.id}
                                             </StyledTableCell>
-                                            <StyledTableCell align="right">{item.clinicName}</StyledTableCell>
-                                            <StyledTableCell align="right">{item.address}</StyledTableCell>
-                                            <StyledTableCell align="right">{item.clinicInfor}</StyledTableCell>
-                                            <StyledTableCell align="right">
+                                            <StyledTableCell>
                                                 <img src={item.clinicLogo} alt="Clinic Logo" style={{ width: '50px', height: '50px' }} />
                                             </StyledTableCell>
-                                            <StyledTableCell align="right" >
-                                                <Stack direction="row" spacing={1} justifyContent="flex-end">
-                                                    <Button variant="contained" onClick={() => handEditID(item.id)} sx={{ width: 5 }}><i className="fa-solid fa-pen-to-square"></i>
+                                            <StyledTableCell>{item.clinicName}</StyledTableCell>
+                                            <StyledTableCell>{item.address}</StyledTableCell>
+                                            <StyledTableCell>{item.legalRepresentative}</StyledTableCell>
+                                            <StyledTableCell>{item.hotline}</StyledTableCell>
+                                            <StyledTableCell>{item.operatingLicence}</StyledTableCell>
+                                            <StyledTableCell>{item.clinicInfor}</StyledTableCell>
+                                            <StyledTableCell >
+                                                <Stack direction="row" spacing={1}>
+                                                    <Button variant="contained" color="warning" onClick={() => handEditID(item.id)} sx={{ width: 5 }}><i className="fa-solid fa-pen-to-square"></i>
                                                     </Button>
-                                                    <Button variant="outlined" color="error"
+                                                    <Button variant="contained" color="error"
                                                         onClick={() => handDelete(item.id)} sx={{ marginLeft: 'auto' }}><i
                                                             className="fa-solid fa-delete-left"></i>
                                                     </Button>

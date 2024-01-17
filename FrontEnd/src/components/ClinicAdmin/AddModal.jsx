@@ -4,12 +4,10 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import {
-    Paper,
-    TextField
-} from "@mui/material";
+import { Paper, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import React from "react";
+import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -18,17 +16,24 @@ import ClinicEditor from './../CkEditor/ClinicEditor';
 
 const schema = yup.object({
     clinicName: yup.string()
-        .required("tên không được để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Tên không được để trống")
+        .min(2, 'Quá ngắn')
+        .max(50, 'Quá dài'),
     address: yup.string()
-        .required("tên không đuược để trống")
+        .required("Địa chỉ không đuược để trống")
+        .min(2, 'Quá ngắn')
+        .max(50, 'Quá dài'),
+    legalRepresentative: yup.string()
+        .required("Tên người đại diện không đuược để trống")
         .min(2, 'Too short')
         .max(50, 'Too long'),
-    clinicInfo: yup.string()
-        .required("tên không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+    hotline: yup.string()
+        .required("Số điện thoại không được để trống")
+        .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
+    operatingLicence: yup.string()
+        .required("GPHĐ không đuược để trống")
+        .min(5, 'Quá ngắn')
+        .max(30, 'Quá dài'),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -60,27 +65,37 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
         setShowPage(true)
     }
 
-    const { register, handleSubmit, formState: { errors }, reset } = useForm({ resolver: yupResolver(schema) });
+    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm(
+        { resolver: yupResolver(schema) }
+    );
 
     const createClinic = async (data) => {
-        try {
-            let imagesImport = Array.from(data.clinicLogo);
-            const formData = new FormData();
-            formData.append('image', imagesImport[0])
-            const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        console.log('data', data);
+        let imagesImport = Array.from(data.clinicLogo);
+        const formData = new FormData();
+        formData.append('image', imagesImport[0])
+        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        console.log('avatar', res);
+        if (res.status == '200') {
             data.clinicLogo = await res.data.fileUrl
-
-            await axios.post('http://localhost:8080/api/clinic', data);
-            toast.success("Tạo phòng khám thành công!")
-            reset();
-            setShowContent(true)
-            setShowCreate(true)
-            setShow(false);
-            setShowPage(true)
-            setISupdate(pre => !pre);
-
-        } catch (error) {
-            toast.error("Tạo phòng khám thất bại!")
+            const response = await axios.post('http://localhost:8080/api/clinic', data);
+            console.log(response);
+            if (response.status == '200') {
+                toast.success("Tạo phòng khám thành công!")
+                reset();
+                setShowContent(true)
+                setShowCreate(true)
+                setShow(false);
+                setShowPage(true)
+                setISupdate(pre => !pre);
+            }
+            else {
+                await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
+                toast.error("Tạo phòng khám thất bại!")
+            }
+        }
+        else {
+            toast.error("Upload logo thất bại!")
         }
     }
 
@@ -92,10 +107,10 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(createClinic)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
-                        <Grid item xs={4} >
+                        <Grid item xs={3} >
                             <Item>
-                                <Button component="label" sx={{ borderRadius: 50 }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
+                                <Button component="label" sx={{ borderRadius: 50 , textAlign:'center'}}>
+                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                         alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         if (event.target.files && event.target.files[0]) {
@@ -108,12 +123,13 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>
-                                {/* <Typography fontSize={12} fontStyle={"italic"} mb={5}>
-                                    Allowed *.jpeg, *.jpg, *.png, *.gif max size of 3MB
-                                </Typography> */}
+                                <Typography fontSize={12} fontStyle={"italic"} mt={2}>
+                                Chỉ cho phép các định dạng *.jpeg, *.jpg, *.png, *.gif kích thước tối đa 1MB
+
+                                </Typography>
                             </Item>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={9}>
                             <Item >
                                 <Box sx={{ mt: 3 }}>
                                     <Grid container spacing={2} >
@@ -124,7 +140,6 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                                 id="clinicName"
                                                 label="Tên phòng khám"
                                                 type="text"
-                                                autoFocus
                                                 error={Boolean(errors.clinicName)}
                                                 helperText={errors.clinicName?.message || ''}
                                                 {...register('clinicName')}
@@ -142,31 +157,58 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                                 {...register("address")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={12}>
-                                            {/* <TextField
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                autoComplete="legalRepresentative"
                                                 fullWidth
-                                                id="information"
-                                                label="Thông tin phòng khám"
+                                                id="legalRepresentative"
                                                 type={"text"}
-                                                autoComplete="information"
-                                                error={Boolean(errors.clinicInfo)}
-                                                helperText={errors.clinicInfo?.message || ''}
-                                                {...register("clinicInfo")}
-                                            /> */}
-                                            <ClinicEditor />
+                                                label="Người đại diện"
+                                                error={Boolean(errors.legalRepresentative)}
+                                                helperText={errors.legalRepresentative?.message || ''}
+                                                {...register("legalRepresentative")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                autoComplete="hotline"
+                                                fullWidth
+                                                id="hotline"
+                                                label="Hotline"
+                                                type="tel"
+                                                error={Boolean(errors.hotline)}
+                                                helperText={errors.hotline?.message || ''}
+                                                {...register("hotline")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                autoComplete="operatingLicence"
+                                                fullWidth
+                                                id="operatingLicence"
+                                                type={"text"}
+                                                label="Giấy phép hoạt động"
+                                                error={Boolean(errors.operatingLicence)}
+                                                helperText={errors.operatingLicence?.message || ''}
+                                                {...register("operatingLicence")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={12}>
+                                            <ClinicEditor {...register("clinicInfo")} setValue={setValue} />
                                         </Grid>
 
-                                        <Grid item container xs={12} sm={6} justifyContent="flex-end" >
-                                            <Button variant="secondary" onClick={resetModal}
-                                                sx={{ mt: 3, mb: 1 }}>
-                                                Close
-                                            </Button>
+                                        <Grid item container xs={12} sm={6} >
                                             <Button
-                                                variant="primary"
-                                                type={"submit"}
-                                                sx={{ mt: 3, mb: 1 }}
+                                                variant="contained"
+                                                color="success"
+                                                type="submit"
+                                                sx={{ mt: 3, mb: 1, mr: 1 }}
                                             >
-                                                Create
+                                                Xác nhận
+                                            </Button>
+                                            <Button variant="contained" onClick={resetModal}
+                                                sx={{ mt: 3, mb: 1 }}>
+                                                Hủy
                                             </Button>
                                         </Grid>
                                     </Grid>

@@ -44,7 +44,11 @@ public class ClinicAPI {
     public ResponseEntity<?> editClinic(@PathVariable Long id, @RequestBody Clinic clinic){
         Clinic editClinic = clinicService.findById(id).get();
         String editClinicLogo = editClinic.getClinicLogo();
+
         editClinic.setClinicName(clinic.getClinicName());
+        editClinic.setLegalRepresentative(clinic.getLegalRepresentative());
+        editClinic.setHotline(clinic.getHotline());
+        editClinic.setOperatingLicence(clinic.getOperatingLicence());
         editClinic.setAddress(clinic.getAddress());
         editClinic.setClinicInfo(clinic.getClinicInfo());
         editClinic.setClinicLogo(clinic.getClinicLogo());

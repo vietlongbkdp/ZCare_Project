@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
-import HTMLReactParser from 'html-react-parser';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Container } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import './CkEditor.css'
 
-export default function ClinicEditor() {
-    const [dataInput, setDataInput] = useState('')
+// ClassicEditor.create(document.querySelector('#editor'), {
+//     plugins: [AlignmentPlugin], 
+//     toolbar: ['alignLeft', 'alignCenter', 'alignRight'],
+// });
+
+export default function ClinicEditor({ setValue, getValues }) {
 
     function handleFileUpload(loader) {
         return {
@@ -24,7 +28,7 @@ export default function ClinicEditor() {
                                 console.log('my res', response.data.fileUrl);
                                 resolve({ default: `${response.data.fileUrl}` })
                             })
-                            .catch((error) => { 
+                            .catch((error) => {
                                 console.log(error);
                             });
                     })
@@ -39,31 +43,34 @@ export default function ClinicEditor() {
         };
     }
 
+    // const parsedContent = HTMLReactParser(dataInput, {
+    //     replace: (domNode) => {
+    //         if (domNode.name === 'img') {
+    //             domNode.attribs.class = 'custom-image';
+    //         }
+    //         return undefined;
+    //     },
+    // });
+
     return (
         <>
-            <Container>
-                <label htmlFor="">Thông tin phòng khám:</label>
-                <div>
-                    <CKEditor
-                        editor={ClassicEditor}
-                        data=""
-                        config={{
-                            extraPlugins: [uploadPlugin]
-                        }}
-                        onReady={(editor) => {
-                        }}
-                        onBlur={(event, editor) => {
-                            const data = editor.getData();
-                            setDataInput(data)
-                        }}
-                    />
-                </div>
-
-                <div className="container bg-warning w-100 mt-4">
-                    <p>This is content</p>
-                    {HTMLReactParser(dataInput)}
-                </div>
-            </Container>
+            <div>
+                <Typography sx={{ textAlign: 'left' }}  >Thông tin phòng khám:</Typography>
+                <CKEditor
+                    editor={ClassicEditor}
+                    data=""
+                    config={{
+                        extraPlugins: [uploadPlugin]
+                    }}
+                    onReady={(editor) => {
+                        editor.setData(getValues("clinicInfo"))
+                    }}
+                    onBlur={(event, editor) => {
+                        const data = editor.getData();
+                        setValue('clinicInfo', data)
+                    }}
+                />
+            </div>
         </>
     )
 }
