@@ -65,7 +65,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
         setShowPage(true)
     }
 
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm(
+    const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm(
         { resolver: yupResolver(schema) }
     );
 
@@ -194,7 +194,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, setShowContent,
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={12}>
-                                            <ClinicEditor {...register("clinicInfo")} setValue={setValue} />
+                                            <ClinicEditor {...register("clinicInfo")} setValue={setValue} getValues={getValues} />
                                         </Grid>
 
                                         <Grid item container xs={12} sm={6} >

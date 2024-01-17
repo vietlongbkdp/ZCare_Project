@@ -63,7 +63,9 @@ export default function ClinicEditor({ setValue, getValues }) {
                         extraPlugins: [uploadPlugin]
                     }}
                     onReady={(editor) => {
-                        editor.setData(getValues("clinicInfo"))
+                        if (getValues("clinicInfo")) {
+                            editor.setData(getValues("clinicInfo"))
+                        }
                     }}
                     onBlur={(event, editor) => {
                         const data = editor.getData();
