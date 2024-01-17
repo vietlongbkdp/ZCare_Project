@@ -25,9 +25,13 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {TimePicker} from '@mui/x-date-pickers/TimePicker';
 import {LocalizationProvider} from "@mui/x-date-pickers";
+import SaveIcon from '@mui/icons-material/Save';
+import axios from "axios";
+
 export default function ScheduleCreate() {
+    const idDoctor = 1;
     const [dateCreate, setDateCreate] = useState([])
-    const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6","Thứ 7", "Chủ Nhật"])
+    const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"])
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -41,48 +45,36 @@ export default function ScheduleCreate() {
     })
     const [timeValueStart, setTimeValueStart] = useState(null);
     const [timeValueEnd, setTimeValueEnd] = useState(null);
-    const handleDeleteWeekday =(event) =>{
+    const [betweenTime, setBetweenTime] = useState("30")
+    const handleDeleteWeekday = (event) => {
         const strWeekdayDelete = event.target.closest(".chipWeekday").firstChild.innerText
         let listWeekdayUpdate = weekday.filter(item => item !== strWeekdayDelete)
         setWeekday(listWeekdayUpdate)
     }
-    function handleDeleteTimes(event) {
-        const timeDelete = event.target.closest(".chipTimes").firstChild.innerText;
-        const indexSetDelete = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
-        const updatedDateCreate = [...dateCreate];
-        updatedDateCreate[indexSetDelete].listScheduleTimes = updatedDateCreate[indexSetDelete].listScheduleTimes.filter(item => item.scheduleTimeShow !== timeDelete);
-        setDateCreate(updatedDateCreate);
-    }
-    function handleClickTimes(event) {
-
-    }
-    const changeToDate = (milliseconds) => {
-        return (milliseconds / 86400000)
-    }
-    const handleSubmit = (event) =>{
+    const handleSubmit = (event) => {
         event.preventDefault()
-            const listWeek = weekday
-            const listSchedule =[]
-            setIsAddTimes({
-                statusAdd: false,
-                indexAdd: -1
+        const listWeek = weekday
+        const listSchedule = []
+        setIsAddTimes({
+            statusAdd: false,
+            indexAdd: -1
+        })
+        listWeek.forEach((value) => {
+            listSchedule.push({
+                dayInWeek: value,
+                listScheduleTimes: [],
+                listDetailTimes: []
             })
-            listWeek.forEach((value)=>{
-                listSchedule.push({
-                    dayInWeek: value,
-                    listScheduleTimes: [],
-                    listDetailTimes: []
-                })
-            })
-            setDateCreate(listSchedule)
-        }
+        })
+        setDateCreate(listSchedule)
+    }
     const handleClickAddTimes = (event) => {
         setIsAddTimes({
             statusAdd: true,
-            indexAdd: parseInt(event.target.closest(".recordDate").firstChild.innerText)-1
+            indexAdd: parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1
         })
     }
-    const handleCancelTimeSet =() =>{
+    const handleCancelTimeSet = () => {
         setIsAddTimes({
             statusAdd: false,
             indexAdd: -1
@@ -94,47 +86,90 @@ export default function ScheduleCreate() {
         const strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`;
         const startTimeGet = timeValueStart;
         const endTimeGet = timeValueEnd;
-        const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
-        const newSchedule = {
-            scheduleTimeShow: strTimes,
-            scheduleStartTime: startTimeGet,
-            scheduleEndTime: endTimeGet
-        };
-        const updatedDateCreate = [...dateCreate];
-        updatedDateCreate[indexSet].listScheduleTimes.push(newSchedule);
-        setDateCreate(updatedDateCreate);
-        setTimeValueEnd(null)
-        setTimeValueStart(null)
-        setIsAddTimes({
-            statusAdd: false,
-            indexAdd: -1
-        })
+        if((startTimeGet === null)||(endTimeGet ===null)){
+            alert("Quy trình chọn giờ chưa đúng, hãy chọn thơì gian rồi bấm OK để lưu!")
+        }else{
+            if((endTimeGet - startTimeGet) <= 0){
+                alert("Lựa chọn thời gian không hợp lệ!")
+            }else{
+                const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
+                const newSchedule = {
+                    scheduleTimeShow: strTimes,
+                    scheduleStartTime: startTimeGet,
+                    scheduleEndTime: endTimeGet
+                };
+                const listDetailTimesNew = getDetailByDuringTimes(startTimeGet, endTimeGet, betweenTime)
+                const updatedDateCreate = [...dateCreate];
+                updatedDateCreate[indexSet].listScheduleTimes.push(newSchedule);
+                listDetailTimesNew.map((item) => (
+                    updatedDateCreate[indexSet].listDetailTimes.push(item)
+                ))
+                setDateCreate(updatedDateCreate);
+                setTimeValueEnd(null)
+                setTimeValueStart(null)
+                setIsAddTimes({
+                    statusAdd: false,
+                    indexAdd: -1
+                })
+            }
+        }
     }
-    const getDetailByDuringTimes = (starTimes, endTimes, betweenTimes) =>{
-        let countDetails = Math.floor((endTimes - starTimes)/(betweenTimes * 1000 *60))
+    const handleDeleteDetail = event => {
+        const detailDelete = event.target.closest(".chipDetail").firstChild.innerText;
+        const indexSetDelete = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1
+        const updatedDateCreate = [...dateCreate];
+        updatedDateCreate[indexSetDelete].listDetailTimes = updatedDateCreate[indexSetDelete].listDetailTimes.filter(item => item.timeDetailShow !== detailDelete);
+        setDateCreate(updatedDateCreate);
+    }
+    const handleChangeTimes = event => {
+        setBetweenTime(event.target.value)
+    }
+    const handleSaveSchedule = async () => {
+        const listScheduleGet = []
+        dateCreate.map((item, index) =>(
+            listScheduleGet.push({
+                weekdayGet: item.dayInWeek,
+                detailTime: item.listDetailTimes
+            })
+        ))
+        const data = {
+            idDoctor:  idDoctor,
+            listSchedule: listScheduleGet
+        };
+        console.log(data)
+        const resp = await axios.post('http://localhost:8080/api/schedule/create', data)
+                if(resp.status === 200){
+                alert("Lưu thành công")
+                // setRatingValue(0);
+                // setCommentValue("")
+                }else{
+                    alert("Lưu thất bại")
+                }
+
+    }
+    const getDetailByDuringTimes = (starTimes, endTimes, betweenTimes) => {
+        let countDetails = Math.floor((endTimes - starTimes) / (betweenTimes * 1000 * 60))
         let listTimeDetails = []
-        for (let i=0; i<countDetails; i++){
+        for (let i = 0; i < countDetails; i++) {
             let timeStartDetail = starTimes.add((betweenTimes * (i)), 'minute')
-            let timeEndDetail = starTimes.add((betweenTimes * (i+1)), 'minute')
+            let timeEndDetail = starTimes.add((betweenTimes * (i + 1)), 'minute')
             listTimeDetails.push({
                 timeDetailShow: `${dayjs(timeStartDetail).format('HH:mm')} - ${dayjs(timeEndDetail).format('HH:mm')}`
             })
         }
         return listTimeDetails
     }
-    console.log(dateCreate)
-
-
-
     return (
         <Container maxWidth="md">
             <Box>
                 <Typography variant="h4" component="h4">
-                    Taọ lịch khám bệnh
+                    Tạo lịch khám bệnh
                 </Typography>
             </Box>
             <Item>
-                <Box component={"form"} onSubmit={(event) =>{handleSubmit(event)}} sx={{mt: 3}}>
+                <Box component={"form"} onSubmit={(event) => {
+                    handleSubmit(event)
+                }} sx={{mt: 3}}>
                     <Typography variant={"h5"} align={"left"} mb={2}>Bác sĩ: Lê Bá Tường</Typography>
                     <Stack direction={"row"} mt={3} alignItems={"center"}>
                         <FormLabel id="demo-radio-buttons-group-label"
@@ -143,9 +178,12 @@ export default function ScheduleCreate() {
                         <FormControl>
                             <RadioGroup
                                 aria-labelledby="radioSelectTime"
-                                defaultValue={"15"}
+                                value={betweenTime}
                                 name="selectTime"
                                 row
+                                onChange={(event) => {
+                                    handleChangeTimes(event)
+                                }}
                             >
                                 <FormControlLabel value="15" control={<Radio/>} label="15 phút"/>
                                 <FormControlLabel value="30" control={<Radio/>} label="30 phút"/>
@@ -156,10 +194,14 @@ export default function ScheduleCreate() {
                     </Stack>
                     <Stack direction={"row"} mt={3} alignItems={"center"}>
                         <FormLabel id="demo-radio-buttons-group-label"
-                                   sx={{fontSize: 20, fontWeight: "bold", marginRight: 5}} mt={2}>Ngày làm việc</FormLabel>
+                                   sx={{fontSize: 20, fontWeight: "bold", marginRight: 5}} mt={2}>Ngày làm
+                            việc</FormLabel>
                         <Stack direction={"row"} mt={1} alignItems={"center"} spacing={1}>
                             {weekday.map((value, index) => (
-                                <Chip key={index} className={"chipWeekday"} size="medium" variant="outlined"  label={value} onDelete={(event) =>{handleDeleteWeekday(event)}}/>
+                                <Chip key={index} className={"chipWeekday"} size="medium" variant="outlined"
+                                      label={value} onDelete={(event) => {
+                                    handleDeleteWeekday(event)
+                                }}/>
                             ))}
                         </Stack>
                     </Stack>
@@ -183,7 +225,7 @@ export default function ScheduleCreate() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            { dateCreate.map((value, index) =>(
+                            {dateCreate.map((value, index) => (
                                 <TableRow
                                     key={index}
                                     sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -194,24 +236,29 @@ export default function ScheduleCreate() {
                                     <TableCell align="right">
                                         <Stack>
                                             <Stack direction={"row"} spacing={1}>
-                                                {dateCreate[index]?.listScheduleTimes?.map((valueTiny, indexTiny) =>(
-                                                    <Chip className={"chipTimes"} key={indexTiny} label={valueTiny.scheduleTimeShow} variant="outlined" onDelete={(event) =>{
-                                                        handleDeleteTimes(event)
-                                                    }}/>
+                                                 <Button
+                                                sx={{borderRadius: 10}}
+                                                onClick={(event) => {
+                                                    handleClickAddTimes(event)
+                                                }
+                                                }
+                                            ><AddIcon sx={{fontSize: 20}}/>Add</Button>
+                                            </Stack>
+                                            <Stack direction={"row"} mt={2} flexWrap="wrap">
+                                                {dateCreate[index]?.listDetailTimes?.map((valueDetail, indexDetail) => (
+                                                    <Chip className={"chipDetail"} key={indexDetail} color={"primary"}
+                                                          sx={{marginTop: 1, marginRight: 1}}
+                                                          label={valueDetail.timeDetailShow} variant="filled"
+                                                          onDelete={(event) => {
+                                                              handleDeleteDetail(event)
+                                                          }}/>
                                                 ))}
-                                                <Button
-                                                    sx={{borderRadius: 10}}
-                                                    onClick={(event) => {
-                                                        handleClickAddTimes(event)
-                                                    }
-                                                    }
-                                                ><AddIcon sx={{fontSize: 20}}/></Button>
                                             </Stack>
                                             {
                                                 ((isAddTimes.statusAdd && (isAddTimes.indexAdd === index)) ? (
-                                                    <Stack direction={"row"}  className={"getTimes"}>
+                                                    <Stack direction={"row"} className={"getTimes"}>
                                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                            <DemoContainer components={['TimePicker', 'TimePicker']} >
+                                                            <DemoContainer components={['TimePicker', 'TimePicker']}>
                                                                 <TimePicker
                                                                     label="Giờ bắt đầu"
                                                                     sx={{width: "50px"}}
@@ -231,10 +278,13 @@ export default function ScheduleCreate() {
                                                         <Button
                                                             sx={{borderRadius: 5, height: 50, margin: "10px"}}
                                                         ><AddCircleIcon
-                                                            sx={{fontSize: 30}} color={"success"} onClick={(event) =>{handleCreateSche(event)}}/></Button>
+                                                            sx={{fontSize: 30}} color={"success"} onClick={(event) => {
+                                                            handleCreateSche(event)
+                                                        }}/></Button>
                                                         <Button
                                                             sx={{borderRadius: 5, height: 50, margin: "10px"}}
-                                                        ><CancelIcon sx={{fontSize: 30}} color={"error"} onClick={handleCancelTimeSet}/></Button>
+                                                        ><CancelIcon sx={{fontSize: 30}} color={"error"}
+                                                                     onClick={handleCancelTimeSet}/></Button>
                                                     </Stack>
                                                 ) : "")
                                             }
@@ -246,6 +296,16 @@ export default function ScheduleCreate() {
 
                         </TableBody>
                     </Table>
+                    <Button
+                        type="button"
+                        variant="contained"
+                        sx={{mt: 5, mb: 1, alignItems: "left"}}
+                        color={"success"}
+                        onClick={handleSaveSchedule}
+                        disabled={(dateCreate.length === 0)}
+                    ><SaveIcon sx={{fontSize: 20, marginRight: 2}}/>
+                        Save
+                    </Button>
                 </TableContainer>
             </Item>
         </Container>
