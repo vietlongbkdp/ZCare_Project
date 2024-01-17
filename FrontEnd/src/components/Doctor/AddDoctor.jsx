@@ -187,16 +187,6 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 helperText={errors.dob?.message || ''}
                                                 {...register("dob")}
                                             />
-                                            {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                <DemoContainer components={['DatePicker']} sx={{ paddingTop: 0, overflow:'none'}}>
-                                                    <DatePicker
-                                                        sx={{width: '100%'}}
-                                                        error={Boolean(errors.dob)}
-                                                        helperText={errors.dob?.message || ''}
-                                                        {...register("dob")}
-                                                        label="Date Of Birth" />
-                                                </DemoContainer>
-                                            </LocalizationProvider> */}
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
@@ -226,12 +216,10 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 <Select
                                                     labelId="clinicLabel"
                                                     id="clinic"
-                                                    // value={0}
                                                     label="Clinic"
                                                     error={Boolean(errors.clinic)}
                                                     helperText={errors.clinic?.message || ''}
                                                     {...register("clinic")}
-                                                // onChange={handleChange}
                                                 >
                                                     {clinicList.map((item) => (
                                                         <MenuItem value={item.id}>{item.clinicName}</MenuItem>

@@ -222,11 +222,11 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                                 type={"submit"}
                                                 sx={{ mt: 3, mb: 1, mr: 1 }}
                                             >
-                                                Update
+                                                Cập nhật
                                             </Button>
                                             <Button  variant="contained" onClick={resetModal}
                                                 sx={{ mt: 3, mb: 1 }}>
-                                                Close
+                                                Hủy
                                             </Button>
                                         </Grid>
                                     </Grid>
