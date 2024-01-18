@@ -20,8 +20,13 @@ public class Clinic {
     private Long id;
     @Column(name = "clinic_name")
     private String clinicName;
+    @Column(name = "legal_representative")
+    private String legalRepresentative;
+    private String hotline;
+    @Column(name = "operating_licence")
+    private String operatingLicence;
     private String address;
-    @Column(name = "clinic_info")
+    @Column(name = "clinic_info", columnDefinition = "LONGTEXT")
     private String clinicInfo;
     @Column(name = "clinic_logo")
     private String clinicLogo;

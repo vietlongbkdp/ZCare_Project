@@ -50,7 +50,6 @@ function AuthLogin() {
       }
     }
   };
-
   return (
     <Box
       sx={{
@@ -126,7 +125,6 @@ function AuthLogin() {
                 Giữ tôi đăng nhập
               </Typography>
             </Box>
-
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Link to="/forgot-password" style={{ textDecoration: "none" }}>
                 Quên mật khẩu?

@@ -9,12 +9,7 @@ import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin";
-import ResultList from "./components/Result/ResultList";
-import Result from "./components/Result/Result";
-
-
-
-
+import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
 
 export default function App() {
   return (
@@ -36,6 +31,8 @@ export default function App() {
         <Route path="/user" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
+
+        <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
     {/*<Result/>*/}
     </>

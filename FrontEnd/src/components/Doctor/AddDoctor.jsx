@@ -2,7 +2,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import {styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {
     FormControl,
@@ -12,18 +12,21 @@ import {
     Select,
     TextField
 } from "@mui/material";
-import {useForm} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import axios from "axios";
-import React, {useEffect, useState} from "react";
-import {toast} from "react-toastify";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 const schema = yup.object({
     doctorName: yup.string()
         .required("tên không được để trống")
-        .min(2,'Too short')
-        .max(50,'Too long'),
+        .min(2, 'Too short')
+        .max(50, 'Too long'),
     dob: yup.string()
         .required("sinh nhật không được để trống"),
     email: yup.string()
@@ -53,38 +56,38 @@ const VisuallyHiddenInput = styled('input')({
     whiteSpace: 'nowrap',
     width: 1,
 });
-const Item = styled(Paper)(({theme}) => ({
+const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
-export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage}) {
+export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage }) {
     const [clinicList, setClinicList] = useState([]);
-    const [positionList, setPositionList]= useState([])
-    const [specialityList, setSpecialityList]= useState([]);
+    const [positionList, setPositionList] = useState([])
+    const [specialityList, setSpecialityList] = useState([]);
 
-    const { register, handleSubmit, watch, formState: { errors }, reset } = useForm(
+    const { register, handleSubmit, formState: { errors }, reset } = useForm(
         {
             resolver: yupResolver(schema)
         }
     );
 
     const createDoctor = async (data) => {
-        data.avatarImg='null'
+        data.avatarImg = 'null'
         console.log(data)
         try {
             await axios.post('http://localhost:8080/api/doctor', data);
             setShowAdd(false)
             toast.success("thành công")
-            setUpdateShow(pre=> !pre);
+            setUpdateShow(pre => !pre);
             reset();
             setButtonCreate(true)
             setShowTable(true)
             setShowPage(true)
 
-        }catch (error){
+        } catch (error) {
             toast.error("thất bại")
         }
 
@@ -92,40 +95,39 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
 
     useEffect(() => {
         const getClinics = async () => {
-            try{
+            try {
                 const response = await axios.get('http://localhost:8080/api/clinic');
                 setClinicList(response.data);
-            }catch (error){
+            } catch (error) {
                 console.error(error);
             }
-
         }
         getClinics();
     }, []);
 
-    useEffect(()=>{
-        const getPositions = async ()=>{
-            try{
+    useEffect(() => {
+        const getPositions = async () => {
+            try {
                 const response = await axios.get('http://localhost:8080/api/position');
                 setPositionList(response.data);
-            }catch (error){
+            } catch (error) {
                 console.error(error);
             }
         }
         getPositions();
-    },[])
+    }, [])
 
-    useEffect(()=>{
-        const getSpeciality = async ()=>{
-            try{
+    useEffect(() => {
+        const getSpeciality = async () => {
+            try {
                 const response = await axios.get('http://localhost:8080/api/speciality');
                 setSpecialityList(response.data);
-            }catch (error){
+            } catch (error) {
                 console.error(error);
             }
         }
         getSpeciality();
-    },[])
+    }, [])
 
     const closeAddModal = () => {
         setShowAdd(false)
@@ -140,15 +142,16 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                 <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
                     Create a new doctor
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit(createDoctor)} sx={{width: '100%'}} mt={3}>
+                <Box component="form" onSubmit={handleSubmit(createDoctor)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={4} >
                             <Item>
-                                <Button component="label" sx={{borderRadius: 50}}>
-                                    <img id={"blah"} style={{borderRadius: 100}} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
-                                         alt={"avatar"}/>
+                                <Button component="label" sx={{ borderRadius: 50 }}>
+                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
+                                        alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("avatarImg")} type="file" onChange={(event) => {
-                                        document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])}}/>
+                                        document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])
+                                    }} />
                                 </Button>
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
                                     Upload your Avatar
@@ -160,7 +163,7 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                         </Grid>
                         <Grid item xs={8}>
                             <Item >
-                                <Box  sx={{ mt: 3 }}>
+                                <Box sx={{ mt: 3 }}>
                                     <Grid container spacing={2} >
                                         <Grid item xs={12} sm={6}>
                                             <TextField
@@ -168,7 +171,6 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                                                 fullWidth
                                                 id="doctorName"
                                                 label="Full Name"
-                                                autoFocus
                                                 error={Boolean(errors.doctorName)}
                                                 helperText={errors.doctorName?.message || ''}
                                                 {...register("doctorName")}
@@ -214,15 +216,13 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                                                 <Select
                                                     labelId="clinicLabel"
                                                     id="clinic"
-                                                    // value={0}
                                                     label="Clinic"
                                                     error={Boolean(errors.clinic)}
                                                     helperText={errors.clinic?.message || ''}
                                                     {...register("clinic")}
-                                                    // onChange={handleChange}
                                                 >
-                                                    {clinicList.map((item)=>(
-                                                    <MenuItem value={item.id}>{item.clinicName}</MenuItem>
+                                                    {clinicList.map((item) => (
+                                                        <MenuItem value={item.id}>{item.clinicName}</MenuItem>
                                                     ))}
                                                 </Select>
                                             </FormControl>
@@ -238,9 +238,9 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                                                     helperText={errors.speciality?.message || ''}
                                                     {...register("speciality")}
                                                 >
-                                                    {specialityList.map((item)=>(
+                                                    {specialityList.map((item) => (
                                                         <MenuItem value={item.id}>{item.specialtyName}</MenuItem>
-                                                    ) )}
+                                                    ))}
                                                 </Select>
                                             </FormControl>
                                         </Grid>
@@ -255,11 +255,11 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                                                     error={Boolean(errors.position)}
                                                     helperText={errors.position?.message || ''}
                                                     {...register("position")}
-                                                    // onChange={handleChange}
+                                                // onChange={handleChange}
                                                 >
-                                                    {positionList.map((item)=>(
+                                                    {positionList.map((item) => (
                                                         <MenuItem value={item.id}>{item.name}</MenuItem>
-                                                    ) )}
+                                                    ))}
                                                 </Select>
                                             </FormControl>
                                         </Grid>
@@ -277,13 +277,13 @@ export default function DoctorPageCreate({setShowAdd, setUpdateShow, setButtonCr
                                         </Grid>
                                         <Grid item container xs={12} sm={6} justifyContent="flex-end" >
                                             <Button variant="secondary" onClick={closeAddModal}
-                                                    sx={{ mt: 3, mb: 1}}>
+                                                sx={{ mt: 3, mb: 1 }}>
                                                 Close
                                             </Button>
                                             <Button
                                                 type="submit"
                                                 variant="contained"
-                                                sx={{ mt: 3, mb: 1}}
+                                                sx={{ mt: 3, mb: 1 }}
                                             >
                                                 Create
                                             </Button>

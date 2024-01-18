@@ -195,7 +195,6 @@ export default function DoctorPageCreate({doctorId, setShowEdit, setButtonCreate
                                                 fullWidth
                                                 id="doctorName"
                                                 label="Full Name"
-                                                onFocus='default'
                                                 error={Boolean(errors.doctorName)}
                                                 helperText={errors.doctorName?.message || ''}
                                                 {...register("doctorName")}
@@ -208,7 +207,6 @@ export default function DoctorPageCreate({doctorId, setShowEdit, setButtonCreate
                                                 id="dob"
                                                 type={"date"}
                                                 label="dob"
-                                                onFocus='default'
                                                 error={Boolean(errors.dob)}
                                                 helperText={errors.dob?.message || ''}
                                                 {...register("dob")}

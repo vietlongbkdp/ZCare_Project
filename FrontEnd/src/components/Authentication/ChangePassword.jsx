@@ -2,12 +2,9 @@ import React from "react";
 import {
   Box,
   Typography,
-  Checkbox,
   Button,
   TextField,
-  Divider,
 } from "@mui/material";
-import { Link } from "react-router-dom";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
@@ -25,13 +22,10 @@ export default function ChangePassword() {
     watch,
     handleSubmit,
     formState: { errors },
-    reset,
     setValue,
-    getValues,
   } = useForm({
     resolver: yupResolver(schema),
   });
-
   const password = watch("password");
   const newPassword = watch("newPassword");
   const navigate = useNavigate();
