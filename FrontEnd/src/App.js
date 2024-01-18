@@ -10,6 +10,7 @@ import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
+import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="doctor" element={<DoctorAdmin />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
           <Route path="clinic" element={<ClinicAdmin />}></Route>
+          {/* <Route path='booking' element={<PageCustomerBooking />} /> */}
         </Route>
         <Route path="/cooperate" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
@@ -34,7 +36,7 @@ export default function App() {
 
         <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
-    {/*<Result/>*/}
+      {/*<Result/>*/}
     </>
   );
 }
