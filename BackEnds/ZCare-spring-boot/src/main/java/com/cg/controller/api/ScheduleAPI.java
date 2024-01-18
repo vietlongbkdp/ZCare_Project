@@ -2,6 +2,7 @@ package com.cg.controller.api;
 
 import com.cg.model.DTO.DetailTimeDTO;
 import com.cg.model.DTO.ScheduleDTO;
+import com.cg.model.DTO.ScheduleRespDTO;
 import com.cg.model.DTO.ScheduleWeekDTO;
 import com.cg.model.Doctor;
 import com.cg.model.Schedule;
@@ -14,7 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/schedule")
@@ -27,7 +30,8 @@ public class ScheduleAPI {
     @GetMapping
     public ResponseEntity<?> getAllSchedule(){
         List<Schedule> scheduleList = scheduleService.findAll();
-        return new ResponseEntity<>(scheduleList, HttpStatus.OK);
+        List<ScheduleRespDTO> scheduleRespDTOList= scheduleList.stream().map(Schedule::toScheduleRespDTO).collect(Collectors.toList());
+        return new ResponseEntity<>(scheduleRespDTOList, HttpStatus.OK);
     }
     @PostMapping("/create")
     public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO scheduleDTO){

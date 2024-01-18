@@ -6,7 +6,7 @@ import {styled} from "@mui/material/styles";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -51,6 +51,41 @@ export default function ScheduleCreate() {
         let listWeekdayUpdate = weekday.filter(item => item !== strWeekdayDelete)
         setWeekday(listWeekdayUpdate)
     }
+    useEffect(()=>{
+        const getScheduleAPI = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/schedule');
+                const scheduleGet = response.data
+                let listTimeDetails = []
+                let strTemp = "temp"
+                scheduleGet.forEach((index) =>{
+                    if(scheduleGet.length > 0 && strTemp !== index.weekday){
+                        strTemp = index.weekday
+                        listTimeDetails.push({
+                            dayInWeek: index.weekday,
+                            listScheduleTimes: [],
+                            listDetailTimes: []
+                        })
+                    }
+                })
+                listTimeDetails.forEach((index) =>{
+                    let listDetailPush = []
+                    scheduleGet.forEach((item) =>{
+                        if(item.weekday === index.dayInWeek){
+                            listDetailPush.push({
+                                timeDetailShow: item.timeItem
+                            })
+                        }
+                    })
+                    index.listDetailTimes = listDetailPush
+                })
+                setDateCreate(listTimeDetails)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        getScheduleAPI();
+    },[])
     const handleSubmit = (event) => {
         event.preventDefault()
         const listWeek = weekday
@@ -89,7 +124,7 @@ export default function ScheduleCreate() {
         if((startTimeGet === null)||(endTimeGet ===null)){
             alert("Quy trình chọn giờ chưa đúng, hãy chọn thơì gian rồi bấm OK để lưu!")
         }else{
-            if((endTimeGet - startTimeGet) <= 0){
+            if((endTimeGet - startTimeGet) < (parseInt(betweenTime)*60000)){
                 alert("Lựa chọn thời gian không hợp lệ!")
             }else{
                 const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
@@ -98,19 +133,27 @@ export default function ScheduleCreate() {
                     scheduleStartTime: startTimeGet,
                     scheduleEndTime: endTimeGet
                 };
+                var flag = false
                 const listDetailTimesNew = getDetailByDuringTimes(startTimeGet, endTimeGet, betweenTime)
                 const updatedDateCreate = [...dateCreate];
                 updatedDateCreate[indexSet].listScheduleTimes.push(newSchedule);
-                listDetailTimesNew.map((item) => (
-                    updatedDateCreate[indexSet].listDetailTimes.push(item)
-                ))
-                setDateCreate(updatedDateCreate);
-                setTimeValueEnd(null)
-                setTimeValueStart(null)
-                setIsAddTimes({
-                    statusAdd: false,
-                    indexAdd: -1
+                listDetailTimesNew.forEach((item) => {
+                    if (!checkExistTimeDetail(item, dateCreate[indexSet].listDetailTimes)) {
+                        updatedDateCreate[indexSet].listDetailTimes.push(item);
+                        setDateCreate(updatedDateCreate);
+                        setTimeValueEnd(null);
+                        setTimeValueStart(null);
+                        setIsAddTimes({
+                            statusAdd: false,
+                            indexAdd: -1
+                        });
+                    } else {
+                        flag = true
+                    }
                 })
+                if(flag) {
+                    alert("Có xung đột thời gian, vui lòng kiểm tra lại, hệ thống đã tự động bỏ đi lịch khám bị xung đột")
+                }
             }
         }
     }
@@ -124,9 +167,30 @@ export default function ScheduleCreate() {
     const handleChangeTimes = event => {
         setBetweenTime(event.target.value)
     }
+    const convertStringDetailToNumDetail = (strTimeDetail) =>{
+        let arrTime = strTimeDetail.split(":")
+        return parseInt(arrTime[0] + arrTime[1])
+    }
+    const convertStringTimeToArrNumberTime = (strTimes) =>{
+        let arrStr = strTimes.split(" - ")
+        return [convertStringDetailToNumDetail(arrStr[0]), convertStringDetailToNumDetail(arrStr[1])]
+
+    }
+    const checkExistTimeDetail = (strDetail, listItemDetail) =>{
+        const arrStrDetail = convertStringTimeToArrNumberTime(strDetail.timeDetailShow);
+            for(let i=0; i< listItemDetail.length;i++){
+                if((arrStrDetail[0] > convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[0] < convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])
+                || (arrStrDetail[1] > convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[1] < convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])
+                || (arrStrDetail[0] <= convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[1] >= convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])){
+                    return true
+                }
+            }
+        return false
+
+    }
     const handleSaveSchedule = async () => {
         const listScheduleGet = []
-        dateCreate.map((item, index) =>(
+        dateCreate.map((item) =>(
             listScheduleGet.push({
                 weekdayGet: item.dayInWeek,
                 detailTime: item.listDetailTimes
@@ -160,6 +224,7 @@ export default function ScheduleCreate() {
         }
         return listTimeDetails
     }
+    // console.log(checkExistTimeDetail("08:00 - 08:15", ["07:50 - 08:20", "08:20 - 08:50", "08:50 - 09:20","09:20 - 09:50"]))
     return (
         <Container maxWidth="md">
             <Box>
