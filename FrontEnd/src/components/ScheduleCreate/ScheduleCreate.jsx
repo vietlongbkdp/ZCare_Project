@@ -31,7 +31,7 @@ import axios from "axios";
 export default function ScheduleCreate() {
     const idDoctor = 1;
     const [dateCreate, setDateCreate] = useState([])
-    const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ Nhật"])
+    const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -139,6 +139,7 @@ export default function ScheduleCreate() {
         console.log(data)
         const resp = await axios.post('http://localhost:8080/api/schedule/create', data)
                 if(resp.status === 200){
+                    setDateCreate([])
                 alert("Lưu thành công")
                 // setRatingValue(0);
                 // setCommentValue("")
