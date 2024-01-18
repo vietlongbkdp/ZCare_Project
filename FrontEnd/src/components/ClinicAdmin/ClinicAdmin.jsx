@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useContext } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -10,13 +10,14 @@ import Paper from '@mui/material/Paper';
 import Box from "@mui/material/Box";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import AddModal from "./AddModal";
-import EditModal from "./EditModal"
 import Button from "@mui/material/Button";
-import Stack from '@mui/material/Stack';
 import Swal from 'sweetalert2'
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
+import AddClinic from './AddClinic';
+import EditClinic from './EditClinic';
+import DoctorAdmin from '../Doctor/DoctorAdmin';
+import { ApiContext } from '../ApiContext/ApiProvider';
 
 
 
@@ -52,14 +53,18 @@ export default function CustomizedTables() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
-    const [showAddModal, setShowAddModal] = useState(false);
-    const [showEditModal, setShowEditModal] = useState(false);
+    const [showAddClinic, setShowAddClinic] = useState(false);
+    const [showEditClinic, setShowEditClinic] = useState(false);
     const [isupdate, setIsupdate] = useState(false);
     const [clinicList, setClinicList] = useState([]);
-    const [clinicID, setClinicID] = useState()
-    const [showContent, setShowContent] = useState(true)
-    const [showCreate, setShowCreate] = useState(true)
-    const [showPage, setShowPage] = useState(true);
+    const [clinicId, setClinicId] = useState();
+    const [showContent, setShowContent] = useState(true);
+    const [showCreateBtn, setShowCreateBtn] = useState(true);
+    const [showPagination, setShowPagination] = useState(true);
+    const [showDoctorList, setShowDoctorList] = useState(false);
+    const [showAddDoctor, setShowAddDoctor] = useState(false);
+
+    const { API_DOCTOR } = useContext(ApiContext)
 
     useEffect(() => {
         const getClinics = async () => {
@@ -74,22 +79,37 @@ export default function CustomizedTables() {
     }, [isupdate, currentPage]);
 
     const currentClinicList = clinicList.slice(startIndex, endIndex);
-    const handleShowClinic = () => {
-        setShowAddModal(true);
+    const handleCreateClinic = () => {
+        setShowAddClinic(true);
         setShowContent(false)
-        setShowCreate(false)
-        setShowPage(false)
+        setShowCreateBtn(false)
+        setShowPagination(false)
     }
 
-    const handEditID = (id) => {
-        setClinicID(id);
-        setShowEditModal(true)
+    const handleEditClinic = (id) => {
+        setClinicId(id);
+        setShowEditClinic(true)
         setShowContent(false)
-        setShowCreate(false)
-        setShowPage(false)
+        setShowCreateBtn(false)
+        setShowPagination(false)
     }
 
-    const handDelete = async (id) => {
+    const handleShowDoctor = (id) => {
+        setClinicId(id);
+        setShowDoctorList(true)
+        setShowContent(false)
+        setShowCreateBtn(false)
+        setShowPagination(false)
+    }
+
+    const handleHideDoctor = () => {
+        setShowDoctorList(false)
+        setShowContent(true)
+        setShowCreateBtn(true)
+        setShowPagination(true)
+    }
+
+    const handleDelete = async (id) => {
         Swal.fire({
             title: "Bạn có chắc chắn không?",
             text: "Bạn sẽ không thể hoàn tác",
@@ -116,29 +136,35 @@ export default function CustomizedTables() {
     return (
         <>
             <Box>
-                {showCreate && <Button
+                {showCreateBtn && <Button
                     type="submit"
                     variant="contained"
+                    color='success'
                     sx={{ mt: 3, mb: 1 }}
-                    onClick={handleShowClinic}
+                    onClick={handleCreateClinic}
                 >
                     TẠO PHÒNG KHÁM
                 </Button>}
-                {showAddModal && <AddModal
-                    setShow={setShowAddModal}
+                {showAddClinic && <AddClinic
+                    setShow={setShowAddClinic}
                     setISupdate={setIsupdate}
                     setShowContent={setShowContent}
-                    setShowCreate={setShowCreate}
-                    setShowPage={setShowPage}
+                    setShowCreateBtn={setShowCreateBtn}
+                    setShowPagination={setShowPagination}
                 />}
-                {showEditModal && <EditModal
-                    setShow={setShowEditModal}
+                {showEditClinic && <EditClinic
+                    setShow={setShowEditClinic}
                     setISupdate={setIsupdate}
-                    clinicId={clinicID}
+                    clinicId={clinicId}
                     setShowContent={setShowContent}
-                    setShowCreate={setShowCreate}
-                    setShowPage={setShowPage}
+                    setShowCreateBtn={setShowCreateBtn}
+                    setShowPagination={setShowPagination}
                 />}
+                {
+                    showDoctorList && <DoctorAdmin API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
+                        clinicId={clinicId}
+                        handleHideDoctor={handleHideDoctor} />
+                }
                 <Box >
                     {showContent &&
                         <TableContainer component={Paper}>
@@ -151,35 +177,49 @@ export default function CustomizedTables() {
                                         <StyledTableCell>ĐỊA CHỈ</StyledTableCell>
                                         <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
                                         <StyledTableCell>HOTLINE</StyledTableCell>
-                                        <StyledTableCell>GPHD</StyledTableCell>
-                                        <StyledTableCell>THÔNG TIN</StyledTableCell>
-                                        <StyledTableCell>CHỌN</StyledTableCell>
+                                        <StyledTableCell>GPHĐ</StyledTableCell>
+                                        <StyledTableCell sx={{ width: 25 }}>DANH SÁCH BÁC SĨ</StyledTableCell>
+                                        <StyledTableCell sx={{ width: 25 }}>THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell sx={{ width: 25 }}>CẬP NHẬT</StyledTableCell>
+                                        <StyledTableCell sx={{ width: 25 }}>XÓA</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {currentClinicList.map((item) => (
                                         <StyledTableRow key={item.id}>
                                             <StyledTableCell sx={{ width: 10 }} component="th" scope="row">
-                                                {item.id}
+                                                {item?.id}
                                             </StyledTableCell>
                                             <StyledTableCell>
-                                                <img src={item.clinicLogo} alt="Clinic Logo" style={{ width: '50px', height: '50px' }} />
+                                                <img src={item?.clinicLogo} alt="Clinic Logo" style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
                                             </StyledTableCell>
-                                            <StyledTableCell>{item.clinicName}</StyledTableCell>
-                                            <StyledTableCell>{item.address}</StyledTableCell>
-                                            <StyledTableCell>{item.legalRepresentative}</StyledTableCell>
-                                            <StyledTableCell>{item.hotline}</StyledTableCell>
-                                            <StyledTableCell>{item.operatingLicence}</StyledTableCell>
-                                            <StyledTableCell>{item.clinicInfor}</StyledTableCell>
+                                            <StyledTableCell>{item?.clinicName}</StyledTableCell>
+                                            <StyledTableCell>{item?.address}</StyledTableCell>
+                                            <StyledTableCell>{item?.legalRepresentative}</StyledTableCell>
+                                            <StyledTableCell>{item?.hotline}</StyledTableCell>
+                                            <StyledTableCell>{item?.operatingLicence}</StyledTableCell>
+                                            <StyledTableCell>
+                                                <Button variant='contained' color='secondary'
+                                                    onClick={() => handleShowDoctor(item?.id)} sx={{ width: 5 }}>
+                                                    <i class="fa-solid fa-user-doctor"></i>
+                                                </Button>
+                                            </StyledTableCell>
+                                            <StyledTableCell>
+                                                <Button variant='contained' color='primary'>
+                                                    <i class="fa-solid fa-list-ul"></i>
+                                                </Button>
+                                            </StyledTableCell>
                                             <StyledTableCell >
-                                                <Stack direction="row" spacing={1}>
-                                                    <Button variant="contained" color="warning" onClick={() => handEditID(item.id)} sx={{ width: 5 }}><i className="fa-solid fa-pen-to-square"></i>
-                                                    </Button>
-                                                    <Button variant="contained" color="error"
-                                                        onClick={() => handDelete(item.id)} sx={{ marginLeft: 'auto' }}><i
-                                                            className="fa-solid fa-delete-left"></i>
-                                                    </Button>
-                                                </Stack>
+                                                <Button variant="contained" color="warning"
+                                                    onClick={() => handleEditClinic(item?.id)} sx={{ width: 5 }}>
+                                                    <i className="fa-solid fa-pen-to-square"></i>
+                                                </Button>
+                                            </StyledTableCell>
+                                            <StyledTableCell >
+                                                <Button variant="contained" color="error"
+                                                    onClick={() => handleDelete(item?.id)} sx={{ marginLeft: 'auto' }}>
+                                                    <i className="fa-solid fa-delete-left"></i>
+                                                </Button>
                                             </StyledTableCell>
                                         </StyledTableRow>
                                     ))}
@@ -188,7 +228,7 @@ export default function CustomizedTables() {
                         </TableContainer>
                     }
                 </Box>
-                {showPage &&
+                {showPagination &&
                     <Pagination
                         count={Math.ceil(clinicList.length / itemsPerPage)}
                         page={currentPage}

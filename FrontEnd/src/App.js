@@ -10,9 +10,11 @@ import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
-import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
+import { useContext } from "react";
+import { ApiContext } from "./components/ApiContext/ApiProvider";
 
 export default function App() {
+  const { API_DOCTOR } = useContext(ApiContext)
   return (
     <>
       <Routes>
@@ -22,10 +24,9 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/change-password/:userId" element={<ChangePassword />} />
         <Route path="/admin" element={<Pagerbase />}>
-          <Route path="doctor" element={<DoctorAdmin />}></Route>
+          <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR} />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
           <Route path="clinic" element={<ClinicAdmin />}></Route>
-          {/* <Route path='booking' element={<PageCustomerBooking />} /> */}
         </Route>
         <Route path="/cooperate" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
@@ -36,7 +37,6 @@ export default function App() {
 
         <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
-      {/*<Result/>*/}
     </>
   );
 }

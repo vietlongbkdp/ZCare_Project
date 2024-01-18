@@ -6,10 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Getter
@@ -26,7 +24,7 @@ public class Doctor {
     private String doctorName;
     @ManyToOne
     private Position position;
-    private Date dob;
+    private LocalDate dob;
     private String email;
     private String phone;
     @Column(name = "create_at")

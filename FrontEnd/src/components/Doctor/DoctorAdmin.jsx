@@ -10,7 +10,6 @@ import Paper from '@mui/material/Paper';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 import AddDoctor from "./AddDoctor";
 import EditDoctor from "./EditDoctor";
 import { Box } from "@mui/system";
@@ -20,8 +19,8 @@ import { Pagination } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white,
+        backgroundColor: 'white',
+        color: theme.palette.common.black,
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
@@ -32,14 +31,12 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     '&:last-child td, &:last-child th': {
         border: 0,
     },
 }));
 
-export default function DoctorAdmin() {
-
+export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -61,7 +58,7 @@ export default function DoctorAdmin() {
     useEffect(() => {
         const getDoctors = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor');
+                const response = await axios.get(API_URL);
                 setDoctorList(response.data)
             } catch (error) {
                 console.error(error);
@@ -77,6 +74,11 @@ export default function DoctorAdmin() {
         setButtonCreate(false)
         setShowTable(false)
         setShowPage(false)
+    }
+
+    const handleCloseDoctor = () => {
+        setButtonCreate(false)
+
     }
 
     const handleEditId = (id) => {
@@ -97,7 +99,7 @@ export default function DoctorAdmin() {
             cancelButtonColor: "#d33",
             confirmButtonText: "Yes, delete it!"
         }).then(async (data) => {
-            if (data.isConfirmed) { 
+            if (data.isConfirmed) {
                 try {
                     await axios.delete(`http://localhost:8080/api/doctor/${id}`);
                     toast.success("thành công")
@@ -115,20 +117,35 @@ export default function DoctorAdmin() {
 
     return (
         <Box>
-            {buttonCreate && <Button
-                type="submit"
-                variant="contained"
-                sx={{ mt: 3, mb: 1 }}
-                onClick={handleOpenDoctor}
-            >
-                Create
-            </Button>}
+            {
+                buttonCreate &&
+                <>
+                    <Button
+                        type="button"
+                        variant="contained"
+                        sx={{ mt: 3, mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
+                        onClick={handleHideDoctor}
+                    >
+                        Trở lại
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="contained"
+                        color='success'
+                        sx={{ mt: 3, mb: 1 }}
+                        onClick={handleOpenDoctor}
+                    >
+                        Tạo bác sĩ
+                    </Button>
+                </>
+            }
             {showAdd && <AddDoctor
                 setShowAdd={setShowAdd}
                 setUpdateShow={setUpdateShow}
                 setButtonCreate={setButtonCreate}
                 setShowTable={setShowTable}
                 setShowPage={setShowPage}
+                clinicId={clinicId}
             />}
             {showEdit && <EditDoctor
                 doctorId={doctorId}
@@ -137,52 +154,55 @@ export default function DoctorAdmin() {
                 setShowTable={setShowTable}
                 setUpdateShow={setUpdateShow}
                 setShowPage={setShowPage}
+                clinicId={clinicId}
             />}
             {showTable && <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
                             <StyledTableCell>#</StyledTableCell>
-                            <StyledTableCell align="right">FULL NAME</StyledTableCell>
-                            <StyledTableCell align="right">POSITION</StyledTableCell>
-                            <StyledTableCell align="right">DOB</StyledTableCell>
-                            <StyledTableCell align="right">EMAIL</StyledTableCell>
-                            <StyledTableCell align="right">PHONE</StyledTableCell>
-                            <StyledTableCell align="right">CREATEAT</StyledTableCell>
-                            <StyledTableCell align="right">FREE</StyledTableCell>
-                            <StyledTableCell align="right">CLINIC</StyledTableCell>
-                            <StyledTableCell align="right">IMAGE</StyledTableCell>
-                            <StyledTableCell align="right">STAR</StyledTableCell>
-                            <StyledTableCell align="right">SPECIALITY</StyledTableCell>
-                            <StyledTableCell align="right">ACTION</StyledTableCell>
+                            <StyledTableCell align="left">ẢNH ĐẠI DIỆN</StyledTableCell>
+                            <StyledTableCell align="left">TÊN BÁC SĨ</StyledTableCell>
+                            <StyledTableCell align="left">CHỨC DANH</StyledTableCell>
+                            <StyledTableCell align="left">CHUYÊN KHOA</StyledTableCell>
+                            <StyledTableCell align="left">NGÀY SINH</StyledTableCell>
+                            <StyledTableCell align="left">EMAIL</StyledTableCell>
+                            <StyledTableCell align="left">SĐT</StyledTableCell>
+                            <StyledTableCell align="left">NGÀY ĐĂNG KÍ</StyledTableCell>
+                            <StyledTableCell align="left">PHÍ KHÁM</StyledTableCell>
+                            <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
+                            <StyledTableCell align="center">CẬP NHẬT</StyledTableCell>
+                            <StyledTableCell align="center">XÓA</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {currentDoctorList.map((item) => (
                             <StyledTableRow key={item.id}>
-                                <StyledTableCell component="th" scope="row">
-                                    {item.id}
+                                <StyledTableCell component="th" scope="row">{item?.id}</StyledTableCell>
+                                <StyledTableCell align="left">
+                                    <img src={item?.avatarImg} alt="Avatar" style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
                                 </StyledTableCell>
-                                <StyledTableCell align="right">{item.doctorName}</StyledTableCell>
-                                <StyledTableCell align="right">{item.position.name}</StyledTableCell>
-                                <StyledTableCell align="right">{item.dob}</StyledTableCell>
-                                <StyledTableCell align="right">{item.email}</StyledTableCell>
-                                <StyledTableCell align="right">{item.phone}</StyledTableCell>
-                                <StyledTableCell align="right">{item.createAt}</StyledTableCell>
-                                <StyledTableCell align="right">{item.fee}</StyledTableCell>
-                                <StyledTableCell align="right">{item.clinic.clinicName}</StyledTableCell>
-                                <StyledTableCell align="right">{item.avatarImg}</StyledTableCell>
-                                <StyledTableCell align="right">{item.star}</StyledTableCell>
-                                <StyledTableCell align="right">{item.speciality.specialtyName}</StyledTableCell>
-                                <StyledTableCell align="right">
-                                    <Stack direction="row" spacing={1} justifyContent="flex-end">
-                                        <Button variant="contained" onClick={() => handleEditId(item.id)} sx={{ width: 5 }}><i className="fa-solid fa-pen-to-square"></i>
-                                        </Button>
-                                        <Button variant="outlined" color="error" onClick={() => handleDelete(item.id)}
-                                            sx={{ marginLeft: 'auto' }}><i
-                                                className="fa-solid fa-delete-left"></i>
-                                        </Button>
-                                    </Stack>
+                                <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.dob}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.email}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.phone}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.createAt}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.fee}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.star}</StyledTableCell>
+                                <StyledTableCell align="center">
+                                    <Button variant="contained" color="warning"
+                                        onClick={() => handleEditId(item.id)} sx={{ width: 5 }}>
+                                        <i className="fa-solid fa-pen-to-square"></i>
+                                    </Button>
+                                </StyledTableCell>
+                                <StyledTableCell align="center">
+                                    <Button variant="contained" color="error"
+                                        onClick={() => handleDelete(item.id)}
+                                        sx={{ marginLeft: 'auto' }}>
+                                        <i className="fa-solid fa-delete-left"></i>
+                                    </Button>
                                 </StyledTableCell>
                             </StyledTableRow>
                         ))}
