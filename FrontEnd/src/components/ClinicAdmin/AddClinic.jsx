@@ -13,7 +13,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from '../CkEditor/ClinicEditor';
 
-const schema = yup.object({
+const schema = yup.object().shape({
     clinicName: yup.string()
         .required("Tên không được để trống")
         .min(2, 'Nhập trên 2 kí tự')
@@ -33,7 +33,19 @@ const schema = yup.object({
         .required("GPHĐ không đuược để trống")
         .min(5, 'Nhập trên 5 kí tự')
         .max(30, 'Nhập dưới 30 kí tự'),
+    clinicLogo: yup.mixed().test("file", "Logo không được để trống", (value) => {
+        if (value.length > 0) {
+            return true;
+        }
+        return false;
+    }),
 })
+
+const StyledErrorText = styled('p')({
+    color: '#d32f2f',
+    fontSize: '14px',
+    marginTop: '8px',
+});
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -119,6 +131,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                                         }
                                     }} />
                                 </Button>
+                                {errors?.clinicLogo && <StyledErrorText>{errors?.clinicLogo?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>

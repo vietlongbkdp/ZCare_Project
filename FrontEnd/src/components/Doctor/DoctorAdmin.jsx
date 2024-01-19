@@ -52,9 +52,16 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     const [showEdit, setShowEdit] = useState(false);
     const [updateShow, setUpdateShow] = useState(false)
     const [buttonCreate, setButtonCreate] = useState(true)
+    const [buttonDisable, setButtonDisable] = useState(true)
     const [showTable, setShowTable] = useState(true)
     const [showPage, setShowPage] = useState(true);
     const [doctorId, setDoctorId] = useState();
+
+    useEffect(() => {
+        if (!clinicId) {
+            setButtonDisable(false)
+        }
+    }, [])
 
     useEffect(() => {
         const getDoctors = async () => {
@@ -81,11 +88,6 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
         setButtonCreate(false)
         setShowTable(false)
         setShowPage(false)
-    }
-
-    const handleCloseDoctor = () => {
-        setButtonCreate(false)
-
     }
 
     const handleEditId = (id) => {
@@ -153,7 +155,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     return (
         <Box>
             {
-                buttonCreate &&
+                buttonCreate && buttonDisable &&
                 <>
                     <Button
                         type="button"

@@ -11,9 +11,11 @@ import ChangePassword from "./components/Authentication/ChangePassword";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
 import { useContext } from "react";
 import { ApiContext } from "./components/ApiContext/ApiProvider";
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import CustomerAdmin from "./components/CustomerAdmin/CustomerAdmin"
 import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
+
 
 
 
@@ -42,6 +44,7 @@ export default function App() {
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
+    {/*<DoctorInfoClinic/>*/}
     </>
   );
 }
