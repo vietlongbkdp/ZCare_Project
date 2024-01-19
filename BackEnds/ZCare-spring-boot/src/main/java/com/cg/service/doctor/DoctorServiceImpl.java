@@ -3,6 +3,7 @@ package com.cg.service.doctor;
 
 import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
+import com.cg.model.DTO.DoctorResDTO;
 import com.cg.model.Doctor;
 import com.cg.repository.IDoctorRepository;
 import com.cg.repository.IPositionRepository;

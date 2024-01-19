@@ -164,13 +164,13 @@ export default function DoctorAdmin() {
                                     {item.id}
                                 </StyledTableCell>
                                 <StyledTableCell align="right">{item.doctorName}</StyledTableCell>
-                                <StyledTableCell align="right">{item.position.name}</StyledTableCell>
+                                <StyledTableCell align="right">{item?.position?.name}</StyledTableCell>
                                 <StyledTableCell align="right">{item.dob}</StyledTableCell>
                                 <StyledTableCell align="right">{item.email}</StyledTableCell>
                                 <StyledTableCell align="right">{item.phone}</StyledTableCell>
                                 <StyledTableCell align="right">{item.createAt}</StyledTableCell>
                                 <StyledTableCell align="right">{item.fee}</StyledTableCell>
-                                <StyledTableCell align="right">{item.clinic.clinicName}</StyledTableCell>
+                                <StyledTableCell align="right">{item?.clinic?.clinicName}</StyledTableCell>
                                 <StyledTableCell align="right">{item.avatarImg}</StyledTableCell>
                                 <StyledTableCell align="right">{item.star}</StyledTableCell>
                                 <StyledTableCell align="right">{item.speciality.specialtyName}</StyledTableCell>

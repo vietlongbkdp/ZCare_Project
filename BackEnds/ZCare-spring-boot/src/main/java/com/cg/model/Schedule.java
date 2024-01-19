@@ -26,5 +26,6 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private EStatus status;
     @ManyToOne
+    @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 }
