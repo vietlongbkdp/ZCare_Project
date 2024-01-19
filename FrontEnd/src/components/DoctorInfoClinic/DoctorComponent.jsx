@@ -15,7 +15,26 @@ function DoctorComponent({ doctor }) {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
+    const convertStringDetailToNumDetail = (timeItem) => {
+        const [startTime, endTime] = timeItem.split(' - ');
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        return [startHour, startMinute];
+    };
+    const compareStartTime = (a, b) => {
+        const startTimeA = convertStringDetailToNumDetail(a.timeItem);
+        const startTimeB = convertStringDetailToNumDetail(b.timeItem);
 
+        if (startTimeA[0] < startTimeB[0] || (startTimeA[0] === startTimeB[0] && startTimeA[1] < startTimeB[1])) {
+            return -1;
+        } else if (startTimeA[0] > startTimeB[0] || (startTimeA[0] === startTimeB[0] && startTimeA[1] > startTimeB[1])) {
+            return 1;
+        } else {
+            return 0;
+        }
+    };
+    const sortObjectsByStartTime = (objectsList) => {
+        return objectsList.sort(compareStartTime);
+    };
     useEffect(() => {
         setCurrentDate(new Date());
         const getRecentDates = () => {
@@ -35,7 +54,8 @@ function DoctorComponent({ doctor }) {
         try {
             const response = await axios.get(`http://localhost:8080/api/schedule/${doctor.id}/${selectedWeekday}`);
             if (response.status === 200) {
-                setScheduleList(response.data);
+                const sortedScheduleList = sortObjectsByStartTime(response.data);
+                setScheduleList(sortedScheduleList);
             }
         } catch (error) {
             console.error('Error fetching schedule data:', error);

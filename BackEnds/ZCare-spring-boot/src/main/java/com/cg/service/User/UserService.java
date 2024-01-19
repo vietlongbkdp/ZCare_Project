@@ -35,6 +35,6 @@ public class UserService implements IUserService{
 
     @Override
     public User findByFullName(String fullName) {
-        return iUserRepository.findByFullName(fullName);
+        return iUserRepository.findByEmail(fullName).get();
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("api/cooperate")
+@RequestMapping("/api/cooperate")
 @CrossOrigin(origins = "*")
 public class CooperateAPI {
     @Autowired
