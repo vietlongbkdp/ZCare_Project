@@ -1,5 +1,6 @@
 package com.cg.model;
 
+import com.cg.model.enumeration.ELockStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,5 +42,8 @@ public class Doctor {
     private String doctorInfo;
     @ManyToOne
     private Speciality speciality;
+
+    @Enumerated(EnumType.STRING)
+    private ELockStatus lockStatus;
 
 }

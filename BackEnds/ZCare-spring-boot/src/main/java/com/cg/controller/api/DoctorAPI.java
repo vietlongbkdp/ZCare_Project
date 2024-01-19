@@ -1,7 +1,9 @@
 package com.cg.controller.api;
 
 import com.cg.model.DTO.DoctorReqDTO;
+import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
+import com.cg.model.enumeration.ELockStatus;
 import com.cg.repository.IClinicRepository;
 import com.cg.repository.IDoctorRepository;
 import com.cg.repository.IPositionRepository;
@@ -14,6 +16,7 @@ import com.cg.until.PassDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -37,6 +40,7 @@ public class DoctorAPI {
     private ISpecialityService specialityService;
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getDoctors() {
         List<Doctor> doctorList = doctorService.findAll();
         return new ResponseEntity<>(doctorList, HttpStatus.OK);
@@ -80,6 +84,24 @@ public class DoctorAPI {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> Delete(@PathVariable Long id) {
         doctorService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
+        Doctor doctor = doctorService.findById(id).get();
+
+
+        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
+            doctor.setLockStatus(ELockStatus.UNLOCK);
+        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
+            doctor.setLockStatus(ELockStatus.LOCK);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+
+
+        doctorService.save(doctor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
