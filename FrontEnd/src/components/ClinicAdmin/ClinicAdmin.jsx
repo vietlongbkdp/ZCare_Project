@@ -191,7 +191,7 @@ export default function CustomizedTables() {
                                                 {item?.id}
                                             </StyledTableCell>
                                             <StyledTableCell>
-                                                <img src={item?.clinicLogo} alt="Clinic Logo" style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
+                                                <img src={item?.clinicLogo} alt="Clinic Logo" style={{ width: '50px', height: '50px' }} />
                                             </StyledTableCell>
                                             <StyledTableCell>{item?.clinicName}</StyledTableCell>
                                             <StyledTableCell>{item?.address}</StyledTableCell>
@@ -201,12 +201,12 @@ export default function CustomizedTables() {
                                             <StyledTableCell>
                                                 <Button variant='contained' color='secondary'
                                                     onClick={() => handleShowDoctor(item?.id)} sx={{ width: 5 }}>
-                                                    <i class="fa-solid fa-user-doctor"></i>
+                                                    <i className="fa-solid fa-user-doctor"></i>
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell>
                                                 <Button variant='contained' color='primary'>
-                                                    <i class="fa-solid fa-list-ul"></i>
+                                                    <i className="fa-solid fa-list-ul"></i>
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell >

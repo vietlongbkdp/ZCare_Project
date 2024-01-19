@@ -91,26 +91,23 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
 
     const handleDelete = async (id) => {
         Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
+            title: "Bạn có chắc chắn không?",
+            text: "Bạn sẽ không thể hoàn tác",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!"
+            cancelButtonText: 'Hủy',
+            confirmButtonText: "Đồng ý, xóa"
         }).then(async (data) => {
             if (data.isConfirmed) {
                 try {
                     await axios.delete(`http://localhost:8080/api/doctor/${id}`);
-                    toast.success("thành công")
+                    toast.success("Xóa bác sĩ thành công")
                     setUpdateShow(pre => !pre);
                 } catch (error) {
-                    toast.error("thất bại")
-                } Swal.fire({
-                    title: "Deleted!",
-                    text: "Your file has been deleted.",
-                    icon: "success"
-                });
+                    toast.error("Xóa bác sĩ thất bại")
+                }
             }
         })
     }
@@ -165,11 +162,12 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                             <StyledTableCell align="left">TÊN BÁC SĨ</StyledTableCell>
                             <StyledTableCell align="left">CHỨC DANH</StyledTableCell>
                             <StyledTableCell align="left">CHUYÊN KHOA</StyledTableCell>
+                            <StyledTableCell align="left">PHÒNG KHÁM</StyledTableCell>
                             <StyledTableCell align="left">NGÀY SINH</StyledTableCell>
                             <StyledTableCell align="left">EMAIL</StyledTableCell>
                             <StyledTableCell align="left">SĐT</StyledTableCell>
                             <StyledTableCell align="left">NGÀY ĐĂNG KÍ</StyledTableCell>
-                            <StyledTableCell align="left">PHÍ KHÁM</StyledTableCell>
+                            <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
                             <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
                             <StyledTableCell align="center">CẬP NHẬT</StyledTableCell>
                             <StyledTableCell align="center">XÓA</StyledTableCell>
@@ -185,6 +183,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                                 <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
+                                <StyledTableCell align="left">{item?.clinic?.clinicName}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.dob}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.email}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.phone}</StyledTableCell>

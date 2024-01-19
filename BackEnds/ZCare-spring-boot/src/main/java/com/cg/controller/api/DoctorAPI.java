@@ -3,26 +3,20 @@ package com.cg.controller.api;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.DoctorResDTO;
 import com.cg.model.Doctor;
+import com.cg.service.avatar.AvatarService;
 import com.cg.model.Schedule;
-import com.cg.repository.IClinicRepository;
-import com.cg.repository.IDoctorRepository;
-import com.cg.repository.IPositionRepository;
 import com.cg.service.clinic.IClinicService;
 import com.cg.service.doctor.DoctorServiceImpl;
-import com.cg.service.doctor.IDoctorService;
 import com.cg.service.position.IPositionService;
 import com.cg.service.schedule.IScheduleService;
 import com.cg.service.speciality.ISpecialityService;
-import com.cg.until.PassDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/doctor")
@@ -31,8 +25,7 @@ public class DoctorAPI {
     @Autowired
     private DoctorServiceImpl doctorService;
     @Autowired
-    private IClinicRepository clinicRepository;
-
+    private AvatarService avatarService;
     @Autowired
     private IPositionService iPositionService;
     @Autowired
@@ -80,24 +73,31 @@ public class DoctorAPI {
 
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateDoctor(@PathVariable Long id, @RequestBody DoctorReqDTO doctorReqDTO) {
-        Doctor doctor = doctorService.findById(id).get();
-        doctor.setPosition(iPositionService.findById(Long.parseLong(doctorReqDTO.getPosition())).get());
-        doctor.setDoctorName(doctorReqDTO.getDoctorName());
-        doctor.setDob(LocalDate.parse(doctorReqDTO.getDob()));
-        doctor.setEmail(doctorReqDTO.getEmail());
-        doctor.setPhone(doctorReqDTO.getPhone());
-        doctor.setFee(new BigDecimal(doctorReqDTO.getFee()));
-        doctor.setAvatarImg(doctorReqDTO.getAvatarImg());
-        doctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
-        doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
+        Doctor updateDoctor = doctorService.findById(id).get();
+        String updateAvatarImg = updateDoctor.getAvatarImg();
 
-        doctorService.save(doctor);
-        return new ResponseEntity<>(doctor, HttpStatus.OK);
+        updateDoctor.setPosition(iPositionService.findById(Long.parseLong(doctorReqDTO.getPosition())).get());
+        updateDoctor.setDoctorName(doctorReqDTO.getDoctorName());
+        updateDoctor.setDob(LocalDate.parse(doctorReqDTO.getDob()));
+        updateDoctor.setEmail(doctorReqDTO.getEmail());
+        updateDoctor.setPhone(doctorReqDTO.getPhone());
+        updateDoctor.setFee(new BigDecimal(doctorReqDTO.getFee()));
+        updateDoctor.setAvatarImg(doctorReqDTO.getAvatarImg());
+        updateDoctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
+        updateDoctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
+        doctorService.save(updateDoctor);
+
+        if (!updateAvatarImg.equals(doctorReqDTO.getAvatarImg())) {
+            avatarService.deleteImage(updateAvatarImg);
+        }
+        return new ResponseEntity<>(updateDoctor, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
+        Doctor deleteDoctor = doctorService.findById(id).get();
         doctorService.deleteById(id);
+        avatarService.deleteImage(deleteDoctor.getAvatarImg());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

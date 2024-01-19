@@ -41,20 +41,20 @@ public class ClinicAPI {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<?> editClinic(@PathVariable Long id, @RequestBody Clinic clinic){
-        Clinic editClinic = clinicService.findById(id).get();
-        String editClinicLogo = editClinic.getClinicLogo();
+    public ResponseEntity<?> updateClinic(@PathVariable Long id, @RequestBody Clinic clinic){
+        Clinic updateClinic = clinicService.findById(id).get();
+        String updateClinicLogo = updateClinic.getClinicLogo();
 
-        editClinic.setClinicName(clinic.getClinicName());
-        editClinic.setLegalRepresentative(clinic.getLegalRepresentative());
-        editClinic.setHotline(clinic.getHotline());
-        editClinic.setOperatingLicence(clinic.getOperatingLicence());
-        editClinic.setAddress(clinic.getAddress());
-        editClinic.setClinicInfo(clinic.getClinicInfo());
-        editClinic.setClinicLogo(clinic.getClinicLogo());
-        clinicService.save(editClinic);
-        if (!editClinicLogo.equals(clinic.getClinicLogo())) {
-            avatarService.deleteImage(editClinic.getClinicLogo());
+        updateClinic.setClinicName(clinic.getClinicName());
+        updateClinic.setLegalRepresentative(clinic.getLegalRepresentative());
+        updateClinic.setHotline(clinic.getHotline());
+        updateClinic.setOperatingLicence(clinic.getOperatingLicence());
+        updateClinic.setAddress(clinic.getAddress());
+        updateClinic.setClinicInfo(clinic.getClinicInfo());
+        updateClinic.setClinicLogo(clinic.getClinicLogo());
+        clinicService.save(updateClinic);
+        if (!updateClinicLogo.equals(clinic.getClinicLogo())) {
+            avatarService.deleteImage(updateClinicLogo);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -35,7 +35,6 @@ export default function App() {
         <Route path="/user" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
-
         <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
     </>
