@@ -19,13 +19,13 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-const schema = yup.object({
+const schema = yup.object().shape({
     doctorName: yup.string()
         .required("Tên không được để trống")
         .min(2, 'Tên tối thiểu 2 kí tự')
         .max(50, 'Tên tối đa 50 kí tự'),
     dob: yup.string()
-        .required("Sinh nhật không được để trống"),
+        .required("Ngày sinh không được để trống"),
     email: yup.string()
         .required("Email không được để trống")
         .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
@@ -39,9 +39,13 @@ const schema = yup.object({
         .typeError('Giá khám không được để trống'),
     speciality: yup.string()
         .required("Chuyên khoa không được để trống"),
-    // avatarImg: yup.required('Ảnh đại diện không được để trống')
-    avatarImg: yup.mixed().required('Ảnh đại diện không được để trống'),
-})
+    avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
+        if (value.length > 0) {
+            return true;
+        }
+        return false;
+    }),
+});
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -61,6 +65,13 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
     boxShadow: 'none'
 }));
+
+const StyledErrorText = styled('p')({
+    color: '#d32f2f',
+    fontSize: '14px',
+    marginTop: '8px',
+});
+
 export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage, clinicId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
@@ -142,7 +153,6 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
         setButtonCreate(true)
         setShowTable(true)
         setShowPage(true)
-
     }
     return (
         <>
@@ -165,6 +175,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
                                         }
                                     }} />
                                 </Button>
+                                {errors?.avatarImg && <StyledErrorText>{errors?.avatarImg?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>
@@ -195,6 +206,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
                                                 id="dob"
                                                 type={"date"}
                                                 label="Ngày sinh"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.dob)}
                                                 helperText={errors.dob?.message || ''}
                                                 {...register("dob")}

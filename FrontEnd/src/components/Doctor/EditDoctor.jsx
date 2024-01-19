@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-const schema = yup.object({
+const schema = yup.object().shape({
     doctorName: yup.string()
         .required("Tên không được để trống")
         .min(2, 'Tên tối thiểu 2 kí tự')
@@ -39,8 +39,12 @@ const schema = yup.object({
         .typeError('Giá khám không được để trống'),
     speciality: yup.string()
         .required("Chuyên khoa không được để trống"),
-    // avatarImg: yup.string()
-    //     .required("Ảnh đại diện không được để trống"),
+    avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
+        if (value.length > 0) {
+            return true;
+        }
+        return false;
+    }),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -61,9 +65,17 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
     boxShadow: 'none'
 }));
+
+const StyledErrorText = styled('p')({
+    color: '#d32f2f',
+    fontSize: '14px',
+    marginTop: '8px',
+});
+
+let updateAvatar;
+let presentAvatar;
+
 export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, setShowTable, setUpdateShow, setShowPage }) {
-    let updateAvatar;
-    let presentAvatar;
 
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
@@ -102,7 +114,6 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
     useEffect(() => {
         if (doctorId) {
             const getDoctor = async () => {
-
                 const res = await axios.get(`http://localhost:8080/api/doctor/${doctorId}`);
                 const result = await res.data;
                 setClinicId(result.clinic.id)
@@ -118,6 +129,8 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                 setValue("fee", result.fee)
                 presentAvatar = result.avatarImg;
                 updateAvatar = result.avatarImg;
+                console.log('init pre', presentAvatar);
+                console.log('init update', updateAvatar);
                 document.getElementById('blah').src = presentAvatar;
             }
             getDoctor();
@@ -194,6 +207,7 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                                         handleUpload(event)
                                     }} />
                                 </Button>
+                                {errors?.avatarImg && <StyledErrorText>{errors?.avatarImg?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>
