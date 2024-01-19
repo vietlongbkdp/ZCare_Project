@@ -62,7 +62,7 @@ private UserService userService;
     public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword forgotPassword){
         boolean isConfirmed= customerService.forgotPassword(forgotPassword);
         if (isConfirmed) {
-            User user = iUserRepository.findByFullName(forgotPassword.getEmail());
+            User user = iUserRepository.findByEmail(forgotPassword.getEmail());
             Long userId=user.getId();
             return ResponseEntity.ok(userId);
         } else {

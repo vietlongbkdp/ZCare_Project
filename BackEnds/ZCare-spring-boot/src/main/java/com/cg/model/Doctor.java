@@ -49,6 +49,9 @@ public class Doctor {
     @OneToMany
     @JsonIgnore
     private List<Schedule> scheduleList;
+    @OneToOne
+    @JoinColumn(name="user_id")
+    private User user;
 
     public DoctorResDTO toDoctorResDTO() {
         return new DoctorResDTO()

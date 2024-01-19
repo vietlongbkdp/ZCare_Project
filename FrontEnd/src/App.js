@@ -12,6 +12,7 @@ import DoctorAdmin from "./components/Doctor/DoctorAdmin";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
 import { useContext } from "react";
 import { ApiContext } from "./components/ApiContext/ApiProvider";
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 
 
 export default function App() {
@@ -37,6 +38,7 @@ export default function App() {
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />
       </Routes>
+    {/*<DoctorInfoClinic/>*/}
     </>
   );
 }

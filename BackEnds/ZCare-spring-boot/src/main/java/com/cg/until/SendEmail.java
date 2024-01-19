@@ -17,4 +17,16 @@ public class SendEmail {
                 + "Trân trọng,\n"
                 + "ZCare Team";
     }
+
+    public static String EmailRegisterDoctor(String username, String password,String email) {
+        return "Kính gửi " + username + ",\n\n"
+                + "Chúc mừng! Tài khoản của bạn đã được tạo thành công.\n"
+                + "Thông tin đăng nhập:\n"
+                + "Tài khoản: " + email + "\n"
+                + "Mật khẩu: " + password + "\n\n"
+                + "Hãy sử dụng thông tin trên để đăng nhập và trải nghiệm dịch vụ của chúng tôi.\n\n"
+                + "Chúc bạn một ngày tốt lành!\n\n"
+                + "Trân trọng,\n"
+                + "ZCare Team";
+    }
 }

@@ -5,12 +5,15 @@ import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.DoctorResDTO;
 import com.cg.model.Doctor;
+import com.cg.model.User;
+import com.cg.model.enumeration.ERole;
 import com.cg.repository.IDoctorRepository;
 import com.cg.repository.IPositionRepository;
+import com.cg.repository.IUserRepository;
 import com.cg.service.clinic.IClinicService;
 import com.cg.service.position.IPositionService;
 import com.cg.service.speciality.ISpecialityService;
-import com.cg.until.PassDate;
+import com.cg.until.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,10 @@ public class DoctorServiceImpl implements IDoctorService{
     private IClinicService clinicService;
     @Autowired
     private ISpecialityService specialityService;
+    @Autowired
+    private IUserRepository iUserRepository;
+    @Autowired
+    private EmailUntil emailUntil;
 
     @Override
     public List<Doctor> findAll() {
@@ -55,6 +62,17 @@ public class DoctorServiceImpl implements IDoctorService{
 
     @Override
     public void create(DoctorReqDTO doctorReqDTO) {
+        String password = RandomCode.generateRandomCode(6);
+        User user =new User();
+        user.setEmail(doctorReqDTO.getEmail());
+        user.setPassword(password);
+        user.setRole(ERole.ROLE_DOCTOR);
+        iUserRepository.save(user);
+
+        String title="Chúc mừng! Tài khoản ZCare đã được tạo thành công";
+        String body= SendEmail.EmailRegisterDoctor(doctorReqDTO.getDoctorName(),password,doctorReqDTO.getEmail());
+        emailUntil.sendEmail(doctorReqDTO.getEmail(),title,body);
+
         Doctor doctor = new Doctor();
         doctor.setPosition(iPositionService.findById(Long.parseLong(doctorReqDTO.getPosition())).get());
         doctor.setDoctorName(doctorReqDTO.getDoctorName());
@@ -67,7 +85,7 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
         doctor.setStar(0);
-
+        doctor.setUser(user);
         doctorRepository.save(doctor);
 
     }
