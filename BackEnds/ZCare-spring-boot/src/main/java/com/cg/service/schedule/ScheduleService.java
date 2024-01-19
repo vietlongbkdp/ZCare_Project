@@ -1,15 +1,14 @@
 package com.cg.service.schedule;
 
-import com.cg.model.DTO.DetailTimeDTO;
 import com.cg.model.DTO.ScheduleDeleteDTO;
 import com.cg.model.Schedule;
+import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EWeekday;
 import com.cg.repository.IScheduleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -62,5 +61,20 @@ public class ScheduleService implements IScheduleService{
         if(scheduleGet != null){
             scheduleRepository.deleteById(scheduleGet.getId());
         }
+    }
+
+    @Override
+    public List<Schedule> findByDoctorIdAndWeekdayAndStatus(Long doctorId, EWeekday weekday, EStatus status) {
+        return scheduleRepository.findByDoctorIdAndWeekdayAndStatus(doctorId,weekday,status);
+    }
+
+    @Override
+    public List<Schedule> findByWeekdayAndStatus(EWeekday weekday, EStatus status) {
+        return scheduleRepository.findByWeekdayAndStatus(weekday,status);
+    }
+
+    @Override
+    public List<Schedule> findAllByDoctorId(Long id) {
+        return scheduleRepository.findAllByDoctorId(id);
     }
 }

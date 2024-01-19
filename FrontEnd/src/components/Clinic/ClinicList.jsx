@@ -36,6 +36,7 @@ function ClinicList() {
                     <Container
                         key={clinic.id}
                         style={{
+                            flex: '0 0 25%',
                             display: 'flex',
                             borderRadius: '4px',
                             border: '1px solid',
@@ -46,32 +47,37 @@ function ClinicList() {
                             marginLeft: "10px",
                             width: '25%',
                             boxSizing: 'border-box',
+                            height: '200px',
+                            wordWrap: 'break-word',
+                            wordBreak: 'break-all',
                         }}
                     >
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <Box display="flex" flexDirection="column" marginRight="10px" marginLeft="10px">
-                                    <Typography variant="h6" style={{color: '#74b9ff'}}>{clinic.clinicName}</Typography>
-                                    <Typography variant="subtitle1" style={{color: '#81ecec'}} className={"address"}>
+                                    <Typography variant="h6" style={{ color: '#74b9ff', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        {clinic.clinicName}
+                                    </Typography>
+                                    <Typography variant="subtitle1" style={{ color: '#81ecec', flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                         {clinic.address}
                                     </Typography>
-                                    <div style={{display: 'flex'}}>
-                                        <IconButton style={{marginRight: '8px'}}>
-                                            <Facebook/>
+                                    <div style={{ display: 'flex' }}>
+                                        <IconButton style={{ marginRight: '8px' }}>
+                                            <Facebook />
                                         </IconButton>
-                                        <IconButton style={{marginRight: '8px'}}>
-                                            <Instagram/>
+                                        <IconButton style={{ marginRight: '8px' }}>
+                                            <Instagram />
                                         </IconButton>
-                                        <IconButton style={{marginRight: '8px'}}>
-                                            <Twitter/>
+                                        <IconButton style={{ marginRight: '8px' }}>
+                                            <Twitter />
                                         </IconButton>
-                                        <IconButton style={{marginRight: '8px'}}>
-                                            <LinkedIn/>
+                                        <IconButton style={{ marginRight: '8px' }}>
+                                            <LinkedIn />
                                         </IconButton>
                                     </div>
                                 </Box>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <Box style={{
                                     display: 'flex',
                                     flexDirection: 'column',

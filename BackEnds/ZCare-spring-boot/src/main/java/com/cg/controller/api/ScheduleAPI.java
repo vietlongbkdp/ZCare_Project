@@ -24,21 +24,37 @@ public class ScheduleAPI {
     private IScheduleService scheduleService;
     @Autowired
     private IDoctorService doctorService;
+
     @GetMapping
-    public ResponseEntity<?> getAllSchedule(){
+    public ResponseEntity<?> getAllSchedule() {
         List<Schedule> scheduleList = scheduleService.findAll();
         List<ScheduleRespDTO> scheduleRespDTOList= scheduleList.stream().map(Schedule::toScheduleRespDTO).collect(Collectors.toList());
         return new ResponseEntity<>(scheduleRespDTOList, HttpStatus.OK);
     }
+
+    @GetMapping("/{doctorId}/{weekday}")
+    public ResponseEntity<?> getAllScheduleByIdDoctor(@PathVariable Long doctorId, @PathVariable String weekday) {
+        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
+        List<Schedule> scheduleList = scheduleService.findByDoctorIdAndWeekdayAndStatus(doctorId, weekdayEnum, EStatus.AVAILABLE);
+        return new ResponseEntity<>(scheduleList, HttpStatus.OK);
+    }
+
+    @GetMapping("/getAll/{weekday}")
+    public ResponseEntity<?> getAllScheduleByWeekday(@PathVariable String weekday) {
+        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
+        List<Schedule> scheduleList = scheduleService.findByWeekdayAndStatus( weekdayEnum, EStatus.AVAILABLE);
+        return new ResponseEntity<>(scheduleList, HttpStatus.OK);
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO scheduleDTO){
+    public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Long idDoctor = scheduleDTO.getIdDoctor();
         Doctor doctors = doctorService.findById(idDoctor).get();
         List<ScheduleWeekDTO> listSchedules = scheduleDTO.getListSchedule();
-        for (ScheduleWeekDTO scheduleWeekDTO: listSchedules){
+        for (ScheduleWeekDTO scheduleWeekDTO : listSchedules) {
             String weekday = scheduleWeekDTO.getWeekdayGet();
             List<DetailTimeDTO> detailTimeDTOList = scheduleWeekDTO.getDetailTime();
-            for (DetailTimeDTO detailTimeDTO: detailTimeDTOList){
+            for (DetailTimeDTO detailTimeDTO : detailTimeDTOList) {
                 Schedule newSchedule = new Schedule();
                 newSchedule.setDoctor(doctors).setWeekday(EWeekday.getByWeekday(weekday)).setStatus(EStatus.AVAILABLE).setTimeItem(detailTimeDTO.getTimeDetailShow());
                 scheduleService.create(newSchedule);

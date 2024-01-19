@@ -18,32 +18,34 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
-const schema = yup.object({
+const schema = yup.object().shape({
     doctorName: yup.string()
-        .required("tên không được để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Tên không được để trống")
+        .min(2, 'Tên tối thiểu 2 kí tự')
+        .max(50, 'Tên tối đa 50 kí tự'),
     dob: yup.string()
-        .required("sinh nhật không được để trống"),
+        .required("Ngày sinh không được để trống"),
     email: yup.string()
         .required("Email không được để trống")
         .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
     phone: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
-    clinic: yup.string()
-        .required(" địa chỉ không được để trống"),
     position: yup.string()
-        .required(" không được để trống"),
+        .required("Chức danh không được để trống"),
     fee: yup.number()
-        .required(" không được để trống"),
+        .required("Giá khám không được để trống")
+        .typeError('Giá khám không được để trống'),
     speciality: yup.string()
-        .required(" không được để trống")
-})
+        .required("Chuyên khoa không được để trống"),
+    avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
+        if (value.length > 0) {
+            return true;
+        }
+        return false;
+    }),
+});
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -60,10 +62,17 @@ const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(2),
-    textAlign: 'center',
     color: theme.palette.text.secondary,
+    boxShadow: 'none'
 }));
-export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage }) {
+
+const StyledErrorText = styled('p')({
+    color: '#d32f2f',
+    fontSize: '14px',
+    marginTop: '8px',
+});
+
+export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage, clinicId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -75,22 +84,32 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
     );
 
     const createDoctor = async (data) => {
-        data.avatarImg = 'null'
-        console.log(data)
-        try {
-            await axios.post('http://localhost:8080/api/doctor', data);
-            setShowAdd(false)
-            toast.success("thành công")
-            setUpdateShow(pre => !pre);
-            reset();
-            setButtonCreate(true)
-            setShowTable(true)
-            setShowPage(true)
-
-        } catch (error) {
-            toast.error("thất bại")
+        console.log('data', data);
+        let imagesImport = Array.from(data.avatarImg);
+        const formData = new FormData();
+        formData.append('image', imagesImport[0])
+        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        if (res.status == '200') {
+            data.avatarImg = await res.data.fileUrl
+            data.clinicId = clinicId;
+            const response = await axios.post('http://localhost:8080/api/doctor', data);
+            if (response.status == '200') {
+                setShowAdd(false)
+                toast.success("Tạo bác sĩ thành công")
+                setUpdateShow(pre => !pre);
+                reset();
+                setButtonCreate(true)
+                setShowTable(true)
+                setShowPage(true)
+            }
+            else {
+                await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
+                toast.error("Tạo bác sĩ thất bại!")
+            }
         }
-
+        else {
+            toast.error("Tải ảnh đại diện thất bại!")
+        }
     }
 
     useEffect(() => {
@@ -134,61 +153,66 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
         setButtonCreate(true)
         setShowTable(true)
         setShowPage(true)
-
     }
     return (
         <>
-            <Container>
+            <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
-                    Create a new doctor
+                    Tạo bác sĩ
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(createDoctor)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
-                        <Grid item xs={4} >
-                            <Item>
-                                <Button component="label" sx={{ borderRadius: 50 }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
+                        <Grid item xs={3} >
+                            <Item sx={{ textAlign: 'center' }}>
+                                <Button component="label" sx={{ textAlign: 'center' }}>
+                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                         alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("avatarImg")} type="file" onChange={(event) => {
-                                        document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])
+                                        if (event.target.files && event.target.files[0]) {
+                                            document.getElementById("blah").src = window.URL.createObjectURL(
+                                                event.target.files[0]
+                                            );
+                                        }
                                     }} />
                                 </Button>
-                                <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
-                                    Upload your Avatar
+                                {errors?.avatarImg && <StyledErrorText>{errors?.avatarImg?.message}</StyledErrorText>}
+                                <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
+                                    Tải ảnh phòng khám tại đây
                                 </Typography>
-                                <Typography fontSize={12} fontStyle={"italic"} mb={5}>
-                                    Allowed *.jpeg, *.jpg, *.png, *.gif max size of 3MB
+                                <Typography fontSize={12} fontStyle={"italic"}>
+                                    Chỉ cho phép các định dạng *.jpeg, *.jpg, *.png, *.gif kích thước tối đa 1MB
                                 </Typography>
                             </Item>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={9}>
                             <Item >
-                                <Box sx={{ mt: 3 }}>
+                                <Box>
                                     <Grid container spacing={2} >
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="given-name"
                                                 fullWidth
                                                 id="doctorName"
-                                                label="Full Name"
+                                                label="Họ và tên"
                                                 error={Boolean(errors.doctorName)}
                                                 helperText={errors.doctorName?.message || ''}
                                                 {...register("doctorName")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="dob"
                                                 fullWidth
                                                 id="dob"
                                                 type={"date"}
-                                                label="dob"
+                                                label="Ngày sinh"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.dob)}
                                                 helperText={errors.dob?.message || ''}
                                                 {...register("dob")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="email"
                                                 fullWidth
@@ -199,41 +223,24 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 {...register("email")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 fullWidth
                                                 id="phone"
-                                                label="Phone"
+                                                label="Số điện thoại"
                                                 autoComplete="phone"
                                                 error={Boolean(errors.phone)}
                                                 helperText={errors.phone?.message || ''}
                                                 {...register("phone")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <FormControl fullWidth>
-                                                <InputLabel id="clinicLabel">Clinic</InputLabel>
-                                                <Select
-                                                    labelId="clinicLabel"
-                                                    id="clinic"
-                                                    label="Clinic"
-                                                    error={Boolean(errors.clinic)}
-                                                    helperText={errors.clinic?.message || ''}
-                                                    {...register("clinic")}
-                                                >
-                                                    {clinicList.map((item) => (
-                                                        <MenuItem value={item.id}>{item.clinicName}</MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="specialityLabel">Speciality</InputLabel>
                                                 <Select
                                                     labelId="specialityLabel"
                                                     id="speciality"
-                                                    label="Speciality"
+                                                    label="Chuyên khoa"
                                                     error={Boolean(errors.speciality)}
                                                     helperText={errors.speciality?.message || ''}
                                                     {...register("speciality")}
@@ -244,18 +251,16 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="positionLabel">Position</InputLabel>
                                                 <Select
                                                     labelId="positionLabel"
                                                     id="position"
-                                                    // value={0}
-                                                    label="Position"
+                                                    label="Chức danh"
                                                     error={Boolean(errors.position)}
                                                     helperText={errors.position?.message || ''}
                                                     {...register("position")}
-                                                // onChange={handleChange}
                                                 >
                                                     {positionList.map((item) => (
                                                         <MenuItem value={item.id}>{item.name}</MenuItem>
@@ -263,11 +268,11 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 fullWidth
                                                 id="fee"
-                                                label="Fee"
+                                                label="Giá khám bệnh (VNĐ)"
                                                 type={"number"}
                                                 autoComplete="fee"
                                                 error={Boolean(errors.fee)}
@@ -275,23 +280,24 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 {...register("fee")}
                                             />
                                         </Grid>
-                                        <Grid item container xs={12} sm={6} justifyContent="flex-end" >
-                                            <Button variant="secondary" onClick={closeAddModal}
-                                                sx={{ mt: 3, mb: 1 }}>
-                                                Close
-                                            </Button>
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                sx={{ mt: 3, mb: 1 }}
-                                            >
-                                                Create
-                                            </Button>
-                                        </Grid>
                                     </Grid>
                                 </Box>
                             </Item>
                         </Grid>
+                    </Grid>
+                    <Grid item container xs={12} sm={6} >
+                        <Button
+                            variant="contained"
+                            color="success"
+                            type="submit"
+                            sx={{ mt: 3, mb: 1, mr: 1 }}
+                        >
+                            Tạo
+                        </Button>
+                        <Button variant="contained" onClick={closeAddModal}
+                            sx={{ mt: 3, mb: 1 }}>
+                            Hủy
+                        </Button>
                     </Grid>
                 </Box>
             </Container>

@@ -27,6 +27,7 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private EStatus status;
     @ManyToOne
+    @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     public ScheduleRespDTO toScheduleRespDTO(){
         return new ScheduleRespDTO().setWeekday(weekday.getWeekday()).setIdDoctor(doctor.getId()).setTimeItem(timeItem);

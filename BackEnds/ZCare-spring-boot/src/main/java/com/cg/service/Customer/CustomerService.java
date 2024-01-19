@@ -1,5 +1,4 @@
 package com.cg.service.Customer;
-
 import com.cg.model.Customer;
 import com.cg.model.DTO.CustomerReqDTO;
 import com.cg.model.DTO.EmailReqDTO;
@@ -49,7 +48,7 @@ public class CustomerService implements ICustomerService {
     @Override
     public void register(CustomerReqDTO customerReqDTO) {
         User user = new User();
-        user.setFullName(customerReqDTO.getEmail());
+        user.setEmail(customerReqDTO.getEmail());
         user.setPassword(PasswordEncryptionUtil.encryptPassword(customerReqDTO.getPassword()));
         user.setRole(ERole.ROLE_USER);
         iUserRepository.save(user);
@@ -73,14 +72,14 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public boolean confirmEmail(EmailReqDTO emailReqDTO) {
-        User user = iUserRepository.findByFullName(emailReqDTO.getEmail());
+        User user = iUserRepository.findByEmail(emailReqDTO.getEmail()).get();
         if (user != null) {
             String email=emailReqDTO.getEmail();
             String title="Yêu cầu đặt lại mật khẩu";
             String code = RandomCode.generateRandomCode(6);
             user.setCode(code);
             iUserRepository.save(user);
-            String body= SendEmail.EmailResetPassword(user.getFullName(),code);
+            String body= SendEmail.EmailResetPassword(user.getEmail(),code);
             emailUntil.sendEmail(email,title,body);
             return true;
         } else {
@@ -90,7 +89,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public boolean forgotPassword(ForgotPassword forgotPassword) {
-        User user = iUserRepository.findByFullName(forgotPassword.getEmail());
+        User user = iUserRepository.findByEmail(forgotPassword.getEmail()).get();
         return user != null && (forgotPassword.getCode()).equals(user.getCode());
     }
 }

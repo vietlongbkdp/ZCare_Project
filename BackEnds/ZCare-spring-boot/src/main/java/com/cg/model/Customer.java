@@ -1,6 +1,7 @@
 package com.cg.model;
 
 import com.cg.model.enumeration.EGender;
+import com.cg.model.enumeration.ELockStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +27,10 @@ public class Customer {
     private String address;
     @Enumerated(EnumType.STRING)
     private EGender gender;
+
+    @Enumerated(EnumType.STRING)
+    private ELockStatus lockStatus;
+
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
