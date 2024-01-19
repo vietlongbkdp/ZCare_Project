@@ -1,7 +1,9 @@
 package com.cg.service.schedule;
 
 import com.cg.model.DTO.DetailTimeDTO;
+import com.cg.model.DTO.ScheduleDeleteDTO;
 import com.cg.model.Schedule;
+import com.cg.model.enumeration.EWeekday;
 import com.cg.repository.IScheduleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +34,33 @@ public class ScheduleService implements IScheduleService{
 
     @Override
     public void deleteById(Long id) {
-
+        scheduleRepository.deleteById(id);
     }
+
 
     @Override
     public void create(Schedule newSchedule) {
-        List<Schedule> listGet = scheduleRepository.findAll();
-        List<DetailTimeDTO> listSave = new ArrayList<>();
-        for(int i= 0; i< listGet.size(); i++){
-            for (int j = 0; j< listSave.size(); j++){
-                if()
+        Long idDoctor = newSchedule.getDoctor().getId();
+        List<Schedule> existingSchedules = scheduleRepository.findAllByDoctor_Id(idDoctor);
+
+        boolean isScheduleConflict = false;
+        for (Schedule existingSchedule : existingSchedules) {
+            if (newSchedule.getWeekday().getWeekday().equals(existingSchedule.getWeekday().getWeekday()) &&
+                    newSchedule.getTimeItem().equals(existingSchedule.getTimeItem())) {
+                isScheduleConflict = true;
+                break;
             }
         }
-        scheduleRepository.save(newSchedule);
+        if (!isScheduleConflict) {
+            scheduleRepository.save(newSchedule);
+        }
+    }
+
+    @Override
+    public void deleteItem(ScheduleDeleteDTO scheduleDeleteDTO) {
+        Schedule scheduleGet = scheduleRepository.findByDoctor_IdAndTimeItemAndWeekday(scheduleDeleteDTO.getIdDoctor(), scheduleDeleteDTO.getDetailTime(), EWeekday.getByWeekday(scheduleDeleteDTO.getWeekday()));
+        if(scheduleGet != null){
+            scheduleRepository.deleteById(scheduleGet.getId());
+        }
     }
 }

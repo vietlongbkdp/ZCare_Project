@@ -27,10 +27,13 @@ import {TimePicker} from '@mui/x-date-pickers/TimePicker';
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import SaveIcon from '@mui/icons-material/Save';
 import axios from "axios";
+import {toast} from "react-toastify";
+// import listItem from "../../assets/theme/components/list/listItem";
 
 export default function ScheduleCreate() {
     const idDoctor = 1;
     const [dateCreate, setDateCreate] = useState([])
+    const [loadPage, setLoadPage] = useState(false)
     const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -51,15 +54,36 @@ export default function ScheduleCreate() {
         let listWeekdayUpdate = weekday.filter(item => item !== strWeekdayDelete)
         setWeekday(listWeekdayUpdate)
     }
-    useEffect(()=>{
+
+    function sortObjectsByWeekdayAndTime(objects) {
+        const weekdays = ["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"];
+
+        objects.sort((a, b) => {
+            const weekdayA = weekdays.indexOf(a.weekday);
+            const weekdayB = weekdays.indexOf(b.weekday);
+
+            if (weekdayA !== weekdayB) {
+                return weekdayA - weekdayB;
+            }
+
+            const timeA = a.timeItem.split(" - ")[0];
+            const timeB = b.timeItem.split(" - ")[0];
+
+            return timeA.localeCompare(timeB);
+        });
+
+        return objects;
+    }
+
+    useEffect(() => {
         const getScheduleAPI = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/schedule');
-                const scheduleGet = response.data
+                const scheduleGet = sortObjectsByWeekdayAndTime(response.data)
                 let listTimeDetails = []
                 let strTemp = "temp"
-                scheduleGet.forEach((index) =>{
-                    if(scheduleGet.length > 0 && strTemp !== index.weekday){
+                scheduleGet.forEach((index) => {
+                    if (scheduleGet.length > 0 && strTemp !== index.weekday) {
                         strTemp = index.weekday
                         listTimeDetails.push({
                             dayInWeek: index.weekday,
@@ -68,10 +92,10 @@ export default function ScheduleCreate() {
                         })
                     }
                 })
-                listTimeDetails.forEach((index) =>{
+                listTimeDetails.forEach((index) => {
                     let listDetailPush = []
-                    scheduleGet.forEach((item) =>{
-                        if(item.weekday === index.dayInWeek){
+                    scheduleGet.forEach((item) => {
+                        if (item.weekday === index.dayInWeek) {
                             listDetailPush.push({
                                 timeDetailShow: item.timeItem
                             })
@@ -85,21 +109,41 @@ export default function ScheduleCreate() {
             }
         }
         getScheduleAPI();
-    },[])
+    }, [loadPage])
+    const checkExistingWeekday = (weekdayItem, listItemWeekday) => {
+        let flag = false
+        if (listItemWeekday.length === 0) {
+            return flag
+        } else {
+            listItemWeekday.forEach((item) => {
+                if (weekdayItem === item) {
+                    flag = true
+                }
+            })
+            return flag
+        }
+    }
     const handleSubmit = (event) => {
         event.preventDefault()
         const listWeek = weekday
-        const listSchedule = []
+        const listWeekdayExist = []
+        dateCreate.forEach((item) => {
+            listWeekdayExist.push(item.dayInWeek)
+        })
+        const listSchedule = dateCreate
         setIsAddTimes({
             statusAdd: false,
             indexAdd: -1
         })
+        setWeekday(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
         listWeek.forEach((value) => {
-            listSchedule.push({
-                dayInWeek: value,
-                listScheduleTimes: [],
-                listDetailTimes: []
-            })
+            if (!checkExistingWeekday(value, listWeekdayExist)) {
+                listSchedule.push({
+                    dayInWeek: value,
+                    listScheduleTimes: [],
+                    listDetailTimes: []
+                })
+            }
         })
         setDateCreate(listSchedule)
     }
@@ -121,19 +165,19 @@ export default function ScheduleCreate() {
         const strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`;
         const startTimeGet = timeValueStart;
         const endTimeGet = timeValueEnd;
-        if((startTimeGet === null)||(endTimeGet ===null)){
-            alert("Quy trình chọn giờ chưa đúng, hãy chọn thơì gian rồi bấm OK để lưu!")
-        }else{
-            if((endTimeGet - startTimeGet) < (parseInt(betweenTime)*60000)){
-                alert("Lựa chọn thời gian không hợp lệ!")
-            }else{
+        if ((startTimeGet === null) || (endTimeGet === null)) {
+            toast.error("Quy trình chọn giờ chưa đúng, hãy chọn thơì gian rồi bấm OK để lưu!")
+        } else {
+            if ((endTimeGet - startTimeGet) < (parseInt(betweenTime) * 60000)) {
+                toast.error("Lựa chọn thời gian không hợp lệ!")
+            } else {
                 const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
                 const newSchedule = {
                     scheduleTimeShow: strTimes,
                     scheduleStartTime: startTimeGet,
                     scheduleEndTime: endTimeGet
                 };
-                var flag = false
+                let flag = false
                 const listDetailTimesNew = getDetailByDuringTimes(startTimeGet, endTimeGet, betweenTime)
                 const updatedDateCreate = [...dateCreate];
                 updatedDateCreate[indexSet].listScheduleTimes.push(newSchedule);
@@ -151,66 +195,86 @@ export default function ScheduleCreate() {
                         flag = true
                     }
                 })
-                if(flag) {
-                    alert("Có xung đột thời gian, vui lòng kiểm tra lại, hệ thống đã tự động bỏ đi lịch khám bị xung đột")
+                if (flag) {
+                    toast.error("Có xung đột thời gian, vui lòng kiểm tra lại, hệ thống đã tự động bỏ đi lịch khám bị xung đột")
                 }
             }
         }
     }
-    const handleDeleteDetail = event => {
+    const handleDeleteDetail = async (event) => {
         const detailDelete = event.target.closest(".chipDetail").firstChild.innerText;
         const indexSetDelete = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1
-        const updatedDateCreate = [...dateCreate];
-        updatedDateCreate[indexSetDelete].listDetailTimes = updatedDateCreate[indexSetDelete].listDetailTimes.filter(item => item.timeDetailShow !== detailDelete);
-        setDateCreate(updatedDateCreate);
+        const dataDeleteItem = {
+            idDoctor: idDoctor,
+            weekday: dateCreate[indexSetDelete].dayInWeek,
+            detailTime: detailDelete
+        }
+        console.log(dataDeleteItem)
+        const resp = await axios.delete('http://localhost:8080/api/schedule/delete', {data: dataDeleteItem})
+        if (resp.status === 200) {
+            const updatedDateCreate = [...dateCreate];
+            updatedDateCreate[indexSetDelete].listDetailTimes = updatedDateCreate[indexSetDelete].listDetailTimes.filter(item => item.timeDetailShow !== detailDelete);
+            setDateCreate(updatedDateCreate);
+            toast.success("Xoá thành công")
+        } else {
+            toast.error("Xoá thất bại")
+        }
     }
     const handleChangeTimes = event => {
         setBetweenTime(event.target.value)
     }
-    const convertStringDetailToNumDetail = (strTimeDetail) =>{
+    const convertStringDetailToNumDetail = (strTimeDetail) => {
         let arrTime = strTimeDetail.split(":")
         return parseInt(arrTime[0] + arrTime[1])
     }
-    const convertStringTimeToArrNumberTime = (strTimes) =>{
+    const convertStringTimeToArrNumberTime = (strTimes) => {
         let arrStr = strTimes.split(" - ")
         return [convertStringDetailToNumDetail(arrStr[0]), convertStringDetailToNumDetail(arrStr[1])]
 
     }
-    const checkExistTimeDetail = (strDetail, listItemDetail) =>{
+    const checkExistTimeDetail = (strDetail, listItemDetail) => {
         const arrStrDetail = convertStringTimeToArrNumberTime(strDetail.timeDetailShow);
-            for(let i=0; i< listItemDetail.length;i++){
-                if((arrStrDetail[0] > convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[0] < convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])
+        for (let i = 0; i < listItemDetail.length; i++) {
+            if ((arrStrDetail[0] > convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[0] < convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])
                 || (arrStrDetail[1] > convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[1] < convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])
-                || (arrStrDetail[0] <= convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[1] >= convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])){
-                    return true
-                }
+                || (arrStrDetail[0] <= convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[0] && arrStrDetail[1] >= convertStringTimeToArrNumberTime(listItemDetail[i].timeDetailShow)[1])) {
+                return true
             }
+        }
         return false
 
     }
     const handleSaveSchedule = async () => {
         const listScheduleGet = []
-        dateCreate.map((item) =>(
+        dateCreate.map((item) => (
             listScheduleGet.push({
                 weekdayGet: item.dayInWeek,
                 detailTime: item.listDetailTimes
             })
         ))
         const data = {
-            idDoctor:  idDoctor,
+            idDoctor: idDoctor,
             listSchedule: listScheduleGet
         };
-        console.log(data)
-        const resp = await axios.post('http://localhost:8080/api/schedule/create', data)
-                if(resp.status === 200){
-                    setDateCreate([])
-                alert("Lưu thành công")
-                // setRatingValue(0);
-                // setCommentValue("")
-                }else{
-                    alert("Lưu thất bại")
-                }
-
+        let countItem = 0
+        dateCreate.forEach((detail) => {
+            if (detail.listDetailTimes.length !== 0) {
+                countItem++;
+            }
+        });
+        if (countItem === 0) {
+            toast.error("Lịch đang trống, vui lòng kiểm tra lại")
+        } else {
+            const resp = await axios.post('http://localhost:8080/api/schedule/create', data)
+            if (resp.status === 200) {
+                setDateCreate([])
+                setLoadPage(prevState => !prevState)
+                setWeekday(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
+                toast.success("Lưu thành công")
+            } else {
+                toast.error("Lưu thất bại")
+            }
+        }
     }
     const getDetailByDuringTimes = (starTimes, endTimes, betweenTimes) => {
         let countDetails = Math.floor((endTimes - starTimes) / (betweenTimes * 1000 * 60))
@@ -224,7 +288,6 @@ export default function ScheduleCreate() {
         }
         return listTimeDetails
     }
-    // console.log(checkExistTimeDetail("08:00 - 08:15", ["07:50 - 08:20", "08:20 - 08:50", "08:50 - 09:20","09:20 - 09:50"]))
     return (
         <Container maxWidth="md">
             <Box>
@@ -302,13 +365,13 @@ export default function ScheduleCreate() {
                                     <TableCell align="right">
                                         <Stack>
                                             <Stack direction={"row"} spacing={1}>
-                                                 <Button
-                                                sx={{borderRadius: 10}}
-                                                onClick={(event) => {
-                                                    handleClickAddTimes(event)
-                                                }
-                                                }
-                                            ><AddIcon sx={{fontSize: 20}}/>Add</Button>
+                                                <Button
+                                                    sx={{borderRadius: 10}}
+                                                    onClick={(event) => {
+                                                        handleClickAddTimes(event)
+                                                    }
+                                                    }
+                                                ><AddIcon sx={{fontSize: 20}}/>Add</Button>
                                             </Stack>
                                             <Stack direction={"row"} mt={2} flexWrap="wrap">
                                                 {dateCreate[index]?.listDetailTimes?.map((valueDetail, indexDetail) => (

@@ -1,9 +1,6 @@
 package com.cg.controller.api;
 
-import com.cg.model.DTO.DetailTimeDTO;
-import com.cg.model.DTO.ScheduleDTO;
-import com.cg.model.DTO.ScheduleRespDTO;
-import com.cg.model.DTO.ScheduleWeekDTO;
+import com.cg.model.DTO.*;
 import com.cg.model.Doctor;
 import com.cg.model.Schedule;
 import com.cg.model.enumeration.EStatus;
@@ -47,6 +44,11 @@ public class ScheduleAPI {
                 scheduleService.create(newSchedule);
             }
         }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteScheduleDetail(@RequestBody ScheduleDeleteDTO scheduleDeleteDTO){
+        scheduleService.deleteItem(scheduleDeleteDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
