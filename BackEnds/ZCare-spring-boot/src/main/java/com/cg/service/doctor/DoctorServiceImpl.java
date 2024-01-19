@@ -1,12 +1,9 @@
 package com.cg.service.doctor;
-
-
-import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
-import com.cg.model.DTO.DoctorResDTO;
 import com.cg.model.Doctor;
 import com.cg.model.User;
 import com.cg.model.enumeration.ERole;
+import com.cg.model.enumeration.ELockStatus;
 import com.cg.repository.IDoctorRepository;
 import com.cg.repository.IPositionRepository;
 import com.cg.repository.IUserRepository;
@@ -17,10 +14,8 @@ import com.cg.until.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +81,7 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
         doctor.setStar(0);
         doctor.setUser(user);
+        doctor.setLockStatus(ELockStatus.valueOf("UNLOCK"));
         doctorRepository.save(doctor);
 
     }

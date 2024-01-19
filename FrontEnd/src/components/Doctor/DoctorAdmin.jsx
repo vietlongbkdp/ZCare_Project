@@ -16,6 +16,7 @@ import { Box } from "@mui/system";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
+import { getHeader } from '../utils/ApiComponen';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -58,8 +59,14 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     useEffect(() => {
         const getDoctors = async () => {
             try {
-                const response = await axios.get(API_URL);
+                axios.defaults.withCredentials = true;
+                const response = await axios.get(API_URL,
+                    {
+                        headers: getHeader()
+                    }
+                    );
                 setDoctorList(response.data)
+
             } catch (error) {
                 console.error(error);
             }
@@ -111,6 +118,37 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
             }
         })
     }
+
+        const handleChangeLock = async (id, currentLockStatus) => {
+
+
+            Swal.fire({
+                title: currentLockStatus === "LOCK" ? "Bạn muốn mở khóa?" : "Bạn muốn khóa" ,
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, change it!"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await axios.put(`http://localhost:8080/api/doctor/${id}`, {
+                            lockStatus: currentLockStatus
+                        });
+                        toast.success("Thành công");
+                        setUpdateShow((prev) => !prev);
+                    } catch (error) {
+                        toast.error("Thất bại");
+                    }
+                    Swal.fire({
+                        title:currentLockStatus === "LOCK" ? "mở khóa thành công" : "khóa thành công",
+                        text: `The doctor has been ${currentLockStatus.toLowerCase()}.`,
+                        icon: "success"
+                    });
+                }
+            });
+        };
 
     return (
         <Box>
@@ -170,6 +208,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                             <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
                             <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
                             <StyledTableCell align="center">CẬP NHẬT</StyledTableCell>
+                            <StyledTableCell align="right">TRẠNG THÁI</StyledTableCell>
                             <StyledTableCell align="center">XÓA</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -190,6 +229,15 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                                 <StyledTableCell align="left">{item?.createAt}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.fee}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.star}</StyledTableCell>
+                               <StyledTableCell align="right">
+                                    <Button
+                                         variant="contained"
+                                         style={{ backgroundColor: item.lockStatus === 'LOCK' ? 'red' : 'green' }}
+                                         onClick={() => handleChangeLock(item.id, item.lockStatus)}
+                                                                                    >
+                                         {item.lockStatus}
+                                     </Button>
+                               </StyledTableCell>
                                 <StyledTableCell align="center">
                                     <Button variant="contained" color="warning"
                                         onClick={() => handleEditId(item.id)} sx={{ width: 5 }}>

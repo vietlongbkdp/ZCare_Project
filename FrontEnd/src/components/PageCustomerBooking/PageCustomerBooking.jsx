@@ -74,7 +74,7 @@ export default function PageCustomerBooking (){
                                     <Grid item xs={4}>
                                         <TextField
                                             autoComplete="dob"
-                                            fullWidth
+                                            fullWidthyy
                                             id="dob"
                                             type={"date"}
                                             label="dob"

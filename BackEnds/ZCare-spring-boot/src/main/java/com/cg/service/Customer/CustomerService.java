@@ -1,5 +1,4 @@
 package com.cg.service.Customer;
-
 import com.cg.model.Customer;
 import com.cg.model.DTO.CustomerReqDTO;
 import com.cg.model.DTO.EmailReqDTO;
@@ -73,7 +72,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public boolean confirmEmail(EmailReqDTO emailReqDTO) {
-        User user = iUserRepository.findByEmail(emailReqDTO.getEmail());
+        User user = iUserRepository.findByEmail(emailReqDTO.getEmail()).get();
         if (user != null) {
             String email=emailReqDTO.getEmail();
             String title="Yêu cầu đặt lại mật khẩu";
@@ -90,7 +89,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public boolean forgotPassword(ForgotPassword forgotPassword) {
-        User user = iUserRepository.findByEmail(forgotPassword.getEmail());
+        User user = iUserRepository.findByEmail(forgotPassword.getEmail()).get();
         return user != null && (forgotPassword.getCode()).equals(user.getCode());
     }
 }

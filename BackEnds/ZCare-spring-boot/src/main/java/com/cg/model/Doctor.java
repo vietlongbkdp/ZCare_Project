@@ -1,5 +1,5 @@
 package com.cg.model;
-
+import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.DTO.DoctorResDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -52,6 +52,9 @@ public class Doctor {
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
+    @Enumerated(EnumType.STRING)
+    private ELockStatus lockStatus;
+
 
     public DoctorResDTO toDoctorResDTO() {
         return new DoctorResDTO()
@@ -70,4 +73,5 @@ public class Doctor {
                 .setScheduleList(scheduleList)
                 ;
     }
+
 }

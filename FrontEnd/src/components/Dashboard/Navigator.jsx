@@ -37,7 +37,7 @@ const categories = [
                 url: "doctor"
             },
             { id: 'Chuyên khoa', icon: <DnsRoundedIcon /> },
-            { id: 'Bệnh nhân', icon: <PermMediaOutlinedIcon /> },
+            { id: 'Bệnh nhân', icon: <PermMediaOutlinedIcon />, url: "customer" },
             { id: 'Lịch làm việc', icon: <PermMediaOutlinedIcon /> },
             { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
 
