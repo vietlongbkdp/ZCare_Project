@@ -18,6 +18,8 @@ import AddClinic from './AddClinic';
 import EditClinic from './EditClinic';
 import DoctorAdmin from '../Doctor/DoctorAdmin';
 import { ApiContext } from '../ApiContext/ApiProvider';
+import { getHeader } from '../Utils/ApiComponent';
+
 
 
 
@@ -69,7 +71,10 @@ export default function CustomizedTables() {
     useEffect(() => {
         const getClinics = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/clinic');
+                axios.defaults.withCredentials = true;
+                const response = await axios.get('http://localhost:8080/api/clinic', {
+                    headers: getHeader()
+                });
                 setClinicList(response.data);
             } catch (error) {
                 console.error(error);

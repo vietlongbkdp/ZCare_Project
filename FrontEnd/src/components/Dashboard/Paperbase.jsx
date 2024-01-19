@@ -8,7 +8,7 @@ import Link from '@mui/material/Link';
 import Navigator from './Navigator';
 import Content from './Content';
 import Header from './Header';
-import {Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 function Copyright() {
     return (

@@ -13,6 +13,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const schema = yup.object({
   email: yup
@@ -35,7 +36,10 @@ function AuthLogin() {
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      await axios.post("http://localhost:8080/api/customer/login", data);
+      const response = await axios.post("http://localhost:8080/api/customer/login", data);
+      const token = response.data.token;
+      Cookies.set('JWT', token, { expires: 7, secure: true });
+
       toast.success("Đăng nhập thành công");
       reset();
     } catch (error) {

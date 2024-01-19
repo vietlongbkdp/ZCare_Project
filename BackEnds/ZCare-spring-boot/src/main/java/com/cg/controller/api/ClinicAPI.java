@@ -6,6 +6,7 @@ import com.cg.service.clinic.IClinicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ClinicAPI {
     @Autowired
     public AvatarService avatarService;
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getAllClinic() {
         List<Clinic> clinicList = clinicService.findAll();
         return new ResponseEntity<>(clinicList, HttpStatus.OK);

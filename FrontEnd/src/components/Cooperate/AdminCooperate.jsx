@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Container, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import axios from 'axios';
-import {toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 function AdminCooperate() {
     const [cooperateList, setCooperateList] = useState([]);
