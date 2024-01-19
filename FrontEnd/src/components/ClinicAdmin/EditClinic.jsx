@@ -17,24 +17,24 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from "../CkEditor/ClinicEditor";
 const schema = yup.object({
     clinicName: yup.string()
-        .required("tên không được để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Tên không được để trống")
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(200, 'Nhập dưới 200 kí tự'),
     address: yup.string()
-        .required("tên không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Địa chỉ không đuược để trống")
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(100, 'Nhập dưới 100 kí tự'),
     legalRepresentative: yup.string()
         .required("Tên người đại diện không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(100, 'Nhập dưới 100 kí tự'),
     hotline: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
     operatingLicence: yup.string()
         .required("GPHĐ không đuược để trống")
-        .min(5, 'Quá ngắn')
-        .max(30, 'Quá dài')
+        .min(5, 'Nhập trên 5 kí tự')
+        .max(30, 'Nhập dưới 30 kí tự'),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -88,10 +88,9 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
     }, [clinicId]);
 
 
-    const updateClinic = async (data) => {
+    const handleUpdateClinic = async (data) => {
         if (presentAvatar === updateAvatar) {
             data.clinicLogo = presentAvatar;
-            console.log("presentAvatar", presentAvatar);
         } else {
             data.clinicLogo = updateAvatar;
         }
@@ -125,7 +124,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     Cập nhật phòng khám
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit(updateClinic)} sx={{ width: '100%' }} mt={3}>
+                <Box component="form" onSubmit={handleSubmit(handleUpdateClinic)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={3} >
                             <Item>
@@ -155,6 +154,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="clinicName"
                                                 label="Tên phòng khám"
                                                 type="text"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.clinicName)}
                                                 helperText={errors.clinicName?.message || ''}
                                                 {...register('clinicName')}
@@ -167,6 +167,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="address"
                                                 type={"text"}
                                                 label="Địa chỉ"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
                                                 {...register("address")}
@@ -179,6 +180,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="legalRepresentative"
                                                 type={"text"}
                                                 label="Người đại diện"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.legalRepresentative)}
                                                 helperText={errors.legalRepresentative?.message || ''}
                                                 {...register("legalRepresentative")}
@@ -191,6 +193,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="hotline"
                                                 label="Hotline"
                                                 type="tel"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.hotline)}
                                                 helperText={errors.hotline?.message || ''}
                                                 {...register("hotline")}
@@ -202,6 +205,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 fullWidth
                                                 id="operatingLicence"
                                                 type={"text"}
+                                                InputLabelProps={{ shrink: true }}
                                                 label="Giấy phép hoạt động"
                                                 error={Boolean(errors.operatingLicence)}
                                                 helperText={errors.operatingLicence?.message || ''}

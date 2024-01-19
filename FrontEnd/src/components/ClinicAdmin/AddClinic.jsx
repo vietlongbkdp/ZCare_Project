@@ -16,23 +16,23 @@ import ClinicEditor from '../CkEditor/ClinicEditor';
 const schema = yup.object({
     clinicName: yup.string()
         .required("Tên không được để trống")
-        .min(2, 'Quá ngắn')
+        .min(2, 'Nhập trên 2 kí tự')
         .max(50, 'Quá dài'),
     address: yup.string()
         .required("Địa chỉ không đuược để trống")
-        .min(2, 'Quá ngắn')
-        .max(50, 'Quá dài'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(100, 'Nhập dưới 100 kí tự'),
     legalRepresentative: yup.string()
         .required("Tên người đại diện không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(50, 'Nhập dưới 50 kí tự'),
     hotline: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
     operatingLicence: yup.string()
         .required("GPHĐ không đuược để trống")
-        .min(5, 'Quá ngắn')
-        .max(30, 'Quá dài'),
+        .min(5, 'Nhập trên 5 kí tự')
+        .max(30, 'Nhập dưới 30 kí tự'),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -109,7 +109,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                         <Grid item xs={3} >
                             <Item>
                                 <Button component="label" sx={{ textAlign: 'center' }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
+                                    <img id={"blah"} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                         alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         if (event.target.files && event.target.files[0]) {

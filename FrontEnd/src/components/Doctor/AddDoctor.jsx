@@ -18,31 +18,29 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
 const schema = yup.object({
     doctorName: yup.string()
-        .required("tên không được để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Tên không được để trống")
+        .min(2, 'Tên tối thiểu 2 kí tự')
+        .max(50, 'Tên tối đa 50 kí tự'),
     dob: yup.string()
-        .required("sinh nhật không được để trống"),
+        .required("Sinh nhật không được để trống"),
     email: yup.string()
         .required("Email không được để trống")
         .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
     phone: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
-    clinic: yup.string()
-        .required(" địa chỉ không được để trống"),
     position: yup.string()
-        .required(" không được để trống"),
+        .required("Chức danh không được để trống"),
     fee: yup.number()
-        .required(" không được để trống"),
+        .required("Giá khám không được để trống")
+        .typeError('Giá khám không được để trống'),
     speciality: yup.string()
-        .required(" không được để trống")
+        .required("Chuyên khoa không được để trống"),
+    // avatarImg: yup.required('Ảnh đại diện không được để trống')
+    avatarImg: yup.mixed().required('Ảnh đại diện không được để trống'),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -60,10 +58,10 @@ const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(2),
-    textAlign: 'center',
     color: theme.palette.text.secondary,
+    boxShadow: 'none'
 }));
-export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage, clinicId }) {
+export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage, clinicId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -148,14 +146,14 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
     }
     return (
         <>
-            <Container>
+            <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
-                    Create a new doctor
+                    Tạo bác sĩ
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(createDoctor)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
-                        <Grid item xs={4} >
-                            <Item>
+                        <Grid item xs={3} >
+                            <Item sx={{ textAlign: 'center' }}>
                                 <Button component="label" sx={{ textAlign: 'center' }}>
                                     <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                         alt={"avatar"} />
@@ -175,34 +173,34 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                 </Typography>
                             </Item>
                         </Grid>
-                        <Grid item xs={8}>
+                        <Grid item xs={9}>
                             <Item >
-                                <Box sx={{ mt: 3 }}>
+                                <Box>
                                     <Grid container spacing={2} >
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="given-name"
                                                 fullWidth
                                                 id="doctorName"
-                                                label="Full Name"
+                                                label="Họ và tên"
                                                 error={Boolean(errors.doctorName)}
                                                 helperText={errors.doctorName?.message || ''}
                                                 {...register("doctorName")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="dob"
                                                 fullWidth
                                                 id="dob"
                                                 type={"date"}
-                                                label="dob"
+                                                label="Ngày sinh"
                                                 error={Boolean(errors.dob)}
                                                 helperText={errors.dob?.message || ''}
                                                 {...register("dob")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="email"
                                                 fullWidth
@@ -213,24 +211,24 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 {...register("email")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 fullWidth
                                                 id="phone"
-                                                label="Phone"
+                                                label="Số điện thoại"
                                                 autoComplete="phone"
                                                 error={Boolean(errors.phone)}
                                                 helperText={errors.phone?.message || ''}
                                                 {...register("phone")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="specialityLabel">Speciality</InputLabel>
                                                 <Select
                                                     labelId="specialityLabel"
                                                     id="speciality"
-                                                    label="Speciality"
+                                                    label="Chuyên khoa"
                                                     error={Boolean(errors.speciality)}
                                                     helperText={errors.speciality?.message || ''}
                                                     {...register("speciality")}
@@ -241,18 +239,16 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
                                                 <InputLabel id="positionLabel">Position</InputLabel>
                                                 <Select
                                                     labelId="positionLabel"
                                                     id="position"
-                                                    // value={0}
-                                                    label="Position"
+                                                    label="Chức danh"
                                                     error={Boolean(errors.position)}
                                                     helperText={errors.position?.message || ''}
                                                     {...register("position")}
-                                                // onChange={handleChange}
                                                 >
                                                     {positionList.map((item) => (
                                                         <MenuItem value={item.id}>{item.name}</MenuItem>
@@ -260,11 +256,11 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 </Select>
                                             </FormControl>
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 fullWidth
                                                 id="fee"
-                                                label="Fee"
+                                                label="Giá khám bệnh (VNĐ)"
                                                 type={"number"}
                                                 autoComplete="fee"
                                                 error={Boolean(errors.fee)}
@@ -272,23 +268,24 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 {...register("fee")}
                                             />
                                         </Grid>
-                                        <Grid item container xs={12} sm={6} justifyContent="flex-end" >
-                                            <Button variant="secondary" onClick={closeAddModal}
-                                                sx={{ mt: 3, mb: 1 }}>
-                                                Close
-                                            </Button>
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                sx={{ mt: 3, mb: 1 }}
-                                            >
-                                                Create
-                                            </Button>
-                                        </Grid>
                                     </Grid>
                                 </Box>
                             </Item>
                         </Grid>
+                    </Grid>
+                    <Grid item container xs={12} sm={6} >
+                        <Button
+                            variant="contained"
+                            color="success"
+                            type="submit"
+                            sx={{ mt: 3, mb: 1, mr: 1 }}
+                        >
+                            Tạo
+                        </Button>
+                        <Button variant="contained" onClick={closeAddModal}
+                            sx={{ mt: 3, mb: 1 }}>
+                            Hủy
+                        </Button>
                     </Grid>
                 </Box>
             </Container>
