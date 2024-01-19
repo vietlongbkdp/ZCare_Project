@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import './CkEditor.css'
 
 // ClassicEditor.create(document.querySelector('#editor'), {
@@ -55,7 +55,7 @@ export default function ClinicEditor({ setValue, getValues }) {
     return (
         <>
             <div>
-                <Typography sx={{ textAlign: 'left' }}  >Thông tin phòng khám:</Typography>
+                <Typography sx={{ textAlign: 'left', mb: 2, fontWeight: 'bold' }} >Thông tin phòng khám:</Typography>
                 <CKEditor
                     editor={ClassicEditor}
                     data=""

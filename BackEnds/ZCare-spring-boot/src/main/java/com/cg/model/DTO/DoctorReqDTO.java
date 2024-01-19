@@ -18,7 +18,7 @@ public class DoctorReqDTO {
     private String email;
     private String phone;
     private String fee;
-    private String clinic;
+    private Long clinicId;
     private String avatarImg;
     private String speciality;
 }

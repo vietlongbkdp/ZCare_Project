@@ -4,21 +4,15 @@ import com.cg.model.Clinic;
 import com.cg.model.Position;
 import com.cg.model.Schedule;
 import com.cg.model.Speciality;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,7 +22,7 @@ public class DoctorResDTO {
     private Long id;
     private String doctorName;
     private Position position;
-    private Date dob;
+    private LocalDate dob;
     private String email;
     private String phone;
     private LocalDate createAt;

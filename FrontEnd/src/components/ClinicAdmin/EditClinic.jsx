@@ -5,11 +5,7 @@ import Grid from "@mui/material/Grid";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import {
-    FormControl,
-    InputLabel,
-    MenuItem,
     Paper,
-    Select,
     TextField
 } from "@mui/material";
 import { useForm } from "react-hook-form";
@@ -58,16 +54,17 @@ const Item = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
+    boxShadow: 'none'
 }));
-export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setShowContent, setShowCreate, setShowPage }) {
+export default function EditClinic({ setShow, setISupdate, clinicId, setShowContent, setShowCreateBtn, setShowPagination }) {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
     let updateAvatar;
     let presentAvatar;
     const resetModal = () => {
         setShow(false)
         setShowContent(true)
-        setShowCreate(true)
-        setShowPage(true)
+        setShowCreateBtn(true)
+        setShowPagination(true)
     }
 
     useEffect(() => {
@@ -103,9 +100,9 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
             toast.success("Cập nhật phòng khám thành công!")
             reset();
             setShowContent(true)
-            setShowCreate(true)
+            setShowCreateBtn(true)
             setShow(false)
-            setShowPage(true)
+            setShowPagination(true)
             setISupdate(prev => !prev);
         } catch (error) {
             toast.error("Cập nhật phòng khám thất bại!")
@@ -124,8 +121,8 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
 
     return (
         <>
-            <Container>
-                <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
+            <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
+                <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     Cập nhật phòng khám
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(updateClinic)} sx={{ width: '100%' }} mt={3}>
@@ -139,10 +136,10 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                         handleUpload(event)
                                     }} />
                                 </Button>
-                                <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
+                                <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>
-                                <Typography fontSize={12} fontStyle={"italic"} mt={2}>
+                                <Typography fontSize={12} fontStyle={"italic"}>
                                     Chỉ cho phép các định dạng *.jpeg, *.jpg, *.png, *.gif kích thước tối đa 1MB
                                 </Typography>
                             </Item>
@@ -151,7 +148,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                             <Item >
                                 <Box sx={{ mt: 3 }}>
                                     <Grid container spacing={2} >
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="clinicName"
                                                 fullWidth
@@ -163,7 +160,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                                 {...register('clinicName')}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="address"
                                                 fullWidth
@@ -175,7 +172,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                                 {...register("address")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="legalRepresentative"
                                                 fullWidth
@@ -187,7 +184,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                                 {...register("legalRepresentative")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="hotline"
                                                 fullWidth
@@ -199,7 +196,7 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                                 {...register("hotline")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={6}>
+                                        <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="operatingLicence"
                                                 fullWidth
@@ -211,27 +208,29 @@ export default function DoctorPageCreate({ setShow, setISupdate, clinicId, setSh
                                                 {...register("operatingLicence")}
                                             />
                                         </Grid>
-                                        <Grid item xs={12} sm={12}>
-                                            <ClinicEditor {...register("clinicInfo")} setValue={setValue} getValues={getValues} />
-                                        </Grid>
-
-                                        <Grid item container xs={12} sm={6} >
-                                            <Button
-                                                 variant="contained"
-                                                color="success"
-                                                type={"submit"}
-                                                sx={{ mt: 3, mb: 1, mr: 1 }}
-                                            >
-                                                Cập nhật
-                                            </Button>
-                                            <Button  variant="contained" onClick={resetModal}
-                                                sx={{ mt: 3, mb: 1 }}>
-                                                Hủy
-                                            </Button>
-                                        </Grid>
                                     </Grid>
                                 </Box>
                             </Item>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Grid item xs={12} sm={12}>
+                                <ClinicEditor {...register("clinicInfo")} setValue={setValue} getValues={getValues} />
+                            </Grid>
+
+                            <Grid item container xs={12} sm={6} >
+                                <Button
+                                    variant="contained"
+                                    color="success"
+                                    type={"submit"}
+                                    sx={{ mt: 3, mb: 1, mr: 1 }}
+                                >
+                                    Cập nhật
+                                </Button>
+                                <Button variant="contained" onClick={resetModal}
+                                    sx={{ mt: 3, mb: 1 }}>
+                                    Hủy
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Box>

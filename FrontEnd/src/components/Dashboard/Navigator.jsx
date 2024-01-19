@@ -25,9 +25,10 @@ const categories = [
         id: 'ADMIN',
         children: [
             {
-                id: 'Bảng điều khiển ',
+                id: 'Danh sách lịch khám ',
                 icon: <PeopleIcon />,
                 active: true,
+                // url: "booking"
             },
             { id: 'Phòng khám', icon: <PublicIcon /> , url: "clinic"},
             {

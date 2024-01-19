@@ -45,9 +45,11 @@ public class DoctorServiceImpl implements IDoctorService{
         return doctorRepository.findById(id);
     }
 
+    public List<Doctor> findAllDoctorInClinic(Long clinicId) {
+        return doctorRepository.findDoctorsByClinicId(clinicId);
+    }
     @Override
     public void save(Doctor doctor) {
-
 
     }
 
@@ -56,13 +58,13 @@ public class DoctorServiceImpl implements IDoctorService{
         Doctor doctor = new Doctor();
         doctor.setPosition(iPositionService.findById(Long.parseLong(doctorReqDTO.getPosition())).get());
         doctor.setDoctorName(doctorReqDTO.getDoctorName());
-        doctor.setDob(PassDate.convertToDate(doctorReqDTO.getDob()));
+        doctor.setDob(LocalDate.parse(doctorReqDTO.getDob()));
         doctor.setEmail(doctorReqDTO.getEmail());
         doctor.setPhone(doctorReqDTO.getPhone());
         doctor.setFee(new BigDecimal(doctorReqDTO.getFee()));
         doctor.setAvatarImg(doctorReqDTO.getAvatarImg());
         doctor.setCreateAt(LocalDate.now());
-        doctor.setClinic(clinicService.findById(Long.parseLong(doctorReqDTO.getClinic())).get());
+        doctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
         doctor.setStar(0);
 

@@ -63,7 +63,7 @@ const Item = styled(Paper)(({ theme }) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
 }));
-export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage }) {
+export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage, clinicId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -75,22 +75,32 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
     );
 
     const createDoctor = async (data) => {
-        data.avatarImg = 'null'
-        console.log(data)
-        try {
-            await axios.post('http://localhost:8080/api/doctor', data);
-            setShowAdd(false)
-            toast.success("thành công")
-            setUpdateShow(pre => !pre);
-            reset();
-            setButtonCreate(true)
-            setShowTable(true)
-            setShowPage(true)
-
-        } catch (error) {
-            toast.error("thất bại")
+        console.log('data', data);
+        let imagesImport = Array.from(data.avatarImg);
+        const formData = new FormData();
+        formData.append('image', imagesImport[0])
+        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        if (res.status == '200') {
+            data.avatarImg = await res.data.fileUrl
+            data.clinicId = clinicId;
+            const response = await axios.post('http://localhost:8080/api/doctor', data);
+            if (response.status == '200') {
+                setShowAdd(false)
+                toast.success("Tạo bác sĩ thành công")
+                setUpdateShow(pre => !pre);
+                reset();
+                setButtonCreate(true)
+                setShowTable(true)
+                setShowPage(true)
+            }
+            else {
+                await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
+                toast.error("Tạo bác sĩ thất bại!")
+            }
         }
-
+        else {
+            toast.error("Tải ảnh đại diện thất bại!")
+        }
     }
 
     useEffect(() => {
@@ -146,18 +156,22 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                     <Grid container spacing={2}>
                         <Grid item xs={4} >
                             <Item>
-                                <Button component="label" sx={{ borderRadius: 50 }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={200} height={200}
+                                <Button component="label" sx={{ textAlign: 'center' }}>
+                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                         alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("avatarImg")} type="file" onChange={(event) => {
-                                        document.getElementById('blah').src = window.URL.createObjectURL(event.target.files[0])
+                                        if (event.target.files && event.target.files[0]) {
+                                            document.getElementById("blah").src = window.URL.createObjectURL(
+                                                event.target.files[0]
+                                            );
+                                        }
                                     }} />
                                 </Button>
-                                <Typography variant="p" fontWeight={"bold"} component="p" mt={2}>
-                                    Upload your Avatar
+                                <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
+                                    Tải ảnh phòng khám tại đây
                                 </Typography>
-                                <Typography fontSize={12} fontStyle={"italic"} mb={5}>
-                                    Allowed *.jpeg, *.jpg, *.png, *.gif max size of 3MB
+                                <Typography fontSize={12} fontStyle={"italic"}>
+                                    Chỉ cho phép các định dạng *.jpeg, *.jpg, *.png, *.gif kích thước tối đa 1MB
                                 </Typography>
                             </Item>
                         </Grid>
@@ -209,23 +223,6 @@ export default function DoctorPageCreate({ setShowAdd, setUpdateShow, setButtonC
                                                 helperText={errors.phone?.message || ''}
                                                 {...register("phone")}
                                             />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <FormControl fullWidth>
-                                                <InputLabel id="clinicLabel">Clinic</InputLabel>
-                                                <Select
-                                                    labelId="clinicLabel"
-                                                    id="clinic"
-                                                    label="Clinic"
-                                                    error={Boolean(errors.clinic)}
-                                                    helperText={errors.clinic?.message || ''}
-                                                    {...register("clinic")}
-                                                >
-                                                    {clinicList.map((item) => (
-                                                        <MenuItem value={item.id}>{item.clinicName}</MenuItem>
-                                                    ))}
-                                                </Select>
-                                            </FormControl>
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <FormControl fullWidth>
