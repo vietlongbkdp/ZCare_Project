@@ -1,36 +1,24 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import axios from "axios";
 
 export default function SpecialityContent() {
+    const [specialityList, setSpecialityList] = useState(null);
 
-    const specialityList = [
-        {
-            image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101627-co-xuong-khop.png',
-            title: 'Cơ xương khớp'
-        },
-        {
-            image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101739-than-kinh.png',
-            title: 'Thần kinh'
-        },
-        {
-            image: 'https://cdn.bookingcare.vn/fo/w1920/2023/12/26/101713-tieu-hoa.png',
-            title: 'Tiêu hóa'
-        },
-        {
-            image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tim-mach.png',
-            title: 'Tim mạch'
-        },
-        {
-            image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101713-tai-mui-hong.png',
-            title: 'Tai mũi họng'
-        },
-        {
-            image: 'https://cdn.bookingcare.vn/fo/w384/2023/12/26/101627-co-xuong-khop.png',
-            title: 'Cột sống'
-        }
-    ]
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/speciality')
+            .then(response => {
+                setSpecialityList(response.data);
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
 
-
+    if (!specialityList) {
+        return null;
+    }
     return (
         <>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignContent: 'space-around', m:7 }}>
@@ -42,12 +30,12 @@ export default function SpecialityContent() {
                                     component="img"
                                     height="200"
                                     width="250"
-                                    image={item.image}
+                                    image={item.specialtyImage}
                                     alt="Error image"
                                 />
                                 <CardContent>
                                     <Typography gutterBottom variant="h5" align='center' >
-                                        {item.title}
+                                        {item.specialtyName}
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>

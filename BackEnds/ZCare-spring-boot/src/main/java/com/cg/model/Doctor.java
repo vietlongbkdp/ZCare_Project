@@ -1,21 +1,25 @@
 package com.cg.model;
-
 import com.cg.model.enumeration.ELockStatus;
+import com.cg.model.DTO.DoctorResDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
+
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="doctors")
+@Table(name = "doctors")
 @Accessors(chain = true)
 public class Doctor {
     @Id
@@ -32,7 +36,7 @@ public class Doctor {
     private LocalDate createAt;
     private BigDecimal fee;
     @ManyToOne
-    @JoinColumn(name="clinic_id")
+    @JoinColumn(name = "clinic_id")
     private Clinic clinic;
     @Column(name = "avatar_img")
     private String avatarImg;
@@ -42,8 +46,28 @@ public class Doctor {
     private String doctorInfo;
     @ManyToOne
     private Speciality speciality;
-
+    @OneToMany
+    @JsonIgnore
+    private List<Schedule> scheduleList;
     @Enumerated(EnumType.STRING)
     private ELockStatus lockStatus;
+
+    public DoctorResDTO toDoctorResDTO() {
+        return new DoctorResDTO()
+                .setDoctorName(doctorName)
+                .setPosition(position)
+                .setDob(dob)
+                .setEmail(email)
+                .setPhone(phone)
+                .setCreateAt(createAt)
+                .setFee(fee)
+                .setClinic(clinic)
+                .setAvatarImg(avatarImg)
+                .setStar(star)
+                .setDoctorInfo(doctorInfo)
+                .setSpeciality(speciality)
+                .setScheduleList(scheduleList)
+                ;
+    }
 
 }
