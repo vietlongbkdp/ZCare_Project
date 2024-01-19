@@ -30,7 +30,7 @@ private UserService userService;
         return new ResponseEntity<>(customerList,HttpStatus.OK);
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity<?>Login(@RequestBody LoginDTO loginDTO){
         String email=loginDTO.getEmail();
         String password=loginDTO.getPassword();

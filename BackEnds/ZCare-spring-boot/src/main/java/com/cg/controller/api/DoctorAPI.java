@@ -1,6 +1,8 @@
 package com.cg.controller.api;
 import com.cg.model.DTO.DoctorReqDTO;
+import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
+import com.cg.model.enumeration.ELockStatus;
 import com.cg.repository.IClinicRepository;
 import com.cg.repository.IDoctorRepository;
 import com.cg.repository.IPositionRepository;
@@ -78,6 +80,25 @@ public class DoctorAPI {
     public ResponseEntity<?> Delete(@PathVariable Long id){
 
         doctorService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
+        Doctor doctor = doctorService.findById(id).get();
+
+        // Kiểm tra trạng thái và thay đổi
+        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
+            doctor.setLockStatus(ELockStatus.UNLOCK);
+        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
+            doctor.setLockStatus(ELockStatus.LOCK);
+        } else {
+            // Xử lý trạng thái không hợp lệ
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        doctorService.save(doctor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

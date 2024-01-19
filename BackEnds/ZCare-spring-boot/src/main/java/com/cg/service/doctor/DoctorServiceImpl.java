@@ -4,6 +4,7 @@ package com.cg.service.doctor;
 import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.Doctor;
+import com.cg.model.enumeration.ELockStatus;
 import com.cg.repository.IDoctorRepository;
 import com.cg.repository.IPositionRepository;
 import com.cg.service.clinic.IClinicService;
@@ -64,6 +65,7 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setClinic(clinicService.findById(Long.parseLong(doctorReqDTO.getClinic())).get());
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
         doctor.setStar(0);
+        doctor.setLockStatus(ELockStatus.valueOf("UNLOCK"));
 
         doctorRepository.save(doctor);
 

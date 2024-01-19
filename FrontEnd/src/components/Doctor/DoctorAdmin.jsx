@@ -63,6 +63,7 @@ export default function DoctorAdmin() {
             try {
                 const response = await axios.get('http://localhost:8080/api/doctor');
                 setDoctorList(response.data)
+
             } catch (error) {
                 console.error(error);
             }
@@ -113,6 +114,37 @@ export default function DoctorAdmin() {
         })
     }
 
+        const handleChangeLock = async (id, currentLockStatus) => {
+
+
+            Swal.fire({
+                title: currentLockStatus === "LOCK" ? "Bạn muốn mở khóa?" : "Bạn muốn khóa" ,
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, change it!"
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        await axios.put(`http://localhost:8080/api/doctor/${id}`, {
+                            lockStatus: currentLockStatus
+                        });
+                        toast.success("Thành công");
+                        setUpdateShow((prev) => !prev);
+                    } catch (error) {
+                        toast.error("Thất bại");
+                    }
+                    Swal.fire({
+                        title:currentLockStatus === "LOCK" ? "mở khóa thành công" : "khóa thành công",
+                        text: `The doctor has been ${currentLockStatus.toLowerCase()}.`,
+                        icon: "success"
+                    });
+                }
+            });
+        };
+
     return (
         <Box>
             {buttonCreate && <Button
@@ -154,6 +186,7 @@ export default function DoctorAdmin() {
                             <StyledTableCell align="right">IMAGE</StyledTableCell>
                             <StyledTableCell align="right">STAR</StyledTableCell>
                             <StyledTableCell align="right">SPECIALITY</StyledTableCell>
+                            <StyledTableCell align="right">TRẠNG THÁI</StyledTableCell>
                             <StyledTableCell align="right">ACTION</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -174,6 +207,15 @@ export default function DoctorAdmin() {
                                 <StyledTableCell align="right">{item.avatarImg}</StyledTableCell>
                                 <StyledTableCell align="right">{item.star}</StyledTableCell>
                                 <StyledTableCell align="right">{item.speciality.specialtyName}</StyledTableCell>
+                                <StyledTableCell align="right">
+                                    <Button
+                                        variant="contained"
+                                        style={{ backgroundColor: item.lockStatus === 'LOCK' ? 'red' : 'green' }}
+                                        onClick={() => handleChangeLock(item.id, item.lockStatus)}
+                                    >
+                                        {item.lockStatus}
+                                    </Button>
+                                </StyledTableCell>
                                 <StyledTableCell align="right">
                                     <Stack direction="row" spacing={1} justifyContent="flex-end">
                                         <Button variant="contained" onClick={() => handleEditId(item.id)} sx={{ width: 5 }}><i className="fa-solid fa-pen-to-square"></i>

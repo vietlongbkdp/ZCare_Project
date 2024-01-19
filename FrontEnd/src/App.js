@@ -8,6 +8,7 @@ import Pagerbase from "./components/Dashboard/Paperbase";
 import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
+import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
 
 
