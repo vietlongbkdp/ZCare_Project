@@ -73,5 +73,4 @@ public class Doctor {
                 .setScheduleList(scheduleList)
                 ;
     }
-
 }
