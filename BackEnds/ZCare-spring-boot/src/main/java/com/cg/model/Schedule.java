@@ -1,5 +1,6 @@
 package com.cg.model;
 
+import com.cg.model.DTO.ScheduleRespDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EWeekday;
 import jakarta.persistence.*;
@@ -28,4 +29,7 @@ public class Schedule {
     @ManyToOne
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
+    public ScheduleRespDTO toScheduleRespDTO(){
+        return new ScheduleRespDTO().setWeekday(weekday.getWeekday()).setIdDoctor(doctor.getId()).setTimeItem(timeItem);
+    }
 }

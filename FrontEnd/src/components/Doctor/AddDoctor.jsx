@@ -236,7 +236,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
-                                                <InputLabel id="specialityLabel">Speciality</InputLabel>
+                                                <InputLabel id="specialityLabel">Chuyên khoa</InputLabel>
                                                 <Select
                                                     labelId="specialityLabel"
                                                     id="speciality"
@@ -253,7 +253,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
-                                                <InputLabel id="positionLabel">Position</InputLabel>
+                                                <InputLabel id="positionLabel">Chức danh</InputLabel>
                                                 <Select
                                                     labelId="positionLabel"
                                                     id="position"

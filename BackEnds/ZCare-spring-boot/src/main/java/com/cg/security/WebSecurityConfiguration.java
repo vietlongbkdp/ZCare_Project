@@ -26,9 +26,10 @@ public class WebSecurityConfiguration {
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
 
     @Bean
-    public AuthTokenFilter authenticationTokenFilter(){
+    public AuthTokenFilter authenticationTokenFilter() {
         return new AuthTokenFilter();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -49,12 +50,12 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer :: disable)
+        http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**","/api/customer/**", "/api/clinic/**", "/api/cooperate/**", "/api/doctor/**" ).permitAll()
+                        .requestMatchers("/**", "/api/customer/**", "/api/clinic/**", "/api/cooperate/**", "/api/doctor/**").permitAll()
 //                        .requestMatchers("/api/doctor/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
