@@ -108,7 +108,6 @@ public class DoctorAPI {
     public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
         Doctor doctor = doctorService.findById(id).get();
 
-
         if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
             doctor.setLockStatus(ELockStatus.UNLOCK);
         } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
@@ -116,8 +115,6 @@ public class DoctorAPI {
         } else {
             return ResponseEntity.badRequest().build();
         }
-
-
         doctorService.save(doctor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
