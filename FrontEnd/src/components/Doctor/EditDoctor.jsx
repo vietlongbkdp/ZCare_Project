@@ -75,7 +75,7 @@ const StyledErrorText = styled('p')({
 let updateAvatar;
 let presentAvatar;
 
-export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, setShowTable, setUpdateShow, setShowPage }) {
+export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, setShowData, setUpdateShow }) {
 
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])

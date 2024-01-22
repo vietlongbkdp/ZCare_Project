@@ -72,7 +72,7 @@ const StyledErrorText = styled('p')({
     marginTop: '8px',
 });
 
-export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, setShowTable, setShowPage, clinicId }) {
+export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, setShowData, clinicId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -99,8 +99,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
                 setUpdateShow(pre => !pre);
                 reset();
                 setButtonCreate(true)
-                setShowTable(true)
-                setShowPage(true)
+                setShowData(true)
             }
             else {
                 await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
@@ -151,14 +150,14 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
     const closeAddModal = () => {
         setShowAdd(false)
         setButtonCreate(true)
-        setShowTable(true)
-        setShowPage(true)
+        setShowData(true)
     }
+
     return (
         <>
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
-                <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
-                    Tạo bác sĩ
+                <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
+                    TẠO BÁC SĨ
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(createDoctor)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
