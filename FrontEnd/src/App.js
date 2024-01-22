@@ -14,7 +14,8 @@ import { ApiContext } from "./components/ApiContext/ApiProvider";
 import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import CustomerAdmin from "./components/CustomerAdmin/CustomerAdmin"
-import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
+import BookingPage from "./components/BookingPage/BookingPage";
+// import PageCustomerBooking from "./components/PageCustomerBooking/PageCustomerBooking";
 
 
 
@@ -43,8 +44,10 @@ export default function App() {
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />
-      </Routes>
-    {/*<DoctorInfoClinic/>*/}
+        <Route path="/showDoctor" element={<DoctorInfoClinic />} />
+        <Route path="/booking" element={<BookingPage />} />
+
+    </Routes>
     </>
   );
 }

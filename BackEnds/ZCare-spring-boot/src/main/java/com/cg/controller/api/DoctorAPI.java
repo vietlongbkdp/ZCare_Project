@@ -39,7 +39,7 @@ public class DoctorAPI {
 
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getDoctors() {
         List<Doctor> doctorList = doctorService.findAll();
         return new ResponseEntity<>(doctorList, HttpStatus.OK);
