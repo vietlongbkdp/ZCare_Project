@@ -1,15 +1,53 @@
 import { Box, Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import SearchIcon from '@mui/icons-material/Search';
+import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export default function SearchBar() {
-    const { clinic, setClinic } = useState();
+    const [clinicList, setClinicList] = useState([]);
+    const [specialityList, setSpecialityList] = useState([]);
+    const [selectedClinic, setSelectedClinic] = useState('');
+    const [selectedSpeciality, setSelectedSpeciality] = useState('');
+    const [doctorName, setDoctorName] = useState('');
+    const navigate = useNavigate();
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/clinic')
+            .then(response => {
+                setClinicList(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
+
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/speciality')
+            .then(response => {
+                setSpecialityList(response.data);
+            })
+            .catch(error => {
+
+                console.error('Error:', error);
+            });
+    }, []);
+
+    const handleSearch = () => {
+        const queryParams = new URLSearchParams({
+            doctorName: doctorName,
+            clinicId: selectedClinic,
+            specialityId:selectedSpeciality
+        });
+        navigate(`/search?${queryParams.toString()}`);
+    }
 
     return (
         <Box sx={{display: 'flex', justifyContent: 'center'}}>
             <Stack direction='row' spacing={2} p={3} xs mdOffset={2} sx={{ borderRadius: '10px'}}>
                 <TextField
                     label='Tìm kiếm với tên bác sĩ'
+                    value={doctorName}
+                    onChange={(event) => setDoctorName(event.target.value)}
                     InputProps={{
                         endAdornment: (
                             <InputAdornment>
@@ -23,16 +61,14 @@ export default function SearchBar() {
                 <FormControl sx={{ width: '300px' }} >
                     <InputLabel>Phòng khám</InputLabel>
                     <Select
-                        
                         id="demo-simple-select"
-                        value={clinic}
+                        value={selectedClinic}
                         label='Phòng khám'
-                    // onChange={handleChange}
+                        onChange={(event) => setSelectedClinic(event.target.value)}
                     >
-                        <MenuItem>Phòng khám</MenuItem>
-                        <MenuItem value={10}>Phòng khám Chuyên khoa Nội An Phước</MenuItem>
-                        <MenuItem value={20}>Phòng Khám Đa Khoa An Thịnh</MenuItem>
-                        <MenuItem value={30}>Phòng khám Đa khoa CHAC</MenuItem>
+                        {clinicList.map((clinic) => (
+                            <MenuItem key={clinic.id} value={clinic.id}>{clinic.clinicName}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
 
@@ -40,19 +76,17 @@ export default function SearchBar() {
                     <InputLabel>Chuyên khoa</InputLabel>
                     <Select
                         id="demo-simple-select"
-                        value={clinic}
+                        value={selectedSpeciality}
                         label='Chuyên khoa'
-                
-                    // onChange={handleChange}
+                        onChange={(event) => setSelectedSpeciality(event.target.value)}
                     >
-                        <MenuItem>Chuyên khoa</MenuItem>
-                        <MenuItem value={10}>Tai mũi họng</MenuItem>
-                        <MenuItem value={20}>Thần kinh</MenuItem>
-                        <MenuItem value={30}>Tim mạch</MenuItem>
+                        {specialityList.map((speciality) => (
+                            <MenuItem key={speciality.id} value={speciality.id}>{speciality.specialtyName}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
 
-                <Button variant='contained' >Tìm kiếm</Button>
+                <Button variant='contained' onClick={handleSearch}>Tìm kiếm</Button>
             </Stack>
         </Box>
 

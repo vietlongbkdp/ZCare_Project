@@ -1,19 +1,28 @@
 import React, {useEffect, useState} from 'react';
 import {FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
 import "./Doctorinfo.css"
+import dayjs from "dayjs";
+import {parse} from "date-fns";
+import axios from "axios";
+import {useParams} from "react-router-dom";
+import HTMLReactParser from "html-react-parser";
 
 function DoctorInfo() {
-
+    const  dateNows = dayjs().format('D/M/YYYY')
+    const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
-
+    const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
+    const [scheduleList, setScheduleList] = useState([]);
+    const [doctorInfo, setDoctorInfo] = useState('');
+    const { doctorId } = useParams();
     useEffect(() => {
         setCurrentDate(new Date());
         const getRecentDates = () => {
             const today = new Date();
             const recentDates = [];
-            for (let i = 0; i < 3; i++) {
+            for (let i = 0; i < 6; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() + i);
                 recentDates.push(date);
@@ -22,9 +31,44 @@ function DoctorInfo() {
         };
         getRecentDates();
     }, []);
-    const handleChange = (event) => {
-        setSelectedDate(event.target.value);
+
+    useEffect(() => {
+        const fetchDoctorInfo = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
+                if (response.status === 200) {
+                    setDoctorInfo(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching doctor info:', error);
+            }
+        };
+
+        const fetchScheduleData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
+                if (response.status === 200) {
+                    setScheduleList(response.data);
+                }
+            } catch (error) {
+                console.error('Error fetching schedule data:', error);
+            }
+        };
+
+        fetchDoctorInfo();
+        fetchScheduleData();
+    }, [doctorId, selectedWeekday]);
+
+    const handleDateChange = (event) => {
+        const dateValue = event.target.value;
+        setSelectedDate(dateValue);
+        const parsedDate = parse(dateValue, 'd/M/yyyy', new Date());
+        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', { weekday: 'long' });
+        setSelectedWeekday(selectedWeekday);
+
     };
+
+
     useEffect(() => {
         if (selectedDate !== '') {
             const selected = new Date(selectedDate);
@@ -39,19 +83,18 @@ function DoctorInfo() {
                     <div className={"d-flex "}>
                         <div className="avatar">
                             <div className="w-24 rounded">
-                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                                <img src={doctorInfo?.avatarImg}
                                      alt={""}
                                      className="rounded-circle" style={{width: "100px"}}/>
                             </div>
                         </div>
                         <div className={"d-flex flex-column justify-content-center col-7 ms-3"}>
                             <div>
-                                <h3>Phó Giáo sư, Tiến sĩ, Bác sĩ Nguyễn Thị Hoài An </h3>
+                                <h3>{doctorInfo?.doctorName} </h3>
                             </div>
                             <div className={""}>
-                                <h6>Nguyên Trưởng khoa Tai mũi họng trẻ em, Bệnh viện Tai Mũi Họng Trung ương
-                                    Trên 25 năm công tác tại Bệnh viện Tai mũi họng Trung ương
-                                    Chuyên khám và điều trị các bệnh lý Tai Mũi Họng người lớn và trẻ em</h6>
+                                <p>Chức danh: {doctorInfo?.position?.name}</p>
+                                <p>Chuyên khoa: {doctorInfo?.speciality?.specialtyName}</p>
                             </div>
                             <div className={"d-flex"}>
                                 <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
@@ -62,14 +105,14 @@ function DoctorInfo() {
                     <div className={"d-flex mt-5"}>
                         <div className={"d-flex flex-column col-6 border-end"}>
                             <div>
-                                <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
+                                <FormControl required variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="recent-dates-label">Ngày</InputLabel>
                                     <Select
-                                        style={{color:"#0097e6"}}
+                                        style={{ color: "#0097e6" }}
                                         labelId="recent-dates-label"
-                                        id="recent-dates-select"
+                                        id="date"
                                         value={selectedDate || currentDate.toLocaleDateString()}
-                                        onChange={handleChange}
+                                        onChange={handleDateChange}
                                         label="Ngày"
                                     >
                                         {recentDates.map((date, index) => (
@@ -78,7 +121,7 @@ function DoctorInfo() {
                                                 value={date.toLocaleDateString()}
                                                 selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
                                             >
-                                                {date.toLocaleDateString()}
+                                                {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', { weekday: 'long' })})`}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -89,18 +132,16 @@ function DoctorInfo() {
                                 <h5>Lịch khám</h5>
                             </div>
                             <div className={"d-flex flex-wrap gap-3"}>
-                                <Link to="/" className="schedule ">10:30 - 12:00</Link>
-                                <Link to="/" className="schedule ">13:20 - 14:00</Link>
-                                <Link to="/" className="schedule ">14:10 - 14:40</Link>
-                                <Link to="/" className="schedule ">15:00 - 15:30</Link>
-                                <Link to="/" className="schedule ">15:45 - 16:00</Link>
-                                <Link to="/" className="schedule ">16:10 - 16:35</Link>
-                                <Link to="/" className=" schedule ">17:00 - 17:30</Link>
+                                {scheduleList.map((schedule, index) => (
+                                    <Link key={schedule.id} to="/" className="schedule">
+                                        {schedule?.timeItem}
+                                    </Link>
+                                ))}
                             </div>
                             <div className={"d-flex mt-2"}>
                                 <div>Chọn</div>
                                 <div>
-                                    <span><i className="fa-regular fa-hand-pointer"></i></span>
+                                    <span className={"mx-2"}><i className="fa-regular fa-hand-pointer"></i></span>
                                 </div>
                                 <div> và đặt (Phí đặt lịch 0đ)</div>
                             </div>
@@ -108,46 +149,20 @@ function DoctorInfo() {
                         <div className={"d-flex flex-column col-6 ms-3"}>
                             <div className={"d-flex flex-column border-bottom mt-3 py-2"}>
                                 <div>ĐỊA CHỈ KHÁM</div>
-                                <div className={"fw-bold"}>Bệnh viện Đa khoa An Việt</div>
-                                <div>Số 1E Trường Chinh - Thanh Xuân - Hà Nội</div>
+                                <div className={"fw-bold"}>{doctorInfo?.clinic?.clinicName}</div>
+                                <div>{doctorInfo?.clinic?.address}</div>
                             </div>
-                            <div className={"d-flex mt-3 border-bottom py-3"}>
-                                <div className={"me-2"}>Giá Khám: 400.000đ</div>
-                                <Link to="/">Xem chi tiết</Link>
-                            </div>
-                            <div className={"d-flex mt-3"}>
-                                <div className={"me-2"}>Loại bảo hiểm áp dụng:</div>
-                                <Link to="/">Xem chi tiết</Link>
+                            <div className={"d-flex mt-3  "}>
+                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee}.000đ</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={"container-fluid border-bottom"} style={{backgroundColor:"rgb(248 250 250)"}}>
-                <div className={"container pb-4"} >
-                    <div className={"d-flex flex-column"}>
-                        <h6 className={"mt-4"}>Phó Giáo sư, Tiến sĩ, Bác sĩ Cao cấp Nguyễn Duy Hưng</h6>
-                        <ul>
-                            <li>Phó giáo sư, Tiến sĩ, Bác sĩ cao cấp chuyên khoa Da liễu</li>
-                            <li>Bác sĩ từng công tác tại Bệnh viện Da liễu Trung ương</li>
-                            <li>Nguyên Trưởng phòng chỉ đạo tuyến tại Bệnh viện Da liễu Trung ương</li>
-                            <li>Đạt chứng chỉ Diploma về Da liễu tại Viện da liễu Băng Cốc - Thái Lan</li>
-                        </ul>
-                        <h6>Phó Giáo sư khám và điều trị</h6>
-                        <p>Các bệnh lý về chuyên sâu về da liễu người lớn và trẻ em</p>
-                        <ul>
-                            <li>Trứng cá thông thường thanh thiếu niên, người lớn, trứng cá do thuốc, mỹ phẩm, do bôi
-                                corticord, các thể bệnh trứng cá nặng, trứng cá đỏ (rosacea)
-                            </li>
-                            <li>Điều trị da phục hồi da tổn hại do trứng cá, sẹo trứng cá</li>
-                            <li>Các bệnh lý da mặt: viêm da dị ứng, tổn hại da do sử dụng mỹ phẩm, do corticord, lão hóa
-                                da
-                            </li>
-                            <li>Nám da, tàn nhang, sạm da, các bệnh da tăng sắc tố sau viêm, sau trứng cá, do mỹ phẩm
-                            </li>
-                            <li>Viêm da cơ địa trẻ em và người lớn</li>
-                        </ul>
-                        <p className={"fw-bold"}>Và các bệnh lý chuyên sâu khác về chuyên khoa Da liễu</p>
+            <div className={"container-fluid border-bottom"} style={{backgroundColor: "rgb(248 250 250)"}}>
+                <div className={"container pb-4"}>
+                    <div className={"d-flex flex-column mt-3"}>
+                        {doctorInfo && doctorInfo.doctorInfo && HTMLReactParser(doctorInfo.doctorInfo)}
                     </div>
                 </div>
             </div>
@@ -158,8 +173,8 @@ function DoctorInfo() {
                     </div>
                     <div className={"d-flex mt-3 border-top py-3"}>
                         <div className={"me-1"}>Nguyễn Đức Mạnh</div>
-                       <span><i className="fa-regular fa-circle-check"></i></span>
-                        <span className={"ms-2"}>đã khám ngày 29/11/2023</span>
+                       <span style={{color: "#48dbfb"}}><i className="fa-regular fa-circle-check"></i></span>
+                        <span className={"ms-2"} style={{color: "#48dbfb"}}>đã khám ngày 29/11/2023</span>
                     </div>
                     <div className={"border-bottom py-3"}>Dịch vụ tốt</div>
                 </div>

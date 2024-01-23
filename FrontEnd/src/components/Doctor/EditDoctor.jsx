@@ -18,6 +18,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import ClinicEditor from "../CkEditor/ClinicEditor";
+import DoctorEditor from "../CkEditor/DoctorEditor";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -83,7 +85,7 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
     const [position, setPosition] = useState(0);
     const [speciality, setSpeciality] = useState(0);
 
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm(
+    const { register, handleSubmit, formState: { errors }, reset, setValue,getValues } = useForm(
         {
             resolver: yupResolver(schema)
         }
@@ -94,10 +96,10 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
         } else {
             data.avatarImg = updateAvatar;
         }
-        console.log(data.avatarImg);
+        console.log(data);
         try {
             data.clinicId = clinicId;
-            await axios.patch(`http://localhost:8080/api/doctor/${doctorId}`, data);
+            await axios.put(`http://localhost:8080/api/doctor/update/${doctorId}`, data);
             toast.success("Cập nhật bác sĩ thành công")
             reset();
             setShowEdit(false)
@@ -126,6 +128,7 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                 setValue("dob", dob.toISOString().split('T')[0])
                 setValue("email", result.email)
                 setValue("phone", result.phone)
+                setValue("doctorInfo", result.doctorInfo)
                 setValue("speciality", result.speciality.id)
                 setValue("fee", result.fee)
                 presentAvatar = result.avatarImg;
@@ -317,6 +320,9 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                                     </Grid>
                                 </Box>
                             </Item>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <DoctorEditor {...register("doctorInfo")} setValue={setValue} getValues={getValues} />
                         </Grid>
                     </Grid>
                     <Grid item container xs={12} sm={6} >

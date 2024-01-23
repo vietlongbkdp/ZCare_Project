@@ -68,10 +68,6 @@ public class ScheduleService implements IScheduleService{
         return scheduleRepository.findByDoctorIdAndWeekdayAndStatus(doctorId,weekday,status);
     }
 
-    @Override
-    public List<Schedule> findByWeekdayAndStatus(EWeekday weekday, EStatus status) {
-        return scheduleRepository.findByWeekdayAndStatus(weekday,status);
-    }
 
     @Override
     public List<Schedule> findAllByDoctorId(Long id) {

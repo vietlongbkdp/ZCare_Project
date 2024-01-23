@@ -82,8 +82,8 @@ function DoctorComponent({ doctor }) {
     }, [selectedDate]);
 
     return (
-        <div key={doctor.id} className={"container d-flex mt-2 rounded border shadow-sm col-9 p-4"}>
-            <div className={"d-flex mt-2"}>
+        <div key={doctor.id} className={"container d-flex mt-2 rounded border shadow-sm row col-9 p-4 mx-auto"}>
+            <div className={"d-flex mt-2 "}>
                 <div className={"d-flex flex-column justify-content-around col-6 border-end"}>
                     <div className={"d-flex justify-content-start mb-auto"}>
                         <div className={"col-sm-2"}>
@@ -96,17 +96,18 @@ function DoctorComponent({ doctor }) {
                                     />
                                 </div>
                             </div>
-                            <Link to="/">Xem thêm</Link>
                         </div>
                         <div className={"d-flex flex-column justify-content-center ms-3"}>
                             <div>
                                 <h5 style={{color: "#74b9ff"}}>{doctor?.doctorName}</h5>
                             </div>
                             <div>
-                                <h6>{doctor?.doctorInfo}</h6>
+                                <p>Chức danh: {doctor?.position?.name}</p>
+                                <p>Chuyên khoa: {doctor?.speciality?.specialtyName}</p>
+                                <p>Đánh giá: {doctor?.star}</p>
                             </div>
                             <div className={"d-flex"}>
-                                <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
+                            <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
                                 <h6>Hà Nội</h6>
                             </div>
                         </div>
@@ -149,9 +150,9 @@ function DoctorComponent({ doctor }) {
                         ))}
                     </div>
                     <div className={"d-flex mt-2"}>
-                        <div>Chọn</div>
+                        <div>Chọn </div>
                         <div>
-                            <span><i className="fa-regular fa-hand-pointer"></i></span>
+                            <span className={"mx-2"}><i className="fa-regular fa-hand-pointer"></i></span>
                         </div>
                         <div> và đặt (Phí đặt lịch 0đ)</div>
                     </div>
@@ -162,11 +163,6 @@ function DoctorComponent({ doctor }) {
                     </div>
                     <div className={"d-flex mt-3 border-bottom py-3"}>
                         <div className={"me-2"}>Giá Khám: {doctor?.fee}.000đ</div>
-                        <Link to="/">Xem chi tiết</Link>
-                    </div>
-                    <div className={"d-flex mt-3"}>
-                        <div className={"me-2"}>Loại bảo hiểm áp dụng:</div>
-                        <Link to="/">Xem chi tiết</Link>
                     </div>
                 </div>
             </div>

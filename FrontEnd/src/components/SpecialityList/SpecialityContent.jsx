@@ -1,6 +1,7 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
 import React, {useEffect, useState} from 'react'
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 export default function SpecialityContent() {
     const [specialityList, setSpecialityList] = useState(null);
@@ -25,6 +26,7 @@ export default function SpecialityContent() {
                 {
                     specialityList.map((item, index) => (
                         <Card key={index} sx={{ borderRadius: '15px', m:2 }}>
+                            <Link to={`/list-speciality/${item.id}`} style={{ textDecoration: 'none',color:"black" }}>
                             <CardActionArea>
                                 <CardMedia
                                     component="img"
@@ -39,6 +41,7 @@ export default function SpecialityContent() {
                                     </Typography>
                                 </CardContent>
                             </CardActionArea>
+                            </Link>
                         </Card>
                     ))
                 }
