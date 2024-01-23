@@ -22,6 +22,7 @@ public class Clinic {
     private String clinicName;
     @Column(name = "legal_representative")
     private String legalRepresentative;
+    private String email;
     private String hotline;
     @Column(name = "operating_licence")
     private String operatingLicence;

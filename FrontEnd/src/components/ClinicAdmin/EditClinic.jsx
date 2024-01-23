@@ -29,6 +29,9 @@ const schema = yup.object().shape({
         .required("Tên người đại diện không đuược để trống")
         .min(2, 'Nhập trên 2 kí tự')
         .max(100, 'Nhập dưới 100 kí tự'),
+    email: yup.string()
+        .required("Email không được để trống")
+        .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
     hotline: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
@@ -36,13 +39,8 @@ const schema = yup.object().shape({
         .required("GPHĐ không đuược để trống")
         .min(5, 'Nhập trên 5 kí tự')
         .max(30, 'Nhập dưới 30 kí tự'),
-    clinicLogo: yup.mixed().test("file", "Logo không được để trống", (value) => {
-        if (value.length > 0) {
-            return true;
-        }
-        return false;
-    }),
 })
+
 
 const StyledErrorText = styled('p')({
     color: '#d32f2f',
@@ -87,13 +85,13 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                 const result = await res.data;
                 setValue("clinicName", result.clinicName)
                 setValue("legalRepresentative", result.legalRepresentative)
+                setValue("email", result.email)
                 setValue("hotline", result.hotline)
                 setValue("operatingLicence", result.operatingLicence)
                 setValue("address", result.address)
                 setValue("clinicInfo", result.clinicInfo)
                 presentAvatar = result.clinicLogo;
                 updateAvatar = result.clinicLogo;
-                console.log(presentAvatar);
                 document.getElementById('blah').src = presentAvatar;
             }
             getClinic();
@@ -123,7 +121,6 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
 
     const handleUpload = async (e) => {
         let imagesImport = Array.from(e.target.files);
-
         const formData = new FormData();
         formData.append('image', imagesImport[0])
         const res = await axios.post('http://localhost:8080/api/avatar', formData)
@@ -198,6 +195,17 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 error={Boolean(errors.legalRepresentative)}
                                                 helperText={errors.legalRepresentative?.message || ''}
                                                 {...register("legalRepresentative")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} mb={1}>
+                                            <TextField
+                                                autoComplete="email"
+                                                fullWidth
+                                                id="email"
+                                                label="Email"
+                                                error={Boolean(errors.email)}
+                                                helperText={errors.email?.message || ''}
+                                                {...register("email")}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>

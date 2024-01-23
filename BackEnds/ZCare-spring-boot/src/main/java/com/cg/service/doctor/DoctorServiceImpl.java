@@ -85,7 +85,6 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setUser(user);
         doctor.setLockStatus(ELockStatus.valueOf("UNLOCK"));
         doctorRepository.save(doctor);
-
     }
 
     public List<Doctor> findDoctorsWithFilters(Long specialityId, Long clinicId, String doctorName) {

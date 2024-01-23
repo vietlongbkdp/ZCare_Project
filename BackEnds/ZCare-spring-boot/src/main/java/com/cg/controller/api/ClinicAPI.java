@@ -47,6 +47,7 @@ public class ClinicAPI {
 
         updateClinic.setClinicName(clinic.getClinicName());
         updateClinic.setLegalRepresentative(clinic.getLegalRepresentative());
+        updateClinic.setEmail(clinic.getEmail());
         updateClinic.setHotline(clinic.getHotline());
         updateClinic.setOperatingLicence(clinic.getOperatingLicence());
         updateClinic.setAddress(clinic.getAddress());

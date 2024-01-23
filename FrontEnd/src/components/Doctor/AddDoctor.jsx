@@ -72,7 +72,7 @@ const StyledErrorText = styled('p')({
     marginTop: '8px',
 });
 
-export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, setShowData, clinicId }) {
+export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorInClinic, clinicId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -98,8 +98,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
                 toast.success("Tạo bác sĩ thành công")
                 setUpdateShow(pre => !pre);
                 reset();
-                setButtonCreate(true)
-                setShowData(true)
+                handleShowDoctorInClinic();
             }
             else {
                 await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
@@ -149,8 +148,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, setButtonCreate, 
 
     const closeAddModal = () => {
         setShowAdd(false)
-        setButtonCreate(true)
-        setShowData(true)
+        handleShowDoctorInClinic()
     }
 
     return (

@@ -18,7 +18,6 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import ClinicEditor from "../CkEditor/ClinicEditor";
 import DoctorEditor from "../CkEditor/DoctorEditor";
 
 const schema = yup.object().shape({
@@ -77,7 +76,7 @@ const StyledErrorText = styled('p')({
 let updateAvatar;
 let presentAvatar;
 
-export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, setShowData, setUpdateShow }) {
+export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInClinic, setUpdateShow }) {
 
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -103,8 +102,7 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
             toast.success("Cập nhật bác sĩ thành công")
             reset();
             setShowEdit(false)
-            setButtonCreate(true)
-            setShowData(true)
+            handleShowDoctorInClinic()
             setUpdateShow(pre => !pre);
         } catch (error) {
             toast.error("Cập nhật bác sĩ thất bại")
@@ -166,8 +164,7 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
 
     const closeEditModal = () => {
         setShowEdit(false)
-        setButtonCreate(true)
-        setShowData(true)
+        handleShowDoctorInClinic()
     }
 
     const handleUpload = async (e) => {

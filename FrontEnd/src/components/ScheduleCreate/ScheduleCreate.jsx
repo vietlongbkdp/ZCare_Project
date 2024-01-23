@@ -28,7 +28,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-export default function ScheduleCreate({ doctorId, setButtonCreate, setShowData, setShowSchedule }) {
+export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, setShowSchedule }) {
     const [dateCreate, setDateCreate] = useState([])
     const [loadPage, setLoadPage] = useState(false)
     const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
@@ -290,8 +290,7 @@ export default function ScheduleCreate({ doctorId, setButtonCreate, setShowData,
 
     const handleCloseSchedule = () => {
         setShowSchedule(false)
-        setButtonCreate(true)
-        setShowData(true)
+        handleShowDoctorInClinic()
     }
     return (
         <Container maxWidth="md">
