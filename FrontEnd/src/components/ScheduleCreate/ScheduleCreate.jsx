@@ -78,7 +78,7 @@ export default function ScheduleCreate() {
     useEffect(() => {
         const getScheduleAPI = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/schedule');
+                const response = await axios.get('http://localhost:8080/api/schedule/' + idDoctor);
                 const scheduleGet = sortObjectsByWeekdayAndTime(response.data)
                 let listTimeDetails = []
                 let strTemp = "temp"
