@@ -64,7 +64,7 @@ function DoctorComponent({ doctor }) {
 
     useEffect(() => {
         fetchScheduleData();
-    }, [selectedWeekday]);
+    }, [fetchScheduleData,selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;

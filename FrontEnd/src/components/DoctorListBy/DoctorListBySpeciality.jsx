@@ -12,7 +12,7 @@ import Pediatrics from "../SpecialityList/Pediatrics";
 import Dentistry from "../SpecialityList/Dentistry";
 
 function DoctorListBySpeciality() {
-    const { specialityId } = useParams();
+    const {specialityId} = useParams();
 
     let componentToRender;
 
@@ -21,22 +21,22 @@ function DoctorListBySpeciality() {
             componentToRender = <Pediatric/>;
             break;
         case "2":
-            componentToRender = <Ophthalmology />;
+            componentToRender = <Ophthalmology/>;
             break;
         case "3":
-            componentToRender = <CardiologyInfor />;
+            componentToRender = <CardiologyInfor/>;
             break;
         case "4":
-            componentToRender = <EarsNoseThroat />;
+            componentToRender = <EarsNoseThroat/>;
             break;
         case "5":
-            componentToRender = <Dermatology />;
+            componentToRender = <Dermatology/>;
             break;
         case "6":
-            componentToRender = <Pediatrics />;
+            componentToRender = <Pediatrics/>;
             break;
         case "7":
-            componentToRender = <Dentistry />;
+            componentToRender = <Dentistry/>;
             break;
         default:
             componentToRender = null;
@@ -44,10 +44,16 @@ function DoctorListBySpeciality() {
 
     return (
         <>
-            <Header />
+            <Header/>
+            <div className={"w-100 d-flex flex-column justify-content-center align-items-center"}
+                 style={{height: "200px", backgroundColor: "rgb(237 255 250)"}}>
+                <h2 className={" mt-2"}>Thông tin Chuyên khoa</h2>
+                <p className={" mt-3"}>Các chuyên khoa đảm nhận vai trò quan trọng trong chẩn đoán, điều
+                    trị và quản lý các bệnh và tình trạng sức khỏe của bệnh nhân.</p>
+            </div>
             {componentToRender}
-                <DoctorInfoClinic specialityId={specialityId}/>
-            <Footer />
+            <DoctorInfoClinic specialityId={specialityId}/>
+            <Footer/>
         </>
     );
 }
