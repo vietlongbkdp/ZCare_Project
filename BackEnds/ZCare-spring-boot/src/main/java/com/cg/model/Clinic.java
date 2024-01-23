@@ -22,6 +22,7 @@ public class Clinic {
     private String clinicName;
     @Column(name = "legal_representative")
     private String legalRepresentative;
+    private String email;
     private String hotline;
     @Column(name = "operating_licence")
     private String operatingLicence;
@@ -30,4 +31,7 @@ public class Clinic {
     private String clinicInfo;
     @Column(name = "clinic_logo")
     private String clinicLogo;
+    @OneToOne
+    @JoinColumn(name="user_id")
+    private User user;
 }

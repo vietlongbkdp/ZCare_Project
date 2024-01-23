@@ -14,6 +14,8 @@ import EditDoctor from './EditDoctor';
 import AddDoctor from './AddDoctor';
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import DoctorInfo from './../DoctorInfo/DoctorInfo';
+import DoctorDetail from './DoctorDetail';
 
 export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) {
     const [doctorList, setDoctorList] = useState([])
@@ -23,6 +25,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     const [buttonCreate, setButtonCreate] = useState(true)
     const [showData, setShowData] = useState(true)
     const [showSchedule, setShowSchedule] = useState(false)
+    const [showDoctorDetail, setShowDoctorDetail] = useState(false)
     const [doctorId, setDoctorId] = useState();
 
     useEffect(() => {
@@ -56,6 +59,18 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
         setShowSchedule(true)
         setButtonCreate(false)
         setShowData(false)
+    }
+
+    const handleShowDetail = (doctorId) => {
+        setDoctorId(doctorId)
+        setShowDoctorDetail(true)
+        setButtonCreate(false)
+        setShowData(false)
+    }
+
+    const handleShowDoctorInClinic = () => {
+        setButtonCreate(true)
+        setShowData(true)
     }
 
     const handleChangeLock = async (doctorId, currentLockStatus) => {
@@ -112,24 +127,25 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
             {showAdd && <AddDoctor
                 setShowAdd={setShowAdd}
                 setUpdateShow={setUpdateShow}
-                setButtonCreate={setButtonCreate}
-                setShowData={setShowData}
+                handleShowDoctorInClinic={handleShowDoctorInClinic}
                 clinicId={clinicId}
             />}
             {showEdit && <EditDoctor
                 doctorId={doctorId}
                 setShowEdit={setShowEdit}
-                setButtonCreate={setButtonCreate}
-                setShowData={setShowData}
+                handleShowDoctorInClinic={handleShowDoctorInClinic}
                 setUpdateShow={setUpdateShow}
                 clinicId={clinicId}
             />}
             {showSchedule && <ScheduleCreate
                 doctorId={doctorId}
-                setShowData={setShowData}
-                setButtonCreate={setButtonCreate}
+                handleShowDoctorInClinic={handleShowDoctorInClinic}
                 setShowSchedule={setShowSchedule}
             />}
+            {showDoctorDetail && <DoctorDetail
+                doctorId={doctorId}
+                handleShowDoctorInClinic={handleShowDoctorInClinic}
+                setShowDoctorDetail={setShowDoctorDetail} />}
 
             <Grid container spacing={2}>
                 {
@@ -155,7 +171,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                                             Chuyên khoa: {doctor?.speciality?.specialtyName}
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary" pb='5px'>
-                                            Giá khám : {doctor?.fee}
+                                            Giá khám : {doctor?.fee} đ
                                         </Typography>
                                         <Typography variant="body2" color="text.secondary" pb='5px'>
                                             Đánh giá: {doctor?.star}
@@ -166,7 +182,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                                 <CardActions sx={{ height: '60px' }}>
                                     <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
                                         <Button variant='outlined' color='primary' sx={{ width: '90px' }}
-                                        // onClick={() => handleShowSchedule(item?.id)}
+                                            onClick={() => handleShowDetail(doctor?.id)}
                                         >
                                             Chi tiết
                                         </Button>

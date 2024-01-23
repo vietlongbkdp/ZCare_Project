@@ -10,15 +10,12 @@ import Paper from '@mui/material/Paper';
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import AddDoctor from "./AddDoctor";
-import EditDoctor from "./EditDoctor";
 import { Box } from "@mui/system";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
 import { getHeader } from '../utils/ApiComponen';
 import './style.css'
-import ScheduleCreate from '../ScheduleCreate/ScheduleCreate';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
