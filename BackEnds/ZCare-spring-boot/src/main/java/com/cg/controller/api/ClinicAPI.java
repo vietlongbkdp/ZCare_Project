@@ -40,13 +40,14 @@ public class ClinicAPI {
        }
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> updateClinic(@PathVariable Long id, @RequestBody Clinic clinic){
         Clinic updateClinic = clinicService.findById(id).get();
         String updateClinicLogo = updateClinic.getClinicLogo();
 
         updateClinic.setClinicName(clinic.getClinicName());
         updateClinic.setLegalRepresentative(clinic.getLegalRepresentative());
+        updateClinic.setEmail(clinic.getEmail());
         updateClinic.setHotline(clinic.getHotline());
         updateClinic.setOperatingLicence(clinic.getOperatingLicence());
         updateClinic.setAddress(clinic.getAddress());

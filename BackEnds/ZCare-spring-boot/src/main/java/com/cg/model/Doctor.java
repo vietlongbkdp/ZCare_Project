@@ -30,6 +30,7 @@ public class Doctor {
     @ManyToOne
     private Position position;
     private LocalDate dob;
+    @Column(unique = true)
     private String email;
     private String phone;
     @Column(name = "create_at")
@@ -42,7 +43,7 @@ public class Doctor {
     private String avatarImg;
     @Column(columnDefinition = "integer default 0")
     private Integer star;
-    @Column(name = "doctor_info")
+    @Column(name = "doctor_info", columnDefinition = "LONGTEXT")
     private String doctorInfo;
     @ManyToOne
     private Speciality speciality;
@@ -74,5 +75,4 @@ public class Doctor {
                 .setScheduleList(scheduleList)
                 ;
     }
-
 }

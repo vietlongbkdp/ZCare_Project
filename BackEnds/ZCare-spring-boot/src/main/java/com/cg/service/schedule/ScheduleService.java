@@ -23,7 +23,7 @@ public class ScheduleService implements IScheduleService{
 
     @Override
     public Optional<Schedule> findById(Long id) {
-        return Optional.empty();
+        return scheduleRepository.findById(id);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ScheduleService implements IScheduleService{
 
     @Override
     public void deleteItem(ScheduleDeleteDTO scheduleDeleteDTO) {
-        Schedule scheduleGet = scheduleRepository.findByDoctor_IdAndTimeItemAndWeekday(scheduleDeleteDTO.getIdDoctor(), scheduleDeleteDTO.getDetailTime(), EWeekday.getByWeekday(scheduleDeleteDTO.getWeekday()));
+        Schedule scheduleGet = scheduleRepository.findByDoctor_IdAndTimeItemAndWeekday(scheduleDeleteDTO.getDoctorId(), scheduleDeleteDTO.getDetailTime(), EWeekday.getByWeekday(scheduleDeleteDTO.getWeekday()));
         if(scheduleGet != null){
             scheduleRepository.deleteById(scheduleGet.getId());
         }
@@ -68,10 +68,6 @@ public class ScheduleService implements IScheduleService{
         return scheduleRepository.findByDoctorIdAndWeekdayAndStatus(doctorId,weekday,status);
     }
 
-    @Override
-    public List<Schedule> findByWeekdayAndStatus(EWeekday weekday, EStatus status) {
-        return scheduleRepository.findByWeekdayAndStatus(weekday,status);
-    }
 
     @Override
     public List<Schedule> findAllByDoctorId(Long id) {

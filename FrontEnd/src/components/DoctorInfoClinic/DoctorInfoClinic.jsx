@@ -2,13 +2,19 @@ import DoctorComponent from "./DoctorComponent";
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-function DoctorInfoClinic() {
+function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
     const [doctorInfo, setDoctorInfo] = useState([]);
 
     useEffect(() => {
         const fetchDoctorInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor');
+                const response = await axios.get('http://localhost:8080/api/doctor/search', {
+                    params: {
+                        specialityId: specialityId,
+                        clinicId:clinicId,
+                        doctorName:doctorName
+                    }
+                });
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
                 }
@@ -17,13 +23,14 @@ function DoctorInfoClinic() {
             }
         };
         fetchDoctorInfo();
-    }, []);
+    }, [specialityId,clinicId,doctorName]);
 
     return (
         <>
             {doctorInfo.map((doctor, index) => (
                 <DoctorComponent key={doctor.id} doctor={doctor} />
             ))}
+
         </>
     );
 }

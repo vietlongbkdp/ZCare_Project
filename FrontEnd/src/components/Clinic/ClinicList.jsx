@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import { Facebook, Instagram, LinkedIn, Twitter } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 function ClinicList() {
     const [clinicData, setClinicData] = useState(null);
@@ -33,6 +34,7 @@ function ClinicList() {
             </div>
             <Grid style={{display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap"}}>
                 {clinicData.map(clinic => (
+
                     <Container
                         key={clinic.id}
                         style={{
@@ -47,11 +49,12 @@ function ClinicList() {
                             marginLeft: "10px",
                             width: '25%',
                             boxSizing: 'border-box',
-                            height: '200px',
+                            height: '250px',
                             wordWrap: 'break-word',
                             wordBreak: 'break-all',
                         }}
                     >
+                        <Link to={`/list-clinic/${clinic.id}`} style={{ textDecoration: 'none',color:"black" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <Box display="flex" flexDirection="column" marginRight="10px" marginLeft="10px">
@@ -93,6 +96,7 @@ function ClinicList() {
                                 </Box>
                             </Grid>
                         </Grid>
+                        </Link>
                     </Container>
                 ))}
             </Grid>

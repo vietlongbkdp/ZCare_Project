@@ -46,7 +46,7 @@ function AuthLogin() {
       if (userRole === "ROLE_ADMIN") {
         console.log(userRole)
         window.location.href = "/admin";
-      } else if (userRole === "ROLE_USER") {
+      } else if (userRole === "ROLE_CUSTOMER") {
         const currentPath = window.location.pathname;
         console.log(currentPath)
         if (!currentPath.includes("/admin")) {

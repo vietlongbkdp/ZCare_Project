@@ -1,6 +1,8 @@
 package com.cg.service.doctor;
+import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.Doctor;
+import com.cg.model.Speciality;
 import com.cg.model.User;
 import com.cg.model.enumeration.ERole;
 import com.cg.model.enumeration.ELockStatus;
@@ -80,15 +82,23 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setCreateAt(LocalDate.now());
         doctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
-        doctor.setStar(0);
+        doctor.setStar(5);
         doctor.setUser(user);
         doctor.setLockStatus(ELockStatus.valueOf("UNLOCK"));
         doctorRepository.save(doctor);
+    }
 
+    public List<Doctor> findDoctorsWithFilters(Long specialityId, Long clinicId, String doctorName) {
+        return doctorRepository.findDoctorsWithFilters(specialityId, clinicId, doctorName);
     }
 
     @Override
     public void deleteById(Long id) {
          doctorRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Doctor> findAllByUser_Unlock(boolean user_unlock) {
+        return doctorRepository.findAllByUser_Unlock(user_unlock);
     }
 }

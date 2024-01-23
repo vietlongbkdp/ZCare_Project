@@ -16,10 +16,9 @@ import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
 import AddClinic from './AddClinic';
 import EditClinic from './EditClinic';
-import DoctorAdmin from '../Doctor/DoctorAdmin';
 import { ApiContext } from '../ApiContext/ApiProvider';
-
-
+import DoctorInClinic from '../Doctor/DoctorInClinic';
+import "./clinic.css"
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -161,7 +160,7 @@ export default function CustomizedTables() {
                     setShowPagination={setShowPagination}
                 />}
                 {
-                    showDoctorList && <DoctorAdmin API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
+                    showDoctorList && <DoctorInClinic API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
                         clinicId={clinicId}
                         handleHideDoctor={handleHideDoctor} />
                 }
@@ -178,10 +177,10 @@ export default function CustomizedTables() {
                                         <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
                                         <StyledTableCell>HOTLINE</StyledTableCell>
                                         <StyledTableCell>GPHĐ</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>DANH SÁCH BÁC SĨ</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>THÔNG TIN</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>CẬP NHẬT</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>XÓA</StyledTableCell>
+                                        <StyledTableCell align='center'>DANH SÁCH BÁC SĨ</StyledTableCell>
+                                        <StyledTableCell align='center'>THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell align='center'>CẬP NHẬT</StyledTableCell>
+                                        <StyledTableCell align='center'>XÓA</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>

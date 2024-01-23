@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import DoctorEditor from "../CkEditor/DoctorEditor";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -39,12 +40,12 @@ const schema = yup.object().shape({
         .typeError('Giá khám không được để trống'),
     speciality: yup.string()
         .required("Chuyên khoa không được để trống"),
-    avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
-        if (value.length > 0) {
-            return true;
-        }
-        return false;
-    }),
+    // avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
+    //     if (value.length > 0) {
+    //         return true;
+    //     }
+    //     return false;
+    // }),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -75,16 +76,15 @@ const StyledErrorText = styled('p')({
 let updateAvatar;
 let presentAvatar;
 
-export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, setShowTable, setUpdateShow, setShowPage }) {
+export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInClinic, setUpdateShow }) {
 
-    const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
     const [clinicId, setClinicId] = useState(0);
     const [position, setPosition] = useState(0);
     const [speciality, setSpeciality] = useState(0);
 
-    const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm(
+    const { register, handleSubmit, formState: { errors }, reset, setValue,getValues } = useForm(
         {
             resolver: yupResolver(schema)
         }
@@ -95,21 +95,20 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
         } else {
             data.avatarImg = updateAvatar;
         }
-        console.log(data.avatarImg);
+        console.log(data);
         try {
             data.clinicId = clinicId;
-            await axios.patch(`http://localhost:8080/api/doctor/${doctorId}`, data);
+            await axios.put(`http://localhost:8080/api/doctor/update/${doctorId}`, data);
             toast.success("Cập nhật bác sĩ thành công")
             reset();
             setShowEdit(false)
-            setButtonCreate(true)
-            setShowTable(true)
-            setShowPage(true)
+            handleShowDoctorInClinic()
             setUpdateShow(pre => !pre);
         } catch (error) {
             toast.error("Cập nhật bác sĩ thất bại")
         }
     };
+    console.log(presentAvatar);
 
     useEffect(() => {
         if (doctorId) {
@@ -120,33 +119,23 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                 setPosition(result.position.id)
                 setSpeciality(result.speciality.id)
 
+                const [year, month, day] = result.dob;
+                const dob = new Date(year, month - 1, day);
                 setValue("doctorName", result.doctorName)
                 setValue("position", result.position.id)
-                setValue("dob", result.dob)
+                setValue("dob", dob.toISOString().split('T')[0])
                 setValue("email", result.email)
                 setValue("phone", result.phone)
+                setValue("doctorInfo", result.doctorInfo)
                 setValue("speciality", result.speciality.id)
                 setValue("fee", result.fee)
                 presentAvatar = result.avatarImg;
                 updateAvatar = result.avatarImg;
-                console.log('init pre', presentAvatar);
-                console.log('init update', updateAvatar);
+                console.log(presentAvatar);
                 document.getElementById('blah').src = presentAvatar;
             }
             getDoctor();
         }
-    }, []);
-
-    useEffect(() => {
-        const getClinics = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/clinic');
-                setClinicList(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        getClinics();
     }, []);
 
     useEffect(() => {
@@ -175,14 +164,11 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
 
     const closeEditModal = () => {
         setShowEdit(false)
-        setButtonCreate(true)
-        setShowTable(true)
-        setShowPage(true)
+        handleShowDoctorInClinic()
     }
 
     const handleUpload = async (e) => {
         let imagesImport = Array.from(e.target.files);
-
         const formData = new FormData();
         formData.append('image', imagesImport[0])
         const res = await axios.post('http://localhost:8080/api/avatar', formData)
@@ -331,6 +317,9 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                                     </Grid>
                                 </Box>
                             </Item>
+                        </Grid>
+                        <Grid item xs={12} sm={12}>
+                            <DoctorEditor {...register("doctorInfo")} setValue={setValue} getValues={getValues} />
                         </Grid>
                     </Grid>
                     <Grid item container xs={12} sm={6} >

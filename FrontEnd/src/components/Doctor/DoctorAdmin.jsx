@@ -1,24 +1,23 @@
 import * as React from 'react';
-import { styled } from '@mui/material/styles';
+import {styled} from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell, {tableCellClasses} from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from "axios";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import Button from "@mui/material/Button";
-import AddDoctor from "./AddDoctor";
-import EditDoctor from "./EditDoctor";
-import { Box } from "@mui/system";
+import {Box} from "@mui/system";
 import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-import { Pagination } from "@mui/material";
-import { getHeader } from '../utils/ApiComponen';
+import {toast} from "react-toastify";
+import {Pagination} from "@mui/material";
+import {getHeader} from '../utils/ApiComponen';
+import './style.css'
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: 'white',
         color: theme.palette.common.black,
@@ -28,16 +27,17 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
 }));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledTableRow = styled(TableRow)(({theme}) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },
     '&:last-child td, &:last-child th': {
         border: 0,
     },
+    height: '70px'
 }));
 
-export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
+export default function DoctorAdmin({API_URL, handleHideDoctor, clinicId}) {
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -53,7 +53,6 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     const [updateShow, setUpdateShow] = useState(false)
     const [buttonCreate, setButtonCreate] = useState(true)
     const [buttonDisable, setButtonDisable] = useState(true)
-    const [showTable, setShowTable] = useState(true)
     const [showPage, setShowPage] = useState(true);
     const [doctorId, setDoctorId] = useState();
 
@@ -71,7 +70,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                     {
                         headers: getHeader()
                     }
-                    );
+                );
                 setDoctorList(response.data)
 
             } catch (error) {
@@ -83,118 +82,42 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
 
     const currentDoctorList = doctorList.slice(startIndex, endIndex);
 
-    const handleOpenDoctor = () => {
-        setShowAdd(true)
-        setButtonCreate(false)
-        setShowTable(false)
-        setShowPage(false)
-    }
+    const handleChangeLock = async (id, currentLockStatus) => {
+        console.log(typeof currentLockStatus)
 
-    const handleEditId = (id) => {
-        setDoctorId(id)
-        setShowEdit(true)
-        setButtonCreate(false)
-        setShowTable(false)
-        setShowPage(false)
-    }
-
-    const handleDelete = async (id) => {
         Swal.fire({
-            title: "Bạn có chắc chắn không?",
-            text: "Bạn sẽ không thể hoàn tác",
+            title: "Bạn muốn khóa",
+            text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            cancelButtonText: 'Hủy',
-            confirmButtonText: "Đồng ý, xóa"
-        }).then(async (data) => {
-            if (data.isConfirmed) {
+            confirmButtonText: "Yes, change it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:8080/api/doctor/${id}`);
-                    toast.success("Xóa bác sĩ thành công")
-                    setUpdateShow(pre => !pre);
-                } catch (error) {
-                    toast.error("Xóa bác sĩ thất bại")
-                }
-            }
-        })
-    }
-
-        const handleChangeLock = async (id, currentLockStatus) => {
-            console.log(typeof currentLockStatus)
-
-            Swal.fire({
-                title: "Bạn muốn khóa" ,
-                text: "You won't be able to revert this!",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Yes, change it!"
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        await axios.put(`http://localhost:8080/api/doctor/lock/${id}`, {
-                            userId: currentLockStatus
-                        });
-                        toast.success("Thành công");
-                        setUpdateShow((prev) => !prev);
-                    } catch (error) {
-                        toast.error("Thất bại");
-                    }
-                    Swal.fire({
-                        title: "khóa thành công",
-                        text: `The doctor has been `,
-                        icon: "success"
+                    await axios.put(`http://localhost:8080/api/doctor/lock/${id}`, {
+                        userId: currentLockStatus
                     });
+                    toast.success("Thành công");
+                    setUpdateShow((prev) => !prev);
+                } catch (error) {
+                    toast.error("Thất bại");
                 }
-            });
-        };
+                Swal.fire({
+                    title: "khóa thành công",
+                    text: `The doctor has been `,
+                    icon: "success"
+                });
+
+            }
+        });
+    };
 
     return (
         <Box>
-            {
-                buttonCreate && buttonDisable &&
-                <>
-                    <Button
-                        type="button"
-                        variant="contained"
-                        sx={{ mt: 3, mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
-                        onClick={handleHideDoctor}
-                    >
-                        Trở lại
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="contained"
-                        color='success'
-                        sx={{ mt: 3, mb: 1 }}
-                        onClick={handleOpenDoctor}
-                    >
-                        Tạo bác sĩ
-                    </Button>
-                </>
-            }
-            {showAdd && <AddDoctor
-                setShowAdd={setShowAdd}
-                setUpdateShow={setUpdateShow}
-                setButtonCreate={setButtonCreate}
-                setShowTable={setShowTable}
-                setShowPage={setShowPage}
-                clinicId={clinicId}
-            />}
-            {showEdit && <EditDoctor
-                doctorId={doctorId}
-                setShowEdit={setShowEdit}
-                setButtonCreate={setButtonCreate}
-                setShowTable={setShowTable}
-                setUpdateShow={setUpdateShow}
-                setShowPage={setShowPage}
-                clinicId={clinicId}
-            />}
-            {showTable && <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+            <TableContainer component={Paper}>
+                <Table sx={{minWidth: 700}} aria-label="customized table">
                     <TableHead>
                         <TableRow>
                             <StyledTableCell>#</StyledTableCell>
@@ -209,17 +132,16 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                             <StyledTableCell align="left">NGÀY ĐĂNG KÍ</StyledTableCell>
                             <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
                             <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
-                            <StyledTableCell align="center">CẬP NHẬT</StyledTableCell>
-                            <StyledTableCell align="right">TRẠNG THÁI</StyledTableCell>
-                            <StyledTableCell align="center">XÓA</StyledTableCell>
+                            <StyledTableCell align="center">KHÓA</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {currentDoctorList.map((item) => (
                             <StyledTableRow key={item.id}>
-                                <StyledTableCell component="th" scope="row">{item?.id}</StyledTableCell>
+                                <StyledTableCell component="th" align="center" scope="row">{item?.id}</StyledTableCell>
                                 <StyledTableCell align="left">
-                                    <img src={item?.avatarImg} alt="Avatar" style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
+                                    <img src={item?.avatarImg} alt="Avatar"
+                                         style={{width: '50px', height: '50px', borderRadius: '25px'}}/>
                                 </StyledTableCell>
                                 <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
@@ -231,33 +153,42 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                                 <StyledTableCell align="left">{item?.createAt}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.fee}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.star}</StyledTableCell>
-                               <StyledTableCell align="right">
-                                    <Button
-                                         variant="contained"
-                                         style={{ backgroundColor: 'red'}}
-                                         onClick={() => handleChangeLock(item.id, item.user.id)}
-                                                                                    >
-                                        LOCK
-                                     </Button>
-                               </StyledTableCell>
+                                {/*<StyledTableCell align="right">*/}
+                                {/*    <Button*/}
+                                {/*        variant="contained"*/}
+                                {/*        style={{backgroundColor: 'red'}}*/}
+                                {/*        onClick={() => handleChangeLock(item.id, item.user.id)}*/}
+                                {/*    >*/}
+                                {/*        LOCK*/}
+                                {/*    </Button>*/}
+                                {/*</StyledTableCell>*/}
                                 <StyledTableCell align="center">
-                                    <Button variant="contained" color="warning"
-                                        onClick={() => handleEditId(item.id)} sx={{ width: 5 }}>
-                                        <i className="fa-solid fa-pen-to-square"></i>
+                                    <Button
+                                        variant="contained"
+                                        color='error'
+                                        onClick={() => handleChangeLock(item.id, item.user.id)}
+                                    >
+                                        Khoá
                                     </Button>
                                 </StyledTableCell>
-                                <StyledTableCell align="center">
+                                    {/* <StyledTableCell align="center">
+                                    <Button variant="contained" color="warning"
+                                        onClick={() => handleEditId(item.id)}>
+                                        <i className="fa-solid fa-pen-to-square"></i>
+                                    </Button>
+                                </StyledTableCell> */}
+                                    {/* <StyledTableCell align="center">
                                     <Button variant="contained" color="error"
                                         onClick={() => handleDelete(item.id)}
                                         sx={{ marginLeft: 'auto' }}>
                                         <i className="fa-solid fa-delete-left"></i>
                                     </Button>
-                                </StyledTableCell>
+                                </StyledTableCell> */}
                             </StyledTableRow>
                         ))}
                     </TableBody>
                 </Table>
-            </TableContainer>}
+            </TableContainer>
             {showPage &&
                 <Pagination
                     count={Math.ceil(doctorList.length / itemsPerPage)}
@@ -266,7 +197,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                     color="primary"
                     showFirstButton
                     showLastButton
-                    style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+                    style={{marginTop: '1rem', display: 'flex', justifyContent: 'center'}}
                 />
             }
         </Box>

@@ -44,8 +44,8 @@ public class RatingService implements IRatingService{
     }
 
     @Override
-    public void createRating(RatingReqDTO ratingReqDTO) {
-        Doctor doctor = doctorService.findById(1L).get();
+    public void createRating(RatingReqDTO ratingReqDTO,Long doctorId) {
+        Doctor doctor = doctorService.findById(doctorId).get();
         Customer customer = customerService.findById(1L).get();
         int star = Integer.parseInt(ratingReqDTO.getStar());
         String comment = ratingReqDTO.getComment();
@@ -55,5 +55,10 @@ public class RatingService implements IRatingService{
         rating.setDoctor(doctor);
         rating.setCustomer(customer);
         iRatingRepository.save(rating);
+    }
+
+    @Override
+    public List<Rating> findByDoctorId(Long doctorId) {
+        return iRatingRepository.findByDoctorId(doctorId);
     }
 }

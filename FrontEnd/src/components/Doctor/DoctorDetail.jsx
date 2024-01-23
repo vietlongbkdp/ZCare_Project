@@ -1,28 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
-import "./Doctorinfo.css"
+import React, { useEffect, useState } from 'react';
+import { Button, FormControl, InputLabel, Link, MenuItem, Select } from "@mui/material";
 import dayjs from "dayjs";
-import {parse} from "date-fns";
+import { parse } from "date-fns";
 import axios from "axios";
-import {useParams} from "react-router-dom";
 import HTMLReactParser from "html-react-parser";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import Rating from '@mui/material/Rating';
-import RatingDoctor from "../RatingDoctor/RatingDoctor";
 
-function DoctorInfo() {
+export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShowDoctorInClinic }) {
     const dateNows = dayjs().format('D/M/YYYY')
-    const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', {weekday: 'long'});
+    const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
-    const [ratingList, setRatingList] = useState([]);
-    const [ratingSubmitted, setRatingSubmitted] = useState(false);
-    const {doctorId} = useParams();
+
     useEffect(() => {
         setCurrentDate(new Date());
         const getRecentDates = () => {
@@ -60,7 +52,6 @@ function DoctorInfo() {
                 console.error('Error fetching schedule data:', error);
             }
         };
-
         fetchDoctorInfo();
         fetchScheduleData();
     }, [doctorId, selectedWeekday]);
@@ -69,21 +60,14 @@ function DoctorInfo() {
         const dateValue = event.target.value;
         setSelectedDate(dateValue);
         const parsedDate = parse(dateValue, 'd/M/yyyy', new Date());
-        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
+        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', { weekday: 'long' });
         setSelectedWeekday(selectedWeekday);
-
     };
 
-    useEffect(() => {
-        axios.get(`http://localhost:8080/api/rating/${doctorId}`)
-            .then(response => {
-                setRatingList(response.data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }, [doctorId,ratingSubmitted]);
-
+    const handleHideDoctorDetail = () => {
+        handleShowDoctorInClinic();
+        setShowDoctorDetail(false);
+    }
 
     useEffect(() => {
         if (selectedDate !== '') {
@@ -92,22 +76,22 @@ function DoctorInfo() {
         }
     }, [selectedDate]);
 
-    return (<>
-        <Header/>
-        <div className="w-100" >
-            <div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>
-                <h2>THÔNG TIN BÁC SỸ</h2>
-            </div>
-            <div className={"my-4"}>
-            </div>
-            <div className={"container-fluid border-bottom "}>
+    return (
+        <>
+            <Button
+                type="button"
+                variant="contained"
+                sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
+                onClick={handleHideDoctorDetail}
+            >
+                Trở lại
+            </Button>
+            <div className={"container-fluid border-bottom"}>
                 <div className={"container pb-4 "}>
                     <div className={"d-flex "}>
                         <div className="avatar">
                             <div className="w-24 rounded">
-                                <img src={doctorInfo?.avatarImg}
-                                     alt={""}
-                                     className="rounded-circle" style={{width: "100px"}}/>
+                                <img src={doctorInfo?.avatarImg} alt="" className="rounded-circle" style={{ width: "100px", height: '100px' }} />
                             </div>
                         </div>
                         <div className={"d-flex flex-column justify-content-center col-7 ms-3"}>
@@ -127,23 +111,25 @@ function DoctorInfo() {
                     <div className={"d-flex mt-5"}>
                         <div className={"d-flex flex-column col-6 border-end"}>
                             <div>
-                                <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
+                                <FormControl required variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="recent-dates-label">Ngày</InputLabel>
                                     <Select
-                                        style={{color: "#0097e6"}}
+                                        style={{ color: "#0097e6" }}
                                         labelId="recent-dates-label"
                                         id="date"
                                         value={selectedDate || currentDate.toLocaleDateString()}
                                         onChange={handleDateChange}
                                         label="Ngày"
                                     >
-                                        {recentDates.map((date, index) => (<MenuItem
-                                            key={index}
-                                            value={date.toLocaleDateString()}
-                                            selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
-                                        >
-                                            {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', {weekday: 'long'})})`}
-                                        </MenuItem>))}
+                                        {recentDates.map((date, index) => (
+                                            <MenuItem
+                                                key={index}
+                                                value={date.toLocaleDateString()}
+                                                selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
+                                            >
+                                                {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', { weekday: 'long' })})`}
+                                            </MenuItem>
+                                        ))}
                                     </Select>
                                 </FormControl>
                             </div>
@@ -155,7 +141,8 @@ function DoctorInfo() {
                                 {scheduleList.map((schedule, index) => (
                                     <Link key={schedule.id} to="/" className="schedule">
                                         {schedule?.timeItem}
-                                    </Link>))}
+                                    </Link>
+                                ))}
                             </div>
                             <div className={"d-flex mt-2"}>
                                 <div>Chọn</div>
@@ -172,45 +159,19 @@ function DoctorInfo() {
                                 <div>{doctorInfo?.clinic?.address}</div>
                             </div>
                             <div className={"d-flex mt-3  "}>
-                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee}.000đ</div>
+                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee} đ</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className={"container-fluid border-bottom"} style={{backgroundColor: "rgb(248 250 250)"}}>
+            <div className={"container-fluid border-bottom"} style={{ backgroundColor: "rgb(248 250 250)" }}>
                 <div className={"container pb-4"}>
                     <div className={"d-flex flex-column mt-3"}>
-                        {doctorInfo && doctorInfo.doctorInfo && HTMLReactParser(doctorInfo.doctorInfo)}
+                        {doctorInfo && doctorInfo?.doctorInfo && HTMLReactParser(doctorInfo?.doctorInfo)}
                     </div>
                 </div>
             </div>
-            <div className={"container"}>
-                <div className={"d-flex flex-column"}>
-                    <div>
-                        <h5 className={"mt-4 border-bottom py-3"}>Phản hồi của bệnh nhân sau khi đi khám</h5>
-                    </div>
-                    {ratingList.map((rating, index) => (<>
-                        <div> <Rating value={rating?.star} max={5} readOnly /></div>
-                        <div key={rating.id} className="d-flex ">
-                            <div className="me-1">{rating?.customer?.fullName}</div>
-                            <span style={{color: "#48dbfb"}}>
-                                <i className="fa-regular fa-circle-check"></i>
-                                </span>
-                            <span className="ms-2" style={{color: "#48dbfb"}}>
-                               đã khám ngày 29/11/2023
-                                 </span>
-                        </div>
-                        <div className="border-bottom py-3">{rating?.comment}</div>
-                    </>))}
-                    <div className={"mt-3"}>
-                        <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <Footer/>
-    </>);
+        </>
+    );
 }
-
-export default DoctorInfo;

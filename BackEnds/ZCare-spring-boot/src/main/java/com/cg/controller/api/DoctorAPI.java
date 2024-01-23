@@ -1,4 +1,5 @@
 package com.cg.controller.api;
+import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
@@ -44,10 +45,18 @@ public class DoctorAPI {
 
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getDoctors() {
-        List<Doctor> doctorList = doctorService.findAll();
+        List<Doctor> doctorList = doctorService.findAllByUser_Unlock(true);
+
         return new ResponseEntity<>(doctorList, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public List<Doctor> getDoctorsWithFilters(@RequestParam(value = "specialityId", required = false) Long specialityId,
+                                              @RequestParam(value = "clinicId", required = false) Long clinicId,
+                                              @RequestParam(value = "doctorName", required = false) String doctorName) {
+        return doctorService.findDoctorsWithFilters(specialityId, clinicId, doctorName);
     }
 
     @GetMapping("/schedule")
@@ -80,7 +89,7 @@ public class DoctorAPI {
         return new ResponseEntity<>(doctorList1, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> updateDoctor(@PathVariable Long id, @RequestBody DoctorReqDTO doctorReqDTO) {
         Doctor updateDoctor = doctorService.findById(id).get();
         String updateAvatarImg = updateDoctor.getAvatarImg();
@@ -94,6 +103,7 @@ public class DoctorAPI {
         updateDoctor.setAvatarImg(doctorReqDTO.getAvatarImg());
         updateDoctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         updateDoctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
+        updateDoctor.setDoctorInfo(doctorReqDTO.getDoctorInfo());
         doctorService.save(updateDoctor);
 
         if (!updateAvatarImg.equals(doctorReqDTO.getAvatarImg())) {
@@ -119,17 +129,6 @@ public class DoctorAPI {
         doctor.setUser(user);
         doctorService.save(doctor);
 
-//
-//        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
-//            doctor.setLockStatus(ELockStatus.UNLOCK);
-//        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
-//            doctor.setLockStatus(ELockStatus.LOCK);
-//        } else {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//
-//        doctorService.save(doctor);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

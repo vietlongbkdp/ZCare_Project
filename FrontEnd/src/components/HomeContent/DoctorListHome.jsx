@@ -5,6 +5,9 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
+import {Link} from "react-router-dom";
+import RatingDoctor from "../RatingDoctor/RatingDoctor";
+import Rating from "@mui/material/Rating";
 
 export default function DoctorListHome() {
     const [DoctorList,setDoctorList]=useState([]);
@@ -42,6 +45,7 @@ export default function DoctorListHome() {
                     {
                         DoctorList.map((item, index) => (
                             <Card key={index} sx={{ border: '0', boxShadow:' none' , backgroundColor:'inherit' }}>
+                                <Link to={`/doctorDetail/${item.id}`} style={{ textDecoration: 'none',color:"black" }}>
                                 <CardActionArea>
                                     <Box>
                                         <CardMedia
@@ -60,8 +64,12 @@ export default function DoctorListHome() {
                                         <Typography gutterBottom variant="subtitle1" fontSize='1rem' align='center' height='20px' >
                                             {item.speciality.specialtyName}
                                         </Typography>
+                                        <Typography gutterBottom variant="subtitle1" fontSize='1rem' align='center' height='20px' >
+                                            <Rating value={item?.star} max={5} readOnly />
+                                        </Typography>
                                     </CardContent>
                                 </CardActionArea>
+                                </Link>
                             </Card>
                         ))
                     }
