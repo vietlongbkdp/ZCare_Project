@@ -108,7 +108,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
             data.clinicLogo = updateAvatar;
         }
         try {
-            await axios.patch(`http://localhost:8080/api/clinic/${clinicId}`, data);
+            await axios.put(`http://localhost:8080/api/clinic/${clinicId}`, data);
             toast.success("Cập nhật phòng khám thành công!")
             reset();
             setShowContent(true)

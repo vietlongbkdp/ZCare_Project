@@ -65,48 +65,63 @@ function Cooperate() {
           <div>
             <label className={"fw-bold"}>Số điện thoại</label>
             <input
-              type="tel"
-              className={"form-control w-50"}
-              {...register("phone")}
-              placeholder={"(Bắt buộc)"}
+                type="tel"
+                className={`form-control w-50 ${
+                    errors?.phone?.message ? "is-invalid" : ""
+                }`}
+                {...register("phone")}
+                placeholder={"(Bắt buộc)"}
             />
+            <span className="text-danger">{errors?.phone?.message}</span>
           </div>
           <div>
             <label className={"fw-bold"}>Địa chỉ email</label>
             <input
-              type="email"
-              className={"form-control w-50"}
-              {...register("email")}
-              placeholder={"(Bắt buộc)"}
+                type="email"
+                className={`form-control w-50 ${
+                    errors?.email?.message ? "is-invalid" : ""
+                }`}
+                {...register("email")}
+                placeholder={"(Bắt buộc)"}
             />
+            <span className="text-danger">{errors?.email?.message}</span>
           </div>
           <div>
             <label className={"fw-bold"}>Tên cơ sở y tế</label>
             <input
-              type="text"
-              className={"form-control"}
-              {...register("clinicName")}
-              placeholder={"Bệnh viện, Phòng khám, Tổ chức, Công ty"}
+                type="text"
+                className={`form-control ${
+                    errors?.clinicName?.message ? "is-invalid" : ""
+                }`}
+                {...register("clinicName")}
+                placeholder={"Bệnh viện, Phòng khám, Tổ chức, Công ty"}
             />
+            <span className="text-danger">{errors?.clinicName?.message}</span>
           </div>
           <div>
             <label className={"fw-bold"}>Địa chỉ</label>
             <input
-              type="text"
-              {...register("address")}
-              className={"form-control"}
+                type="text"
+                {...register("address")}
+                className={`form-control ${
+                    errors?.address?.message ? "is-invalid" : ""
+                }`}
             />
+            <span className="text-danger">{errors?.address?.message}</span>
           </div>
           <div>
             <label className={"fw-bold"}>Nội dung</label>
             <textarea
-              name=""
-              id=""
-              cols="10"
-              rows="4"
-              {...register("content")}
-              className={"form-control"}
+                name=""
+                id=""
+                cols="10"
+                rows="4"
+                {...register("content")}
+                className={`form-control ${
+                    errors?.content?.message ? "is-invalid" : ""
+                }`}
             ></textarea>
+            <span className="text-danger">{errors?.content?.message}</span>
           </div>
           <div className={"mt-3"}>
             <button type="submit" className="btn btn-warning">

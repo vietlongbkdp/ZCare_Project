@@ -30,4 +30,7 @@ public class Clinic {
     private String clinicInfo;
     @Column(name = "clinic_logo")
     private String clinicLogo;
+    @OneToOne
+    @JoinColumn(name="user_id")
+    private User user;
 }

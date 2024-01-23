@@ -30,6 +30,7 @@ function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
             {doctorInfo.map((doctor, index) => (
                 <DoctorComponent key={doctor.id} doctor={doctor} />
             ))}
+
         </>
     );
 }

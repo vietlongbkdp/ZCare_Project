@@ -1,6 +1,7 @@
 package com.cg.service.clinic;
 
 import com.cg.model.Clinic;
+import com.cg.model.User;
 import com.cg.repository.IClinicRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

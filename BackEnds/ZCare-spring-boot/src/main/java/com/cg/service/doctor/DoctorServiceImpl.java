@@ -81,7 +81,7 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setCreateAt(LocalDate.now());
         doctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
-        doctor.setStar(0);
+        doctor.setStar(5);
         doctor.setUser(user);
         doctor.setLockStatus(ELockStatus.valueOf("UNLOCK"));
         doctorRepository.save(doctor);
