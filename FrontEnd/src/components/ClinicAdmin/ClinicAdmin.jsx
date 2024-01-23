@@ -18,6 +18,7 @@ import AddClinic from './AddClinic';
 import EditClinic from './EditClinic';
 import DoctorAdmin from '../Doctor/DoctorAdmin';
 import { ApiContext } from '../ApiContext/ApiProvider';
+import DoctorInClinic from '../Doctor/DoctorInClinic';
 
 
 
@@ -161,7 +162,7 @@ export default function CustomizedTables() {
                     setShowPagination={setShowPagination}
                 />}
                 {
-                    showDoctorList && <DoctorAdmin API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
+                    showDoctorList && <DoctorInClinic API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
                         clinicId={clinicId}
                         handleHideDoctor={handleHideDoctor} />
                 }

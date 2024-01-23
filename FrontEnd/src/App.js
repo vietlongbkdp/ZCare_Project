@@ -11,7 +11,6 @@ import ChangePassword from "./components/Authentication/ChangePassword";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
 import { useContext } from "react";
 import { ApiContext } from "./components/ApiContext/ApiProvider";
-import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import CustomerAdmin from "./components/CustomerAdmin/CustomerAdmin"
 import BookingPage from "./components/BookingPage/BookingPage";
@@ -19,11 +18,7 @@ import DoctorListBySpeciality from "./components/DoctorListBy/DoctorListBySpecia
 import DoctorListByClinic from "./components/DoctorListBy/DoctorListByClinic";
 import Search from "./components/DoctorListBy/search";
 import DoctorInfo from "./components/DoctorInfo/DoctorInfo";
-
-
-
-
-
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -55,7 +50,6 @@ export default function App() {
         <Route path="/search" element={<Search/>} />
         <Route path="/doctorDetail/:doctorId" element={<DoctorInfo/>} />
       </Routes>
-
     </>
   );
 }

@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import {Chip, Typography} from "@mui/material";
+import { Chip, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
-import {styled} from "@mui/material/styles";
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
+import { styled } from "@mui/material/styles";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -23,19 +23,16 @@ import Paper from '@mui/material/Paper';
 import AddIcon from '@mui/icons-material/Add';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import {TimePicker} from '@mui/x-date-pickers/TimePicker';
-import {LocalizationProvider} from "@mui/x-date-pickers";
-import SaveIcon from '@mui/icons-material/Save';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import axios from "axios";
-import {toast} from "react-toastify";
-// import listItem from "../../assets/theme/components/list/listItem";
+import { toast } from "react-toastify";
 
-export default function ScheduleCreate() {
-    const idDoctor = 1;
+export default function ScheduleCreate({ doctorId, setButtonCreate, setShowData, setShowSchedule }) {
     const [dateCreate, setDateCreate] = useState([])
     const [loadPage, setLoadPage] = useState(false)
     const [weekday, setWeekday] = useState(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
-    const Item = styled(Paper)(({theme}) => ({
+    const Item = styled(Paper)(({ theme }) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
         padding: theme.spacing(2),
@@ -78,7 +75,7 @@ export default function ScheduleCreate() {
     useEffect(() => {
         const getScheduleAPI = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/schedule');
+                const response = await axios.get('http://localhost:8080/api/schedule/' + doctorId);
                 const scheduleGet = sortObjectsByWeekdayAndTime(response.data)
                 let listTimeDetails = []
                 let strTemp = "temp"
@@ -205,12 +202,12 @@ export default function ScheduleCreate() {
         const detailDelete = event.target.closest(".chipDetail").firstChild.innerText;
         const indexSetDelete = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1
         const dataDeleteItem = {
-            idDoctor: idDoctor,
+            doctorId: doctorId,
             weekday: dateCreate[indexSetDelete].dayInWeek,
             detailTime: detailDelete
         }
         console.log(dataDeleteItem)
-        const resp = await axios.delete('http://localhost:8080/api/schedule/delete', {data: dataDeleteItem})
+        const resp = await axios.delete('http://localhost:8080/api/schedule/delete', { data: dataDeleteItem })
         if (resp.status === 200) {
             const updatedDateCreate = [...dateCreate];
             updatedDateCreate[indexSetDelete].listDetailTimes = updatedDateCreate[indexSetDelete].listDetailTimes.filter(item => item.timeDetailShow !== detailDelete);
@@ -253,7 +250,7 @@ export default function ScheduleCreate() {
             })
         ))
         const data = {
-            idDoctor: idDoctor,
+            doctorId: doctorId,
             listSchedule: listScheduleGet
         };
         let countItem = 0
@@ -270,7 +267,9 @@ export default function ScheduleCreate() {
                 setDateCreate([])
                 setLoadPage(prevState => !prevState)
                 setWeekday(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
-                toast.success("Lưu thành công")
+                toast.success("Lưu thành công");
+                handleCloseSchedule();
+                handleCancelTimeSet();
             } else {
                 toast.error("Lưu thất bại")
             }
@@ -288,21 +287,24 @@ export default function ScheduleCreate() {
         }
         return listTimeDetails
     }
+
+    const handleCloseSchedule = () => {
+        setShowSchedule(false)
+        setButtonCreate(true)
+        setShowData(true)
+    }
     return (
         <Container maxWidth="md">
-            <Box>
-                <Typography variant="h4" component="h4">
-                    Tạo lịch khám bệnh
-                </Typography>
-            </Box>
             <Item>
                 <Box component={"form"} onSubmit={(event) => {
                     handleSubmit(event)
-                }} sx={{mt: 3}}>
-                    <Typography variant={"h5"} align={"left"} mb={2}>Bác sĩ: Lê Bá Tường</Typography>
+                }}>
+                    <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
+                        TẠO LỊCH KHÁM BỆNH
+                    </Typography>
                     <Stack direction={"row"} mt={3} alignItems={"center"}>
                         <FormLabel id="demo-radio-buttons-group-label"
-                                   sx={{fontSize: 20, fontWeight: "bold", marginRight: 10}}>Thời lượng mỗi suất
+                            sx={{ fontSize: 20, fontWeight: "bold", marginRight: 10 }}>Thời lượng mỗi suất
                             khám</FormLabel>
                         <FormControl>
                             <RadioGroup
@@ -314,30 +316,30 @@ export default function ScheduleCreate() {
                                     handleChangeTimes(event)
                                 }}
                             >
-                                <FormControlLabel value="15" control={<Radio/>} label="15 phút"/>
-                                <FormControlLabel value="30" control={<Radio/>} label="30 phút"/>
-                                <FormControlLabel value="45" control={<Radio/>} label="45 phút"/>
-                                <FormControlLabel value="60" control={<Radio/>} label="60 phút"/>
+                                <FormControlLabel value="15" control={<Radio />} label="15 phút" />
+                                <FormControlLabel value="30" control={<Radio />} label="30 phút" />
+                                <FormControlLabel value="45" control={<Radio />} label="45 phút" />
+                                <FormControlLabel value="60" control={<Radio />} label="60 phút" />
                             </RadioGroup>
                         </FormControl>
                     </Stack>
                     <Stack direction={"row"} mt={3} alignItems={"center"}>
                         <FormLabel id="demo-radio-buttons-group-label"
-                                   sx={{fontSize: 20, fontWeight: "bold", marginRight: 5}} mt={2}>Ngày làm
+                            sx={{ fontSize: 20, fontWeight: "bold", marginRight: 5 }} mt={2}>Ngày làm
                             việc</FormLabel>
                         <Stack direction={"row"} mt={1} alignItems={"center"} spacing={1}>
                             {weekday.map((value, index) => (
                                 <Chip key={index} className={"chipWeekday"} size="medium" variant="outlined"
-                                      label={value} onDelete={(event) => {
-                                    handleDeleteWeekday(event)
-                                }}/>
+                                    label={value} onDelete={(event) => {
+                                        handleDeleteWeekday(event)
+                                    }} />
                             ))}
                         </Stack>
                     </Stack>
                     <Button
                         type="submit"
                         variant="contained"
-                        sx={{mt: 5, mb: 1, alignItems: "left"}}
+                        sx={{ mt: 5, mb: 1, alignItems: "left" }}
                     >
                         Create Schedule
                     </Button>
@@ -345,7 +347,7 @@ export default function ScheduleCreate() {
             </Item>
             <Item>
                 <TableContainer component={Paper}>
-                    <Table sx={{minWidth: 650}} aria-label="simple table">
+                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center">STT</TableCell>
@@ -357,7 +359,7 @@ export default function ScheduleCreate() {
                             {dateCreate.map((value, index) => (
                                 <TableRow
                                     key={index}
-                                    sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                     className={"recordDate"}>
                                     <TableCell align="center" component="th" scope="row">{index + 1}
                                     </TableCell>
@@ -366,21 +368,21 @@ export default function ScheduleCreate() {
                                         <Stack>
                                             <Stack direction={"row"} spacing={1}>
                                                 <Button
-                                                    sx={{borderRadius: 10}}
+                                                    sx={{ borderRadius: 10 }}
                                                     onClick={(event) => {
                                                         handleClickAddTimes(event)
                                                     }
                                                     }
-                                                ><AddIcon sx={{fontSize: 20}}/>Add</Button>
+                                                ><AddIcon sx={{ fontSize: 20 }} />Add</Button>
                                             </Stack>
                                             <Stack direction={"row"} mt={2} flexWrap="wrap">
                                                 {dateCreate[index]?.listDetailTimes?.map((valueDetail, indexDetail) => (
                                                     <Chip className={"chipDetail"} key={indexDetail} color={"primary"}
-                                                          sx={{marginTop: 1, marginRight: 1}}
-                                                          label={valueDetail.timeDetailShow} variant="filled"
-                                                          onDelete={(event) => {
-                                                              handleDeleteDetail(event)
-                                                          }}/>
+                                                        sx={{ marginTop: 1, marginRight: 1 }}
+                                                        label={valueDetail.timeDetailShow} variant="filled"
+                                                        onDelete={(event) => {
+                                                            handleDeleteDetail(event)
+                                                        }} />
                                                 ))}
                                             </Stack>
                                             {
@@ -390,14 +392,14 @@ export default function ScheduleCreate() {
                                                             <DemoContainer components={['TimePicker', 'TimePicker']}>
                                                                 <TimePicker
                                                                     label="Giờ bắt đầu"
-                                                                    sx={{width: "50px"}}
+                                                                    sx={{ width: "50px" }}
                                                                     value={timeValueStart}
                                                                     onAccept={(newValue) => setTimeValueStart(newValue)}
                                                                     className={"startTimes"}
                                                                 />
                                                                 <TimePicker
                                                                     label="Giờ kết thúc"
-                                                                    sx={{width: "50px"}}
+                                                                    sx={{ width: "50px" }}
                                                                     value={timeValueEnd}
                                                                     className={"endTimes"}
                                                                     onAccept={(newValue) => setTimeValueEnd(newValue)}
@@ -405,15 +407,15 @@ export default function ScheduleCreate() {
                                                             </DemoContainer>
                                                         </LocalizationProvider>
                                                         <Button
-                                                            sx={{borderRadius: 5, height: 50, margin: "10px"}}
+                                                            sx={{ borderRadius: 5, height: 50, margin: "10px" }}
                                                         ><AddCircleIcon
-                                                            sx={{fontSize: 30}} color={"success"} onClick={(event) => {
-                                                            handleCreateSche(event)
-                                                        }}/></Button>
+                                                                sx={{ fontSize: 30 }} color={"success"} onClick={(event) => {
+                                                                    handleCreateSche(event)
+                                                                }} /></Button>
                                                         <Button
-                                                            sx={{borderRadius: 5, height: 50, margin: "10px"}}
-                                                        ><CancelIcon sx={{fontSize: 30}} color={"error"}
-                                                                     onClick={handleCancelTimeSet}/></Button>
+                                                            sx={{ borderRadius: 5, height: 50, margin: "10px" }}
+                                                        ><CancelIcon sx={{ fontSize: 30 }} color={"error"}
+                                                            onClick={handleCancelTimeSet} /></Button>
                                                     </Stack>
                                                 ) : "")
                                             }
@@ -425,16 +427,27 @@ export default function ScheduleCreate() {
 
                         </TableBody>
                     </Table>
-                    <Button
-                        type="button"
-                        variant="contained"
-                        sx={{mt: 5, mb: 1, alignItems: "left"}}
-                        color={"success"}
-                        onClick={handleSaveSchedule}
-                        disabled={(dateCreate.length === 0)}
-                    ><SaveIcon sx={{fontSize: 20, marginRight: 2}}/>
-                        Save
-                    </Button>
+                    <Box sx={{ display: 'flex', justifyContent: 'left', ml: 2 }}>
+                        <Button
+                            type="button"
+                            variant="contained"
+                            sx={{ mt: 5, mb: 1, alignItems: "left", mr: 1 }}
+                            color={"success"}
+                            onClick={handleSaveSchedule}
+                            disabled={(dateCreate.length === 0)}
+                        >
+                            Tạo
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="contained"
+                            sx={{ mt: 5, mb: 1, alignItems: "left", backgroundColor: "grey", '&:hover': { backgroundColor: "#6e6c6c" } }}
+                            onClick={handleCloseSchedule}
+                            disabled={(dateCreate.length === 0)}
+                        >
+                            Hủy
+                        </Button>
+                    </Box>
                 </TableContainer>
             </Item>
         </Container>

@@ -25,23 +25,23 @@ public class ScheduleAPI {
     @Autowired
     private IDoctorService doctorService;
 
-    @GetMapping
-    public ResponseEntity<?> getAllSchedule() {
-        List<Schedule> scheduleList = scheduleService.findAll();
+    @GetMapping("/{doctorId}")
+    public ResponseEntity<?> getAllSchedule(@PathVariable Long doctorId) {
+        List<Schedule> scheduleList = scheduleService.findAllByDoctorId(doctorId);
         List<ScheduleRespDTO> scheduleRespDTOList= scheduleList.stream().map(Schedule::toScheduleRespDTO).collect(Collectors.toList());
         return new ResponseEntity<>(scheduleRespDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{doctorId}/{weekday}")
-    public ResponseEntity<?> getAllScheduleByIdDoctor(@PathVariable Long doctorId, @PathVariable String weekday) {
+    public ResponseEntity<?> getAllScheduleByDoctorId(@PathVariable Long doctorId, @PathVariable String weekday) {
         EWeekday weekdayEnum = EWeekday.getDayById(weekday);
         List<Schedule> scheduleList = scheduleService.findByDoctorIdAndWeekdayAndStatus(doctorId, weekdayEnum, EStatus.AVAILABLE);
         return new ResponseEntity<>(scheduleList, HttpStatus.OK);
     }
     @PostMapping("/create")
     public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        Long idDoctor = scheduleDTO.getIdDoctor();
-        Doctor doctors = doctorService.findById(idDoctor).get();
+        Long doctorId = scheduleDTO.getDoctorId();
+        Doctor doctors = doctorService.findById(doctorId).get();
         List<ScheduleWeekDTO> listSchedules = scheduleDTO.getListSchedule();
         for (ScheduleWeekDTO scheduleWeekDTO : listSchedules) {
             String weekday = scheduleWeekDTO.getWeekdayGet();

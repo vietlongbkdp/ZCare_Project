@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleDeleteDTO {
-    private Long idDoctor;
+    private Long doctorId;
     private String weekday;
     private String detailTime;
 }
