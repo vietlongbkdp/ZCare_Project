@@ -4,6 +4,7 @@ import com.cg.security.careUser.CareUserDetailsService;
 import com.cg.security.jwt.AuthTokenFilter;
 import com.cg.security.jwt.JwtAuthEntryPoint;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.reactive.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 @Configuration
 @RequiredArgsConstructor
@@ -54,8 +56,8 @@ public class WebSecurityConfiguration {
                         exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/customer/**", "/api/clinic/**", "/api/cooperate/**", "/api/doctor/**" ,"/**").permitAll()
-//                        .requestMatchers("/api/doctor/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/customer/**", "/api/clinic/**", "/api/cooperate/**", "/api/**" ).permitAll()
+//                        .requestMatchers("/api/doctor/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const schema = yup.object({
   email: yup
@@ -40,6 +41,20 @@ function AuthLogin() {
       const token = response.data.token;
       Cookies.set('JWT', token, { expires: 7, secure: true });
       toast.success("Đăng nhập thành công");
+      const decodedToken = jwtDecode(token);
+      const userRole = decodedToken.roles[0];
+      if (userRole === "ROLE_ADMIN") {
+        console.log(userRole)
+        window.location.href = "/admin";
+      } else if (userRole === "ROLE_USER") {
+        const currentPath = window.location.pathname;
+        console.log(currentPath)
+        if (!currentPath.includes("/admin")) {
+          window.location.href = "/home";
+        } else {
+          window.location.href = "/home";
+        }
+      }
       reset();
     } catch (error) {
       if (error.response) {

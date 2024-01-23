@@ -62,6 +62,7 @@ public class DoctorServiceImpl implements IDoctorService{
         user.setEmail(doctorReqDTO.getEmail());
         user.setPassword(password);
         user.setRole(ERole.ROLE_DOCTOR);
+        user.setUnlock(true);
         iUserRepository.save(user);
 
         String title="Chúc mừng! Tài khoản ZCare đã được tạo thành công";

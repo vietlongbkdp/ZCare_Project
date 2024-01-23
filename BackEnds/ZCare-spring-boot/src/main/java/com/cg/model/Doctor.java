@@ -56,6 +56,7 @@ public class Doctor {
     private ELockStatus lockStatus;
 
 
+
     public DoctorResDTO toDoctorResDTO() {
         return new DoctorResDTO()
                 .setDoctorName(doctorName)

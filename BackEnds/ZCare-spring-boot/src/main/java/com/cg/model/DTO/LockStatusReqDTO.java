@@ -10,5 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LockStatusReqDTO {
-    private String lockStatus;
+    private Long userId;
 }

@@ -1,5 +1,6 @@
 package com.cg.model;
 
+import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.enumeration.ERole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,4 +23,6 @@ public class User {
     private String code;
     @Enumerated(EnumType.STRING)
     private ERole role;
+    @Column(name="un_lock")
+    private boolean unlock;
 }

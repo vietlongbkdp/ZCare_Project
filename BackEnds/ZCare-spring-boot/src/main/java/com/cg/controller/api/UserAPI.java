@@ -59,24 +59,32 @@ private UserService userService;
                 .stream()
                 .map(GrantedAuthority::getAuthority).toList();
 
-        JwtResponse jwtResponse = new JwtResponse(
-                userDetails.getId(),
-                userDetails.getEmail(),
-                jwt,
-                roles);
-        ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
-                .httpOnly(false)
-                .secure(false)
-                .sameSite("None")
-                .path("/")
-                .maxAge(60 * 1000)
-                .domain(".localhost")
-                .build();
 
-        return ResponseEntity
-                .ok()
-                .header(HttpHeaders.SET_COOKIE, springCookie.toString())
-                .body(jwtResponse);
+        User user = userService.findById(userDetails.getId()).get();
+        if(user.isUnlock()){
+            JwtResponse jwtResponse = new JwtResponse(
+                    userDetails.getId(),
+                    userDetails.getEmail(),
+                    jwt,
+                    roles);
+
+            ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
+                    .httpOnly(false)
+                    .secure(false)
+                    .sameSite("None")
+                    .path("/")
+                    .maxAge(60 * 1000)
+                    .domain(".localhost")
+                    .build();
+
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.SET_COOKIE, springCookie.toString())
+                    .body(jwtResponse);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" tài khoản đã bị khóa ");
+        }
+
     }
 
     @PostMapping
@@ -113,22 +121,22 @@ private UserService userService;
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
-        Customer customer = customerService.findById(id).get();
-
-
-        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
-            customer.setLockStatus(ELockStatus.UNLOCK);
-        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
-            customer.setLockStatus(ELockStatus.LOCK);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
-
-        customerService.save(customer);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
+//        Customer customer = customerService.findById(id).get();
+//
+//
+//        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
+//            customer.setLockStatus(ELockStatus.UNLOCK);
+//        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
+//            customer.setLockStatus(ELockStatus.LOCK);
+//        } else {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        customerService.save(customer);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
 }

@@ -122,10 +122,10 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     }
 
         const handleChangeLock = async (id, currentLockStatus) => {
-
+            console.log(typeof currentLockStatus)
 
             Swal.fire({
-                title: currentLockStatus === "LOCK" ? "Bạn muốn mở khóa?" : "Bạn muốn khóa" ,
+                title: "Bạn muốn khóa" ,
                 text: "You won't be able to revert this!",
                 icon: "warning",
                 showCancelButton: true,
@@ -135,8 +135,8 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        await axios.put(`http://localhost:8080/api/doctor/${id}`, {
-                            lockStatus: currentLockStatus
+                        await axios.put(`http://localhost:8080/api/doctor/lock/${id}`, {
+                            userId: currentLockStatus
                         });
                         toast.success("Thành công");
                         setUpdateShow((prev) => !prev);
@@ -144,8 +144,8 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                         toast.error("Thất bại");
                     }
                     Swal.fire({
-                        title:currentLockStatus === "LOCK" ? "mở khóa thành công" : "khóa thành công",
-                        text: `The doctor has been ${currentLockStatus.toLowerCase()}.`,
+                        title: "khóa thành công",
+                        text: `The doctor has been `,
                         icon: "success"
                     });
                 }
@@ -234,10 +234,10 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                                <StyledTableCell align="right">
                                     <Button
                                          variant="contained"
-                                         style={{ backgroundColor: item.lockStatus === 'LOCK' ? 'red' : 'green' }}
-                                         onClick={() => handleChangeLock(item.id, item.lockStatus)}
+                                         style={{ backgroundColor: 'red'}}
+                                         onClick={() => handleChangeLock(item.id, item.user.id)}
                                                                                     >
-                                         {item.lockStatus}
+                                        LOCK
                                      </Button>
                                </StyledTableCell>
                                 <StyledTableCell align="center">

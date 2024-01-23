@@ -30,7 +30,7 @@ export default function App() {
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/change-password/:userId" element={<ChangePassword />} />
-        <Route path="/admin" element={<Pagerbase />}>
+        <Route path="/admin" element={<Pagerbase />} roles={['ROLE_ADMIN']} >
           <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR} />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
           <Route path="clinic" element={<ClinicAdmin />}></Route>
