@@ -83,7 +83,7 @@ function DoctorInfo() {
                     <div className={"d-flex "}>
                         <div className="avatar">
                             <div className="w-24 rounded">
-                                <img src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                                <img src={doctorInfo?.avatarImg}
                                      alt={""}
                                      className="rounded-circle" style={{width: "100px"}}/>
                             </div>
