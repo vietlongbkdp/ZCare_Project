@@ -39,12 +39,12 @@ const schema = yup.object().shape({
         .typeError('Giá khám không được để trống'),
     speciality: yup.string()
         .required("Chuyên khoa không được để trống"),
-    avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
-        if (value.length > 0) {
-            return true;
-        }
-        return false;
-    }),
+    // avatarImg: yup.mixed().test("file", "Ảnh đại diện không được để trống", (value) => {
+    //     if (value.length > 0) {
+    //         return true;
+    //     }
+    //     return false;
+    // }),
 })
 
 const VisuallyHiddenInput = styled('input')({
@@ -77,7 +77,6 @@ let presentAvatar;
 
 export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, setShowData, setUpdateShow }) {
 
-    const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
     const [clinicId, setClinicId] = useState(0);
@@ -103,13 +102,13 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
             reset();
             setShowEdit(false)
             setButtonCreate(true)
-            setShowTable(true)
-            setShowPage(true)
+            setShowData(true)
             setUpdateShow(pre => !pre);
         } catch (error) {
             toast.error("Cập nhật bác sĩ thất bại")
         }
     };
+    console.log(presentAvatar);
 
     useEffect(() => {
         if (doctorId) {
@@ -120,33 +119,22 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
                 setPosition(result.position.id)
                 setSpeciality(result.speciality.id)
 
+                const [year, month, day] = result.dob;
+                const dob = new Date(year, month - 1, day);
                 setValue("doctorName", result.doctorName)
                 setValue("position", result.position.id)
-                setValue("dob", result.dob)
+                setValue("dob", dob.toISOString().split('T')[0])
                 setValue("email", result.email)
                 setValue("phone", result.phone)
                 setValue("speciality", result.speciality.id)
                 setValue("fee", result.fee)
                 presentAvatar = result.avatarImg;
                 updateAvatar = result.avatarImg;
-                console.log('init pre', presentAvatar);
-                console.log('init update', updateAvatar);
+                console.log(presentAvatar);
                 document.getElementById('blah').src = presentAvatar;
             }
             getDoctor();
         }
-    }, []);
-
-    useEffect(() => {
-        const getClinics = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/api/clinic');
-                setClinicList(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        getClinics();
     }, []);
 
     useEffect(() => {
@@ -176,13 +164,11 @@ export default function EditDoctor({ doctorId, setShowEdit, setButtonCreate, set
     const closeEditModal = () => {
         setShowEdit(false)
         setButtonCreate(true)
-        setShowTable(true)
-        setShowPage(true)
+        setShowData(true)
     }
 
     const handleUpload = async (e) => {
         let imagesImport = Array.from(e.target.files);
-
         const formData = new FormData();
         formData.append('image', imagesImport[0])
         const res = await axios.post('http://localhost:8080/api/avatar', formData)

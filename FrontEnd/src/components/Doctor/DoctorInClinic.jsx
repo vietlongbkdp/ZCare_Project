@@ -135,9 +135,9 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                 {
                     showData &&
                     doctorList.map((doctor) => (
-                        <Grid item xs={6}>
+                        <Grid item xs={6} key={doctor?.id}>
                             <Card sx={{ height: '280px', display: 'flex', flexDirection: 'column' }}>
-                                <Stack direction='row'>
+                                <Stack direction='row' sx={{ height: '210px' }}>
                                     <CardMedia
                                         sx={{ height: 170, width: 170, p: 2, borderRadius: '20px' }}
                                         component="img"
@@ -171,18 +171,18 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                                             Chi tiết
                                         </Button>
                                         <Button variant='outlined' color='secondary' sx={{ width: '110px' }}
-                                            onClick={() => handleShowSchedule(item?.id)}
+                                            onClick={() => handleShowSchedule(doctor?.id)}
                                         >
                                             Lịch khám
                                         </Button>
                                         <Button variant="outlined" color="warning" sx={{ width: '100px' }}
-                                            onClick={() => handleEditId(item.id)}
+                                            onClick={() => handleEditId(doctor?.id)}
                                         >
                                             Cập nhật
                                         </Button>
                                         <Button
                                             variant="outlined" color="error" sx={{ width: '90px' }}
-                                            onClick={() => handleChangeLock(item.id, item.lockStatus)}
+                                            onClick={() => handleChangeLock(doctor?.id, doctor?.lockStatus)}
                                         >
                                             Khóa
                                         </Button>

@@ -25,9 +25,9 @@ public class ScheduleAPI {
     @Autowired
     private IDoctorService doctorService;
 
-    @GetMapping
-    public ResponseEntity<?> getAllSchedule() {
-        List<Schedule> scheduleList = scheduleService.findAll();
+    @GetMapping("/{doctorId}")
+    public ResponseEntity<?> getAllSchedule(@PathVariable Long doctorId) {
+        List<Schedule> scheduleList = scheduleService.findAllByDoctorId(doctorId);
         List<ScheduleRespDTO> scheduleRespDTOList= scheduleList.stream().map(Schedule::toScheduleRespDTO).collect(Collectors.toList());
         return new ResponseEntity<>(scheduleRespDTOList, HttpStatus.OK);
     }

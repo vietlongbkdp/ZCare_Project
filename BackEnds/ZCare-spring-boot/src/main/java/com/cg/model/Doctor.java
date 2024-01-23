@@ -42,7 +42,7 @@ public class Doctor {
     private String avatarImg;
     @Column(columnDefinition = "integer default 0")
     private Integer star;
-    @Column(name = "doctor_info")
+    @Column(name = "doctor_info", columnDefinition = "LONGTEXT")
     private String doctorInfo;
     @ManyToOne
     private Speciality speciality;

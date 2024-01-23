@@ -75,7 +75,7 @@ export default function ScheduleCreate({ doctorId, setButtonCreate, setShowData,
     useEffect(() => {
         const getScheduleAPI = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/schedule');
+                const response = await axios.get('http://localhost:8080/api/schedule/' + doctorId);
                 const scheduleGet = sortObjectsByWeekdayAndTime(response.data)
                 let listTimeDetails = []
                 let strTemp = "temp"
@@ -291,8 +291,7 @@ export default function ScheduleCreate({ doctorId, setButtonCreate, setShowData,
     const handleCloseSchedule = () => {
         setShowSchedule(false)
         setButtonCreate(true)
-        setShowTable(true)
-        setShowPage(true)
+        setShowData(true)
     }
     return (
         <Container maxWidth="md">
@@ -428,7 +427,7 @@ export default function ScheduleCreate({ doctorId, setButtonCreate, setShowData,
 
                         </TableBody>
                     </Table>
-                    <Box sx={{display: 'flex', justifyContent: 'left', ml: 2}}>
+                    <Box sx={{ display: 'flex', justifyContent: 'left', ml: 2 }}>
                         <Button
                             type="button"
                             variant="contained"

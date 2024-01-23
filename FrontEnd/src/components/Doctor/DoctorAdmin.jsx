@@ -166,16 +166,13 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                             <StyledTableCell align="left">NGÀY ĐĂNG KÍ</StyledTableCell>
                             <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
                             <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
-                            <StyledTableCell align="center">LỊCH KHÁM</StyledTableCell>
-                            <StyledTableCell align="center">TRẠNG THÁI</StyledTableCell>
-                            <StyledTableCell align="center">CẬP NHẬT</StyledTableCell>
-                            <StyledTableCell align="center">XÓA</StyledTableCell>
+                            <StyledTableCell align="center">KHÓA</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {currentDoctorList.map((item) => (
                             <StyledTableRow key={item.id}>
-                                <StyledTableCell component="th" scope="row">{item?.id}</StyledTableCell>
+                                <StyledTableCell component="th" align="center" scope="row">{item?.id}</StyledTableCell>
                                 <StyledTableCell align="left">
                                     <img src={item?.avatarImg} alt="Avatar" style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
                                 </StyledTableCell>
@@ -189,19 +186,13 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                                 <StyledTableCell align="left">{item?.createAt}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.fee}</StyledTableCell>
                                 <StyledTableCell align="left">{item?.star}</StyledTableCell>
-                                {/* <StyledTableCell>
-                                    <Button variant='contained' color='secondary'
-                                        onClick={() => handleShowSchedule(item?.id)}>
-                                        <i className="fa-solid fa-calendar-days"></i>
-                                    </Button>
-                                </StyledTableCell> */}
                                 <StyledTableCell align="center">
                                     <Button
                                         variant="contained"
-                                        style={{ backgroundColor: item.lockStatus === 'LOCK' ? 'red' : 'green' }}
+                                        color='error'
                                         onClick={() => handleChangeLock(item.id, item.lockStatus)}
                                     >
-                                        {item.lockStatus}
+                                        Khoá
                                     </Button>
                                 </StyledTableCell>
                                 {/* <StyledTableCell align="center">
