@@ -21,4 +21,5 @@ public class DoctorReqDTO {
     private Long clinicId;
     private String avatarImg;
     private String speciality;
+    private String doctorInfo;
 }

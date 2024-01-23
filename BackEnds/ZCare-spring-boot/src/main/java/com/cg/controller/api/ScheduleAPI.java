@@ -39,12 +39,12 @@ public class ScheduleAPI {
         return new ResponseEntity<>(scheduleList, HttpStatus.OK);
     }
 
-    @GetMapping("/getAll/{weekday}")
-    public ResponseEntity<?> getAllScheduleByWeekday(@PathVariable String weekday) {
-        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
-        List<Schedule> scheduleList = scheduleService.findByWeekdayAndStatus( weekdayEnum, EStatus.AVAILABLE);
-        return new ResponseEntity<>(scheduleList, HttpStatus.OK);
-    }
+//    @GetMapping("/getAll/{weekday}")
+//    public ResponseEntity<?> getAllScheduleByWeekday(@PathVariable String weekday) {
+//        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
+//        List<Schedule> scheduleList = scheduleService.findByWeekdayAndStatus( weekdayEnum, EStatus.AVAILABLE);
+//        return new ResponseEntity<>(scheduleList, HttpStatus.OK);
+//    }
 
     @PostMapping("/create")
     public ResponseEntity<?> createSchedule(@RequestBody ScheduleDTO scheduleDTO) {

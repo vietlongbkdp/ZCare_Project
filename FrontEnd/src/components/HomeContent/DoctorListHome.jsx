@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 export default function DoctorListHome() {
     const [DoctorList,setDoctorList]=useState([]);
@@ -42,6 +43,7 @@ export default function DoctorListHome() {
                     {
                         DoctorList.map((item, index) => (
                             <Card key={index} sx={{ border: '0', boxShadow:' none' , backgroundColor:'inherit' }}>
+                                <Link to={`/doctorDetail/${item.id}`} style={{ textDecoration: 'none',color:"black" }}>
                                 <CardActionArea>
                                     <Box>
                                         <CardMedia
@@ -62,6 +64,7 @@ export default function DoctorListHome() {
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>
+                                </Link>
                             </Card>
                         ))
                     }

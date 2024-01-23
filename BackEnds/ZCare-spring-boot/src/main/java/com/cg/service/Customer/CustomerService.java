@@ -50,7 +50,7 @@ public class CustomerService implements ICustomerService {
         User user = new User();
         user.setEmail(customerReqDTO.getEmail());
         user.setPassword(PasswordEncryptionUtil.encryptPassword(customerReqDTO.getPassword()));
-        user.setRole(ERole.ROLE_USER);
+        user.setRole(ERole.ROLE_CUSTOMER);
         iUserRepository.save(user);
 
         String date = customerReqDTO.getDob();
