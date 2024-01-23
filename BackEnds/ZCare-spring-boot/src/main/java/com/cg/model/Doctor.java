@@ -30,6 +30,7 @@ public class Doctor {
     @ManyToOne
     private Position position;
     private LocalDate dob;
+    @Column(unique = true)
     private String email;
     private String phone;
     @Column(name = "create_at")
