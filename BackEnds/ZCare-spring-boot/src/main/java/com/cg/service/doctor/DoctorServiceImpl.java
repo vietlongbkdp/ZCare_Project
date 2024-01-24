@@ -15,6 +15,7 @@ import com.cg.service.speciality.ISpecialityService;
 import com.cg.until.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,7 +63,7 @@ public class DoctorServiceImpl implements IDoctorService{
         String password = RandomCode.generateRandomCode(6);
         User user =new User();
         user.setEmail(doctorReqDTO.getEmail());
-        user.setPassword(password);
+        user.setPassword(PasswordEncryptionUtil.encryptPassword(password));
         user.setRole(ERole.ROLE_DOCTOR);
         user.setUnlock(true);
         iUserRepository.save(user);

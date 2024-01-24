@@ -45,6 +45,9 @@ public class ClinicAPI {
     public ResponseEntity<?> createClinic(@RequestBody Clinic clinic){
        try{
            clinicService.save(clinic);
+//           User user = clinic.getUser();
+//           user.setUnlock(true);
+//           userService.save(user);
            return new ResponseEntity<>(HttpStatus.OK);
        }catch (Exception e) {
            return new ResponseEntity<>("Failed to create clinic", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -86,12 +89,10 @@ public class ClinicAPI {
         userService.save(user);
         Clinic clinic = clinicService.findById(id).get();
         clinic.setUser(user);
-        clinicService.save(clinic);
         List<Doctor> doctorList = doctorService.findAllDoctorInClinic(clinic.getId());
         for(Doctor doctor : doctorList){
             User userdoctor = doctor.getUser();
             userdoctor.setUnlock(false);
-            userService.save(userdoctor);
             doctor.setUser(userdoctor);
             doctorService.save(doctor);
         }

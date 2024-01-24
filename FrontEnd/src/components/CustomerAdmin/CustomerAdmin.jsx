@@ -118,7 +118,7 @@ function GetCustomerAdmin (){
                                 {item?.id}
                             </StyledTableCell>
                             <StyledTableCell>
-                                <img src={item?.fullName} alt="Clinic Logo" style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
+                                {item?.fullName}
                             </StyledTableCell>
                             <StyledTableCell>{item?.dob}</StyledTableCell>
                             <StyledTableCell>{item?.phone}</StyledTableCell>
