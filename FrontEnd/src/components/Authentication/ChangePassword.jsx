@@ -45,7 +45,7 @@ export default function ChangePassword() {
         userId: userId,
       };
       const response = await axios.post(
-        "http://localhost:8080/api/customer/change-password",
+        "http://localhost:8080/api/user/change-password",
         requestData
       );
       console.log(response.data);

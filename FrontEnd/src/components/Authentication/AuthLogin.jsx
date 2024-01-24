@@ -37,7 +37,7 @@ function AuthLogin() {
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      const response = await axios.post("http://localhost:8080/api/customer/login", data);
+      const response = await axios.post("http://localhost:8080/api/user/login", data);
       const token = response.data.token;
       Cookies.set('JWT', token, { expires: 7, secure: true });
       toast.success("Đăng nhập thành công");

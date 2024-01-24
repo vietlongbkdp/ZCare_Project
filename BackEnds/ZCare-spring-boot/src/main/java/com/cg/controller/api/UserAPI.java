@@ -27,7 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "*")
 public class UserAPI {
     @Autowired
