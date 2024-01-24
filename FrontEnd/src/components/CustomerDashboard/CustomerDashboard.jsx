@@ -7,7 +7,6 @@ import { Container, Typography } from '@mui/material';
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import ClinicEditor from "../CkEditor/ClinicEditor";
 import {styled} from "@mui/material/styles";
 import * as yup from "yup";
 import {useForm} from "react-hook-form";
@@ -15,7 +14,7 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
 const schema = yup.object().shape({
-    clinicName: yup.string()
+    fullName: yup.string()
         .required("Tên không được để trống")
         .min(2, 'Nhập trên 2 kí tự')
         .max(200, 'Nhập dưới 200 kí tự'),
@@ -23,21 +22,17 @@ const schema = yup.object().shape({
         .required("Địa chỉ không đuược để trống")
         .min(2, 'Nhập trên 2 kí tự')
         .max(200, 'Nhập dưới 200 kí tự'),
-    legalRepresentative: yup.string()
-        .required("Tên người đại diện không đuược để trống")
-        .min(2, 'Nhập trên 2 kí tự')
-        .max(200, 'Nhập dưới 200 kí tự'),
+    gender: yup.string()
+        .required("Tên người đại diện không đuược để trống"),
     email: yup.string()
         .required("Email không được để trống")
         .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
-    hotline: yup.string()
+    phone: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
-    operatingLicence: yup.string()
-        .required("GPHĐ không đuược để trống")
-        .min(5, 'Nhập trên 5 kí tự')
-        .max(30, 'Nhập dưới 30 kí tự'),
-    clinicLogo: yup.mixed().test("file", "Logo không được để trống", (value) => {
+    dob: yup.string()
+        .required("Ngày sinh không đuược để trống"),
+    avatar: yup.mixed().test("file", "Ảnh không được để trống", (value) => {
         if (value.length > 0) {
             return true;
         }
@@ -73,52 +68,42 @@ function CustomerDashboard() {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
     let updateAvatar;
     let presentAvatar;
-    const resetModal = () => {
-        // setShow(false)
-        // setShowContent(true)
-        // setShowCreateBtn(true)
-        // setShowPagination(true)
-    }
-    //
+  const customerId =1;
+
     // useEffect(() => {
-    //     if (clinicId) {
-    //         const getClinic = async () => {
-    //             const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`);
+    //     if (customerId) {
+    //         const getCustomer = async () => {
+    //             const res = await axios.get(`http://localhost:8080/api/customer/${customerId}`);
     //             const result = await res.data;
-    //             setValue("clinicName", result.clinicName)
-    //             setValue("legalRepresentative", result.legalRepresentative)
+    //             setValue("fullName", result.fullName)
+    //             setValue("gender", result.gender)
     //             setValue("email", result.email)
-    //             setValue("hotline", result.hotline)
-    //             setValue("operatingLicence", result.operatingLicence)
+    //             setValue("phone", result.phone)
+    //             setValue("dob", result.dob)
     //             setValue("address", result.address)
-    //             setValue("clinicInfo", result.clinicInfo)
-    //             presentAvatar = result.clinicLogo;
-    //             updateAvatar = result.clinicLogo;
+    //             setValue("avatar", result.avatar)
+    //             presentAvatar = result.avatar;
+    //             updateAvatar = result.avatar;
     //             document.getElementById('blah').src = presentAvatar;
     //         }
-    //         getClinic();
+    //         getCustomer();
     //     }
-    // }, [clinicId]);
+    // }, [customerId]);
 
 
     const handleUpdateClinic = async (data) => {
-        // if (presentAvatar === updateAvatar) {
-        //     data.clinicLogo = presentAvatar;
-        // } else {
-        //     data.clinicLogo = updateAvatar;
-        // }
-        // try {
-        //     await axios.put(`http://localhost:8080/api/clinic/${clinicId}`, data);
-        //     toast.success("Cập nhật phòng khám thành công!")
-        //     reset();
-        //     // setShowContent(true)
-        //     // setShowCreateBtn(true)
-        //     // setShow(false)
-        //     // setShowPagination(true)
-        //     // setISupdate(prev => !prev);
-        // } catch (error) {
-        //     toast.error("Cập nhật phòng khám thất bại!")
-        // }
+        if (presentAvatar === updateAvatar) {
+            data.avatar = presentAvatar;
+        } else {
+            data.avatar = updateAvatar;
+        }
+        try {
+            await axios.put(`http://localhost:8080/api/customer/${customerId}`, data);
+            toast.success("Cập nhật thông tin thành công!")
+            reset();
+        } catch (error) {
+            toast.error("Cập nhật thông tin thất bại!")
+        }
     };
 
     const handleUpload = async (e) => {
@@ -147,7 +132,7 @@ function CustomerDashboard() {
                                 <Button component="label" sx={{ borderRadius: 50 }}>
                                     <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                          alt={"avatar"} />
-                                    <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
+                                    <VisuallyHiddenInput  {...register("avatar")} type="file" onChange={(event) => {
                                         handleUpload(event)
                                     }} />
                                 </Button>
@@ -216,28 +201,28 @@ function CustomerDashboard() {
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
-                                                autoComplete="hotline"
+                                                autoComplete="gender"
                                                 fullWidth
-                                                id="hotline"
-                                                label="Hotline"
+                                                id="gender"
+                                                label="Giới tính"
                                                 type="tel"
                                                 InputLabelProps={{ shrink: true }}
-                                                error={Boolean(errors.hotline)}
-                                                helperText={errors.hotline?.message || ''}
-                                                {...register("hotline")}
+                                                error={Boolean(errors.gender)}
+                                                helperText={errors.gender?.message || ''}
+                                                {...register("gender")}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
-                                                autoComplete="operatingLicence"
+                                                autoComplete="dob"
                                                 fullWidth
-                                                id="operatingLicence"
+                                                id="dob"
                                                 type={"text"}
                                                 InputLabelProps={{ shrink: true }}
-                                                label="Giấy phép hoạt động"
-                                                error={Boolean(errors.operatingLicence)}
-                                                helperText={errors.operatingLicence?.message || ''}
-                                                {...register("operatingLicence")}
+                                                label="Ngày sinh"
+                                                error={Boolean(errors.dob)}
+                                                helperText={errors.dob?.message || ''}
+                                                {...register("dob")}
                                             />
                                         </Grid>
                                     </Grid>
@@ -254,7 +239,7 @@ function CustomerDashboard() {
                                 >
                                     Cập nhật
                                 </Button>
-                                <Button variant="contained" onClick={resetModal}
+                                <Button variant="contained"
                                         sx={{ mt: 3, mb: 1 }}>
                                     Hủy
                                 </Button>
