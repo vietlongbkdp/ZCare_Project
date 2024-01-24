@@ -1,6 +1,7 @@
 package com.cg.service.clinic;
 
 import com.cg.model.Clinic;
+import com.cg.model.Customer;
 import com.cg.model.User;
 import com.cg.model.enumeration.ERole;
 import com.cg.repository.IClinicRepository;
@@ -54,5 +55,10 @@ public class ClinicService implements IClinicService {
     @Override
     public void deleteById(Long id) {
         clinicRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Clinic> findAllByUser_Unlock(boolean user_unlock) {
+        return clinicRepository.findAllByUser_Unlock(user_unlock);
     }
 }

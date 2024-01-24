@@ -25,5 +25,6 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
                                         @Param("doctorName") String doctorName);
 
     List<Doctor> findAllByUser_Unlock(boolean user_unlock);
+
 }
 

@@ -92,4 +92,9 @@ public class CustomerService implements ICustomerService {
         User user = iUserRepository.findByEmail(forgotPassword.getEmail()).get();
         return user != null && (forgotPassword.getCode()).equals(user.getCode());
     }
+
+    @Override
+    public List<Customer> findAllByUser_Unlock(boolean user_unlock) {
+        return iCustomerRepository.findAllByUser_Unlock(user_unlock);
+    }
 }

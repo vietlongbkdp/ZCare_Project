@@ -64,10 +64,10 @@ function GetCustomerAdmin (){
     }, [updateShow,currentPage]);
     const currentCustomerList = customerList.slice(startIndex, endIndex);
     const handleChangeLock = async (id, currentLockStatus) => {
-
+        console.log(typeof currentLockStatus)
 
         Swal.fire({
-            title: currentLockStatus === "LOCK" ? "Bạn muốn mở khóa?" : "Bạn muốn khóa" ,
+            title: "Bạn muốn khóa",
             text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
@@ -77,8 +77,8 @@ function GetCustomerAdmin (){
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.put(`http://localhost:8080/api/customer/${id}`, {
-                        lockStatus: currentLockStatus
+                    await axios.put(`http://localhost:8080/api/customer/lock/${id}`, {
+                        userId: currentLockStatus
                     });
                     toast.success("Thành công");
                     setUpdateShow((prev) => !prev);
@@ -86,14 +86,14 @@ function GetCustomerAdmin (){
                     toast.error("Thất bại");
                 }
                 Swal.fire({
-                    title:currentLockStatus === "LOCK" ? "mở khóa thành công" : "khóa thành công",
-                    text: `The doctor has been ${currentLockStatus}.`,
+                    title: "khóa thành công",
+                    text: `The doctor has been `,
                     icon: "success"
                 });
+
             }
         });
     };
-
 
     return(
         <>
@@ -128,10 +128,10 @@ function GetCustomerAdmin (){
                             <StyledTableCell align="right">
                                 <Button
                                     variant="contained"
-                                    style={{ backgroundColor: item.lockStatus === 'LOCK' ? 'red' : 'green' }}
-                                    onClick={() => handleChangeLock(item.id, item.lockStatus)}
+                                    color='error'
+                                    onClick={() => handleChangeLock(item.id, item.user.id)}
                                 >
-                                    {item.lockStatus}
+                                    Khoá
                                 </Button>
                             </StyledTableCell>
                         </StyledTableRow>

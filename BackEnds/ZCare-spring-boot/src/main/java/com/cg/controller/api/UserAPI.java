@@ -27,7 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/api/user")
 @CrossOrigin(origins = "*")
 public class UserAPI {
     @Autowired
@@ -42,11 +42,7 @@ public class UserAPI {
     private JwtUtils jwtUtils;
 @Autowired
 private UserService userService;
-    @GetMapping
-    public ResponseEntity<?> getAll(){
-        List<Customer> customerList=customerService.findAll();
-        return new ResponseEntity<>(customerList,HttpStatus.OK);
-    }
+
 
     @PostMapping("/login")
     public ResponseEntity<?>Login(@RequestBody LoginDTO loginDTO){
