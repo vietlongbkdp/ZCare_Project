@@ -1,4 +1,4 @@
-package com.cg.service.booking;
+package com.cg.service.Booking;
 
 import com.cg.model.Booking;
 import com.cg.service.IGeneralService;
