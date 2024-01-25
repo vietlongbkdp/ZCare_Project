@@ -5,39 +5,31 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {Search} from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
-import {alpha, styled} from "@mui/material/styles";
-import {InputBase} from "@mui/material";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
-import { jwtDecode } from 'jwt-decode';
-import {useEffect, useState} from "react";
+import { alpha, styled } from "@mui/material/styles";
+import { InputBase } from "@mui/material";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import ClinicAdmin from "../ClinicAdmin/ClinicAdmin"
 
-
-const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
-    const {userId} = useParams();
+    const { userId } = useParams();
     const [dashboarduser, setDashboarduser] = useState('');
-    const [roleuser,setRoleuser] = useState('')
 
     const navigate = useNavigate();
     const location = useLocation();
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: alpha(theme.palette.common.white, 0.15),
+        backgroundColor: '#18a2b9',
         '&:hover': {
             backgroundColor: alpha(theme.palette.common.white, 0.25),
         },
@@ -83,27 +75,22 @@ function ResponsiveAppBar() {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-
     const isCustomer = location.pathname.startsWith("/user")
     const isCooperate = location.pathname.startsWith("/clinicadmin");
     const isAdmin = location.pathname.startsWith("/admin");
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
-        if(isCustomer) {
+        if (isCustomer) {
             navigate("/user/doctorInfor");
-        }else if(isCooperate){
+        } else if (isCooperate) {
             navigate("/cooperate/doctorInfor")
-        }else if(isAdmin){
+        } else if (isAdmin) {
             navigate("/admin/doctorInfor")
         }
-
     };
     const storedUserId = Cookies.get('userId');
-    useEffect(()=>{
+    useEffect(() => {
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
@@ -111,29 +98,25 @@ function ResponsiveAppBar() {
                 setDashboarduser(response.data)
                 // setRoleuser(dashboarduser.user)
                 console.log(dashboarduser.user)
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
         finddUser()
-    },[])
-
-
+    }, [])
 
     return (
-        <AppBar position="static">
-
-            <Container maxWidth="xl">
+        <AppBar position="fixed" sx={{ height: '54px' }}>
+            <Container sx={{width: '100%', marginLeft: '255px'}}>
                 <Toolbar disableGutters>
                     <Avatar alt="Remy Sharp" src={dashboarduser.clinicLogo} />
-                    {/*<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />*/}
                     <Typography
                         variant="h6"
                         noWrap
                         component="a"
                         href="#app-bar-with-responsive-menu"
                         sx={{
-                            ml:2,
+                            ml: 2,
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
                             fontFamily: 'monospace',
@@ -174,18 +157,18 @@ function ResponsiveAppBar() {
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src={dashboarduser.avatarImg} />
-                                <Typography sx={{color: 'white', ml: 1}}>{dashboarduser.fullName}
-                                {/*    {(() => {*/}
-                                {/*    if (user1.user.role === "ROLE_CUSTOMER") {*/}
-                                {/*        return user1.fullName;*/}
-                                {/*    } else if (user1.user.role === "ROLE_DOCTOR") {*/}
-                                {/*        return user1.doctorName;*/}
-                                {/*    } else if (user1.user.role === "ROLE_ADMIN") {*/}
-                                {/*        return user1.adminName;*/}
-                                {/*    } else {*/}
-                                {/*        return null;*/}
-                                {/*    }*/}
-                                {/*})()}*/}
+                                <Typography sx={{ color: 'white', ml: 1 }}>{dashboarduser.fullName}
+                                    {/*    {(() => {*/}
+                                    {/*    if (user1.user.role === "ROLE_CUSTOMER") {*/}
+                                    {/*        return user1.fullName;*/}
+                                    {/*    } else if (user1.user.role === "ROLE_DOCTOR") {*/}
+                                    {/*        return user1.doctorName;*/}
+                                    {/*    } else if (user1.user.role === "ROLE_ADMIN") {*/}
+                                    {/*        return user1.adminName;*/}
+                                    {/*    } else {*/}
+                                    {/*        return null;*/}
+                                    {/*    }*/}
+                                    {/*})()}*/}
                                 </Typography>
                             </IconButton>
                         </Tooltip>

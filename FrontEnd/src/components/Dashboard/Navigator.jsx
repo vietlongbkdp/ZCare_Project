@@ -17,8 +17,9 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
-import {Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const categories = [
     {
@@ -30,7 +31,7 @@ const categories = [
                 active: true,
                 // url: "booking"
             },
-            { id: 'Phòng khám', icon: <PublicIcon /> , url: "clinic"},
+            { id: 'Phòng khám', icon: <PublicIcon />, url: "clinic" },
             {
                 id: 'Bác sĩ',
                 icon: <SettingsInputComponentIcon />,
@@ -41,7 +42,7 @@ const categories = [
             { id: 'Lịch làm việc', icon: <PermMediaOutlinedIcon /> },
             { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
 
-            { id: 'Liên hệ', icon: <SettingsEthernetIcon /> , url: "doctorInfor"},
+            { id: 'Liên hệ', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
         ],
     },
@@ -67,7 +68,7 @@ const categories = [
         id: 'CUSTOMER',
         children: [
             { id: 'TOTAL', icon: <SettingsIcon /> },
-            { id: 'HISTORY', icon: <TimerIcon /> , url:"" },
+            { id: 'HISTORY', icon: <TimerIcon />, url: "" },
             { id: 'CUSTOMER', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
         ],
     },
@@ -89,14 +90,14 @@ const itemCategory = {
 };
 
 export default function Navigator(props) {
-    const {userId} = useParams();
+    const { userId } = useParams();
     const location = useLocation();
     const isAdmin = location.pathname.startsWith('/admin');
     const isAdminClinic = location.pathname.startsWith(`/clinicadmin`);
     const isUser = location.pathname.startsWith('/customer');
     const isDoctor = location.pathname.startsWith('/doctoradmin');
 
-    let filteredCategories=[];
+    let filteredCategories = [];
 
     if (isAdmin) {
         filteredCategories = categories.filter((category) => category.id === 'ADMIN');
@@ -104,7 +105,7 @@ export default function Navigator(props) {
         filteredCategories = categories.filter((category) => category.id === 'CUSTOMER');
     } else if (isAdminClinic) {
         filteredCategories = categories.filter((category) => category.id === 'ADMIN_CLINIC');
-    }else if (isDoctor) {
+    } else if (isDoctor) {
         filteredCategories = categories.filter((category) => category.id === 'DOCTOR');
     }
     // const filteredCategories = categories.filter(
@@ -116,14 +117,9 @@ export default function Navigator(props) {
     return (
         <Drawer variant="permanent" {...other}>
             <List disablePadding>
-                <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
-                    Paperbase
-                </ListItem>
-                <ListItem sx={{ ...item, ...itemCategory }}>
-                    <ListItemIcon>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText>Project Overview</ListItemText>
+                <ListItem sx={{ ...item, ...itemCategory, fontSize: 20, color: '#fff', backgroundColor: '#18a2b9', '&:hover': { backgroundColor: '#18a2b9' } }}>
+                    <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{ margin: "auto" }} />
+                    Quản trị Website
                 </ListItem>
                 {filteredCategories.map(({ id, children }) => (
                     <Box key={id} sx={{ bgcolor: '#101F33' }}>

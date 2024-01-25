@@ -8,7 +8,7 @@ import Link from '@mui/material/Link';
 import Navigator from './Navigator';
 import Content from './Content';
 import Header from './Header';
-import {Outlet} from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 function Copyright() {
     return (
@@ -26,7 +26,7 @@ let theme = createTheme({
     palette: {
         primary: {
             light: '#63ccff',
-            main: '#009be5',
+            main: '#18a2b9',
             dark: '#006db3',
         },
     },
@@ -199,7 +199,7 @@ export default function Paperbase() {
                 </Box>
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <Header onDrawerToggle={handleDrawerToggle} />
-                    <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+                    <Box component="main" sx={{ flex: 1, py: 2, px: 4, bgcolor: '#eaeff1', mt: '35px' }}>
                         <Outlet />
                     </Box>
                     <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
