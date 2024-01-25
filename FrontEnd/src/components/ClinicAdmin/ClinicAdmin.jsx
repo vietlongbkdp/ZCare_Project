@@ -132,6 +132,39 @@ export default function CustomizedTables() {
 
     }
 
+    const handleChangeLock = async (id, currentLockStatus) => {
+        console.log(typeof currentLockStatus)
+
+        Swal.fire({
+            title: "Bạn muốn khóa",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, change it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axios.put(`http://localhost:8080/api/clinic/lock/${id}`, {
+                        userId: currentLockStatus
+                    });
+                    toast.success("Thành công");
+                    setIsupdate(pre => !pre);
+                } catch (error) {
+                    toast.error("Thất bại");
+                }
+                Swal.fire({
+                    title: "khóa thành công",
+                    text: `The doctor has been `,
+                    icon: "success"
+                });
+
+            }
+        });
+    };
+
+
     return (
         <>
             <Box>
@@ -215,9 +248,12 @@ export default function CustomizedTables() {
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell >
-                                                <Button variant="contained" color="error"
-                                                    onClick={() => handleDelete(item?.id)} sx={{ marginLeft: 'auto' }}>
-                                                    <i className="fa-solid fa-delete-left"></i>
+                                                <Button
+                                                    variant="contained"
+                                                    color='error'
+                                                    onClick={() => handleChangeLock(item.id, item.user.id)}
+                                                >
+                                                    Khoá
                                                 </Button>
                                             </StyledTableCell>
                                         </StyledTableRow>

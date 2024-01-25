@@ -25,5 +25,5 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ERole role;
     @Column(columnDefinition = "TINYINT(1)")
-    private boolean unlock;
+    private boolean unlock = true;
 }

@@ -52,7 +52,10 @@ function DoctorListBySpeciality() {
                     trị và quản lý các bệnh và tình trạng sức khỏe của bệnh nhân.</p>
             </div>
             {componentToRender}
-            <DoctorInfoClinic specialityId={specialityId}/>
+            <div className={"container-fluid py-3"} style={{backgroundColor:"rgb(238 238 238)"}}>
+                <DoctorInfoClinic  specialityId={specialityId}/>
+            </div>
+
             <Footer/>
         </>
     );

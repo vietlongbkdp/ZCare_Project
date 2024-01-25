@@ -48,7 +48,6 @@ public class DoctorAPI {
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getDoctors() {
         List<Doctor> doctorList = doctorService.findAllByUser_Unlock(true);
-
         return new ResponseEntity<>(doctorList, HttpStatus.OK);
     }
 
