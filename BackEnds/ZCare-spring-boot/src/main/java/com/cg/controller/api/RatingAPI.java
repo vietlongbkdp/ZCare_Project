@@ -29,9 +29,9 @@ public class RatingAPI {
         return new ResponseEntity<>(ratings,HttpStatus.OK);
     }
 
-    @PostMapping("/create/{doctorId}")
-    public ResponseEntity<?> createRating(@PathVariable Long doctorId,@RequestBody RatingReqDTO ratingReqDTO) {
-        ratingService.createRating(ratingReqDTO,doctorId);
+    @PostMapping("/create/{doctorId}/{userId}")
+    public ResponseEntity<?> createRating(@PathVariable Long doctorId,@PathVariable Long userId,@RequestBody RatingReqDTO ratingReqDTO) {
+        ratingService.createRating(ratingReqDTO,doctorId,userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
