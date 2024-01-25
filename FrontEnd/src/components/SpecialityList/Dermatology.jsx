@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from "@mui/material";
+import {Link} from "react-router-dom";
 import useShowFullContent from "./useShowFullContent";
 
 function Dermatology() {

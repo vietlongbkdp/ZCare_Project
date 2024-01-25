@@ -20,6 +20,7 @@ import Search from "./components/DoctorListBy/search";
 import DoctorInfo from "./components/DoctorInfo/DoctorInfo";
 import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 import CustomerDashboard from "./components/CustomerDashboard/CustomerDashboard";
+import AppointmentSchedule from "./components/CustomerDashboard/AppointmentSchedule";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -56,6 +57,7 @@ export default function App() {
         <Route path="/search" element={<Search/>} />
         <Route path="/doctorDetail/:doctorId" element={<DoctorInfo/>} />
         <Route path="/information-customer" element={<CustomerDashboard/>} />
+        <Route path="/appointment-schedule" element={<AppointmentSchedule/>} />
       </Routes>
     </>
   );
