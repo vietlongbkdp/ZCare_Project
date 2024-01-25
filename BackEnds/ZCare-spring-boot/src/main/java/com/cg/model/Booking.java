@@ -1,5 +1,6 @@
 package com.cg.model;
 
+import com.cg.model.enumeration.EStatusBooking;
 import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -7,17 +8,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
-
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="bookings")
+@Accessors(chain = true)
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +31,17 @@ public class Booking {
     @NotNull(message = "Bệnh nhân không được để trống")
     @ManyToOne
     private Customer customer;
-
-    private Date bookingDate;
-    private LocalDateTime bookingTime;
-
+    private String bookingDate;
+    private String bookingTime;
     @ManyToOne
     private Schedule schedule;
-
     private BigDecimal fee;
     @OneToOne
     private Result result;
-    @ManyToOne
-    private Status status;
+    @Enumerated(EnumType.STRING)
+    private EStatusBooking status;
     private LocalDateTime createAt;
-    private String bookFor;
+    private String patientName;
     private String reason;
 
 }
