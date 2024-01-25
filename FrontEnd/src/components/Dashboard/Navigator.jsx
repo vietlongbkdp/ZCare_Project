@@ -17,7 +17,7 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
-import {Link} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 
 const categories = [
@@ -48,9 +48,19 @@ const categories = [
     {
         id: 'ADMIN_CLINIC',
         children: [
+            { id: ' Trang chủ ', icon: <SettingsIcon /> },
             { id: 'Doanh thu', icon: <SettingsIcon /> },
             { id: 'Bệnh nhân', icon: <TimerIcon /> },
-            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
+            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "clinic" },
+        ],
+    },
+    {
+        id: 'DOCTOR',
+        children: [
+            { id: ' Trang chủ ', icon: <SettingsIcon /> },
+            { id: 'Doanh thu', icon: <SettingsIcon /> },
+            { id: 'Bệnh nhân', icon: <TimerIcon /> },
+            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],
     },
     {
@@ -79,10 +89,12 @@ const itemCategory = {
 };
 
 export default function Navigator(props) {
+    const {userId} = useParams();
     const location = useLocation();
     const isAdmin = location.pathname.startsWith('/admin');
-    const isCooperate = location.pathname.startsWith('/clinicadmin');
-    const isUser = location.pathname.startsWith('/user');
+    const isAdminClinic = location.pathname.startsWith(`/clinicadmin`);
+    const isUser = location.pathname.startsWith('/customer');
+    const isDoctor = location.pathname.startsWith('/doctoradmin');
 
     let filteredCategories=[];
 
@@ -90,8 +102,10 @@ export default function Navigator(props) {
         filteredCategories = categories.filter((category) => category.id === 'ADMIN');
     } else if (isUser) {
         filteredCategories = categories.filter((category) => category.id === 'CUSTOMER');
-    } else if (isCooperate) {
+    } else if (isAdminClinic) {
         filteredCategories = categories.filter((category) => category.id === 'ADMIN_CLINIC');
+    }else if (isDoctor) {
+        filteredCategories = categories.filter((category) => category.id === 'DOCTOR');
     }
     // const filteredCategories = categories.filter(
     //     category => isAdmin ? category.id === 'ADMIN' : category.id === 'CLINIC-DOCTOR'

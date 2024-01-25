@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface IClinicRepository extends JpaRepository<Clinic, Long> {
     List<Clinic> findAllByUser_Unlock(boolean user_unlock);
+    Clinic findByUser_Id(Long id);
 }

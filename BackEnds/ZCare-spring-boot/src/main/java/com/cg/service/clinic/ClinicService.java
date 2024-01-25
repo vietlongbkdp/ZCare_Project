@@ -62,4 +62,9 @@ public class ClinicService implements IClinicService {
     public List<Clinic> findAllByUser_Unlock(boolean user_unlock) {
         return clinicRepository.findAllByUser_Unlock(user_unlock);
     }
+
+    @Override
+    public Clinic findByUser_Id(Long id) {
+        return clinicRepository.findByUser_Id(id);
+    }
 }

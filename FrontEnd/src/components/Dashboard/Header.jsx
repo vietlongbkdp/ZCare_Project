@@ -16,13 +16,22 @@ import {Search} from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import {alpha, styled} from "@mui/material/styles";
 import {InputBase} from "@mui/material";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import { jwtDecode } from 'jwt-decode';
+import {useEffect, useState} from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import ClinicAdmin from "../ClinicAdmin/ClinicAdmin"
 
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
+    const {userId} = useParams();
+    const [dashboarduser, setDashboarduser] = useState('');
+    const [roleuser,setRoleuser] = useState('')
+
     const navigate = useNavigate();
     const location = useLocation();
     const Search = styled('div')(({ theme }) => ({
@@ -79,7 +88,7 @@ function ResponsiveAppBar() {
     };
 
     const isCustomer = location.pathname.startsWith("/user")
-    const isCooperate = location.pathname.startsWith("/cooperate");
+    const isCooperate = location.pathname.startsWith("/clinicadmin");
     const isAdmin = location.pathname.startsWith("/admin");
 
     const handleCloseUserMenu = () => {
@@ -93,18 +102,38 @@ function ResponsiveAppBar() {
         }
 
     };
+    const storedUserId = Cookies.get('userId');
+    useEffect(()=>{
+        const finddUser = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                console.log(response.data)
+                setDashboarduser(response.data)
+                // setRoleuser(dashboarduser.user)
+                console.log(dashboarduser.user)
+            }catch (error) {
+                console.error(error);
+            }
+        }
+        finddUser()
+    },[])
+
+
 
     return (
         <AppBar position="static">
+
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+                    <Avatar alt="Remy Sharp" src={dashboarduser.clinicLogo} />
+                    {/*<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />*/}
                     <Typography
                         variant="h6"
                         noWrap
                         component="a"
                         href="#app-bar-with-responsive-menu"
                         sx={{
+                            ml:2,
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
                             fontFamily: 'monospace',
@@ -115,21 +144,21 @@ function ResponsiveAppBar() {
                             my: 2
                         }}
                     >
-                        LOGO
+                        {dashboarduser.clinicName}
                     </Typography>
 
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page) => (
-                            <Button
-                                key={page}
-                                // onClick={handleCloseNavMenu}
-                                sx={{  color: 'white', display: 'block' }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                        {/*{pages.map((page) => (*/}
+                        {/*    <Button*/}
+                        {/*        key={page}*/}
+                        {/*        // onClick={handleCloseNavMenu}*/}
+                        {/*        sx={{  color: 'white', display: 'block' }}*/}
+                        {/*    >*/}
+                        {/*        {page}*/}
+                        {/*    </Button>*/}
+                        {/*))}*/}
                     </Box>
                     <Search>
                         <SearchIconWrapper>
@@ -144,7 +173,20 @@ function ResponsiveAppBar() {
                     <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings">
                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <Avatar alt="Remy Sharp" src={dashboarduser.avatarImg} />
+                                <Typography sx={{color: 'white', ml: 1}}>{dashboarduser.fullName}
+                                {/*    {(() => {*/}
+                                {/*    if (user1.user.role === "ROLE_CUSTOMER") {*/}
+                                {/*        return user1.fullName;*/}
+                                {/*    } else if (user1.user.role === "ROLE_DOCTOR") {*/}
+                                {/*        return user1.doctorName;*/}
+                                {/*    } else if (user1.user.role === "ROLE_ADMIN") {*/}
+                                {/*        return user1.adminName;*/}
+                                {/*    } else {*/}
+                                {/*        return null;*/}
+                                {/*    }*/}
+                                {/*})()}*/}
+                                </Typography>
                             </IconButton>
                         </Tooltip>
                         <Menu

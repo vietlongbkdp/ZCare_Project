@@ -40,8 +40,13 @@ export default function App() {
         </Route>
         <Route path="/clinicadmin" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
+          <Route path="clinic" element={<ClinicAdmin />}></Route>
         </Route>
-        <Route path="/user" element={<Pagerbase />}>
+        <Route path="/doctoradmin" element={<Pagerbase />}>
+          <Route path="doctorInfor" element={<DoctorInfor />}></Route>
+          <Route path="clinic" element={<ClinicAdmin />}></Route>
+        </Route>
+        <Route path="/customer" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />

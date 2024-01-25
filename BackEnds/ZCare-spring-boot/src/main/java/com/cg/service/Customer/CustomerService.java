@@ -98,4 +98,9 @@ public class CustomerService implements ICustomerService {
     public List<Customer> findAllByUser_Unlock(boolean user_unlock) {
         return iCustomerRepository.findAllByUser_Unlock(user_unlock);
     }
+
+    @Override
+    public Customer findByUser_Id(Long id) {
+        return iCustomerRepository.findByUser_Id(id);
+    }
 }
