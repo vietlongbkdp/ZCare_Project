@@ -54,7 +54,7 @@ public class BookingService implements IBookingService {
         Customer customer = customerService.findById(bookingDTO.getIdCustomer()).get();
         Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
                 .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
-                .setCreateAt(LocalDateTime.parse(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"))))
+                .setCreateAt(LocalDateTime.now())
                 .setStatus(EStatusBooking.CONFIRMING);
         if(bookingDTO.getReason() != null){
             booking.setReason(bookingDTO.getReason());
