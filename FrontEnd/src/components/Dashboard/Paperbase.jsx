@@ -6,7 +6,6 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import Navigator from './Navigator';
-import Content from './Content';
 import Header from './Header';
 import { Outlet } from "react-router-dom";
 
@@ -49,7 +48,7 @@ let theme = createTheme({
     },
     mixins: {
         toolbar: {
-            minHeight: 48,
+            minHeight: 54,
         },
     },
 });
@@ -60,7 +59,7 @@ theme = {
         MuiDrawer: {
             styleOverrides: {
                 paper: {
-                    backgroundColor: '#081627',
+                    backgroundColor: '#353944',
                 },
             },
         },
@@ -125,15 +124,15 @@ theme = {
                 },
             },
         },
-        MuiListItemButton: {
-            styleOverrides: {
-                root: {
-                    '&.Mui-selected': {
-                        color: '#4fc3f7',
-                    },
-                },
-            },
-        },
+        // MuiListItemButton: {
+        //     styleOverrides: {
+        //         root: {
+        //             '&.Mui-selected': {
+        //                 color: '#4fc3f7',
+        //             },
+        //         },
+        //     },
+        // },
         MuiListItemText: {
             styleOverrides: {
                 primary: {
@@ -199,7 +198,7 @@ export default function Paperbase() {
                 </Box>
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <Header onDrawerToggle={handleDrawerToggle} />
-                    <Box component="main" sx={{ flex: 1, py: 2, px: 4, bgcolor: '#eaeff1', mt: '35px' }}>
+                    <Box component="main" sx={{ flex: 1, py: 2, px: 4, bgcolor: '#eaeff1', mt: '60px' }}>
                         <Outlet />
                     </Box>
                     <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
