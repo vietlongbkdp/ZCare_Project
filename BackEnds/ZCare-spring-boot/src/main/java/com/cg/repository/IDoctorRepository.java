@@ -23,5 +23,10 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findDoctorsWithFilters(@Param("specialityId") Long specialityId,
                                         @Param("clinicId") Long clinicId,
                                         @Param("doctorName") String doctorName);
+
+    List<Doctor> findAllByUser_Unlock(boolean user_unlock);
+
+    Doctor findByUser_Id(Long id);
+
 }
 

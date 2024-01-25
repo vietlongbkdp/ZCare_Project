@@ -1,14 +1,14 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function ClinicListHome() {
- const [ClinicList,setClinicList]=useState([]);
+  const [ClinicList, setClinicList] = useState([]);
   const settings = {
     dots: true,
     infinite: true,
@@ -17,15 +17,16 @@ export default function ClinicListHome() {
     slidesToScroll: 1,
     margin: 2
   };
-    useEffect(() => {
-        axios.get('http://localhost:8080/api/clinic')
-            .then(response => {
-                setClinicList(response.data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    }, []);
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/clinic')
+      .then(response => {
+        setClinicList(response.data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }, []);
+
   return (
     <Box bgcolor='#ffffff' height={'670px'}>
       <Box sx={{ display: 'flex', justifyContent: 'center', pt: '30px' }}>
@@ -40,26 +41,26 @@ export default function ClinicListHome() {
       <Box mx={10} mt={10} >
         <Slider {...settings} >
           {
-              ClinicList.map((item, index) => (
+            ClinicList.map((item, index) => (
               <Card key={index} sx={{ borderRadius: '15px' }}>
-                  <Link to={`/list-clinic/${item.id}`} style={{ textDecoration: 'none',color:"black" }}>
-                <CardActionArea>
-                  <Box sx={{ display: 'inline'}}>
-                    <CardMedia
-                      sx={{ padding: '20px', objectFit: 'contain' }}
-                      component="img"
-                      height="200"
-                      image={item.clinicLogo}
-                      alt="Error image"
-                    />
-                  </Box>
-                  <CardContent className='clinic-title'>
-                    <Typography gutterBottom variant="h6" fontSize='1.2rem' align='center' height='70px' padding='10px'>
-                      {item.clinicName}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                  </Link>
+                <Link to={`/list-clinic/${item.id}`} style={{ textDecoration: 'none', color: "black" }}>
+                  <CardActionArea>
+                    <Box sx={{ display: 'inline' }}>
+                      <CardMedia
+                        sx={{ padding: '20px', objectFit: 'contain' }}
+                        component="img"
+                        height="200"
+                        image={item.clinicLogo}
+                        alt="Error image"
+                      />
+                    </Box>
+                    <CardContent className='clinic-title'>
+                      <Typography gutterBottom variant="h6" fontSize='1.2rem' align='center' height='70px' padding='10px'>
+                        {item.clinicName}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Link>
               </Card>
             ))
           }

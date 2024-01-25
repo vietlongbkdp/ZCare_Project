@@ -3,6 +3,7 @@ import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.DTO.DoctorResDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "Tên bác sỹ không được trống")
     @Column(name = "doctor_name")
     private String doctorName;
     @ManyToOne
@@ -43,7 +45,7 @@ public class Doctor {
     private String avatarImg;
     @Column(columnDefinition = "integer default 0")
     private Integer star;
-    @Column(name = "doctor_info")
+    @Column(name = "doctor_info", columnDefinition = "LONGTEXT")
     private String doctorInfo;
     @ManyToOne
     private Speciality speciality;
@@ -53,8 +55,10 @@ public class Doctor {
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
+    @NotEmpty(message = "Trạng thái khóa không được trống")
     @Enumerated(EnumType.STRING)
     private ELockStatus lockStatus;
+
 
 
     public DoctorResDTO toDoctorResDTO() {
@@ -74,5 +78,4 @@ public class Doctor {
                 .setScheduleList(scheduleList)
                 ;
     }
-
 }

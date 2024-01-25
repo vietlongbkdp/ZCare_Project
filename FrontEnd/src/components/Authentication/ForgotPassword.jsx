@@ -23,7 +23,7 @@ export default function ForgotPassword() {
     });
     const onSubmit = async (data) => {
       try {
-        const response = await axios.post('http://localhost:8080/api/customer/forgot-password', data);
+        const response = await axios.post('http://localhost:8080/api/user/forgot-password', data);
         console.log(response.data);
         const UserId=response.data;
         toast.success("Gửi xác nhận thành công");
@@ -42,7 +42,7 @@ export default function ForgotPassword() {
             toast.error("Vui lòng nhập email.");
             return;
           }
-          const response = await axios.post('http://localhost:8080/api/customer/email', { email: emailValue });
+          const response = await axios.post('http://localhost:8080/api/user/email', { email: emailValue });
           console.log(response.data);
           toast.success("Mã xác nhận đã được gửi thành công!");
           setResendButtonDisabled(true);

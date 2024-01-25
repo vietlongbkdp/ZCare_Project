@@ -64,7 +64,7 @@ function DoctorComponent({ doctor }) {
 
     useEffect(() => {
         fetchScheduleData();
-    }, [selectedWeekday]);
+    }, [fetchScheduleData,selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -82,7 +82,7 @@ function DoctorComponent({ doctor }) {
     }, [selectedDate]);
 
     return (
-        <div key={doctor.id} className={"container d-flex mt-2 rounded border shadow-sm row col-9 p-4 mx-auto"}>
+        <div key={doctor.id} className={"container d-flex mt-2 rounded border shadow-sm row col-9 p-4 mx-auto"} style={{backgroundColor:"white"}}>
             <div className={"d-flex mt-2 "}>
                 <div className={"d-flex flex-column justify-content-around col-6 border-end"}>
                     <div className={"d-flex justify-content-start mb-auto"}>

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -60,7 +61,7 @@ public class CustomerService implements ICustomerService {
         customer.setPhone(customerReqDTO.getPhone());
         customer.setEmail(customerReqDTO.getEmail());
         customer.setAddress(customerReqDTO.getAddress());
-        customer.setDob(PassDate.convertToDate(date));
+        customer.setDob(LocalDate.parse(date));
         customer.setGender(EGender.valueOf(customerReqDTO.getGender()));
         iCustomerRepository.save(customer);
     }
@@ -91,5 +92,15 @@ public class CustomerService implements ICustomerService {
     public boolean forgotPassword(ForgotPassword forgotPassword) {
         User user = iUserRepository.findByEmail(forgotPassword.getEmail()).get();
         return user != null && (forgotPassword.getCode()).equals(user.getCode());
+    }
+
+    @Override
+    public List<Customer> findAllByUser_Unlock(boolean user_unlock) {
+        return iCustomerRepository.findAllByUser_Unlock(user_unlock);
+    }
+
+    @Override
+    public Customer findByUser_Id(Long id) {
+        return iCustomerRepository.findByUser_Id(id);
     }
 }

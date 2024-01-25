@@ -11,7 +11,6 @@ import ChangePassword from "./components/Authentication/ChangePassword";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
 import { useContext } from "react";
 import { ApiContext } from "./components/ApiContext/ApiProvider";
-import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import CustomerAdmin from "./components/CustomerAdmin/CustomerAdmin"
 import DoctorListBySpeciality from "./components/DoctorListBy/DoctorListBySpeciality";
@@ -19,6 +18,10 @@ import DoctorListByClinic from "./components/DoctorListBy/DoctorListByClinic";
 import Search from "./components/DoctorListBy/search";
 import DoctorInfo from "./components/DoctorInfo/DoctorInfo";
 import Booking from "./components/BookingPage/Booking";
+import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
+import CustomerDashboard from "./components/CustomerDashboard/CustomerDashboard";
+import AppointmentSchedule from "./components/CustomerDashboard/AppointmentSchedule";
+
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -29,16 +32,21 @@ export default function App() {
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/change-password/:userId" element={<ChangePassword />} />
-        <Route path="/admin" element={<Pagerbase />}>
+        <Route path="/admin" element={<Pagerbase />} >
           <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR} />}></Route>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
           <Route path="clinic" element={<ClinicAdmin />}></Route>
           <Route path="customer" element={<CustomerAdmin/>}></Route>
         </Route>
-        <Route path="/cooperate" element={<Pagerbase />}>
+        <Route path="/clinicadmin" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
+          <Route path="clinic" element={<ClinicAdmin />}></Route>
         </Route>
-        <Route path="/user" element={<Pagerbase />}>
+        <Route path="/doctoradmin" element={<Pagerbase />}>
+          <Route path="doctorInfor" element={<DoctorInfor />}></Route>
+          <Route path="clinic" element={<ClinicAdmin />}></Route>
+        </Route>
+        <Route path="/customer" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />
@@ -48,8 +56,9 @@ export default function App() {
         <Route path="/list-clinic/:clinicId" element={<DoctorListByClinic />} />
         <Route path="/search" element={<Search/>} />
         <Route path="/doctorDetail/:doctorId" element={<DoctorInfo/>} />
+        <Route path="/information-customer" element={<CustomerDashboard/>} />
+        <Route path="/appointment-schedule" element={<AppointmentSchedule/>} />
       </Routes>
-
     </>
   );
 }

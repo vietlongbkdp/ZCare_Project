@@ -49,7 +49,7 @@ function ClinicList() {
                             marginLeft: "10px",
                             width: '25%',
                             boxSizing: 'border-box',
-                            height: '200px',
+                            height: '250px',
                             wordWrap: 'break-word',
                             wordBreak: 'break-all',
                         }}

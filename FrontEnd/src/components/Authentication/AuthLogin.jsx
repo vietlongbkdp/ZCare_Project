@@ -1,4 +1,5 @@
-import React from "react";
+import React, {useContext, useEffect, useState} from "react";
+import {UserContext} from "../utils/ApiUserLogin"
 import {
   Box,
   Typography,
@@ -14,6 +15,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const schema = yup.object({
   email: yup
@@ -24,6 +26,9 @@ const schema = yup.object({
 });
 
 function AuthLogin() {
+  const {API_USER} = useContext(UserContext);
+
+
   const {
     register,
     handleSubmit,
@@ -33,13 +38,63 @@ function AuthLogin() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  // const [user, setUser] = useState();
+  // useEffect(() => {
+  //   const token = Cookies.get('JWT');
+  //   console.log(token)
+  //   if (token) {
+  //
+  //     const decodedToken = jwtDecode(token);
+  //     console.log(decodedToken)
+  //     const useremail = decodedToken.sub;
+  //
+  //     const getUser = async () => {
+  //       try {
+  //         const user1 =  await axios.get(`http://localhost:8080/api/user/finduser/${useremail}`);
+  //         setUser(user1.data);
+  //
+  //         console.log(user.id)
+  //       } catch (error) {
+  //         console.error(error);
+  //       }
+  //     }
+  //     getUser();
+  //   }
+  // }, []);
+
+  console.log(API_USER)
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      const response = await axios.post("http://localhost:8080/api/customer/login", data);
+      const response = await axios.post("http://localhost:8080/api/user/login", data);
+      console.log(response)
+      const userId = response.data.id;
+      // const userRole = response.data.roles[0];
+      Cookies.set('userId', userId, { expires: 7, secure: true });
+      const storedUserId = Cookies.get('userId');
+      console.log(storedUserId)
       const token = response.data.token;
       Cookies.set('JWT', token, { expires: 7, secure: true });
       toast.success("Đăng nhập thành công");
+      const decodedToken = jwtDecode(token);
+
+      const userRole = decodedToken.roles[0];
+      console.log(userRole)
+      if (userRole === "ROLE_ADMIN") {
+        window.location.href = "/admin";
+      } else if (userRole === "ROLE_CUSTOMER") {
+        const currentPath = window.location.pathname;
+        console.log(currentPath)
+        if (!currentPath.includes("/admin")) {
+          window.location.href = "/home";
+        } else {
+          window.location.href = "/home";
+        }
+      }else if(userRole==="ROLE_ADMIN_CLINIC"){
+        window.location.href = `/clinicadmin`;
+      }else if(userRole==="ROLE_DOCTOR") {
+        window.location.href = `/doctoradmin`;
+      }
       reset();
     } catch (error) {
       if (error.response) {

@@ -17,15 +17,18 @@ const schema = yup.object().shape({
     clinicName: yup.string()
         .required("Tên không được để trống")
         .min(2, 'Nhập trên 2 kí tự')
-        .max(50, 'Quá dài'),
+        .max(200, 'Nhập dưới 200 kí tự'),
     address: yup.string()
         .required("Địa chỉ không đuược để trống")
         .min(2, 'Nhập trên 2 kí tự')
-        .max(100, 'Nhập dưới 100 kí tự'),
+        .max(200, 'Nhập dưới 200 kí tự'),
     legalRepresentative: yup.string()
         .required("Tên người đại diện không đuược để trống")
         .min(2, 'Nhập trên 2 kí tự')
-        .max(50, 'Nhập dưới 50 kí tự'),
+        .max(200, 'Nhập dưới 200 kí tự'),
+    email: yup.string()
+        .required("Email không được để trống")
+        .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
     hotline: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
@@ -178,6 +181,17 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                                                 error={Boolean(errors.legalRepresentative)}
                                                 helperText={errors.legalRepresentative?.message || ''}
                                                 {...register("legalRepresentative")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} mb={1}>
+                                            <TextField
+                                                autoComplete="email"
+                                                fullWidth
+                                                id="email"
+                                                label="Email"
+                                                error={Boolean(errors.email)}
+                                                helperText={errors.email?.message || ''}
+                                                {...register("email")}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>

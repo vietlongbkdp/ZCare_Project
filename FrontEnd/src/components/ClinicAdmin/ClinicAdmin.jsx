@@ -16,10 +16,11 @@ import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
 import AddClinic from './AddClinic';
 import EditClinic from './EditClinic';
-import DoctorAdmin from '../Doctor/DoctorAdmin';
 import { ApiContext } from '../ApiContext/ApiProvider';
-
-
+import DoctorInClinic from '../Doctor/DoctorInClinic';
+import "./clinic.css"
+import {useParams} from "react-router-dom";
+import Cookies from "js-cookie";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -44,6 +45,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CustomizedTables() {
 
+    const {userId} = useParams();
+
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -63,6 +66,7 @@ export default function CustomizedTables() {
     const [showPagination, setShowPagination] = useState(true);
     const [showDoctorList, setShowDoctorList] = useState(false);
     const [showAddDoctor, setShowAddDoctor] = useState(false);
+    const [clinicAdminUser, setClinicAdminUser] = useState();
 
     const { API_DOCTOR } = useContext(ApiContext)
 
@@ -132,6 +136,51 @@ export default function CustomizedTables() {
         })
 
     }
+   useEffect(() => {
+       const findClinicidUser = async () => {
+           try {
+               const response = await axios.get(`http://localhost:8080/api/clinic/${userId}`)
+               setClinicAdminUser(response.data);
+           }catch (error) {
+               console.error(error);
+           }
+       }
+       findClinicidUser();
+   },[])
+
+
+    const handleChangeLock = async (id, currentLockStatus) => {
+        console.log(typeof currentLockStatus)
+
+        Swal.fire({
+            title: "Bạn muốn khóa",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, change it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axios.put(`http://localhost:8080/api/clinic/lock/${id}`, {
+                        userId: currentLockStatus
+                    });
+                    toast.success("Thành công");
+                    setIsupdate(pre => !pre);
+                } catch (error) {
+                    toast.error("Thất bại");
+                }
+                Swal.fire({
+                    title: "khóa thành công",
+                    text: `The doctor has been `,
+                    icon: "success"
+                });
+
+            }
+        });
+    };
+
 
     return (
         <>
@@ -161,7 +210,7 @@ export default function CustomizedTables() {
                     setShowPagination={setShowPagination}
                 />}
                 {
-                    showDoctorList && <DoctorAdmin API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
+                    showDoctorList && <DoctorInClinic API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
                         clinicId={clinicId}
                         handleHideDoctor={handleHideDoctor} />
                 }
@@ -178,10 +227,10 @@ export default function CustomizedTables() {
                                         <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
                                         <StyledTableCell>HOTLINE</StyledTableCell>
                                         <StyledTableCell>GPHĐ</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>DANH SÁCH BÁC SĨ</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>THÔNG TIN</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>CẬP NHẬT</StyledTableCell>
-                                        <StyledTableCell sx={{ width: 25 }}>XÓA</StyledTableCell>
+                                        <StyledTableCell align='center'>DANH SÁCH BÁC SĨ</StyledTableCell>
+                                        <StyledTableCell align='center'>THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell align='center'>CẬP NHẬT</StyledTableCell>
+                                        <StyledTableCell align='center'>XÓA</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -216,9 +265,12 @@ export default function CustomizedTables() {
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell >
-                                                <Button variant="contained" color="error"
-                                                    onClick={() => handleDelete(item?.id)} sx={{ marginLeft: 'auto' }}>
-                                                    <i className="fa-solid fa-delete-left"></i>
+                                                <Button
+                                                    variant="contained"
+                                                    color='error'
+                                                    onClick={() => handleChangeLock(item.id, item.user.id)}
+                                                >
+                                                    Khoá
                                                 </Button>
                                             </StyledTableCell>
                                         </StyledTableRow>

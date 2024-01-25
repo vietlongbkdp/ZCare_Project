@@ -37,4 +37,6 @@ public class UserService implements IUserService{
     public User findByFullName(String fullName) {
         return iUserRepository.findByEmail(fullName).get();
     }
+
+
 }

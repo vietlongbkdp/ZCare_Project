@@ -8,25 +8,23 @@ import com.cg.model.enumeration.EStatusBooking;
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.ICustomerService;
 import com.cg.service.schedule.IScheduleService;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-
-@Transactional
 @Service
-public class BookingService implements IBookingService{
+@Transactional
+public class BookingService implements IBookingService {
+    @Autowired
+    private IBookingRepository bookingRepository;
     @Autowired
     private IScheduleService scheduleService;
     @Autowired
     private ICustomerService customerService;
-    @Autowired
-    private IBookingRepository bookingRepository;
-
     @Override
     public List<Booking> findAll() {
         return bookingRepository.findAll();
@@ -34,17 +32,22 @@ public class BookingService implements IBookingService{
 
     @Override
     public Optional<Booking> findById(Long id) {
-       return bookingRepository.findById(id);
+        return bookingRepository.findById(id);
     }
 
     @Override
     public void save(Booking booking) {
-
+        bookingRepository.save(booking);
     }
 
     @Override
     public void deleteById(Long id) {
+        bookingRepository.deleteById(id);
+    }
 
+    @Override
+    public List<Booking> findAllByCustomerId(Long customerId) {
+        return bookingRepository.findAllByCustomerId(customerId);
     }
     public Booking toBooking(BookingDTO bookingDTO){
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
@@ -63,8 +66,6 @@ public class BookingService implements IBookingService{
         }
         return booking;
     }
-
-    @Override
     public void createBooking(Booking booking) {
         bookingRepository.save(booking);
     }

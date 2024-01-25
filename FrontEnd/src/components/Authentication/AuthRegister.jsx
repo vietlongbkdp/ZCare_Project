@@ -50,7 +50,7 @@ function AuthRegister() {
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      await axios.post("http://localhost:8080/api/customer", data);
+      await axios.post("http://localhost:8080/api/user", data);
       toast.success("Đăng kí thành công");
       reset();
     } catch (error) {

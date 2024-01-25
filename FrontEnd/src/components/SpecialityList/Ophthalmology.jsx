@@ -1,14 +1,14 @@
 import React from 'react';
 import useShowFullContent from "./useShowFullContent";
-import {Link} from "@mui/material";
+import {Link} from "react-router-dom";
 
 function Ophthalmology() {
     const [showFullContent, handleToggleContent] = useShowFullContent();
 
     return (
         <>
-            <div className="container d-flex flex-column col-8 mt-2 mb-5 pb-4 ">
-                <Link className="d-flex">
+            <div className="container d-flex flex-column col-9 mt-2 mb-5 pb-4 ">
+                <Link to='/home' className="d-flex">
                     <span className="me-2"><i className="fa-solid fa-house"></i></span>
                     <p className="ms-2">Khám chuyên khoa</p>
                 </Link>

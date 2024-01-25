@@ -15,6 +15,7 @@ import com.cg.service.speciality.ISpecialityService;
 import com.cg.until.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -62,8 +63,9 @@ public class DoctorServiceImpl implements IDoctorService{
         String password = RandomCode.generateRandomCode(6);
         User user =new User();
         user.setEmail(doctorReqDTO.getEmail());
-        user.setPassword(password);
+        user.setPassword(PasswordEncryptionUtil.encryptPassword(password));
         user.setRole(ERole.ROLE_DOCTOR);
+        user.setUnlock(true);
         iUserRepository.save(user);
 
         String title="Chúc mừng! Tài khoản ZCare đã được tạo thành công";
@@ -81,11 +83,10 @@ public class DoctorServiceImpl implements IDoctorService{
         doctor.setCreateAt(LocalDate.now());
         doctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         doctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
-        doctor.setStar(0);
+        doctor.setStar(5);
         doctor.setUser(user);
         doctor.setLockStatus(ELockStatus.valueOf("UNLOCK"));
         doctorRepository.save(doctor);
-
     }
 
     public List<Doctor> findDoctorsWithFilters(Long specialityId, Long clinicId, String doctorName) {
@@ -96,4 +97,15 @@ public class DoctorServiceImpl implements IDoctorService{
     public void deleteById(Long id) {
          doctorRepository.deleteById(id);
     }
+
+    @Override
+    public List<Doctor> findAllByUser_Unlock(boolean user_unlock) {
+        return doctorRepository.findAllByUser_Unlock(user_unlock);
+    }
+
+    @Override
+    public Doctor findByUser_Id(Long id) {
+        return doctorRepository.findByUser_Id(id);
+    }
+
 }

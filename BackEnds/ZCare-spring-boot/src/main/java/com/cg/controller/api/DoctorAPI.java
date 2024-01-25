@@ -3,9 +3,10 @@ import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
-import com.cg.model.Speciality;
+import com.cg.model.User;
 import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.DTO.DoctorResDTO;
+import com.cg.service.User.IUserService;
 import com.cg.service.avatar.AvatarService;
 import com.cg.model.Schedule;
 import com.cg.service.clinic.IClinicService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/doctor")
@@ -38,12 +40,14 @@ public class DoctorAPI {
     private ISpecialityService specialityService;
     @Autowired
     private IScheduleService scheduleService;
+    @Autowired
+    private IUserService userService;
 
 
     @GetMapping
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getDoctors() {
-        List<Doctor> doctorList = doctorService.findAll();
+        List<Doctor> doctorList = doctorService.findAllByUser_Unlock(true);
         return new ResponseEntity<>(doctorList, HttpStatus.OK);
     }
 
@@ -80,7 +84,8 @@ public class DoctorAPI {
     @GetMapping("/byClinicId/{clinicId}")
     public ResponseEntity<?> getAllDoctorInClinic(@PathVariable Long clinicId) {
         List<Doctor> doctorList = doctorService.findAllDoctorInClinic(clinicId);
-        return new ResponseEntity<>(doctorList, HttpStatus.OK);
+        List<Doctor> doctorList1 = doctorList.stream().filter(doctor -> doctor.getUser().isUnlock()).collect(Collectors.toList());
+        return new ResponseEntity<>(doctorList1, HttpStatus.OK);
     }
 
     @PutMapping("/update/{id}")
@@ -114,17 +119,15 @@ public class DoctorAPI {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/lock/{id}")
     public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
+        User user= userService.findById(lockStatusReqDTO.getUserId()).get();
+        user.setUnlock(false);
+        userService.save(user);
         Doctor doctor = doctorService.findById(id).get();
-        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
-            doctor.setLockStatus(ELockStatus.UNLOCK);
-        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
-            doctor.setLockStatus(ELockStatus.LOCK);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
+        doctor.setUser(user);
         doctorService.save(doctor);
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

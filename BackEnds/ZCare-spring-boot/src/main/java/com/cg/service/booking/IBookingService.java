@@ -1,11 +1,10 @@
 package com.cg.service.booking;
 
 import com.cg.model.Booking;
-import com.cg.model.DTO.BookingDTO;
 import com.cg.service.IGeneralService;
 
-public interface IBookingService extends IGeneralService<Booking, Long> {
-    Booking toBooking(BookingDTO bookingDTO);
+import java.util.List;
 
-    void createBooking(Booking booking);
+public interface IBookingService extends IGeneralService<Booking,Long> {
+    List<Booking> findAllByCustomerId(Long customerId);
 }
