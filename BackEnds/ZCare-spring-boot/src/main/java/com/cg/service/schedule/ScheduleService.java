@@ -23,7 +23,7 @@ public class ScheduleService implements IScheduleService{
 
     @Override
     public Optional<Schedule> findById(Long id) {
-        return Optional.empty();
+        return scheduleRepository.findById(id);
     }
 
     @Override

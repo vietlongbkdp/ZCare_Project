@@ -28,10 +28,8 @@ public class Customer {
     private String address;
     @Enumerated(EnumType.STRING)
     private EGender gender;
-
     @Enumerated(EnumType.STRING)
     private ELockStatus lockStatus;
-
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;

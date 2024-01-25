@@ -15,14 +15,13 @@ import {styled} from "@mui/material/styles";
 import { useForm } from "react-hook-form"
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
+import {toast} from "react-toastify";
+import dayjs from "dayjs";
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
         .required("Tên không được để trống")
-        .min(2, 'Nhập trên 2 kí tự')
-        .max(40, 'Tên quá dài'),
-    patientName: yup.string()
-        .required("Cần nhập tên bệnh nhân")
         .min(2, 'Nhập trên 2 kí tự')
         .max(40, 'Tên quá dài'),
     gender: yup.string()
@@ -44,6 +43,10 @@ const schemaBooking = yup.object().shape({
         // .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
 })
 export default function Booking(){
+    const scheduleId = 1;
+    // const bookDay = dayjs("2024/01/25").format('DD/MM/YYYY')
+    const bookDay = "25/01/2024"
+    const idCustomer = 1;
     const [bookFor, setBookFor] = useState("me")
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
@@ -55,9 +58,26 @@ export default function Booking(){
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-    const {register, handleSubmit, formState: { errors }} = useForm({resolver: yupResolver(schemaBooking)})
-    const create = (data) => console.log(data)
-    console.log("hello")
+    const {register, handleSubmit, formState: { errors }, reset} = useForm({resolver: yupResolver(schemaBooking)})
+    async function createBooking(data){
+        const fullData = {
+            ...data,
+            scheduleId,
+            bookDay,
+            idCustomer
+        }
+        console.log(fullData)
+        const res = await axios({
+            method: 'post',
+            url: 'http://localhost:8080/api/booking',
+            data: {...fullData}
+        });
+            if(res.status === '200'){
+                toast.success("Bạn đã đặt lịch thành công!")
+                // reset();
+            }
+    }
+    // console.log("hello")
     return(
         <Container maxWidth="md">
             <Stack>
@@ -101,7 +121,7 @@ export default function Booking(){
                     <Box  sx={{width: '100%'}}>
                         <Grid container>
                             <Item >
-                                <Box component="form" onSubmit={handleSubmit(create)} sx={{ mt: 3 }}>
+                                <Box component="form" onSubmit={handleSubmit(createBooking)} sx={{ mt: 3 }}>
                                     <Grid container spacing={2}  justifyContent={"center"}>
                                         <Grid item xs={10}>
                                             <TextField
@@ -122,8 +142,6 @@ export default function Booking(){
                                                     id="patientName"
                                                     label="Họ và tên bệnh nhân"
                                                     {...register("patientName")}
-                                                    error={Boolean(errors.patientName)}
-                                                    helperText={errors.patientName?.message || ''}
                                                 />
                                             </Grid>)}
                                         <Grid item xs={10}>
@@ -185,6 +203,7 @@ export default function Booking(){
                                                 id="reason"
                                                 label="Lý do khám (Mô tả triệu chứng)"
                                                 autoComplete="text"
+                                                {...register("reason")}
                                             />
                                         </Grid>
                                         <Grid item xs={10} >
