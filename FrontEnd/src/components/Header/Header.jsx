@@ -6,8 +6,27 @@ import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import { InputBase } from "@mui/material";
 import { Link } from 'react-router-dom';
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Cookies from "js-cookie";
+import {useEffect, useState} from "react";
+import axios from "axios";
+
 library.add(fas)
 export default function Header() {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [customer,setCustomer]=useState('');
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const userId = Cookies.get('userId');
+
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
@@ -51,10 +70,25 @@ export default function Header() {
         textDecoration: "none",
         color: 'white'
     };
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/customer/${userId}`)
+            .then(response => {
+                setCustomer(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, [userId]);
+
+    const handleLogout = () => {
+        Cookies.remove('JWT');
+        Cookies.remove('userId');
+        window.location.href = '/login';
+    };
 
     return (
         <div className={"container-fluid"} style={{ padding: 0 }}>
-            <div className={"d-flex justify-content-between fw-bold topHead"}>
+            <div className={"d-flex justify-content-between align-items-center fw-bold topHead"}>
                 <div className={"d-flex justify-content-between"}>
                     <div className={"mx-4"}>
                         <FontAwesomeIcon icon="fas fa-map-marked-alt" className={"mx-2"} />
@@ -65,21 +99,48 @@ export default function Header() {
                         (0913 331 916)
                     </div>
                 </div>
-                <div className={"d-flex justify-content-between"}>
+                <div className={"d-flex justify-content-between align-items-center"}>
                     <div className={"mx-4"}>
                         <FontAwesomeIcon icon="fas fa-calendar-check" className={"mx-2"} />
                         T.2 - CN: 6h30 AM - 20h30 PM
                     </div>
-                    <div className={"mx-4"} style={{ cursor: "pointer" }}>
-                        <FontAwesomeIcon icon="fas fa-user" className={"mx-2"} />
-                        <Link style={{textDecoration:'none', color: 'black' }} to='/login'>Đăng ký/ Đăng nhập</Link>
+                    <div className={"mx-4 d-flex align-items-center"} style={{cursor: "pointer"}}>
+                        <FontAwesomeIcon icon="fas fa-user" className={"mx-2"}/>
+                        {userId ? (
+                            <div>
+                                <Button
+                                    id="basic-button"
+                                    aria-controls={open ? 'basic-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleClick}
+                                >
+                                    {customer.fullName}
+                                </Button>
+                                <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    MenuListProps={{
+                                        'aria-labelledby': 'basic-button',
+                                    }}
+                                >
+                                    <Link style={{textDecoration: 'none', color: 'black'}} to='/information-customer'> <MenuItem onClick={handleClose}>Cập nhập</MenuItem></Link>
+                                    <Link style={{textDecoration: 'none', color: 'black'}} to='/appointment-schedule'> <MenuItem onClick={handleClose}>Lịch hẹn</MenuItem></Link>
+                                    <Link style={{textDecoration: 'none', color: 'black'}} to='' onClick={handleLogout}>  <MenuItem onClick={handleClose}>Đăng xuất</MenuItem></Link>
+                                </Menu>
+                            </div>
+                        ) : (
+                            <Link style={{textDecoration: 'none', color: 'black'}} to='/login'>Đăng ký/ Đăng nhập</Link>
+                        )}
                     </div>
                 </div>
             </div>
             <div className={"d-flex justify-content-around fw-bold bodyHead"}>
-                <Link to='/home' style={linkStyle}  className={"fs-2 d-flex homeHead"} >
-                    <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{ margin: "auto" }} />
-                    <p style={{ margin: "auto" }}>ZCARE</p>
+                <Link to='/home' style={linkStyle} className={"fs-2 d-flex homeHead"}>
+                    <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{margin: "auto"}}/>
+                    <p style={{margin: "auto"}}>ZCARE</p>
                 </Link>
                 <div className={"d-flex justify-content-between detailHead"}>
                     <p><Link to='/home' style={linkStyle}>TRANG CHỦ</Link></p>

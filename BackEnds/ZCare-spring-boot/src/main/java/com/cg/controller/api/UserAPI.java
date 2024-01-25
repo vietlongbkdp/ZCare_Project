@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -87,24 +88,32 @@ private UserService userService;
 
 
     @PostMapping("/login")
-    public ResponseEntity<?>Login(@RequestBody LoginDTO loginDTO){
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword()));
+    public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+            );
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Mật khẩu không đúng. Vui lòng nhập lại.");
+        }
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtTokenForUser(authentication);
         CareUserDetails userDetails = (CareUserDetails) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities()
                 .stream()
-                .map(GrantedAuthority::getAuthority).toList();
-
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         User user = userService.findById(userDetails.getId()).get();
-        if(user.isUnlock()){
+        if (user.isUnlock()) {
             JwtResponse jwtResponse = new JwtResponse(
                     userDetails.getId(),
                     userDetails.getEmail(),
                     jwt,
-                    roles);
+                    roles
+            );
 
             ResponseCookie springCookie = ResponseCookie.from("JWT", jwt)
                     .httpOnly(false)
@@ -120,9 +129,8 @@ private UserService userService;
                     .header(HttpHeaders.SET_COOKIE, springCookie.toString())
                     .body(jwtResponse);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(" tài khoản đã bị khóa ");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tài khoản đã bị khóa.");
         }
-
     }
 
     @PostMapping

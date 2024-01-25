@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 @Service
 @Transactional
@@ -44,9 +47,9 @@ public class RatingService implements IRatingService{
     }
 
     @Override
-    public void createRating(RatingReqDTO ratingReqDTO,Long doctorId) {
+    public void createRating(RatingReqDTO ratingReqDTO,Long doctorId,Long userId) {
         Doctor doctor = doctorService.findById(doctorId).get();
-        Customer customer = customerService.findById(1L).get();
+        Customer customer = customerService.findByUser_Id(userId);
         int star = Integer.parseInt(ratingReqDTO.getStar());
         String comment = ratingReqDTO.getComment();
         Rating rating = new Rating();
@@ -54,6 +57,7 @@ public class RatingService implements IRatingService{
         rating.setComment(comment);
         rating.setDoctor(doctor);
         rating.setCustomer(customer);
+        rating.setCreateAt(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         iRatingRepository.save(rating);
     }
 

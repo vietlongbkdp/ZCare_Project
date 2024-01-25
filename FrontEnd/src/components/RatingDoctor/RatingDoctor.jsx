@@ -10,12 +10,13 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {toast} from "react-toastify";
+import Cookies from "js-cookie";
 
 function RatingDoctor({doctorId,setRatingSubmitted}) {
     const [ratingValue, setRatingValue] = useState(0);
     const [commentValue, setCommentValue] = useState('');
     const [error, setError] = useState('');
-
+    const userId = Cookies.get('userId');
     const handleCommentChange = (event) => {
         setCommentValue(event.target.value);
     };
@@ -31,7 +32,7 @@ function RatingDoctor({doctorId,setRatingSubmitted}) {
         };
         console.log(data);
 
-        axios.post(`http://localhost:8080/api/rating/create/${doctorId}`, data)
+        axios.post(`http://localhost:8080/api/rating/create/${doctorId}/${userId}`, data)
             .then(response => {
                 console.log(response.data);
                 setRatingValue(0);
@@ -46,12 +47,10 @@ function RatingDoctor({doctorId,setRatingSubmitted}) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-
         if (ratingValue === 0 || commentValue.trim() === '') {
             setError("Vui lòng điền đầy đủ số sao và bình luận");
             return;
         }
-
         setError("");
         saveRating();
     };

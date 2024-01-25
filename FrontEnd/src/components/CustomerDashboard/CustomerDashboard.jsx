@@ -15,6 +15,7 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import moment from 'moment';
 import {Link} from "react-router-dom";
+import Cookies from "js-cookie";
 
 const schema = yup.object().shape({
     fullName: yup.string()
@@ -48,12 +49,13 @@ const Item = styled(Paper)(({ theme }) => ({
 function CustomerDashboard() {
     const [gender, setGender] = useState("");
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
-  const customerId =1;
+    const UserId = Cookies.get('userId');
+
 
     useEffect(() => {
-        if (customerId) {
+        if (UserId) {
             const getCustomer = async () => {
-                const res = await axios.get(`http://localhost:8080/api/customer/${customerId}`);
+                const res = await axios.get(`http://localhost:8080/api/customer/${UserId}`);
                 const result = await res.data;
                 setValue("fullName", result.fullName)
                 setValue("gender",setGender(result.gender))
@@ -65,7 +67,7 @@ function CustomerDashboard() {
             }
             getCustomer();
         }
-    }, [customerId, setValue]);
+    }, [UserId, setValue]);
 
 
     const handleUpdateCustomer = async (data) => {
@@ -75,7 +77,7 @@ function CustomerDashboard() {
         }
         console.log(obj);
         try {
-            await axios.put(`http://localhost:8080/api/customer/${customerId}`, obj);
+            await axios.put(`http://localhost:8080/api/customer/${UserId}`, obj);
             toast.success("Cập nhật thông tin thành công!")
             // reset();
         } catch (error) {
@@ -91,20 +93,24 @@ function CustomerDashboard() {
     return (
         <div>
             <Header/>
-            <Container sx={{justifyContent: 'center' ,py:3}}>
-                <Link to="/home" underline="none" sx={{ textDecoration: 'none'}}>
-                    <House sx={{marginRight: '0.5rem'}} />
-                    <Typography variant="body1" sx={{marginLeft: '0.5rem', display:'inline',height:'30px'}}>
+            <div className="d-flex justify-content-center align-items-center"
+                 style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>
+                <h2>THÔNG TIN CÁ NHÂN</h2>
+            </div>
+            <Container sx={{justifyContent: 'center', py: 3}}>
+                <Link to="/home" underline="none" sx={{textDecoration: 'none'}}>
+                    <House sx={{marginRight: '0.5rem'}}/>
+                    <Typography variant="body1" sx={{marginLeft: '0.5rem', display: 'inline', height: '30px'}}>
                         / Thông tin cá nhân
                     </Typography>
                 </Link>
-                <Typography variant="h4" mt={3} component="h4" >Thông tin cá nhân</Typography>
-                <Box component="form" onSubmit={handleSubmit(handleUpdateCustomer)} sx={{ width: '100%' }} mt={3}>
+                <Typography variant="h4" mt={3} component="h4">Thông tin cá nhân</Typography>
+                <Box component="form" onSubmit={handleSubmit(handleUpdateCustomer)} sx={{width: '100%'}} mt={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={9}>
-                            <Item >
-                                <Box sx={{ mt: 3 }}>
-                                    <Grid container spacing={2} >
+                            <Item>
+                                <Box sx={{mt: 3}}>
+                                    <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="fullName"
@@ -112,7 +118,7 @@ function CustomerDashboard() {
                                                 id="fullName"
                                                 label="Tên"
                                                 type="text"
-                                                InputLabelProps={{ shrink: true }}
+                                                InputLabelProps={{shrink: true}}
                                                 error={Boolean(errors.fullName)}
                                                 helperText={errors.fullName?.message || ''}
                                                 {...register('fullName')}
@@ -125,7 +131,7 @@ function CustomerDashboard() {
                                                 id="address"
                                                 type={"text"}
                                                 label="Địa chỉ"
-                                                InputLabelProps={{ shrink: true }}
+                                                InputLabelProps={{shrink: true}}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
                                                 {...register("address")}
@@ -138,7 +144,7 @@ function CustomerDashboard() {
                                                 id="phone"
                                                 type={"text"}
                                                 label="số điện thoại"
-                                                InputLabelProps={{ shrink: true }}
+                                                InputLabelProps={{shrink: true}}
                                                 error={Boolean(errors.phone)}
                                                 helperText={errors.phone?.message || ''}
                                                 {...register("phone")}
@@ -150,7 +156,7 @@ function CustomerDashboard() {
                                                 fullWidth
                                                 id="email"
                                                 label="Email"
-                                                InputLabelProps={{ shrink: true }}
+                                                InputLabelProps={{shrink: true}}
                                                 error={Boolean(errors.email)}
                                                 helperText={errors.email?.message || ''}
                                                 {...register("email")}
@@ -158,25 +164,25 @@ function CustomerDashboard() {
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <FormControl fullWidth>
-                                            <InputLabel id="demo-simple-select-label">Giới tính</InputLabel>
-                                            <Select
-                                                fullWidth
-                                                autoComplete="gender"
-                                                id="gender"
-                                                labelId="demo-simple-select-label"
-                                                label="Giới tính"
-                                                value={gender}
-                                                onChange={(e) => setGender(e.target.value)}
-                                                renderValue={(selected) => (
-                                                    <div style={menuItemStyle}>
-                                                        {selected === 'MALE' ? 'Nam' : selected === 'FEMALE' ? 'Nữ' : 'Khác'}
-                                                    </div>
-                                                )}
-                                            >
-                                                <MenuItem value="MALE" >Nam</MenuItem>
-                                                <MenuItem value="FEMALE">Nữ</MenuItem>
-                                                <MenuItem value="OTHER" >Khác</MenuItem>
-                                            </Select>
+                                                <InputLabel id="demo-simple-select-label">Giới tính</InputLabel>
+                                                <Select
+                                                    fullWidth
+                                                    autoComplete="gender"
+                                                    id="gender"
+                                                    labelId="demo-simple-select-label"
+                                                    label="Giới tính"
+                                                    value={gender}
+                                                    onChange={(e) => setGender(e.target.value)}
+                                                    renderValue={(selected) => (
+                                                        <div style={menuItemStyle}>
+                                                            {selected === 'MALE' ? 'Nam' : selected === 'FEMALE' ? 'Nữ' : 'Khác'}
+                                                        </div>
+                                                    )}
+                                                >
+                                                    <MenuItem value="MALE">Nam</MenuItem>
+                                                    <MenuItem value="FEMALE">Nữ</MenuItem>
+                                                    <MenuItem value="OTHER">Khác</MenuItem>
+                                                </Select>
                                             </FormControl>
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
@@ -185,7 +191,7 @@ function CustomerDashboard() {
                                                 fullWidth
                                                 id="dob"
                                                 type={"text"}
-                                                InputLabelProps={{ shrink: true }}
+                                                InputLabelProps={{shrink: true}}
                                                 label="Ngày sinh"
                                                 error={Boolean(errors.dob)}
                                                 helperText={errors.dob?.message || ''}
@@ -197,17 +203,17 @@ function CustomerDashboard() {
                             </Item>
                         </Grid>
                         <Grid item xs={12}>
-                            <Grid item container xs={12} sm={6} >
+                            <Grid item container xs={12} sm={6}>
                                 <Button
                                     variant="contained"
                                     color="success"
                                     type="submit"
-                                    sx={{ mt: 3, mb: 1, mr: 1 }}
+                                    sx={{mt: 3, mb: 1, mr: 1}}
                                 >
                                     Cập nhật
                                 </Button>
                                 <Button variant="contained"
-                                        sx={{ mt: 3, mb: 1 }}>
+                                        sx={{mt: 3, mb: 1}}>
                                     Hủy
                                 </Button>
                             </Grid>

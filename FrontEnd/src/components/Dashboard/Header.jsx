@@ -16,21 +16,26 @@ import {Search} from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import {alpha, styled} from "@mui/material/styles";
 import {InputBase} from "@mui/material";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import ClinicAdmin from "../ClinicAdmin/ClinicAdmin"
 
-
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 function ResponsiveAppBar() {
     const {userId} = useParams();
     const [dashboarduser, setDashboarduser] = useState('');
     const [roleuser,setRoleuser] = useState('')
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -118,7 +123,11 @@ function ResponsiveAppBar() {
         finddUser()
     },[])
 
-
+    const handleLogout = () => {
+        Cookies.remove('JWT');
+        Cookies.remove('userId');
+        window.location.href = '/login';
+    };
 
     return (
         <AppBar position="static">
@@ -170,46 +179,37 @@ function ResponsiveAppBar() {
                         />
                     </Search>
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Box sx={{flexGrow: 0}}>
+                        <Tooltip title="Open settings" onClick={handleClick}>
+                            <IconButton sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src={dashboarduser.avatarImg} />
-                                <Typography sx={{color: 'white', ml: 1}}>{dashboarduser.fullName}
-                                {/*    {(() => {*/}
-                                {/*    if (user1.user.role === "ROLE_CUSTOMER") {*/}
-                                {/*        return user1.fullName;*/}
-                                {/*    } else if (user1.user.role === "ROLE_DOCTOR") {*/}
-                                {/*        return user1.doctorName;*/}
-                                {/*    } else if (user1.user.role === "ROLE_ADMIN") {*/}
-                                {/*        return user1.adminName;*/}
-                                {/*    } else {*/}
-                                {/*        return null;*/}
-                                {/*    }*/}
-                                {/*})()}*/}
-                                </Typography>
+                                <Typography sx={{ color: 'white', ml: 1 }}>{dashboarduser.fullName}</Typography>
                             </IconButton>
                         </Tooltip>
                         <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-button',
                             }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
+                            <MenuItem onClick={handleClose}>
+                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                    Cập nhập
+                                </Link>
+                            </MenuItem>
+                            <MenuItem onClick={handleClose}>
+                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                    Lịch hẹn
+                                </Link>
+                            </MenuItem>
+                            <MenuItem onClick={handleLogout}>
+                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                    Đăng xuất
+                                </Link>
+                            </MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>
@@ -217,4 +217,5 @@ function ResponsiveAppBar() {
         </AppBar>
     );
 }
+
 export default ResponsiveAppBar;

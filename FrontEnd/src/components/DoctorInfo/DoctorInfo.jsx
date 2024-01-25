@@ -98,8 +98,7 @@ function DoctorInfo() {
             <div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>
                 <h2>THÔNG TIN BÁC SỸ</h2>
             </div>
-            <div className={"my-4"}>
-            </div>
+
             <div className={"container-fluid border-bottom "}>
                 <div className={"container pb-4 "}>
                     <div className={"d-flex "}>
@@ -198,7 +197,7 @@ function DoctorInfo() {
                                 <i className="fa-regular fa-circle-check"></i>
                                 </span>
                             <span className="ms-2" style={{color: "#48dbfb"}}>
-                               đã khám ngày 29/11/2023
+                               đã khám ngày {rating?.createAt}
                                  </span>
                         </div>
                         <div className="border-bottom py-3">{rating?.comment}</div>

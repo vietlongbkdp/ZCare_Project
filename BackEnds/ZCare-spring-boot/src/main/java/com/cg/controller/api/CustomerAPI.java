@@ -32,15 +32,15 @@ public class CustomerAPI {
         return new ResponseEntity<>(customerList, HttpStatus.OK);
     }
 
-    @GetMapping("{customerId}")
-    public ResponseEntity<?> getCustomerById(@PathVariable Long customerId){
-        Customer customer=customerService.findById(customerId).get();
+    @GetMapping("{userId}")
+    public ResponseEntity<?> getCustomerById(@PathVariable Long userId){
+        Customer customer=customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 
-    @PutMapping("/{customerId}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long customerId, @RequestBody UpdateCustomer updateCustomer){
-        Customer customer = customerService.findById(customerId).get();
+    @PutMapping("/{userId}")
+    public ResponseEntity<?> updateCustomer(@PathVariable Long userId, @RequestBody UpdateCustomer updateCustomer){
+        Customer customer = customerService.findByUser_Id(userId);
         customer.setFullName(updateCustomer.getFullName());
         customer.setEmail(updateCustomer.getEmail());
         customer.setPhone(updateCustomer.getPhone());
