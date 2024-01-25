@@ -58,15 +58,12 @@ public class ResultService implements IResultService{
         Document document = Jsoup.parse(plainText);
         Element body = document.body();
         StringBuilder formattedText = new StringBuilder();
-
         for (Element element : body.children()) {
             formattedText.append(element.text()).append("\n");
         }
-
         if (formattedText.length() > 0 && formattedText.charAt(formattedText.length() - 1) == '\n') {
             formattedText.setLength(formattedText.length() - 1);
         }
-
         String plainTextContent = formattedText.toString();
         byte[] fileBytes = resultReqDTO.getFile().getBytes();
         String fileName=resultReqDTO.getFile().getOriginalFilename();
