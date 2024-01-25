@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -21,17 +22,13 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
-    private Date dob;
+    private LocalDate dob;
     private String phone;
     @Column(unique = true)
     private String email;
     private String address;
     @Enumerated(EnumType.STRING)
     private EGender gender;
-
-    @Enumerated(EnumType.STRING)
-    private ELockStatus lockStatus;
-
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;

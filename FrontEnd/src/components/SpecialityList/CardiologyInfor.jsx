@@ -1,6 +1,7 @@
 import React from 'react';
 import useShowFullContent from "./useShowFullContent";
-import {Link} from "@mui/material";
+import {Link} from "react-router-dom";
+
 
 function CardiologyInfor() {
     const [showFullContent, handleToggleContent] = useShowFullContent();
