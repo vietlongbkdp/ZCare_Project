@@ -21,6 +21,9 @@ import DoctorInfo from "./components/DoctorInfo/DoctorInfo";
 import DoctorInfoClinic from "./components/DoctorInfoClinic/DoctorInfoClinic";
 import CustomerDashboard from "./components/CustomerDashboard/CustomerDashboard";
 import AppointmentSchedule from "./components/CustomerDashboard/AppointmentSchedule";
+import PrivateRouteAdmin from "./components/routing/PrivateRouteAdmin";
+import PrivateRouteClinicAdmin from "./components/routing/PrivateRouteClinicAdmin";
+import PrivateRouteDoctor from "./components/routing/PrivateRouteDoctor";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -32,19 +35,25 @@ export default function App() {
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/change-password/:userId" element={<ChangePassword />} />
-        <Route path="/admin" element={<Pagerbase />} >
-          <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR} />}></Route>
-          <Route path="doctorInfor" element={<DoctorInfor />}></Route>
-          <Route path="clinic" element={<ClinicAdmin />}></Route>
-          <Route path="customer" element={<CustomerAdmin/>}></Route>
+        <Route element={<PrivateRouteAdmin/>}>
+          <Route path="/admin" element={<Pagerbase/>}>
+            <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR}/>}></Route>
+            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
+            <Route path="clinic" element={<ClinicAdmin/>}></Route>
+            <Route path="customer" element={<CustomerAdmin/>}></Route>
+          </Route>
         </Route>
-        <Route path="/clinicadmin" element={<Pagerbase />}>
-          <Route path="doctorInfor" element={<DoctorInfor />}></Route>
-          <Route path="clinic" element={<ClinicAdmin />}></Route>
+        <Route element={<PrivateRouteClinicAdmin/>}>
+          <Route path="/clinicadmin" element={<Pagerbase/>}>
+            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
+            <Route path="clinic" element={<ClinicAdmin/>}></Route>
+          </Route>
         </Route>
-        <Route path="/doctoradmin" element={<Pagerbase />}>
-          <Route path="doctorInfor" element={<DoctorInfor />}></Route>
-          <Route path="clinic" element={<ClinicAdmin />}></Route>
+        <Route element={<PrivateRouteDoctor/>}>
+          <Route path="/doctoradmin" element={<Pagerbase/>}>
+            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
+            <Route path="clinic" element={<ClinicAdmin/>}></Route>
+          </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>
           <Route path="doctorInfor" element={<DoctorInfor />}></Route>
