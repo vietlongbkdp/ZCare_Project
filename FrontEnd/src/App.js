@@ -24,6 +24,7 @@ import AppointmentSchedule from "./components/CustomerDashboard/AppointmentSched
 import PrivateRouteAdmin from "./components/routing/PrivateRouteAdmin";
 import PrivateRouteClinicAdmin from "./components/routing/PrivateRouteClinicAdmin";
 import PrivateRouteDoctor from "./components/routing/PrivateRouteDoctor";
+import PrivateRouteCustomer from "./components/routing/PrivateRouteCustomer";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -65,8 +66,10 @@ export default function App() {
         <Route path="/list-clinic/:clinicId" element={<DoctorListByClinic />} />
         <Route path="/search" element={<Search/>} />
         <Route path="/doctorDetail/:doctorId" element={<DoctorInfo/>} />
-        <Route path="/information-customer" element={<CustomerDashboard/>} />
-        <Route path="/appointment-schedule" element={<AppointmentSchedule/>} />
+        <Route element={<PrivateRouteCustomer/>}>
+          <Route path="/information-customer" element={<CustomerDashboard/>}/>
+          <Route path="/appointment-schedule" element={<AppointmentSchedule/>}/>
+        </Route>
       </Routes>
     </>
   );
