@@ -71,7 +71,6 @@ function AuthLogin() {
       const userId = response.data.id;
       // const userRole = response.data.roles[0];
       Cookies.set('userId', userId, { expires: 7, secure: true });
-      // console.log(response.data.id)
       const storedUserId = Cookies.get('userId');
       console.log(storedUserId)
       const token = response.data.token;

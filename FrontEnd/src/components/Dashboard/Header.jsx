@@ -26,7 +26,7 @@ import ClinicAdmin from "../ClinicAdmin/ClinicAdmin"
 function ResponsiveAppBar() {
     const {userId} = useParams();
     const [dashboarduser, setDashboarduser] = useState('');
-    const [roleuser,setRoleuser] = useState('')
+
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -35,6 +35,18 @@ function ResponsiveAppBar() {
     };
     const handleClose = () => {
         setAnchorEl(null);
+    };
+
+    const getDisplayName = () => {
+        if (userRole === "ROLE_CUSTOMER") {
+            return dashboarduser.fullName;
+        } else if (userRole === "ROLE_DOCTOR") {
+            return dashboarduser.doctorName;
+        } else if (userRole === "ROLE_ADMIN") {
+            return "Admin";
+        } else {
+            return null;
+        }
     };
 
     const navigate = useNavigate();
@@ -108,6 +120,7 @@ function ResponsiveAppBar() {
 
     };
     const storedUserId = Cookies.get('userId');
+
     useEffect(()=>{
         const finddUser = async () => {
             try {
@@ -115,12 +128,12 @@ function ResponsiveAppBar() {
                 console.log(response.data)
                 setDashboarduser(response.data)
                 // setRoleuser(dashboarduser.user)
-                console.log(dashboarduser.user)
+                console.log(dashboarduser)
             }catch (error) {
                 console.error(error);
             }
         }
-        finddUser()
+        finddUser();
     },[])
 
     const handleLogout = () => {
@@ -129,45 +142,51 @@ function ResponsiveAppBar() {
         window.location.href = '/login';
     };
 
+    const token = Cookies.get('JWT');
+    const decodedToken = jwtDecode(token);
+    const userRole = decodedToken.roles[0];
+    console.log(userRole)
+
     return (
         <AppBar position="static">
 
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Avatar alt="Remy Sharp" src={dashboarduser.clinicLogo} />
-                    {/*<AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />*/}
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="#app-bar-with-responsive-menu"
-                        sx={{
-                            ml:2,
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                            my: 2
-                        }}
-                    >
-                        {dashboarduser.clinicName}
-                    </Typography>
+                    {userRole === "ROLE_ADMIN_CLINIC" && (
+                        <Box sx={{display: 'flex'}}>
+                            <Avatar alt="Remy Sharp" sx={{mt: 1.7}} src={dashboarduser.clinicLogo} />
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="a"
+                                href="#app-bar-with-responsive-menu"
+                                sx={{
+                                    ml:2,
+                                    mr: 2,
+                                    display: { xs: 'none', md: 'flex' },
+                                    fontFamily: 'monospace',
+                                    fontWeight: 700,
+                                    letterSpacing: '.3rem',
+                                    color: 'inherit',
+                                    textDecoration: 'none',
+                                    my: 2
+                                }}
+                            >
+                                {dashboarduser.clinicName}
+                            </Typography>
+                        </Box>
+                    )}
+
+                    {userRole !== "ROLE_ADMIN_CLINIC" && (
+                        <Typography variant="h6" noWrap component="p">
+                            Xin chào bạn đến với hệ thống Z-Care
+                        </Typography>
+                    )}
 
                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {/*{pages.map((page) => (*/}
-                        {/*    <Button*/}
-                        {/*        key={page}*/}
-                        {/*        // onClick={handleCloseNavMenu}*/}
-                        {/*        sx={{  color: 'white', display: 'block' }}*/}
-                        {/*    >*/}
-                        {/*        {page}*/}
-                        {/*    </Button>*/}
-                        {/*))}*/}
+
                     </Box>
                     <Search>
                         <SearchIconWrapper>
@@ -179,11 +198,11 @@ function ResponsiveAppBar() {
                         />
                     </Search>
 
-                    <Box sx={{flexGrow: 0}}>
+                    <Box sx={{ flexGrow: 0 }}>
                         <Tooltip title="Open settings" onClick={handleClick}>
                             <IconButton sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src={dashboarduser.avatarImg} />
-                                <Typography sx={{ color: 'white', ml: 1 }}>{dashboarduser.fullName}</Typography>
+                                <Typography sx={{ color: 'white', ml: 1 }}>{getDisplayName()}</Typography>
                             </IconButton>
                         </Tooltip>
                         <Menu
