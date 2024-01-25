@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -12,8 +12,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { getRoleInCookie } from "../Utils/ApiComponent";
 
 const schema = yup.object({
   email: yup
@@ -24,6 +25,8 @@ const schema = yup.object({
 });
 
 function AuthLogin() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -34,14 +37,17 @@ function AuthLogin() {
     resolver: yupResolver(schema),
   });
   const onSubmit = async (data) => {
-    console.log(data);
     try {
       const response = await axios.post("http://localhost:8080/api/customer/login", data);
       const token = response.data.token;
       Cookies.set('JWT', token, { expires: 7, secure: true });
-
       toast.success("Đăng nhập thành công");
-      reset();
+      const userRole = getRoleInCookie();
+      if (userRole === "ROLE_ADMIN") {
+        navigate("/admin");
+      } else if (userRole === "ROLE_USER") {
+        navigate("/home")
+      }
     } catch (error) {
       if (error.response) {
         const errorMessage = error.response.data;

@@ -16,6 +16,7 @@ import { Box } from "@mui/system";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Pagination } from "@mui/material";
+import { getHeader } from '../Utils/ApiComponent';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -58,7 +59,10 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     useEffect(() => {
         const getDoctors = async () => {
             try {
-                const response = await axios.get(API_URL);
+                axios.defaults.withCredentials = true;
+                const response = await axios.get('API_URL://localhost:8080/api/clinic', {
+                    headers: getHeader()
+                });
                 setDoctorList(response.data)
             } catch (error) {
                 console.error(error);
