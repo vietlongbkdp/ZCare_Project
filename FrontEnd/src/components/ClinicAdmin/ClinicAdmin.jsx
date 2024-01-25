@@ -19,6 +19,8 @@ import EditClinic from './EditClinic';
 import { ApiContext } from '../ApiContext/ApiProvider';
 import DoctorInClinic from '../Doctor/DoctorInClinic';
 import "./clinic.css"
+import {useParams} from "react-router-dom";
+import Cookies from "js-cookie";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -43,6 +45,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CustomizedTables() {
 
+    const {userId} = useParams();
+
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -62,6 +66,7 @@ export default function CustomizedTables() {
     const [showPagination, setShowPagination] = useState(true);
     const [showDoctorList, setShowDoctorList] = useState(false);
     const [showAddDoctor, setShowAddDoctor] = useState(false);
+    const [clinicAdminUser, setClinicAdminUser] = useState();
 
     const { API_DOCTOR } = useContext(ApiContext)
 
@@ -131,6 +136,18 @@ export default function CustomizedTables() {
         })
 
     }
+   useEffect(() => {
+       const findClinicidUser = async () => {
+           try {
+               const response = await axios.get(`http://localhost:8080/api/clinic/${userId}`)
+               setClinicAdminUser(response.data);
+           }catch (error) {
+               console.error(error);
+           }
+       }
+       findClinicidUser();
+   },[])
+
 
     const handleChangeLock = async (id, currentLockStatus) => {
         console.log(typeof currentLockStatus)

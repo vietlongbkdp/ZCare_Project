@@ -102,4 +102,10 @@ public class DoctorServiceImpl implements IDoctorService{
     public List<Doctor> findAllByUser_Unlock(boolean user_unlock) {
         return doctorRepository.findAllByUser_Unlock(user_unlock);
     }
+
+    @Override
+    public Doctor findByUser_Id(Long id) {
+        return doctorRepository.findByUser_Id(id);
+    }
+
 }

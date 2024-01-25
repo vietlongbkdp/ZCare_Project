@@ -16,4 +16,6 @@ public interface ICustomerService extends IGeneralService<Customer,Long> {
     boolean forgotPassword(ForgotPassword forgotPassword);
 
     List<Customer> findAllByUser_Unlock(boolean user_unlock);
+
+    Customer findByUser_Id(Long id);
 }

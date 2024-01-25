@@ -1,16 +1,21 @@
 package com.cg.controller.api;
 
+import com.cg.model.Clinic;
 import com.cg.model.Customer;
 import com.cg.model.DTO.*;
 import com.cg.model.Doctor;
 import com.cg.model.User;
 import com.cg.model.enumeration.ELockStatus;
+import com.cg.model.enumeration.ERole;
+import com.cg.repository.IClinicRepository;
 import com.cg.repository.ICustomerRepository;
 import com.cg.repository.IUserRepository;
 import com.cg.security.careUser.CareUserDetails;
 import com.cg.security.jwt.JwtUtils;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.User.UserService;
+import com.cg.service.clinic.IClinicService;
+import com.cg.service.doctor.IDoctorService;
 import com.cg.until.PasswordEncryptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -35,13 +40,50 @@ public class UserAPI {
     @Autowired
     private CustomerService customerService;
     @Autowired
+    private IDoctorService doctorService;
+    @Autowired
     private IUserRepository iUserRepository;
+    @Autowired
+    private IClinicService clinicService;
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtils jwtUtils;
 @Autowired
 private UserService userService;
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserByID(@PathVariable Long id){
+        User user = userService.findById(id).get();
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/userlogin/{storedUserId}")
+    public ResponseEntity<?> getUserIDUser(@PathVariable Long storedUserId){
+        User user = userService.findById(storedUserId).orElse(null);
+        if (user != null) {
+            if (user.getRole() == ERole.ROLE_DOCTOR) {
+                Doctor doctor = doctorService.findByUser_Id(storedUserId);
+                    return ResponseEntity.ok(doctor);
+            } else if (user.getRole()==ERole.ROLE_CUSTOMER) {
+                Customer customer = customerService.findByUser_Id(storedUserId);
+                    return ResponseEntity.ok(customer);
+            }else if (user.getRole()==ERole.ROLE_ADMIN_CLINIC) {
+                Clinic clinic = clinicService.findByUser_Id(storedUserId);
+                return ResponseEntity.ok(clinic);
+            }
+        }
+        return ResponseEntity.notFound().build();
+
+    }
+
+    @GetMapping("/finduser/{useremail}")
+    public ResponseEntity<?> getUserByemail(@PathVariable String useremail){
+        User user = iUserRepository.findByEmail(useremail).get();
+        return new ResponseEntity<>(user,HttpStatus.OK);
+    }
+
 
 
     @PostMapping("/login")
