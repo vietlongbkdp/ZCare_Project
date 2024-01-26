@@ -5,28 +5,25 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {Search} from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import {alpha, styled} from "@mui/material/styles";
 import {InputBase} from "@mui/material";
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
-import { jwtDecode } from 'jwt-decode';
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import ClinicAdmin from "../ClinicAdmin/ClinicAdmin"
+import { jwtDecode } from 'jwt-decode';
+
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
-    const {userId} = useParams();
+    const { userId } = useParams();
     const [dashboarduser, setDashboarduser] = useState('');
-
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -54,7 +51,7 @@ function ResponsiveAppBar() {
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
-        backgroundColor: alpha(theme.palette.common.white, 0.15),
+        backgroundColor: '#18a2b9',
         '&:hover': {
             backgroundColor: alpha(theme.palette.common.white, 0.25),
         },
@@ -100,24 +97,19 @@ function ResponsiveAppBar() {
         setAnchorElUser(event.currentTarget);
     };
 
-    const handleCloseNavMenu = () => {
-        setAnchorElNav(null);
-    };
-
     const isCustomer = location.pathname.startsWith("/user")
     const isCooperate = location.pathname.startsWith("/clinicadmin");
     const isAdmin = location.pathname.startsWith("/admin");
 
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
-        if(isCustomer) {
+        if (isCustomer) {
             navigate("/user/doctorInfor");
-        }else if(isCooperate){
+        } else if (isCooperate) {
             navigate("/cooperate/doctorInfor")
-        }else if(isAdmin){
+        } else if (isAdmin) {
             navigate("/admin/doctorInfor")
         }
-
     };
     const storedUserId = Cookies.get('userId');
 
@@ -148,9 +140,8 @@ function ResponsiveAppBar() {
     console.log(userRole)
 
     return (
-        <AppBar position="static">
-
-            <Container maxWidth="xl">
+        <AppBar position="fixed" sx={{ height: '54px' }}>
+            <Container sx={{width: '100%', marginLeft: '265px', paddingRight: '50px !important' }}>
                 <Toolbar disableGutters>
                     {userRole === "ROLE_ADMIN_CLINIC" && (
                         <Box sx={{display: 'flex'}}>
