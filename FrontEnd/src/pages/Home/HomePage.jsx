@@ -7,6 +7,7 @@ import ClinicContent from '../../components/Clinic/ClinicContent'
 import SpecialityContent from '../../components/SpecialityList/SpecialityContent'
 import IntroduceContent from '../../components/IntroduceContent/IntroduceContent'
 import Cooperate from '../../components/Cooperate/Cooperate'
+import Booking from "../../components/BookingPage/Booking";
 
 export default function HomePage() {
     return (
@@ -18,6 +19,7 @@ export default function HomePage() {
                 <Route path="/clinic-page" element={<ClinicContent />} />
                 <Route path='/speciality-page' element={<SpecialityContent />} />
                 <Route path="/cooperate" element={<Cooperate />} />
+                <Route path="/booking" element={<Booking />} />
             </Routes>
             <Footer />
         </>

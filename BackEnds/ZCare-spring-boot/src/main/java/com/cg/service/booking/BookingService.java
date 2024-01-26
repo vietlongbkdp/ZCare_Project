@@ -3,6 +3,7 @@ import com.cg.model.Booking;
 import com.cg.model.Customer;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.Schedule;
+import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
 
 import com.cg.repository.IBookingRepository;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -51,6 +51,7 @@ public class BookingService implements IBookingService {
     }
     public Booking toBooking(BookingDTO bookingDTO){
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
+        schedule.setStatus(EStatus.SELECTED);
         Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
         Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
                 .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
@@ -59,7 +60,7 @@ public class BookingService implements IBookingService {
         if(bookingDTO.getReason() != null){
             booking.setReason(bookingDTO.getReason());
         }
-        if(bookingDTO.getPatientName() == ""){
+        if(bookingDTO.getPatientName() == null){
             booking.setPatientName(customer.getFullName());
         }else{
             booking.setPatientName(bookingDTO.getPatientName());
