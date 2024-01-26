@@ -17,6 +17,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
+import {useParams} from "react-router-dom";
+import Cookies from "js-cookie";
+
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -42,16 +45,16 @@ const schemaBooking = yup.object().shape({
         // .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
 })
 export default function Booking(){
-    const scheduleId = 1;
-    // const bookDay = dayjs("2024/01/25").format('DD/MM/YYYY')
-    const bookDay = "25/01/2024"
-    const idCustomer = 1;
+    const { scheduleId, day,month,year } = useParams();
+    const bookDay = day + "/" + month + "/" + year;
+    const userId = Cookies.get('userId');
+    const [schedule,setSchedule]=useState('');
     const [bookFor, setBookFor] = useState("me")
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
     useEffect(() => {
-        axios.get('http://localhost:8080/api/customer/get/'+ idCustomer).then(response => {
+        axios.get('http://localhost:8080/api/customer/get/'+ userId).then(response => {
             const [year, month, day] = response.data.dob;
             const dob = new Date(year, month - 1, day);
             setValue("customerName", response.data.fullName)
@@ -65,6 +68,17 @@ export default function Booking(){
                 console.error(error);
             });
     }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
+            .then(response => {
+                setSchedule(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
+
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -78,7 +92,7 @@ export default function Booking(){
             ...data,
             scheduleId,
             bookDay,
-            idCustomer
+            userId
         }
         const res = await axios({
             method: 'post',
@@ -97,7 +111,7 @@ export default function Booking(){
                     <Stack mr={3}>
                         <Avatar
                             alt="Avatar"
-                            src="https://i1.sndcdn.com/artworks-000234186668-o1elkt-t500x500.jpg"
+                            src= {schedule?.doctor?.avatarImg}
                             sx={{ width: 80, height: 80 }}
                         />
                     </Stack>
@@ -106,14 +120,13 @@ export default function Booking(){
                             ĐẶT LỊCH KHÁM
                         </Typography>
                         <Link href="#" sx={{textDecoration: "none", fontWeight: "bold", fontSize: "20px"}}>
-                            Bác sĩ Chuyên khoa I Hàng Quốc Đạt
-
+                            {schedule?.doctor?.doctorName}
                         </Link>
                         <Typography variant="p">
-                            16:30 - 17:00 - Thứ 2 - 22/01/2024
+                            {schedule?.timeItem} - {schedule?.weekday} - {bookDay}
                         </Typography>
                         <Typography variant="h7" fontWeight={"bold"}>
-                            Giá khám: 300.000 đồng/lượt
+                            Giá khám: {schedule?. doctor?.fee} đồng/lượt
                         </Typography>
                     </Stack>
                 </Stack>
@@ -253,7 +266,7 @@ export default function Booking(){
                                                 <Box sx={{backgroundColor: "#f6f6f6", padding: "16px"}}>
                                                     <Stack my={1} direction="row" flexWrap="wrap" justifyContent={"space-between"}>
                                                         <Typography>Giá khám</Typography>
-                                                        <Typography>300.000 đồng</Typography>
+                                                        <Typography>{schedule?. doctor?.fee} đồng</Typography>
                                                     </Stack>
                                                     <Stack my={1} direction="row" flexWrap="wrap" justifyContent={"space-between"}>
                                                         <Typography>Phí đặt lịch</Typography>
@@ -261,7 +274,7 @@ export default function Booking(){
                                                     </Stack>
                                                     <Stack  sx={{borderTop: "solid", borderWidth:"1px", paddingTop: "10px"}} my={1} direction="row" flexWrap="wrap" justifyContent={"space-between"}>
                                                         <Typography>Tổng cộng</Typography>
-                                                        <Typography color={"red"} fontWeight={"bold"}>300.000 đồng</Typography>
+                                                        <Typography color={"red"} fontWeight={"bold"}>{schedule?. doctor?.fee} đồng</Typography>
                                                     </Stack>
                                                 </Box>
                                                 <Typography variant="p" sx={{fontStyle:"italic", color: "#337ab7"}} my={1}>
