@@ -14,7 +14,6 @@ import EditDoctor from './EditDoctor';
 import AddDoctor from './AddDoctor';
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import DoctorInfo from './../DoctorInfo/DoctorInfo';
 import DoctorDetail from './DoctorDetail';
 
 export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) {
@@ -80,12 +79,12 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
 
         Swal.fire({
             title: "Bạn muốn khóa",
-            text: "You won't be able to revert this!",
+            text: "Bạn sẽ không thể phục hồi!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, change it!"
+            confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
@@ -97,12 +96,6 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                 } catch (error) {
                     toast.error("Thất bại");
                 }
-                Swal.fire({
-                    title: "khóa thành công",
-                    text: `The doctor has been `,
-                    icon: "success"
-                });
-
             }
         });
     };

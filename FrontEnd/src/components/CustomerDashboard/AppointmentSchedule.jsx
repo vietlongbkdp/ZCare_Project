@@ -19,7 +19,7 @@ function AppointmentSchedule() {
             });
     }, [UserId]);
     console.log(booking)
-    console.log(dayjs(booking?.createAt).format("DD/MM/YYYY HH:mm"))
+    console.log(dayjs().format("DD/MM/YYYY HH:mm"))
     return (
         <div>
             <Header/>
@@ -72,7 +72,7 @@ function AppointmentSchedule() {
                                 <td>{booking?.fee}</td>
                                 <td>{booking?.result?.file}</td>
                                 <td>{booking?.status}</td>
-                                <td>{dayjs(booking.createAt).format("DD/MM/YYYY HH:mm")}</td>
+                                <td>{dayjs(booking.createAt).format("DD/MM/YYYY")}</td>
                             </tr>
                         ))
                     ) : (

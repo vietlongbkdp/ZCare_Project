@@ -1,10 +1,8 @@
 package com.cg.controller.api;
-import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
 import com.cg.model.User;
-import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.DTO.DoctorResDTO;
 import com.cg.service.User.IUserService;
 import com.cg.service.avatar.AvatarService;
@@ -17,7 +15,6 @@ import com.cg.service.speciality.ISpecialityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;

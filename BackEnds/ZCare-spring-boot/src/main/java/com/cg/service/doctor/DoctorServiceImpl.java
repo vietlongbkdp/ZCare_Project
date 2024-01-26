@@ -1,13 +1,10 @@
 package com.cg.service.doctor;
-import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.Doctor;
-import com.cg.model.Speciality;
 import com.cg.model.User;
 import com.cg.model.enumeration.ERole;
 import com.cg.model.enumeration.ELockStatus;
 import com.cg.repository.IDoctorRepository;
-import com.cg.repository.IPositionRepository;
 import com.cg.repository.IUserRepository;
 import com.cg.service.clinic.IClinicService;
 import com.cg.service.position.IPositionService;
@@ -15,7 +12,6 @@ import com.cg.service.speciality.ISpecialityService;
 import com.cg.until.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,8 +23,6 @@ import java.util.Optional;
 public class DoctorServiceImpl implements IDoctorService{
     @Autowired
     private IPositionService iPositionService;
-    @Autowired
-    private IPositionRepository positionRepository;
     @Autowired
     private IDoctorRepository doctorRepository;
     @Autowired
@@ -55,7 +49,7 @@ public class DoctorServiceImpl implements IDoctorService{
     }
     @Override
     public void save(Doctor doctor) {
-
+        doctorRepository.save(doctor);
     }
 
     @Override
