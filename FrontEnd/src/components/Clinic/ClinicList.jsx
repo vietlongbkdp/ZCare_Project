@@ -38,7 +38,7 @@ function ClinicList() {
                     <Container
                         key={clinic.id}
                         style={{
-                            flex: '0 0 25%',
+                            flex: '0 0 30%',
                             display: 'flex',
                             borderRadius: '4px',
                             border: '1px solid',
@@ -47,7 +47,7 @@ function ClinicList() {
                             marginTop: '8px',
                             marginRight: "10px",
                             marginLeft: "10px",
-                            width: '25%',
+                            width: '30%',
                             boxSizing: 'border-box',
                             height: '250px',
                             wordWrap: 'break-word',
@@ -58,13 +58,13 @@ function ClinicList() {
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <Box display="flex" flexDirection="column" marginRight="10px" marginLeft="10px">
-                                    <Typography variant="h6" style={{ color: '#74b9ff', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <Typography variant="h6" style={{color: '#74b9ff', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', wordWrap: 'break-word', whiteSpace: 'pre-line',}}  align='center' height='80px'>
                                         {clinic.clinicName}
                                     </Typography>
-                                    <Typography variant="subtitle1" style={{ color: '#81ecec', flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                    <Typography variant="subtitle1" style={{ color: '#81ecec', flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis', wordWrap: 'break-word', whiteSpace: 'pre-line', }} fontSize='1rem' align='center' height='80px'>
                                         {clinic.address}
                                     </Typography>
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }} >
                                         <IconButton style={{ marginRight: '8px' }}>
                                             <Facebook />
                                         </IconButton>
@@ -82,16 +82,14 @@ function ClinicList() {
                             </Grid>
                             <Grid item xs={2}>
                                 <Box style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
                                     marginLeft: '8px',
-                                    marginRight: '16px'
+                                    marginRight: '16px',
+                                    verticalAlign: 'middle',
                                 }}>
                                     <img
                                         src={clinic.clinicLogo}
                                         alt=""
-                                        style={{width: '100px', margin: '0 auto'}}
+                                        style={{width: '120px', margin: '0 auto'}}
                                     />
                                 </Box>
                             </Grid>

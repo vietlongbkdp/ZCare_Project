@@ -99,9 +99,9 @@ function DoctorInfo() {
                 <h2>THÔNG TIN BÁC SỸ</h2>
             </div>
 
-            <div className={"container-fluid border-bottom "}>
+            <div className={"container-fluid"}>
                 <div className={"container pb-4 "}>
-                    <div className={"d-flex "}>
+                    <div className={"d-flex mt-5"}>
                         <div className="avatar">
                             <div className="w-24 rounded">
                                 <img src={doctorInfo?.avatarImg}
@@ -119,7 +119,7 @@ function DoctorInfo() {
                             </div>
                             <div className={"d-flex"}>
                                 <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
-                                <h6>Hà Nội</h6>
+                                <h6>Hồ Chí Minh</h6>
                             </div>
                         </div>
                     </div>
@@ -177,9 +177,9 @@ function DoctorInfo() {
                     </div>
                 </div>
             </div>
-            <div className={"container-fluid border-bottom"} style={{backgroundColor: "rgb(248 250 250)"}}>
+            <div className={"container-fluid border-bottom mt-3"} style={{backgroundColor: "rgb(248 250 250)"}}>
                 <div className={"container pb-4"}>
-                    <div className={"d-flex flex-column mt-3"}>
+                    <div className={"d-flex flex-column pt-4"}>
                         {doctorInfo && doctorInfo.doctorInfo && HTMLReactParser(doctorInfo.doctorInfo)}
                     </div>
                 </div>
@@ -202,7 +202,7 @@ function DoctorInfo() {
                         </div>
                         <div className="border-bottom py-3">{rating?.comment}</div>
                     </>))}
-                    <div className={"mt-3"}>
+                    <div className={"mt-3 pb-3"}>
                         <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>
                     </div>
                 </div>
