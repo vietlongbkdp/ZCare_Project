@@ -17,8 +17,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
-import dayjs from "dayjs";
 import {useParams} from "react-router-dom";
+
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -59,7 +59,7 @@ export default function Booking(){
             setValue("address", response.data.address)
             setValue("phoneCus", response.data.phone)
             setValue("gender", response.data.gender)
-            setValue("dob", dob.toISOString().split('T')[0])
+            setValue("dobCus", dob.toISOString().split('T')[0])
             console.log(response.data);
         })
             .catch(error => {
@@ -89,7 +89,6 @@ export default function Booking(){
             if(res.status == '200'){
                 console.log(fullData)
                 toast.success("Bạn đã đặt lịch thành công!")
-                reset();
             }
     }
     return(
@@ -146,6 +145,7 @@ export default function Booking(){
                                                 {...register("customerName")}
                                                 error={Boolean(errors.customerName)}
                                                 helperText={errors.customerName?.message || ''}
+                                                disabled={true}
                                                 InputLabelProps={{
                                                     shrink: true,
                                                 }}
@@ -183,6 +183,7 @@ export default function Booking(){
                                                 fullWidth
                                                 id="dobCus"
                                                 type={"date"}
+                                                disabled={true}
                                                 label={"Ngày sinh"}
                                                 {...register("dobCus")}
                                                 error={Boolean(errors.dobCus)}
@@ -198,6 +199,7 @@ export default function Booking(){
                                                 id="phoneCus"
                                                 label="Số điện thoại"
                                                 autoComplete="phone"
+                                                disabled={true}
                                                 {...register("phoneCus")}
                                                 error={Boolean(errors.phoneCus)}
                                                 helperText={errors.phoneCus?.message || ''}
@@ -212,6 +214,7 @@ export default function Booking(){
                                                 fullWidth
                                                 id="address"
                                                 label="Địa chỉ liên hệ"
+                                                disabled={true}
                                                 autoComplete="address"
                                                 {...register("address")}
                                                 error={Boolean(errors.address)}

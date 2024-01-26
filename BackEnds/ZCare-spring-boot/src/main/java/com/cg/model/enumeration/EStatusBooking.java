@@ -1,8 +1,12 @@
 package com.cg.model.enumeration;
 
 public enum EStatusBooking {
-    CONFIRMING(1L,"Đang chờ xác nhận"),
-    CONFIRMED(2L,"Đã xác nhận"),
+    CONFIRMING(1L,"Tiếp nhận"),
+    CUSTOMERCONFIMED(1L,"Khách hàng đã xác nhận"),
+    DOCTORCONFIRMED(1L,"Bác sĩ xác nhận"),
+    PAID(1L,"Đã thanh toán"),
+    EXAMINED(1L,"Đã khám"),
+    RESULTING(2L,"Đã trả kết quả"),
     CANCEL(3L,"Đã huỷ");
     private Long id;
     private String status;
