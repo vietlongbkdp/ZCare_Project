@@ -2,12 +2,12 @@ package com.cg.model.enumeration;
 
 public enum EStatusBooking {
     CONFIRMING(1L,"Tiếp nhận"),
-    CUSTOMERCONFIMED(1L,"Khách hàng đã xác nhận"),
-    DOCTORCONFIRMED(1L,"Bác sĩ xác nhận"),
-    PAID(1L,"Đã thanh toán"),
-    EXAMINED(1L,"Đã khám"),
-    RESULTING(2L,"Đã trả kết quả"),
-    CANCEL(3L,"Đã huỷ");
+    CUSTOMERCONFIMED(2L,"Khách hàng đã xác nhận"),
+    DOCTORCONFIRMED(3L,"Bác sĩ xác nhận"),
+    PAID(4L,"Đã thanh toán"),
+    EXAMINED(5L,"Đã khám"),
+    RESULTING(6L,"Đã trả kết quả"),
+    CANCEL(7L,"Đã huỷ");
     private final Long id;
     private final String status;
     EStatusBooking(Long id, String status) {

@@ -16,8 +16,8 @@ export default function HomePage() {
                 <Route path="/" element={<HomeContent />} />
                 <Route path="/introduce" element={<IntroduceContent />} />
                 <Route path="/clinic-page" element={<ClinicContent />} />
-                <Route path='/speciality-page' element={<SpecialityContent />} />
-                <Route path="/cooperate" element={<Cooperate />} />
+                <Route path='/speciality-page' element={<SpecialityContent/>} />
+                <Route path="/cooperate" element={<Cooperate/>} />
             </Routes>
             <Footer />
         </>

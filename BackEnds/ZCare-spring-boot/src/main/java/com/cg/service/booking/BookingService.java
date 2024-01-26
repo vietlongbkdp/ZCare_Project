@@ -3,11 +3,14 @@ import com.cg.model.Booking;
 import com.cg.model.Customer;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.Schedule;
+import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
 
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.ICustomerService;
 import com.cg.service.schedule.IScheduleService;
+import com.cg.until.EmailUntil;
+import com.cg.until.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +28,8 @@ public class BookingService implements IBookingService {
     private IScheduleService scheduleService;
     @Autowired
     private ICustomerService customerService;
+    @Autowired
+    private EmailUntil emailUntil;
     @Override
     public List<Booking> findAll() {
         return iBookingRepository.findAll();
@@ -49,6 +54,13 @@ public class BookingService implements IBookingService {
     public List<Booking> findAllByCustomerId(Long customerId) {
         return iBookingRepository.findAllByCustomerId(customerId);
     }
+
+    @Override
+    public Booking findByCustomerIdAndScheduleId(Long customerId, Long scheduleId) {
+        return iBookingRepository.findByCustomerIdAndScheduleId(customerId,scheduleId);
+    }
+
+
     public Booking toBooking(BookingDTO bookingDTO){
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
         Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
@@ -67,6 +79,15 @@ public class BookingService implements IBookingService {
         return booking;
     }
     public void createBooking(Booking booking) {
+        Schedule schedule = scheduleService.findById(booking.getSchedule().getId()).get();
+        if(schedule.getStatus()== EStatus.SELECTED){
+            return ;
+        }
         iBookingRepository.save(booking);
+        String url = "http://localhost:8080/api/booking/confirm/" + booking.getCustomer().getId() + "/" + booking.getSchedule().getId();
+        String title="Xác nhận đặt lịch hẹn khám tại ZCare";
+        String body= SendEmail.EmailScheduledSuccessfully(
+                booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
+        emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
     }
 }

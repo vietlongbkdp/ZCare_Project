@@ -2,6 +2,7 @@ package com.cg.controller.api;
 import com.cg.model.Booking;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.Customer;
+import com.cg.model.enumeration.EStatusBooking;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.booking.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,15 @@ public class BookingAPI {
         List<Booking> bookingList = bookingService.findAll();
         return new ResponseEntity<>(bookingList, HttpStatus.OK);
     }
+
+    @GetMapping ("/confirm/{customerId}/{scheduleId}")
+    public ResponseEntity<?> confirmBooking(@PathVariable Long customerId,@PathVariable Long scheduleId){
+        Booking booking = bookingService.findByCustomerIdAndScheduleId(customerId,scheduleId);
+        booking.setStatus(EStatusBooking.CUSTOMERCONFIMED);
+        bookingService.save(booking);
+        return new ResponseEntity<>("Xác nhận booking thành công", HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody BookingDTO bookingDTO) {
         Booking booking = bookingService.toBooking(bookingDTO);
