@@ -212,10 +212,13 @@ function CustomerDashboard() {
                                 >
                                     Cập nhật
                                 </Button>
-                                <Button variant="contained"
-                                        sx={{mt: 3, mb: 1}}>
-                                    Hủy
-                                </Button>
+                                <Link to="/home" style={{ textDecoration: "none" }}>
+                                    <Button variant="contained"
+                                            sx={{mt: 3, mb: 1}}>
+                                        Hủy
+                                    </Button>
+                                </Link>
+
                             </Grid>
                         </Grid>
                     </Grid>

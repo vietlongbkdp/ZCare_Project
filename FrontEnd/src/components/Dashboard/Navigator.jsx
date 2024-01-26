@@ -124,7 +124,7 @@ export default function Navigator(props) {
                         </ListItem>
                         {children.map(({ id: childId, url, icon, active }) => (
                             <ListItem disablePadding key={childId} className='navBarItem'>
-                                <Link to={url}>
+                                <Link to={url} style={{ textDecoration: 'none', width: '100%', height: '100%'}}>
                                     <ListItemButton selected={active} sx={item} style={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}>
                                         <ListItemIcon>{icon}</ListItemIcon>
                                         <ListItemText>{childId}</ListItemText>
