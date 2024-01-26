@@ -38,7 +38,7 @@ const categories = [
             },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
             { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
-            { id: 'Liên hệ', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
+            { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
         ],
     },
@@ -120,12 +120,12 @@ export default function Navigator(props) {
                 {filteredCategories.map(({ id, children }) => (
                     <Box key={id} sx={{ bgcolor: '#353944' }}>
                         <ListItem sx={{ py: 2, px: 3, borderBottom: '1px solid #8e89897a' }}>
-                            <ListItemText sx={{ color: '#fff', textAlign: 'center', fontSize: '18px !important'}}>{id}</ListItemText>
+                            <ListItemText sx={{ color: '#fff', textAlign: 'center', fontSize: '18px !important' }}>{id}</ListItemText>
                         </ListItem>
                         {children.map(({ id: childId, url, icon, active }) => (
                             <ListItem disablePadding key={childId} className='navBarItem'>
-                                <Link to={url}>
-                                    <ListItemButton selected={active} sx={item}>
+                                <Link to={url} style={{ textDecoration: 'none', width: '100%', height: '100%'}}>
+                                    <ListItemButton selected={active} sx={item} style={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}>
                                         <ListItemIcon>{icon}</ListItemIcon>
                                         <ListItemText>{childId}</ListItemText>
                                     </ListItemButton>

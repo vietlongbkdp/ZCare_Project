@@ -37,7 +37,11 @@ public class CustomerAPI {
         Customer customer=customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
-
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<?> getCustomerByIdCus(@PathVariable Long userId){
+            Customer customer = customerService.findByUser_Id(userId);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
+    }
     @PutMapping("/{userId}")
     public ResponseEntity<?> updateCustomer(@PathVariable Long userId, @RequestBody UpdateCustomer updateCustomer){
         Customer customer = customerService.findByUser_Id(userId);

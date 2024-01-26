@@ -6,7 +6,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -17,7 +17,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
-import dayjs from "dayjs";
+import {useParams} from "react-router-dom";
+import Cookies from "js-cookie";
+
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -43,14 +45,40 @@ const schemaBooking = yup.object().shape({
         // .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
 })
 export default function Booking(){
-    const scheduleId = 1;
-    // const bookDay = dayjs("2024/01/25").format('DD/MM/YYYY')
-    const bookDay = "25/01/2024"
-    const idCustomer = 1;
+    const { scheduleId, day,month,year } = useParams();
+    const bookDay = day + "/" + month + "/" + year;
+    const userId = Cookies.get('userId');
+    const [schedule,setSchedule]=useState('');
     const [bookFor, setBookFor] = useState("me")
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/customer/get/'+ userId).then(response => {
+            const [year, month, day] = response.data.dob;
+            const dob = new Date(year, month - 1, day);
+            setValue("customerName", response.data.fullName)
+            setValue("address", response.data.address)
+            setValue("phoneCus", response.data.phone)
+            setValue("gender", response.data.gender)
+            setValue("dobCus", dob.toISOString().split('T')[0])
+            console.log(response.data);
+        })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
+
+    useEffect(() => {
+        axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
+            .then(response => {
+                setSchedule(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
+
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -58,26 +86,24 @@ export default function Booking(){
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-    const {register, handleSubmit, formState: { errors }, reset} = useForm({resolver: yupResolver(schemaBooking)})
+    const {register, handleSubmit, formState: { errors }, reset,setValue} = useForm({resolver: yupResolver(schemaBooking)})
     async function createBooking(data){
         const fullData = {
             ...data,
             scheduleId,
             bookDay,
-            idCustomer
+            userId
         }
-        console.log(fullData)
         const res = await axios({
             method: 'post',
             url: 'http://localhost:8080/api/booking',
             data: {...fullData}
         });
-            if(res.status === '200'){
+            if(res.status == '200'){
+                console.log(fullData)
                 toast.success("Bạn đã đặt lịch thành công!")
-                // reset();
             }
     }
-    // console.log("hello")
     return(
         <Container maxWidth="md">
             <Stack>
@@ -85,7 +111,7 @@ export default function Booking(){
                     <Stack mr={3}>
                         <Avatar
                             alt="Avatar"
-                            src="https://i1.sndcdn.com/artworks-000234186668-o1elkt-t500x500.jpg"
+                            src= {schedule?.doctor?.avatarImg}
                             sx={{ width: 80, height: 80 }}
                         />
                     </Stack>
@@ -94,14 +120,13 @@ export default function Booking(){
                             ĐẶT LỊCH KHÁM
                         </Typography>
                         <Link href="#" sx={{textDecoration: "none", fontWeight: "bold", fontSize: "20px"}}>
-                            Bác sĩ Chuyên khoa I Hàng Quốc Đạt
-
+                            {schedule?.doctor?.doctorName}
                         </Link>
                         <Typography variant="p">
-                            16:30 - 17:00 - Thứ 2 - 22/01/2024
+                            {schedule?.timeItem} - {schedule?.weekday} - {bookDay}
                         </Typography>
                         <Typography variant="h7" fontWeight={"bold"}>
-                            Giá khám: 300.000 đồng/lượt
+                            Giá khám: {schedule?. doctor?.fee} đồng/lượt
                         </Typography>
                     </Stack>
                 </Stack>
@@ -132,6 +157,10 @@ export default function Booking(){
                                                 {...register("customerName")}
                                                 error={Boolean(errors.customerName)}
                                                 helperText={errors.customerName?.message || ''}
+                                                disabled={true}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         {(bookFor === "me") ? "" :
@@ -142,6 +171,9 @@ export default function Booking(){
                                                     id="patientName"
                                                     label="Họ và tên bệnh nhân"
                                                     {...register("patientName")}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
                                                 />
                                             </Grid>)}
                                         <Grid item xs={10}>
@@ -149,11 +181,9 @@ export default function Booking(){
                                                 aria-labelledby="demo-controlled-radio-buttons"
                                                 name="radioGender"
                                                 row
-                                                defaultValue={"MALE"}
                                                 {...register("gender")}
                                                 error={Boolean(errors.gender)}
                                                 helperText={errors.gender?.message || ''}
-
                                             >
                                                 <FormControlLabel value="MALE" control={<Radio />} label="Nam" />
                                                 <FormControlLabel value="FEMALE" control={<Radio />} label="Nữ" />
@@ -165,6 +195,7 @@ export default function Booking(){
                                                 fullWidth
                                                 id="dobCus"
                                                 type={"date"}
+                                                disabled={true}
                                                 label={"Ngày sinh"}
                                                 {...register("dobCus")}
                                                 error={Boolean(errors.dobCus)}
@@ -180,9 +211,13 @@ export default function Booking(){
                                                 id="phoneCus"
                                                 label="Số điện thoại"
                                                 autoComplete="phone"
+                                                disabled={true}
                                                 {...register("phoneCus")}
                                                 error={Boolean(errors.phoneCus)}
                                                 helperText={errors.phoneCus?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
 
                                             />
                                         </Grid>
@@ -191,10 +226,14 @@ export default function Booking(){
                                                 fullWidth
                                                 id="address"
                                                 label="Địa chỉ liên hệ"
+                                                disabled={true}
                                                 autoComplete="address"
                                                 {...register("address")}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
@@ -204,6 +243,9 @@ export default function Booking(){
                                                 label="Lý do khám (Mô tả triệu chứng)"
                                                 autoComplete="text"
                                                 {...register("reason")}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         <Grid item xs={10} >
@@ -224,7 +266,7 @@ export default function Booking(){
                                                 <Box sx={{backgroundColor: "#f6f6f6", padding: "16px"}}>
                                                     <Stack my={1} direction="row" flexWrap="wrap" justifyContent={"space-between"}>
                                                         <Typography>Giá khám</Typography>
-                                                        <Typography>300.000 đồng</Typography>
+                                                        <Typography>{schedule?. doctor?.fee} đồng</Typography>
                                                     </Stack>
                                                     <Stack my={1} direction="row" flexWrap="wrap" justifyContent={"space-between"}>
                                                         <Typography>Phí đặt lịch</Typography>
@@ -232,7 +274,7 @@ export default function Booking(){
                                                     </Stack>
                                                     <Stack  sx={{borderTop: "solid", borderWidth:"1px", paddingTop: "10px"}} my={1} direction="row" flexWrap="wrap" justifyContent={"space-between"}>
                                                         <Typography>Tổng cộng</Typography>
-                                                        <Typography color={"red"} fontWeight={"bold"}>300.000 đồng</Typography>
+                                                        <Typography color={"red"} fontWeight={"bold"}>{schedule?. doctor?.fee} đồng</Typography>
                                                     </Stack>
                                                 </Box>
                                                 <Typography variant="p" sx={{fontStyle:"italic", color: "#337ab7"}} my={1}>

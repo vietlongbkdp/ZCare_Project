@@ -4,6 +4,7 @@ import Footer from "../Footer/Footer";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import Cookies from "js-cookie";
+import dayjs from "dayjs";
 
 function AppointmentSchedule() {
     const [booking,setBooking]=useState([]);
@@ -17,6 +18,8 @@ function AppointmentSchedule() {
                 console.error('Error:', error);
             });
     }, [UserId]);
+    console.log(booking)
+    console.log(dayjs().format("DD/MM/YYYY HH:mm"))
     return (
         <div>
             <Header/>
@@ -48,7 +51,7 @@ function AppointmentSchedule() {
                     <tbody >
                     {booking.length > 0 ? (
                         booking.map((booking,index) => (
-                            <tr style={{verticalAlign: 'middle'}}>
+                            <tr key={booking.id} style={{verticalAlign: 'middle'}}>
                                 <td>{index + 1}</td>
                                 <td className={"d-flex flex-column"}>
                                     <p>Mã Bác sĩ : {booking?.doctor?.id}</p>
@@ -62,14 +65,14 @@ function AppointmentSchedule() {
                                     <p>Bệnh nhân: {booking?.customer?.fullName}</p>
                                     <p>Giới tính:{booking?.customer?.gender} </p>
                                     <p>Phone:{booking?.customer?.phone} </p>
-                                    <p>Ngày sinh:{booking?.customer?.dob} </p>
+                                    <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
                                 </td>
                                 <td>{booking?.bookingDate}</td>
                                 <td>{booking?.schedule?.timeItem}</td>
                                 <td>{booking?.fee}</td>
                                 <td>{booking?.result?.file}</td>
-                                <td>{booking?.status?.type}</td>
-                                <td>{booking?.createAt}</td>
+                                <td>{booking?.status}</td>
+                                <td>{dayjs(booking.createAt).format("DD/MM/YYYY")}</td>
                             </tr>
                         ))
                     ) : (

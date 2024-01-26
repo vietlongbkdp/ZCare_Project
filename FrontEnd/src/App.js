@@ -26,6 +26,7 @@ import PrivateRouteClinicAdmin from "./components/routing/PrivateRouteClinicAdmi
 import PrivateRouteDoctor from "./components/routing/PrivateRouteDoctor";
 import PrivateRouteCustomer from "./components/routing/PrivateRouteCustomer";
 import DoctorInClinic from "./components/Doctor/DoctorInClinic";
+import AdminViewer from "./components/adminViewer/adminViewer";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="/change-password/:userId" element={<ChangePassword />} />
         <Route element={<PrivateRouteAdmin/>}>
           <Route path="/admin" element={<Pagerbase/>}>
+            <Route path="" element={<AdminViewer/>}></Route>
             <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR}/>}></Route>
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
             <Route path="clinic" element={<ClinicAdmin/>}></Route>
@@ -63,7 +65,7 @@ export default function App() {
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />
         <Route path="/showDoctor" element={<DoctorInfoClinic />} />
-        <Route path="/booking" element={<Booking />} />
+        <Route path="/booking/:scheduleId/:day/:month/:year" element={<Booking />} />
         <Route path="/list-speciality/:specialityId" element={<DoctorListBySpeciality />} />
         <Route path="/list-clinic/:clinicId" element={<DoctorListByClinic />} />
         <Route path="/search" element={<Search/>} />

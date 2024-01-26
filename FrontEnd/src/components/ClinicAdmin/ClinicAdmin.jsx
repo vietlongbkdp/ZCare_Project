@@ -19,7 +19,7 @@ import EditClinic from './EditClinic';
 import { ApiContext } from '../ApiContext/ApiProvider';
 import DoctorInClinic from '../Doctor/DoctorInClinic';
 import "./clinic.css"
-import {useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -29,7 +29,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         textAlign: 'left'
     },
     [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
+        fontSize: 13,
         textAlign: 'left'
     },
 }));
@@ -44,7 +44,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CustomizedTables() {
-    const {userId} = useParams();
+    const { userId } = useParams();
 
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
@@ -112,45 +112,19 @@ export default function CustomizedTables() {
         setShowPagination(true)
     }
 
-    const handleDelete = async (id) => {
-        Swal.fire({
-            title: "Bạn có chắc chắn không?",
-            text: "Bạn sẽ không thể hoàn tác",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            cancelButtonText: 'Hủy',
-            confirmButtonText: "Đồng ý, xóa"
-        }).then(async (data) => {
-            if (data.isConfirmed) {
-                try {
-                    await axios.delete(`http://localhost:8080/api/clinic/${id}`);
-                    toast.success("Xóa phòng khám thành công")
-                    setIsupdate(pre => !pre);
-                } catch (error) {
-                    toast.error("Xóa phòng khám thất bại")
-                }
+    useEffect(() => {
+        const findClinicidUser = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/clinic/${userId}`)
+                setClinicAdminUser(response.data);
+            } catch (error) {
+                console.error(error);
             }
-        })
-
-    }
-   useEffect(() => {
-       const findClinicidUser = async () => {
-           try {
-               const response = await axios.get(`http://localhost:8080/api/clinic/${userId}`)
-               setClinicAdminUser(response.data);
-           }catch (error) {
-               console.error(error);
-           }
-       }
-       findClinicidUser();
-   },[])
-
+        }
+        findClinicidUser();
+    }, [])
 
     const handleChangeLock = async (id, currentLockStatus) => {
-        console.log(typeof currentLockStatus)
-
         Swal.fire({
             title: "Bạn muốn khóa",
             text: "You won't be able to revert this!",
@@ -182,7 +156,23 @@ export default function CustomizedTables() {
 
 
 
-    console.log(clinicId)
+    // useEffect(() => {
+    //     const finddUser = async () => {
+    //         try {
+    //             const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+    //             console.log(response.data)
+    //             setClinicId(response.data.id)
+    //             console.log(clinicId)
+    //         } catch (error) {
+    //             console.error(error);
+    //         }
+    //     }
+    //     finddUser();
+    // }, [])
+    //
+    //
+    // console.log(clinicId)
+
     return (
         <>
             <Box>
@@ -228,11 +218,10 @@ export default function CustomizedTables() {
                                         <StyledTableCell>ĐỊA CHỈ</StyledTableCell>
                                         <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
                                         <StyledTableCell>HOTLINE</StyledTableCell>
-                                        <StyledTableCell>GPHĐ</StyledTableCell>
-                                        <StyledTableCell align='center'>DANH SÁCH BÁC SĨ</StyledTableCell>
-                                        <StyledTableCell align='center'>THÔNG TIN</StyledTableCell>
-                                        <StyledTableCell align='center'>CẬP NHẬT</StyledTableCell>
-                                        <StyledTableCell align='center'>XÓA</StyledTableCell>
+                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >BÁC SĨ</StyledTableCell>
+                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >CẬP NHẬT</StyledTableCell>
+                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >KHÓA</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -242,37 +231,36 @@ export default function CustomizedTables() {
                                                 {item?.id}
                                             </StyledTableCell>
                                             <StyledTableCell>
-                                                <img src={item?.clinicLogo} alt="Clinic Logo" style={{ width: '50px', height: '50px' }} />
+                                                <img src={item?.clinicLogo} alt="Clinic Logo" style={{ width: '75px', height: '50px' }} />
                                             </StyledTableCell>
                                             <StyledTableCell>{item?.clinicName}</StyledTableCell>
                                             <StyledTableCell>{item?.address}</StyledTableCell>
                                             <StyledTableCell>{item?.legalRepresentative}</StyledTableCell>
                                             <StyledTableCell>{item?.hotline}</StyledTableCell>
-                                            <StyledTableCell>{item?.operatingLicence}</StyledTableCell>
-                                            <StyledTableCell>
+                                            <StyledTableCell sx={{ padding: '5px', align: 'center' }}>
                                                 <Button variant='contained' color='secondary'
-                                                    onClick={() => handleShowDoctor(item?.id)} sx={{ width: 5 }}>
+                                                    onClick={() => handleShowDoctor(item?.id)} sx={{ width: 4 }}>
                                                     <i className="fa-solid fa-user-doctor"></i>
                                                 </Button>
                                             </StyledTableCell>
-                                            <StyledTableCell>
-                                                <Button variant='contained' color='primary'>
+                                            <StyledTableCell sx={{ padding: '5px', align: 'center' }}>
+                                                <Button variant='contained' color='primary' sx={{ width: 4 }}>
                                                     <i className="fa-solid fa-list-ul"></i>
                                                 </Button>
                                             </StyledTableCell>
-                                            <StyledTableCell >
+                                            <StyledTableCell sx={{ padding: '5px', align: 'center' }}>
                                                 <Button variant="contained" color="warning"
-                                                    onClick={() => handleEditClinic(item?.id)} sx={{ width: 5 }}>
+                                                    onClick={() => handleEditClinic(item?.id)} sx={{ width: 4 }}>
                                                     <i className="fa-solid fa-pen-to-square"></i>
                                                 </Button>
                                             </StyledTableCell>
-                                            <StyledTableCell >
+                                            <StyledTableCell sx={{ padding: '5px', align: 'center', paddingRight: '15px' }}>
                                                 <Button
                                                     variant="contained"
                                                     color='error'
                                                     onClick={() => handleChangeLock(item.id, item.user.id)}
                                                 >
-                                                    Khoá
+                                                    <i className="fa-solid fa-ban"></i>
                                                 </Button>
                                             </StyledTableCell>
                                         </StyledTableRow>

@@ -1,6 +1,7 @@
 import DoctorComponent from "./DoctorComponent";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
     const [doctorInfo, setDoctorInfo] = useState([]);
@@ -23,7 +24,7 @@ function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
             }
         };
         fetchDoctorInfo();
-    }, [specialityId,clinicId,doctorName]);
+    }, []);
 
     return (
         <>

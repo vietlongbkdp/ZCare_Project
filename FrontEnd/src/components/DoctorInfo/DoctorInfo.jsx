@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import "./Doctorinfo.css"
 import dayjs from "dayjs";
 import {parse} from "date-fns";
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import HTMLReactParser from "html-react-parser";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -16,7 +16,7 @@ function DoctorInfo() {
     const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', {weekday: 'long'});
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(dateNows);
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
@@ -63,7 +63,7 @@ function DoctorInfo() {
 
         fetchDoctorInfo();
         fetchScheduleData();
-    }, [doctorId, selectedWeekday]);
+    }, [selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -82,7 +82,7 @@ function DoctorInfo() {
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [doctorId,ratingSubmitted]);
+    }, [ratingSubmitted]);
 
 
     useEffect(() => {
@@ -99,9 +99,9 @@ function DoctorInfo() {
                 <h2>THÔNG TIN BÁC SỸ</h2>
             </div>
 
-            <div className={"container-fluid border-bottom "}>
+            <div className={"container-fluid"}>
                 <div className={"container pb-4 "}>
-                    <div className={"d-flex "}>
+                    <div className={"d-flex mt-5"}>
                         <div className="avatar">
                             <div className="w-24 rounded">
                                 <img src={doctorInfo?.avatarImg}
@@ -119,7 +119,7 @@ function DoctorInfo() {
                             </div>
                             <div className={"d-flex"}>
                                 <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
-                                <h6>Hà Nội</h6>
+                                <h6>Hồ Chí Minh</h6>
                             </div>
                         </div>
                     </div>
@@ -152,7 +152,7 @@ function DoctorInfo() {
                             </div>
                             <div className={"d-flex flex-wrap gap-3"}>
                                 {scheduleList.map((schedule, index) => (
-                                    <Link key={schedule.id} to="/" className="schedule">
+                                    <Link key={schedule.id}  to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
                                         {schedule?.timeItem}
                                     </Link>))}
                             </div>
@@ -177,9 +177,9 @@ function DoctorInfo() {
                     </div>
                 </div>
             </div>
-            <div className={"container-fluid border-bottom"} style={{backgroundColor: "rgb(248 250 250)"}}>
+            <div className={"container-fluid border-bottom mt-3"} style={{backgroundColor: "rgb(248 250 250)"}}>
                 <div className={"container pb-4"}>
-                    <div className={"d-flex flex-column mt-3"}>
+                    <div className={"d-flex flex-column pt-4"}>
                         {doctorInfo && doctorInfo.doctorInfo && HTMLReactParser(doctorInfo.doctorInfo)}
                     </div>
                 </div>
@@ -202,7 +202,7 @@ function DoctorInfo() {
                         </div>
                         <div className="border-bottom py-3">{rating?.comment}</div>
                     </>))}
-                    <div className={"mt-3"}>
+                    <div className={"mt-3 pb-3"}>
                         <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>
                     </div>
                 </div>

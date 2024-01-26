@@ -29,16 +29,14 @@ function DoctorListByClinic() {
 
     useEffect(() => {
 
-            axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
-                .then(response => {
-                    setClinic(response.data);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
-    }, [clinic, clinicId]);
-
+        axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
+            .then(response => {
+                setClinic(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
 
     return (
         <>

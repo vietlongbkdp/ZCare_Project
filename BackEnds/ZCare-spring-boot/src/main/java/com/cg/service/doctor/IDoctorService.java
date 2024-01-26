@@ -1,11 +1,7 @@
 package com.cg.service.doctor;
 
-import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
-import com.cg.model.DTO.DoctorResDTO;
 import com.cg.model.Doctor;
-import com.cg.model.Speciality;
-import com.cg.model.enumeration.ELockStatus;
 import com.cg.service.IGeneralService;
 
 import java.util.List;

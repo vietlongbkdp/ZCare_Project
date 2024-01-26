@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import "./DoctorInfoClinic.css"
-import { Link } from "@mui/material";
+
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import dayjs from "dayjs";
 import { parse } from "date-fns";
 import axios from "axios";
-import DoctorInfoClinic from "./DoctorInfoClinic";
+import {Link} from "react-router-dom";
+
 
 function DoctorComponent({ doctor }) {
     const dateNows = dayjs().format('D/M/YYYY');
     const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(dateNows);
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const convertStringDetailToNumDetail = (timeItem) => {
@@ -64,7 +65,7 @@ function DoctorComponent({ doctor }) {
 
     useEffect(() => {
         fetchScheduleData();
-    }, [fetchScheduleData,selectedWeekday]);
+    }, [selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -99,7 +100,10 @@ function DoctorComponent({ doctor }) {
                         </div>
                         <div className={"d-flex flex-column justify-content-center ms-3"}>
                             <div>
-                                <h5 style={{color: "#74b9ff"}}>{doctor?.doctorName}</h5>
+                                <Link to={`/doctorDetail/${doctor.id}`} style={{textDecoration: 'none',color: 'black'}}>
+                                    <h5 style={{color: "#74b9ff"}}>{doctor?.doctorName}</h5>
+                                </Link>
+
                             </div>
                             <div>
                                 <p>Chức danh: {doctor?.position?.name}</p>
@@ -108,7 +112,7 @@ function DoctorComponent({ doctor }) {
                             </div>
                             <div className={"d-flex"}>
                             <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
-                                <h6>Hà Nội</h6>
+                                <h6>Hồ Chí Minh</h6>
                             </div>
                         </div>
                     </div>
@@ -144,7 +148,7 @@ function DoctorComponent({ doctor }) {
                     </div>
                     <div className={"d-flex flex-wrap gap-3"}>
                         {scheduleList.map((schedule, index) => (
-                            <Link key={schedule.id} to="/" className="schedule">
+                            <Link key={schedule.id} to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
                                 {schedule.timeItem}
                             </Link>
                         ))}
@@ -162,7 +166,7 @@ function DoctorComponent({ doctor }) {
                         <div>{doctor?.clinic?.address}</div>
                     </div>
                     <div className={"d-flex mt-3 border-bottom py-3"}>
-                        <div className={"me-2"}>Giá Khám: {doctor?.fee}.000đ</div>
+                        <div className={"me-2"}>Giá Khám: {doctor?.fee}đ</div>
                     </div>
                 </div>
             </div>
