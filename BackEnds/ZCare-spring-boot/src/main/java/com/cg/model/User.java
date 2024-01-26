@@ -30,7 +30,5 @@ public class User {
     @Enumerated(EnumType.STRING)
     private ERole role;
     @Column(name="un_lock")
-    private boolean unlock=true;
-
-
+    private boolean unlock = true;
 }

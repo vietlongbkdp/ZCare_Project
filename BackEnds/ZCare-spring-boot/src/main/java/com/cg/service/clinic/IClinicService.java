@@ -9,4 +9,5 @@ import java.util.List;
 public interface IClinicService extends IGeneralService<Clinic, Long> {
     List<Clinic> findAllByUser_Unlock(boolean user_unlock);
     Clinic findByUser_Id(Long id);
+    void update(Clinic clinic);
 }
