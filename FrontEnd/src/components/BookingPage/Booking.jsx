@@ -51,10 +51,15 @@ export default function Booking(){
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
-    const [customer, setCustomer] = useState(null);
     useEffect(() => {
         axios.get('http://localhost:8080/api/customer/get/'+ idCustomer).then(response => {
-            setCustomer(response.data);
+            const [year, month, day] = response.data.dob;
+            const dob = new Date(year, month - 1, day);
+            setValue("customerName", response.data.fullName)
+            setValue("address", response.data.address)
+            setValue("phoneCus", response.data.phone)
+            setValue("gender", response.data.gender)
+            setValue("dob", dob.toISOString().split('T')[0])
             console.log(response.data);
         })
             .catch(error => {
@@ -68,7 +73,7 @@ export default function Booking(){
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-    const {register, handleSubmit, formState: { errors }, reset} = useForm({resolver: yupResolver(schemaBooking)})
+    const {register, handleSubmit, formState: { errors }, reset,setValue} = useForm({resolver: yupResolver(schemaBooking)})
     async function createBooking(data){
         const fullData = {
             ...data,
@@ -82,6 +87,7 @@ export default function Booking(){
             data: {...fullData}
         });
             if(res.status == '200'){
+                console.log(fullData)
                 toast.success("Bạn đã đặt lịch thành công!")
                 reset();
             }
@@ -136,11 +142,13 @@ export default function Booking(){
                                                 autoComplete="given-name"
                                                 fullWidth
                                                 id="customerName"
-                                                value={customer?.fullName}
                                                 label={(bookFor ==="me")?"Họ và tên":"Họ và tên người đặt"}
                                                 {...register("customerName")}
                                                 error={Boolean(errors.customerName)}
                                                 helperText={errors.customerName?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         {(bookFor === "me") ? "" :
@@ -151,6 +159,9 @@ export default function Booking(){
                                                     id="patientName"
                                                     label="Họ và tên bệnh nhân"
                                                     {...register("patientName")}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
                                                 />
                                             </Grid>)}
                                         <Grid item xs={10}>
@@ -158,7 +169,6 @@ export default function Booking(){
                                                 aria-labelledby="demo-controlled-radio-buttons"
                                                 name="radioGender"
                                                 row
-                                                value={customer?.gender}
                                                 {...register("gender")}
                                                 error={Boolean(errors.gender)}
                                                 helperText={errors.gender?.message || ''}
@@ -188,10 +198,12 @@ export default function Booking(){
                                                 id="phoneCus"
                                                 label="Số điện thoại"
                                                 autoComplete="phone"
-                                                value={customer?.phone}
                                                 {...register("phoneCus")}
                                                 error={Boolean(errors.phoneCus)}
                                                 helperText={errors.phoneCus?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
 
                                             />
                                         </Grid>
@@ -201,10 +213,12 @@ export default function Booking(){
                                                 id="address"
                                                 label="Địa chỉ liên hệ"
                                                 autoComplete="address"
-                                                value={customer?.address}
                                                 {...register("address")}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
@@ -214,6 +228,9 @@ export default function Booking(){
                                                 label="Lý do khám (Mô tả triệu chứng)"
                                                 autoComplete="text"
                                                 {...register("reason")}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         <Grid item xs={10} >

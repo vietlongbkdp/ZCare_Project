@@ -10,18 +10,18 @@ export default function  UserProvider ({ children }) {
 
     useEffect(() => {
         const token = Cookies.get('JWT');
-        console.log(token)
+        // console.log(token)
         if (token) {
             const decodedToken = jwtDecode(token);
-            console.log(decodedToken)
+            // console.log(decodedToken)
             const useremail = decodedToken.sub;
 
             const getUser = async () => {
                 try {
                     const user1 = await axios.get(`http://localhost:8080/api/user/finduser/${useremail}`);
-                    console.log(user1.data)
+                    // console.log(user1.data)
                     setUser(user1.data);
-                    console.log(user.id);
+                    // console.log(user.id);
                 } catch (error) {
                     console.error(error);
                 }
