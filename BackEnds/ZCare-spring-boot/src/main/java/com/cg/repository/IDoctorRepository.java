@@ -1,10 +1,6 @@
 package com.cg.repository;
 
-import com.cg.model.Clinic;
-import com.cg.model.DTO.DoctorResDTO;
 import com.cg.model.Doctor;
-import com.cg.model.Speciality;
-import com.cg.model.enumeration.ELockStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
