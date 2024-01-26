@@ -67,4 +67,9 @@ public class ClinicService implements IClinicService {
     public Clinic findByUser_Id(Long id) {
         return clinicRepository.findByUser_Id(id);
     }
+
+    @Override
+    public void update(Clinic clinic) {
+        clinicRepository.save(clinic);
+    }
 }

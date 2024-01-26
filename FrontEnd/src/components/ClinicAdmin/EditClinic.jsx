@@ -59,6 +59,7 @@ const VisuallyHiddenInput = styled('input')({
     whiteSpace: 'nowrap',
     width: 1,
 });
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -67,10 +68,13 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
     boxShadow: 'none'
 }));
+
+let updateAvatar;
+let presentAvatar;
+
 export default function EditClinic({ setShow, setISupdate, clinicId, setShowContent, setShowCreateBtn, setShowPagination }) {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
-    let updateAvatar;
-    let presentAvatar;
+
     const resetModal = () => {
         setShow(false)
         setShowContent(true)

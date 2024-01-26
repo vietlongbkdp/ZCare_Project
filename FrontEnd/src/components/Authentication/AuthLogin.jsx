@@ -27,8 +27,6 @@ const schema = yup.object({
 
 function AuthLogin() {
   const {API_USER} = useContext(UserContext);
-
-
   const {
     register,
     handleSubmit,
@@ -38,6 +36,13 @@ function AuthLogin() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+  
   // const [user, setUser] = useState();
   // useEffect(() => {
   //   const token = Cookies.get('JWT');
@@ -168,6 +173,7 @@ function AuthLogin() {
               variant="outlined"
               error={!!errors.password}
               helperText={errors.password?.message}
+              onKeyDown={handleKeyDown}
             />
           </Box>
           <Box

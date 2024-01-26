@@ -95,7 +95,6 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
         } else {
             data.avatarImg = updateAvatar;
         }
-        console.log(data);
         try {
             data.clinicId = clinicId;
             await axios.put(`http://localhost:8080/api/doctor/update/${doctorId}`, data);
@@ -131,7 +130,6 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
                 setValue("fee", result.fee)
                 presentAvatar = result.avatarImg;
                 updateAvatar = result.avatarImg;
-                console.log(presentAvatar);
                 document.getElementById('blah').src = presentAvatar;
             }
             getDoctor();

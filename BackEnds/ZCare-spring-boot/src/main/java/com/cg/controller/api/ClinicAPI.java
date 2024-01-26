@@ -45,9 +45,6 @@ public class ClinicAPI {
     public ResponseEntity<?> createClinic(@RequestBody Clinic clinic){
        try{
            clinicService.save(clinic);
-//           User user = clinic.getUser();
-//           user.setUnlock(true);
-//           userService.save(user);
            return new ResponseEntity<>(HttpStatus.OK);
        }catch (Exception e) {
            return new ResponseEntity<>("Failed to create clinic", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -67,20 +64,12 @@ public class ClinicAPI {
         updateClinic.setAddress(clinic.getAddress());
         updateClinic.setClinicInfo(clinic.getClinicInfo());
         updateClinic.setClinicLogo(clinic.getClinicLogo());
-        clinicService.save(updateClinic);
+        clinicService.update(updateClinic);
         if (!updateClinicLogo.equals(clinic.getClinicLogo())) {
             avatarService.deleteImage(updateClinicLogo);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteClinic(@PathVariable Long id){
-//        Clinic deleteClinic = clinicService.findById(id).get();
-//        clinicService.deleteById(id);
-//        avatarService.deleteImage(deleteClinic.getClinicLogo());
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
 
     @PutMapping("/lock/{id}")
     public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){

@@ -59,8 +59,6 @@ public class Doctor {
     @Enumerated(EnumType.STRING)
     private ELockStatus lockStatus;
 
-
-
     public DoctorResDTO toDoctorResDTO() {
         return new DoctorResDTO()
                 .setDoctorName(doctorName)
