@@ -24,7 +24,7 @@ function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
             }
         };
         fetchDoctorInfo();
-    }, [specialityId,clinicId,doctorName]);
+    }, []);
 
     return (
         <>

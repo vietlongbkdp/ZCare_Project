@@ -60,7 +60,7 @@ function DoctorDetail() {
 
         fetchDoctorInfo();
         fetchScheduleData();
-    }, [doctorId, selectedWeekday]);
+    }, [selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -132,7 +132,7 @@ function DoctorDetail() {
                                 </div>
                                 <div className={"d-flex flex-wrap gap-3"}>
                                     {scheduleList.map((schedule, index) => (
-                                        <Link key={schedule.id} to="/" className="schedule">
+                                        <Link key={schedule.id} to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
                                             {schedule?.timeItem}
                                         </Link>
                                     ))}

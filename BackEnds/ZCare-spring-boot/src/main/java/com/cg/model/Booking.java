@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Entity
 @Getter
@@ -40,7 +41,7 @@ public class Booking {
     private Result result;
     @Enumerated(EnumType.STRING)
     private EStatusBooking status;
-    private LocalDateTime createAt;
+    private LocalDate createAt;
     private String patientName;
     private String reason;
 

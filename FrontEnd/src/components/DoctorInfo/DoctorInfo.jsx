@@ -63,7 +63,7 @@ function DoctorInfo() {
 
         fetchDoctorInfo();
         fetchScheduleData();
-    }, [doctorId, selectedWeekday]);
+    }, [selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -82,7 +82,7 @@ function DoctorInfo() {
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [doctorId,ratingSubmitted]);
+    }, [ratingSubmitted]);
 
 
     useEffect(() => {

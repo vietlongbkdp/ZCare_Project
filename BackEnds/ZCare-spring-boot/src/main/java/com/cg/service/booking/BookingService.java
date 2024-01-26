@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class BookingService implements IBookingService {
         Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
         Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
                 .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
-                .setCreateAt(LocalDateTime.now())
+                .setCreateAt(LocalDate.now())
                 .setStatus(EStatusBooking.CONFIRMING);
         if(bookingDTO.getReason() != null){
             booking.setReason(bookingDTO.getReason());

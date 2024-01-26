@@ -13,7 +13,7 @@ function DoctorComponent({ doctor }) {
     const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
-    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedDate, setSelectedDate] = useState(dateNows);
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const convertStringDetailToNumDetail = (timeItem) => {
@@ -65,7 +65,7 @@ function DoctorComponent({ doctor }) {
 
     useEffect(() => {
         fetchScheduleData();
-    }, [fetchScheduleData,selectedWeekday]);
+    }, [selectedWeekday]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -148,7 +148,7 @@ function DoctorComponent({ doctor }) {
                     </div>
                     <div className={"d-flex flex-wrap gap-3"}>
                         {scheduleList.map((schedule, index) => (
-                            <Link key={schedule.id} to="/" className="schedule">
+                            <Link key={schedule.id} to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
                                 {schedule.timeItem}
                             </Link>
                         ))}
