@@ -125,7 +125,7 @@ function ResponsiveAppBar() {
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data)
+                console.log(response.data.id)
                 setDashboarduser(response.data)
                 // setRoleuser(dashboarduser.user)
                 console.log(dashboarduser)

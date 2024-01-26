@@ -25,6 +25,7 @@ import PrivateRouteAdmin from "./components/routing/PrivateRouteAdmin";
 import PrivateRouteClinicAdmin from "./components/routing/PrivateRouteClinicAdmin";
 import PrivateRouteDoctor from "./components/routing/PrivateRouteDoctor";
 import PrivateRouteCustomer from "./components/routing/PrivateRouteCustomer";
+import DoctorInClinic from "./components/Doctor/DoctorInClinic";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -47,7 +48,7 @@ export default function App() {
         <Route element={<PrivateRouteClinicAdmin/>}>
           <Route path="/clinicadmin" element={<Pagerbase/>}>
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="clinic" element={<ClinicAdmin/>}></Route>
+            <Route path="clinic" element={<DoctorInClinic />}></Route>
           </Route>
         </Route>
         <Route element={<PrivateRouteDoctor/>}>
