@@ -19,5 +19,5 @@ public class BookingDTO {
     private String reason;
     private Long scheduleId;
     private String bookDay;
-    private Long idCustomer;
+    private Long userId;
 }

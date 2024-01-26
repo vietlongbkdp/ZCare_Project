@@ -32,6 +32,12 @@ public class ScheduleAPI {
         return new ResponseEntity<>(scheduleRespDTOList, HttpStatus.OK);
     }
 
+    @GetMapping("/get/{scheduleId}")
+    public ResponseEntity<?> getDoctorByScheduleId(@PathVariable Long scheduleId) {
+        Schedule schedule = scheduleService.findById(scheduleId).get();
+        return new ResponseEntity<>(schedule, HttpStatus.OK);
+    }
+
     @GetMapping("/{doctorId}/{weekday}")
     public ResponseEntity<?> getAllScheduleByDoctorId(@PathVariable Long doctorId, @PathVariable String weekday) {
         EWeekday weekdayEnum = EWeekday.getDayById(weekday);

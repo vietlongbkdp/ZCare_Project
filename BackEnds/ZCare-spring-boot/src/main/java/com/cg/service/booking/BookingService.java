@@ -50,7 +50,7 @@ public class BookingService implements IBookingService {
     }
     public Booking toBooking(BookingDTO bookingDTO){
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
-        Customer customer = customerService.findById(bookingDTO.getIdCustomer()).get();
+        Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
         Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
                 .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
                 .setCreateAt(LocalDateTime.now())

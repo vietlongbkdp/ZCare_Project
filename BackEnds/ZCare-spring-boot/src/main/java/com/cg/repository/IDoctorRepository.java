@@ -23,6 +23,5 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findAllByUser_Unlock(boolean user_unlock);
 
     Doctor findByUser_Id(Long id);
-
 }
 
