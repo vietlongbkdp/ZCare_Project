@@ -17,7 +17,7 @@ function DoctorListByClinic() {
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [clinic, clinicId]);
+    }, []);
     return (
         <>
             <Header/>
