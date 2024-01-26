@@ -23,7 +23,7 @@ const StyledTableCell = styled(TableCell)(({theme}) => ({
         color: theme.palette.common.black,
     },
     [`&.${tableCellClasses.body}`]: {
-        fontSize: 14,
+        fontSize: 13,
     },
 }));
 
@@ -87,29 +87,23 @@ export default function DoctorAdmin({API_URL, handleHideDoctor, clinicId}) {
 
         Swal.fire({
             title: "Bạn muốn khóa",
-            text: "You won't be able to revert this!",
+            text: "Bạn sẽ không thể phục hồi!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, change it!"
+            confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.put(`http://localhost:8080/api/doctor/lock/${id}`, {
                         userId: currentLockStatus
                     });
-                    toast.success("Thành công");
+                    toast.success("Khóa bác sĩ thành công");
                     setUpdateShow((prev) => !prev);
                 } catch (error) {
-                    toast.error("Thất bại");
+                    toast.error("Khóa bác sĩ thất bại");
                 }
-                Swal.fire({
-                    title: "khóa thành công",
-                    text: `The doctor has been `,
-                    icon: "success"
-                });
-
             }
         });
     };

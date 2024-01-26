@@ -1,6 +1,5 @@
 package com.cg.model;
 
-import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.enumeration.ERole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

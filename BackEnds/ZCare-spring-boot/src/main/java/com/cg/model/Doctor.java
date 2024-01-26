@@ -55,7 +55,6 @@ public class Doctor {
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;
-    @NotEmpty(message = "Trạng thái khóa không được trống")
     @Enumerated(EnumType.STRING)
     private ELockStatus lockStatus;
 
