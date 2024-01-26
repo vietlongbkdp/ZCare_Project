@@ -6,7 +6,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -51,6 +51,21 @@ export default function Booking(){
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/customer/get/'+ idCustomer).then(response => {
+            const [year, month, day] = response.data.dob;
+            const dob = new Date(year, month - 1, day);
+            setValue("customerName", response.data.fullName)
+            setValue("address", response.data.address)
+            setValue("phoneCus", response.data.phone)
+            setValue("gender", response.data.gender)
+            setValue("dob", dob.toISOString().split('T')[0])
+            console.log(response.data);
+        })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -58,7 +73,7 @@ export default function Booking(){
         textAlign: 'center',
         color: theme.palette.text.secondary,
     }));
-    const {register, handleSubmit, formState: { errors }, reset} = useForm({resolver: yupResolver(schemaBooking)})
+    const {register, handleSubmit, formState: { errors }, reset,setValue} = useForm({resolver: yupResolver(schemaBooking)})
     async function createBooking(data){
         const fullData = {
             ...data,
@@ -66,18 +81,17 @@ export default function Booking(){
             bookDay,
             idCustomer
         }
-        console.log(fullData)
         const res = await axios({
             method: 'post',
             url: 'http://localhost:8080/api/booking',
             data: {...fullData}
         });
-            if(res.status === '200'){
+            if(res.status == '200'){
+                console.log(fullData)
                 toast.success("Bạn đã đặt lịch thành công!")
-                // reset();
+                reset();
             }
     }
-    // console.log("hello")
     return(
         <Container maxWidth="md">
             <Stack>
@@ -132,6 +146,9 @@ export default function Booking(){
                                                 {...register("customerName")}
                                                 error={Boolean(errors.customerName)}
                                                 helperText={errors.customerName?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         {(bookFor === "me") ? "" :
@@ -142,6 +159,9 @@ export default function Booking(){
                                                     id="patientName"
                                                     label="Họ và tên bệnh nhân"
                                                     {...register("patientName")}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
                                                 />
                                             </Grid>)}
                                         <Grid item xs={10}>
@@ -149,11 +169,9 @@ export default function Booking(){
                                                 aria-labelledby="demo-controlled-radio-buttons"
                                                 name="radioGender"
                                                 row
-                                                defaultValue={"MALE"}
                                                 {...register("gender")}
                                                 error={Boolean(errors.gender)}
                                                 helperText={errors.gender?.message || ''}
-
                                             >
                                                 <FormControlLabel value="MALE" control={<Radio />} label="Nam" />
                                                 <FormControlLabel value="FEMALE" control={<Radio />} label="Nữ" />
@@ -183,6 +201,9 @@ export default function Booking(){
                                                 {...register("phoneCus")}
                                                 error={Boolean(errors.phoneCus)}
                                                 helperText={errors.phoneCus?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
 
                                             />
                                         </Grid>
@@ -195,6 +216,9 @@ export default function Booking(){
                                                 {...register("address")}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         <Grid item xs={10}>
@@ -204,6 +228,9 @@ export default function Booking(){
                                                 label="Lý do khám (Mô tả triệu chứng)"
                                                 autoComplete="text"
                                                 {...register("reason")}
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
                                             />
                                         </Grid>
                                         <Grid item xs={10} >
