@@ -18,6 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
 import dayjs from "dayjs";
+import {useParams} from "react-router-dom";
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -43,9 +44,8 @@ const schemaBooking = yup.object().shape({
         // .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
 })
 export default function Booking(){
-    const scheduleId = 1;
-    // const bookDay = dayjs("2024/01/25").format('DD/MM/YYYY')
-    const bookDay = "25/01/2024"
+    const { scheduleId, bookDay } = useParams();
+    console.log(bookDay)
     const idCustomer = 1;
     const [bookFor, setBookFor] = useState("me")
     const handleChangeBookFor =(event) =>{

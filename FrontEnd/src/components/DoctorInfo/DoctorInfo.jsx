@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import "./Doctorinfo.css"
 import dayjs from "dayjs";
 import {parse} from "date-fns";
 import axios from "axios";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import HTMLReactParser from "html-react-parser";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -152,7 +152,7 @@ function DoctorInfo() {
                             </div>
                             <div className={"d-flex flex-wrap gap-3"}>
                                 {scheduleList.map((schedule, index) => (
-                                    <Link key={schedule.id} to="/" className="schedule">
+                                    <Link key={schedule.id}  to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
                                         {schedule?.timeItem}
                                     </Link>))}
                             </div>
