@@ -150,7 +150,6 @@ export default function CustomizedTables() {
 
 
     const handleChangeLock = async (id, currentLockStatus) => {
-        console.log(typeof currentLockStatus)
 
         Swal.fire({
             title: "Bạn muốn khóa",
@@ -180,7 +179,6 @@ export default function CustomizedTables() {
             }
         });
     };
-
 
     return (
         <>
