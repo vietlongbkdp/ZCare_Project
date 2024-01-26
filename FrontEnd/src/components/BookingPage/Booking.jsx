@@ -6,7 +6,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -51,6 +51,16 @@ export default function Booking(){
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
+    const [customer, setCustomer] = useState(null);
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/customer/get/'+ idCustomer).then(response => {
+            setCustomer(response.data);
+            console.log(response.data);
+        })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
         ...theme.typography.body2,
@@ -66,18 +76,16 @@ export default function Booking(){
             bookDay,
             idCustomer
         }
-        console.log(fullData)
         const res = await axios({
             method: 'post',
             url: 'http://localhost:8080/api/booking',
             data: {...fullData}
         });
-            if(res.status === '200'){
+            if(res.status == '200'){
                 toast.success("Bạn đã đặt lịch thành công!")
-                // reset();
+                reset();
             }
     }
-    // console.log("hello")
     return(
         <Container maxWidth="md">
             <Stack>
@@ -128,6 +136,7 @@ export default function Booking(){
                                                 autoComplete="given-name"
                                                 fullWidth
                                                 id="customerName"
+                                                value={customer?.fullName}
                                                 label={(bookFor ==="me")?"Họ và tên":"Họ và tên người đặt"}
                                                 {...register("customerName")}
                                                 error={Boolean(errors.customerName)}
@@ -149,11 +158,10 @@ export default function Booking(){
                                                 aria-labelledby="demo-controlled-radio-buttons"
                                                 name="radioGender"
                                                 row
-                                                defaultValue={"MALE"}
+                                                value={customer?.gender}
                                                 {...register("gender")}
                                                 error={Boolean(errors.gender)}
                                                 helperText={errors.gender?.message || ''}
-
                                             >
                                                 <FormControlLabel value="MALE" control={<Radio />} label="Nam" />
                                                 <FormControlLabel value="FEMALE" control={<Radio />} label="Nữ" />
@@ -180,6 +188,7 @@ export default function Booking(){
                                                 id="phoneCus"
                                                 label="Số điện thoại"
                                                 autoComplete="phone"
+                                                value={customer?.phone}
                                                 {...register("phoneCus")}
                                                 error={Boolean(errors.phoneCus)}
                                                 helperText={errors.phoneCus?.message || ''}
@@ -192,6 +201,7 @@ export default function Booking(){
                                                 id="address"
                                                 label="Địa chỉ liên hệ"
                                                 autoComplete="address"
+                                                value={customer?.address}
                                                 {...register("address")}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}

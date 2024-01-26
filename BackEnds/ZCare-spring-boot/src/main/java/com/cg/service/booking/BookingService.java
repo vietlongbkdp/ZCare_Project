@@ -35,6 +35,30 @@ public class BookingService implements IBookingService{
 
     @Override
     public List<Booking> findAllByCustomerId(Long customerId) {
+<<<<<<< HEAD
         return iBooKingRepository.findAllByCustomerId(customerId);
+=======
+        return bookingRepository.findAllByCustomerId(customerId);
+    }
+    public Booking toBooking(BookingDTO bookingDTO){
+        Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
+        Customer customer = customerService.findById(bookingDTO.getIdCustomer()).get();
+        Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
+                .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
+                .setCreateAt(LocalDateTime.now())
+                .setStatus(EStatusBooking.CONFIRMING);
+        if(bookingDTO.getReason() != null){
+            booking.setReason(bookingDTO.getReason());
+        }
+        if(bookingDTO.getPatientName() == ""){
+            booking.setPatientName(customer.getFullName());
+        }else{
+            booking.setPatientName(bookingDTO.getPatientName());
+        }
+        return booking;
+    }
+    public void createBooking(Booking booking) {
+        bookingRepository.save(booking);
+>>>>>>> 6d661d1a2091d1c959f236e918bcc88ff52db931
     }
 }
