@@ -45,10 +45,10 @@ const categories = [
     {
         id: 'ADMIN_CLINIC',
         children: [
-            { id: ' Trang chủ ', icon: <SettingsIcon /> },
+            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
             { id: 'Doanh thu', icon: <SettingsIcon /> },
             { id: 'Bệnh nhân', icon: <TimerIcon /> },
-            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "clinic" },
+            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
         ],
     },
     {

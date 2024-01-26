@@ -180,21 +180,7 @@ export default function CustomizedTables() {
         });
     };
 
-    const storedUserId = Cookies.get('userId');
 
-    useEffect(()=>{
-        const finddUser = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data)
-                setClinicId(response.data.id)
-                console.log(clinicId)
-            }catch (error) {
-                console.error(error);
-            }
-        }
-        finddUser();
-    },[])
 
     console.log(clinicId)
     return (

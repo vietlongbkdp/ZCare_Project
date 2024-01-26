@@ -97,6 +97,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
         }
         try {
             data.clinicId = clinicId;
+            console.log(data)
             await axios.put(`http://localhost:8080/api/doctor/update/${doctorId}`, data);
             toast.success("Cập nhật bác sĩ thành công")
             reset();
