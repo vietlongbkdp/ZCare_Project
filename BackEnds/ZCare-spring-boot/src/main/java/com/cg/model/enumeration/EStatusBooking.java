@@ -8,15 +8,15 @@ public enum EStatusBooking {
     EXAMINED(1L,"Đã khám"),
     RESULTING(2L,"Đã trả kết quả"),
     CANCEL(3L,"Đã huỷ");
-    private Long id;
-    private String status;
+    private final Long id;
+    private final String status;
     EStatusBooking(Long id, String status) {
         this.id = id;
         this.status = status;
     }
     public static EStatusBooking getStatusById(Long idIn){
         for (EStatusBooking eStatusBooking : EStatusBooking.values()) {
-            if (eStatusBooking.id == idIn) {
+            if (eStatusBooking.id.equals(idIn)) {
                 return eStatusBooking;
             }
         }

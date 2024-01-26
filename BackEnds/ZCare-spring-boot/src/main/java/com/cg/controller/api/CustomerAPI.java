@@ -37,9 +37,9 @@ public class CustomerAPI {
         Customer customer=customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
-    @GetMapping("/get/{idCustomer}")
-    public ResponseEntity<?> getCustomerByIdCus(@PathVariable Long idCustomer){
-            Customer customer = customerService.findById(idCustomer).get();
+    @GetMapping("/get/{userId}")
+    public ResponseEntity<?> getCustomerByIdCus(@PathVariable Long userId){
+            Customer customer = customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
     @PutMapping("/{userId}")
