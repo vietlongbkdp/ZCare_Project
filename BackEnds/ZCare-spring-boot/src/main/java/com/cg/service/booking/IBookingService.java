@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface IBookingService extends IGeneralService<Booking,Long> {
     List<Booking> findAllByCustomerId(Long customerId);
+    Booking findByCustomerIdAndScheduleId(Long customerId, Long scheduleId);
 }

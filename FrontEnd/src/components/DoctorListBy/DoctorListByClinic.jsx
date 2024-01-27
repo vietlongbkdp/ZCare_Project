@@ -5,11 +5,30 @@ import DoctorInfoClinic from "../DoctorInfoClinic/DoctorInfoClinic";
 import Footer from "../Footer/Footer";
 import HTMLReactParser from "html-react-parser";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 function DoctorListByClinic() {
     const { clinicId } = useParams();
     const [clinic,setClinic]=useState();
+    const [clinicUserId, setClinicUserId]= useState();
+
+    const storedUserId = Cookies.get('userId');
+
+    useEffect(()=>{
+        const finddUser = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                console.log(response.data)
+                setClinicUserId(response.data.id)
+            }catch (error) {
+                console.error(error);
+            }
+        }
+        finddUser();
+    },[])
+
     useEffect(() => {
+
         axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
             .then(response => {
                 setClinic(response.data);
@@ -18,6 +37,7 @@ function DoctorListByClinic() {
                 console.error('Error:', error);
             });
     }, []);
+
     return (
         <>
             <Header/>
