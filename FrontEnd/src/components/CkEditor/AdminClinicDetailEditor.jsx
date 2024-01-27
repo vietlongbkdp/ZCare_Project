@@ -1,16 +1,11 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Typography } from '@mui/material';
 import './CkEditor.css'
 
-// ClassicEditor.create(document.querySelector('#editor'), {
-//     plugins: [AlignmentPlugin], 
-//     toolbar: ['alignLeft', 'alignCenter', 'alignRight'],
-// });
-
-export default function ClinicEditor({ setValue, getValues }) {
+export default function ClinicAdminEditor({register, setValue, getValues }) {
     function handleFileUpload(loader) {
         return {
             upload: () => {
@@ -52,12 +47,8 @@ export default function ClinicEditor({ setValue, getValues }) {
                         extraPlugins: [uploadPlugin]
                     }}
                     onReady={(editor) => {
-                        console.log('ready', getValues("clinicInfo"))
-
                         if (getValues("clinicInfo")) {
                             editor.setData(getValues("clinicInfo"))
-                            console.log('ready', getValues("clinicInfo"))
-
                         }
                     }}
                     onBlur={(event, editor) => {

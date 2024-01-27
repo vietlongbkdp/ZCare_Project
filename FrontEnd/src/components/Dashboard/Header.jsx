@@ -160,7 +160,7 @@ function ResponsiveAppBar() {
                                     letterSpacing: '.3rem',
                                     color: 'inherit',
                                     textDecoration: 'none',
-                                    my: 2
+                                    my: 2,
                                 }}
                             >
                                 {dashboarduser.clinicName}
@@ -206,7 +206,7 @@ function ResponsiveAppBar() {
                             }}
                         >
                             <MenuItem onClick={handleClose}>
-                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                <Link to="editClinic" style={{ textDecoration: 'none', color: 'black' }}>
                                     Cập nhập
                                 </Link>
                             </MenuItem>

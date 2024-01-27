@@ -47,6 +47,7 @@ const categories = [
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
             { id: 'Doanh thu', icon: <SettingsIcon /> },
+            { id: 'Danh sách booking', icon: <TimerIcon /> },
             { id: 'Bệnh nhân', icon: <TimerIcon /> },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
         ],
@@ -54,10 +55,10 @@ const categories = [
     {
         id: 'DOCTOR',
         children: [
-            { id: ' Trang chủ ', icon: <SettingsIcon /> },
-            { id: 'Doanh thu', icon: <SettingsIcon /> },
-            { id: 'Bệnh nhân', icon: <TimerIcon /> },
-            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "clinic" },
+            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
+            // { id: 'Doanh thu', icon: <SettingsIcon /> },
+            { id: 'Danh sách booking', icon: <TimerIcon /> },
+            { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],
     },
     {
