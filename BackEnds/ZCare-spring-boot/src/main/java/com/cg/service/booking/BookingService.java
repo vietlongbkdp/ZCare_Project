@@ -59,8 +59,7 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findByCustomerIdAndScheduleId(customerId,scheduleId);
     }
 
-
-    public Booking toBooking(BookingDTO bookingDTO){
+    public void createBooking(BookingDTO bookingDTO) {
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
         schedule.setStatus(EStatus.SELECTED);
         Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
@@ -75,13 +74,6 @@ public class BookingService implements IBookingService {
             booking.setPatientName(customer.getFullName());
         }else{
             booking.setPatientName(bookingDTO.getPatientName());
-        }
-        return booking;
-    }
-    public void createBooking(Booking booking) {
-        Schedule schedule = scheduleService.findById(booking.getSchedule().getId()).get();
-        if(schedule.getStatus()== EStatus.SELECTED){
-            return ;
         }
         iBookingRepository.save(booking);
         String url = "http://localhost:8080/api/booking/confirm/" + booking.getCustomer().getId() + "/" + booking.getSchedule().getId();
