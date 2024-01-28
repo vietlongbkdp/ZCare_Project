@@ -53,6 +53,7 @@ export default function App() {
         </Route>
         <Route element={<PrivateRouteClinicAdmin/>}>
           <Route path="/clinicadmin" element={<Pagerbase/>}>
+            <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
@@ -61,6 +62,7 @@ export default function App() {
         </Route>
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
           <Route path="/doctoradmin" element={<Pagerbase/>}>
+            <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
             <Route path="clinic" element={<Result/>}></Route>
