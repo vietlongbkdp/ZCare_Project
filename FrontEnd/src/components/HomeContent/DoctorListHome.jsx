@@ -6,7 +6,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import {Link} from "react-router-dom";
-import RatingDoctor from "../RatingDoctor/RatingDoctor";
 import Rating from "@mui/material/Rating";
 
 export default function DoctorListHome() {

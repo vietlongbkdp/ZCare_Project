@@ -6,7 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, Container, Grid, Stack } from '@mui/material';
-import { useEffect } from 'react';
+import {useContext, useEffect} from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import ScheduleCreate from '../ScheduleCreate/ScheduleCreate';
@@ -15,8 +15,11 @@ import AddDoctor from './AddDoctor';
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import DoctorDetail from './DoctorDetail';
+import {ApiContext} from "../ApiContext/ApiProvider";
+import Cookies from "js-cookie";
 
 export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) {
+    const { API_DOCTOR } = useContext(ApiContext)
     const [doctorList, setDoctorList] = useState([])
     const [showAdd, setShowAdd] = useState(false)
     const [showEdit, setShowEdit] = useState(false);
@@ -26,19 +29,52 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     const [showSchedule, setShowSchedule] = useState(false)
     const [showDoctorDetail, setShowDoctorDetail] = useState(false)
     const [doctorId, setDoctorId] = useState();
-    
-    useEffect(() => {
-        const getDoctors = async () => {
+    const [clinicUserId, setClinicUserId]= useState();
+    const storedUserId = Cookies.get('userId');
+
+    useEffect(()=>{
+        const finddUser = async () => {
             try {
-                axios.defaults.withCredentials = true;
-                const response = await axios.get(API_URL);
-                setDoctorList(response.data)
-            } catch (error) {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                console.log(response.data)
+                setClinicUserId(response.data.id)
+            }catch (error) {
                 console.error(error);
             }
         }
-        getDoctors();
-    }, [updateShow])
+        finddUser();
+    },[])
+
+    useEffect(() => {
+        if (clinicId !== undefined) {
+            const getDoctors = async () => {
+                try {
+                    axios.defaults.withCredentials = true;
+                    const response = await axios.get(`${API_DOCTOR}/byClinicId/${clinicId}`);
+                    console.log(response);
+                    setDoctorList(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+            getDoctors();
+        }
+
+        if (clinicUserId!==undefined){
+            const getDoctors1 = async () => {
+                try {
+                    axios.defaults.withCredentials = true;
+                    const response = await axios.get(`${API_DOCTOR}/byClinicId/${clinicUserId}`);
+                    console.log(response);
+                    setDoctorList(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            };
+            getDoctors1();
+        }
+    }, [updateShow, clinicUserId]);
+
 
     const handleOpenDoctor = () => {
         setShowAdd(true)
@@ -102,14 +138,16 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
         <Container>
             {buttonCreate &&
                 <>
-                    <Button
-                        type="button"
-                        variant="contained"
-                        sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
-                        onClick={handleHideDoctor}
-                    >
-                        Trở lại
-                    </Button>
+                    {clinicId !== undefined ? (
+                        <Button
+                            type="button"
+                            variant="contained"
+                            sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
+                            onClick={handleHideDoctor}
+                        >
+                            Trở lại
+                        </Button>
+                    ) : null}
                     <Button
                         type="button"
                         variant="contained"

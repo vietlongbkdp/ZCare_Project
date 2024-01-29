@@ -4,17 +4,16 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import {
-    Paper,
-    TextField
-} from "@mui/material";
+import { Paper, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Cookies from "js-cookie";
 import ClinicEditor from "../CkEditor/ClinicEditor";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -71,37 +70,47 @@ const Item = styled(Paper)(({ theme }) => ({
 let updateAvatar;
 let presentAvatar;
 
-export default function EditClinic({ setShow, setISupdate, clinicId, setShowContent, setShowCreateBtn, setShowPagination }) {
-    const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
+export default function EditAdminClinic() {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        setValue,
+        getValues
+    } = useForm({ resolver: yupResolver(schema) });
 
-    const resetModal = () => {
-        setShow(false)
-        setShowContent(true)
-        setShowCreateBtn(true)
-        setShowPagination(true)
-    }
-    console.log('vao trang edit');
+    const [clinicUserId, setClinicUserId] = useState();
+    const [showCkEditor, setShowCkEditor] = useState(false);
+    const storedUserId = Cookies.get('userId');
+    let navigate = useNavigate();
+
     useEffect(() => {
-        if (clinicId) {
-            console.log('vao use effect');
-            const getClinic = async () => {
-                const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`);
-                const result = await res.data;
-                setValue("clinicName", result.clinicName)
-                setValue("legalRepresentative", result.legalRepresentative)
-                setValue("email", result.email)
-                setValue("hotline", result.hotline)
-                setValue("operatingLicence", result.operatingLicence)
-                setValue("address", result.address)
-                setValue("clinicInfo", result.clinicInfo)
-                presentAvatar = result.clinicLogo;
-                updateAvatar = result.clinicLogo;
-                document.getElementById('blah').src = presentAvatar;
+        const finddUser = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                const res = await axios.get(`http://localhost:8080/api/clinic/${response.data.id}`);
+                if (res.status === 200) {
+                    const result = await res.data;
+                    setShowCkEditor(true)
+                    setValue("clinicName", result.clinicName)
+                    setValue("legalRepresentative", result.legalRepresentative)
+                    setValue("email", result.email)
+                    setValue("hotline", result.hotline)
+                    setValue("operatingLicence", result.operatingLicence)
+                    setValue("address", result.address)
+                    setValue("clinicInfo", result.clinicInfo)
+                    presentAvatar = result.clinicLogo;
+                    updateAvatar = result.clinicLogo;
+                    document.getElementById('blah').src = presentAvatar;
+                    setClinicUserId(response.data.id);
+                }
+            } catch (error) {
+                console.error(error);
             }
-            getClinic();
         }
-    }, [clinicId]);
-
+        finddUser();
+    }, [])
 
     const handleUpdateClinic = async (data) => {
         if (presentAvatar === updateAvatar) {
@@ -110,14 +119,10 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
             data.clinicLogo = updateAvatar;
         }
         try {
-            await axios.put(`http://localhost:8080/api/clinic/${clinicId}`, data);
-            toast.success("Cập nhật phòng khám thành công!")
+            await axios.put(`http://localhost:8080/api/clinic/${clinicUserId}`, data);
+            toast.success("Cập nhật phòng khám thành công!");
+            navigate('/clinicadmin/list-clinic');
             reset();
-            setShowContent(true)
-            setShowCreateBtn(true)
-            setShow(false)
-            setShowPagination(true)
-            setISupdate(prev => !prev);
         } catch (error) {
             toast.error("Cập nhật phòng khám thất bại!")
         }
@@ -140,11 +145,13 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit(handleUpdateClinic)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} >
+                        <Grid item xs={3}>
                             <Item>
                                 <Button component="label" sx={{ borderRadius: 50 }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
-                                         alt={"avatar"} />
+                                    <img id={"blah"} style={{ borderRadius: 100 }}
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png"
+                                        width={170} height={170}
+                                        alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         handleUpload(event)
                                     }} />
@@ -159,9 +166,9 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                             </Item>
                         </Grid>
                         <Grid item xs={9}>
-                            <Item >
+                            <Item>
                                 <Box sx={{ mt: 3 }}>
-                                    <Grid container spacing={2} >
+                                    <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
                                                 autoComplete="clinicName"
@@ -244,10 +251,11 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                         </Grid>
                         <Grid item xs={12}>
                             <Grid item xs={12} sm={12}>
-                                <ClinicEditor {...register("clinicInfo")} setValue={setValue} getValues={getValues} />
+                                {showCkEditor &&
+                                    <ClinicEditor {...register("clinicInfo")} setValue={setValue} getValues={getValues} />}
                             </Grid>
 
-                            <Grid item container xs={12} sm={6} >
+                            <Grid item container xs={12} sm={6}>
                                 <Button
                                     variant="contained"
                                     color="success"
@@ -256,8 +264,8 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                 >
                                     Cập nhật
                                 </Button>
-                                <Button variant="contained" onClick={resetModal}
-                                        sx={{ mt: 3, mb: 1 }}>
+                                <Button variant="contained" onClick={() => navigate('/clinicadmin/list-clinic')}
+                                    sx={{ mt: 3, mb: 1 }}>
                                     Hủy
                                 </Button>
                             </Grid>

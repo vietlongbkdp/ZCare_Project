@@ -10,10 +10,11 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Rating from '@mui/material/Rating';
 import RatingDoctor from "../RatingDoctor/RatingDoctor";
+import Cookies from "js-cookie";
 
 function DoctorInfo() {
-    const dateNows = dayjs().format('DD/MM/YYYY')
-    const parsedDate = parse(dateNows, 'dd/MM/yyyy', new Date()).toLocaleDateString('vi-VN', {weekday: 'long'});
+    const dateNows = dayjs().format('D/M/YYYY')
+    const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', {weekday: 'long'});
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateNows);
@@ -23,6 +24,24 @@ function DoctorInfo() {
     const [ratingList, setRatingList] = useState([]);
     const [ratingSubmitted, setRatingSubmitted] = useState(false);
     const {doctorId} = useParams();
+
+    const [doctorUserId, setDoctorUserId]= useState();
+
+    const storedUserId = Cookies.get('userId');
+
+    useEffect(()=>{
+        const finddUser = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                console.log(response.data)
+                setDoctorUserId(response.data.id)
+            }catch (error) {
+                console.error(error);
+            }
+        }
+        finddUser();
+    },[doctorUserId])
+
     useEffect(() => {
         setCurrentDate(new Date());
         const getRecentDates = () => {
@@ -41,7 +60,8 @@ function DoctorInfo() {
     useEffect(() => {
         const fetchDoctorInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
+                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorUserId);
+                console.log(response.data)
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
                 }
@@ -52,7 +72,7 @@ function DoctorInfo() {
 
         const fetchScheduleData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
+                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorUserId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
                 }
@@ -63,7 +83,7 @@ function DoctorInfo() {
 
         fetchDoctorInfo();
         fetchScheduleData();
-    }, [selectedWeekday]);
+    }, [selectedWeekday, doctorUserId]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -75,7 +95,7 @@ function DoctorInfo() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/rating/${doctorId}`)
+        axios.get(`http://localhost:8080/api/rating/${doctorUserId}`)
             .then(response => {
                 setRatingList(response.data);
             })
@@ -93,11 +113,10 @@ function DoctorInfo() {
     }, [selectedDate]);
 
     return (<>
-        <Header/>
         <div className="w-100" >
-            <div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>
-                <h2>THÔNG TIN BÁC SỸ</h2>
-            </div>
+            {/*<div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>*/}
+            {/*    <h2>THÔNG TIN BÁC SỸ</h2>*/}
+            {/*</div>*/}
 
             <div className={"container-fluid"}>
                 <div className={"container pb-4 "}>
@@ -152,7 +171,7 @@ function DoctorInfo() {
                             </div>
                             <div className={"d-flex flex-wrap gap-3"}>
                                 {scheduleList.map((schedule, index) => (
-                                    <Link key={schedule.id} to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
+                                    <Link key={schedule.id}   className="schedule" disabled={true}>
                                         {schedule?.timeItem}
                                     </Link>))}
                             </div>
@@ -184,31 +203,30 @@ function DoctorInfo() {
                     </div>
                 </div>
             </div>
-            <div className={"container"}>
-                <div className={"d-flex flex-column"}>
-                    <div>
-                        <h5 className={"mt-4 border-bottom py-3"}>Phản hồi của bệnh nhân sau khi đi khám</h5>
-                    </div>
-                    {ratingList.map((rating, index) => (<>
-                        <div> <Rating value={rating?.star} max={5} readOnly /></div>
-                        <div key={rating.id} className="d-flex ">
-                            <div className="me-1">{rating?.customer?.fullName}</div>
-                            <span style={{color: "#48dbfb"}}>
-                                <i className="fa-regular fa-circle-check"></i>
-                                </span>
-                            <span className="ms-2" style={{color: "#48dbfb"}}>
-                               đã khám ngày {rating?.createAt}
-                                 </span>
-                        </div>
-                        <div className="border-bottom py-3">{rating?.comment}</div>
-                    </>))}
-                    <div className={"mt-3 pb-3"}>
-                        <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>
-                    </div>
-                </div>
-            </div>
+            {/*<div className={"container"}>*/}
+            {/*    <div className={"d-flex flex-column"}>*/}
+            {/*        <div>*/}
+            {/*            <h5 className={"mt-4 border-bottom py-3"}>Phản hồi của bệnh nhân sau khi đi khám</h5>*/}
+            {/*        </div>*/}
+            {/*        {ratingList.map((rating, index) => (<>*/}
+            {/*            <div> <Rating value={rating?.star} max={5} readOnly /></div>*/}
+            {/*            <div key={rating.id} className="d-flex ">*/}
+            {/*                <div className="me-1">{rating?.customer?.fullName}</div>*/}
+            {/*                <span style={{color: "#48dbfb"}}>*/}
+            {/*                    <i className="fa-regular fa-circle-check"></i>*/}
+            {/*                    </span>*/}
+            {/*                <span className="ms-2" style={{color: "#48dbfb"}}>*/}
+            {/*                   đã khám ngày {rating?.createAt}*/}
+            {/*                     </span>*/}
+            {/*            </div>*/}
+            {/*            <div className="border-bottom py-3">{rating?.comment}</div>*/}
+            {/*        </>))}*/}
+            {/*        <div className={"mt-3 pb-3"}>*/}
+            {/*            <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
         </div>
-        <Footer/>
     </>);
 }
 

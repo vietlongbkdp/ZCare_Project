@@ -29,4 +29,18 @@ public class SendEmail {
                 + "Trân trọng,\n"
                 + "ZCare Team";
     }
+
+    public static String EmailScheduledSuccessfully(String username, String day,String time,String url) {
+        return "Kính gửi " + username + ",\n\n"
+                + "Bạn đã đặt lịch khám thành công tại ZCare.\n"
+                + "Thông tin đặt lịch:\n"
+                + "Ngày khám: " + day + "\n"
+                + "Thời gian: " + time + "\n\n"
+                + "Vui lòng xác nhận đặt lịch khám bằng cách truy cập đường liên kết sau:\n"
+                + url + "\n\n"
+                + "Cám ơn bạn đã sử dụng dịch vụ của chúng tôi.\n\n"
+                + "Chúc bạn một ngày tốt lành!\n\n"
+                + "Trân trọng,\n"
+                + "ZCare Team";
+    }
 }

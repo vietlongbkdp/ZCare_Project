@@ -34,7 +34,6 @@ function ClinicList() {
             </div>
             <Grid style={{display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap"}}>
                 {clinicData.map(clinic => (
-
                     <Container
                         key={clinic.id}
                         style={{

@@ -27,7 +27,11 @@ import PrivateRouteDoctor from "./components/routing/PrivateRouteDoctor";
 import PrivateRouteCustomer from "./components/routing/PrivateRouteCustomer";
 import DoctorInClinic from "./components/Doctor/DoctorInClinic";
 import AdminViewer from "./components/adminViewer/adminViewer";
-
+import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
+import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
+import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
+import Result from "./components/Result/Result";
+import ResultList from "./components/Result/ResultList";
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -49,14 +53,19 @@ export default function App() {
         </Route>
         <Route element={<PrivateRouteClinicAdmin/>}>
           <Route path="/clinicadmin" element={<Pagerbase/>}>
-            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="clinic" element={<DoctorInClinic />}></Route>
+            <Route path="" element={<DoctorListByClinicAdmin />} />
+            <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
+            <Route path="doctorInfor" element={<DoctorInfor/>} />
+            <Route path="doctor" element={<DoctorInClinic />} />
+            <Route path="editClinic" element={<EditAdminClinic />} />
           </Route>
         </Route>
-        <Route element={<PrivateRouteDoctor/>}>
+        <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
           <Route path="/doctoradmin" element={<Pagerbase/>}>
-            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="clinic" element={<ClinicAdmin/>}></Route>
+            <Route path="" element={<DoctorByAdminClinic/>}></Route>
+            <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
+            <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
+            <Route path="clinic" element={<Result/>}></Route>
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>

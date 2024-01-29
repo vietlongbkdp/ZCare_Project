@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import { Pagination, Typography } from "@mui/material";
 import { getHeader } from '../utils/ApiComponen';
 import './style.css'
+import DoctorDetail from './DoctorDetail';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -48,13 +49,12 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     const endIndex = startIndex + itemsPerPage;
 
     const [doctorList, setDoctorList] = useState([])
-    const [showAdd, setShowAdd] = useState(false)
-    const [showEdit, setShowEdit] = useState(false);
     const [updateShow, setUpdateShow] = useState(false)
-    const [buttonCreate, setButtonCreate] = useState(true)
     const [buttonDisable, setButtonDisable] = useState(true)
-    const [showPage, setShowPage] = useState(true);
-    const [doctorId, setDoctorId] = useState();
+    const [showPage, setShowPage] = useState(true)
+    const [showDoctorDetail, setShowDoctorDetail] = useState(false)
+    const [doctorId, setDoctorId] = useState()
+    const [showDoctorList, setShowDoctorList] = useState(true)
 
     useEffect(() => {
         if (!clinicId) {
@@ -108,73 +108,83 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
         });
     };
 
+    const handleShowDoctorDetail = (doctorId) => {
+        setDoctorId(doctorId);
+        setShowDoctorDetail(true);
+        setShowDoctorList(false);
+    }
+
     return (
-        <Box>
-            <Typography variant="h5" align="center" gutterBottom>Danh sách bác sĩ trên hệ thống</Typography>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell>#</StyledTableCell>
-                            <StyledTableCell align="left">ẢNH ĐẠI DIỆN</StyledTableCell>
-                            <StyledTableCell align="left">TÊN BÁC SĨ</StyledTableCell>
-                            <StyledTableCell align="left">CHỨC DANH</StyledTableCell>
-                            <StyledTableCell align="left">CHUYÊN KHOA</StyledTableCell>
-                            <StyledTableCell align="left">PHÒNG KHÁM</StyledTableCell>
-                            <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
-                            <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
-                            <StyledTableCell align="center">CHI TIẾT</StyledTableCell>
-                            <StyledTableCell align="center">KHÓA</StyledTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {currentDoctorList.map((item) => (
-                            <StyledTableRow key={item.id}>
-                                <StyledTableCell component="th" align="center" scope="row">{item?.id}</StyledTableCell>
-                                <StyledTableCell align="left">
-                                    <img src={item?.avatarImg} alt="Avatar"
-                                        style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
-                                </StyledTableCell>
-                                <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.clinic?.clinicName}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.fee}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.star}</StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <Button
-                                        variant="contained"
-                                        color='primary'
-                                        // onClick={() => handleChangeLock(item.id, item.user.id)}
-                                    >
-                                        <i className="fa-solid fa-list-ul"></i>
-                                    </Button>
-                                </StyledTableCell>
-                                <StyledTableCell align="center">
-                                    <Button
-                                        variant="contained"
-                                        color='error'
-                                        onClick={() => handleChangeLock(item.id, item.user.id)}
-                                    >
-                                        <i className="fa-solid fa-ban"></i>
-                                    </Button>
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            {showPage &&
-                <Pagination
-                    count={Math.ceil(doctorList.length / itemsPerPage)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    showFirstButton
-                    showLastButton
-                    style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
-                />
-            }
-        </Box>
+        <>
+            {showDoctorDetail && <DoctorDetail doctorId={doctorId} setShowDoctorList={setShowDoctorList} setShowDoctorDetail={setShowDoctorDetail} />}
+            {showDoctorList &&
+                <Box>
+                    <Typography variant="h5" align="center" gutterBottom>Danh sách bác sĩ trên hệ thống</Typography>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>#</StyledTableCell>
+                                    <StyledTableCell align="left">ẢNH ĐẠI DIỆN</StyledTableCell>
+                                    <StyledTableCell align="left">TÊN BÁC SĨ</StyledTableCell>
+                                    <StyledTableCell align="left">CHỨC DANH</StyledTableCell>
+                                    <StyledTableCell align="left">CHUYÊN KHOA</StyledTableCell>
+                                    <StyledTableCell align="left">PHÒNG KHÁM</StyledTableCell>
+                                    <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
+                                    <StyledTableCell align="left">ĐÁNH GIÁ</StyledTableCell>
+                                    <StyledTableCell align="center">CHI TIẾT</StyledTableCell>
+                                    <StyledTableCell align="center">KHÓA</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentDoctorList.map((item) => (
+                                    <StyledTableRow key={item.id}>
+                                        <StyledTableCell component="th" align="center" scope="row">{item?.id}</StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            <img src={item?.avatarImg} alt="Avatar"
+                                                style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.clinic?.clinicName}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.fee}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.star}</StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Button
+                                                variant="contained"
+                                                color='primary'
+                                                onClick={() => handleShowDoctorDetail(item.id)}
+                                            >
+                                                <i className="fa-solid fa-list-ul"></i>
+                                            </Button>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Button
+                                                variant="contained"
+                                                color='error'
+                                                onClick={() => handleChangeLock(item.id, item.user.id)}
+                                            >
+                                                <i className="fa-solid fa-ban"></i>
+                                            </Button>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    {showPage &&
+                        <Pagination
+                            count={Math.ceil(doctorList.length / itemsPerPage)}
+                            page={currentPage}
+                            onChange={handlePageChange}
+                            color="primary"
+                            showFirstButton
+                            showLastButton
+                            style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+                        />
+                    }
+                </Box>}
+        </>
     );
 }

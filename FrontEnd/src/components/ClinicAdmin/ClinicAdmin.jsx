@@ -144,50 +144,25 @@ export default function CustomizedTables() {
     const handleChangeLock = async (id, currentLockStatus) => {
         Swal.fire({
             title: "Bạn muốn khóa",
-            text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, change it!"
+            confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.put(`http://localhost:8080/api/clinic/lock/${id}`, {
                         userId: currentLockStatus
                     });
-                    toast.success("Thành công");
+                    toast.success("Khóa phòng khám thành công");
                     setIsupdate(pre => !pre);
                 } catch (error) {
-                    toast.error("Thất bại");
+                    toast.error("Khóa phòng khám thất bại");
                 }
-                Swal.fire({
-                    title: "khóa thành công",
-                    text: `The doctor has been `,
-                    icon: "success"
-                });
-
             }
         });
     };
-
-    const storedUserId = Cookies.get('userId');
-
-    useEffect(() => {
-        const finddUser = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data)
-                setClinicId(response.data.id)
-                console.log(clinicId)
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        finddUser();
-    }, [])
-
-    console.log(clinicId)
 
     return (
         <>
