@@ -44,5 +44,6 @@ public class Booking {
     private LocalDate createAt;
     private String patientName;
     private String reason;
+    private Boolean reminderSent = false ;
 }
 

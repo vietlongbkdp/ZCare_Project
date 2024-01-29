@@ -10,6 +10,6 @@ public interface IDoctorService extends IGeneralService<Doctor,Long> {
     void create(DoctorReqDTO doctorReqDTO);
     List<Doctor> findDoctorsWithFilters(Long specialityId, Long clinicId, String doctorName);
     List<Doctor> findAllByUser_Unlock(boolean user_unlock);
-
+    List<Doctor> findAllByClinicId(Long clinicId);
     Doctor findByUser_Id(Long id);
 }

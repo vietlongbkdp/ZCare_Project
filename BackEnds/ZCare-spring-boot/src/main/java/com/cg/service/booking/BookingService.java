@@ -12,10 +12,12 @@ import com.cg.service.schedule.IScheduleService;
 import com.cg.until.EmailUntil;
 import com.cg.until.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -82,4 +84,21 @@ public class BookingService implements IBookingService {
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
         emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
     }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void checkBookingDatesAndSendReminderEmails() {
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));
+        List<Booking> bookings = iBookingRepository.findByBookingDate(currentDate);
+        String title = "Nhắc nhở lịch khám bệnh";
+        for (Booking booking : bookings) {
+            if (!booking.getReminderSent()) {
+                String body = SendEmail.ExamScheduleReminder(booking.getCustomer().getFullName(), booking.getBookingDate(), booking.getBookingTime());
+                emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
+                booking.setReminderSent(true);
+                iBookingRepository.save(booking);
+            }
+        }
+    }
+
+
 }
