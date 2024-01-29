@@ -7,7 +7,7 @@ public enum EStatusBooking {
     PAID(4L,"Đã thanh toán"),
     EXAMINED(5L,"Đã khám"),
     RESULTING(6L,"Đã trả kết quả"),
-    CANCEL(7L,"Đã huỷ aaa");
+    CANCEL(7L,"Đã huỷ");
     private final Long id;
     private final String status;
     EStatusBooking(Long id, String status) {
