@@ -7,14 +7,12 @@ import TableBody from "@mui/material/TableBody";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import {styled} from "@mui/material/styles";
-import TableCell, {tableCellClasses} from "@mui/material/TableCell";
+import { styled } from "@mui/material/styles";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import * as React from "react";
 import Swal from "sweetalert2";
-import {toast} from "react-toastify";
-import {Pagination} from "@mui/material";
-
-
+import { toast } from "react-toastify";
+import { Pagination, Typography } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -24,7 +22,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
-        textAlign: 'left'
+        textAlign: 'left',
+        padding: '16px'
     },
 }));
 
@@ -36,7 +35,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         border: 0,
     },
 }));
-function GetCustomerAdmin (){
+function GetCustomerAdmin() {
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -49,8 +48,6 @@ function GetCustomerAdmin (){
     const [customerList, setCustomerList] = useState([])
     const [updateShow, setUpdateShow] = useState(false)
 
-
-
     useEffect(() => {
         const getCustomers = async () => {
             try {
@@ -61,84 +58,78 @@ function GetCustomerAdmin (){
             }
         }
         getCustomers();
-    }, [updateShow,currentPage]);
+    }, [updateShow, currentPage]);
+
     const currentCustomerList = customerList.slice(startIndex, endIndex);
     const handleChangeLock = async (id, currentLockStatus) => {
-        console.log(typeof currentLockStatus)
-
         Swal.fire({
             title: "Bạn muốn khóa",
-            text: "You won't be able to revert this!",
+            text: "Bạn sẽ không thể phục hồi!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, change it!"
+            confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.put(`http://localhost:8080/api/customer/lock/${id}`, {
                         userId: currentLockStatus
                     });
-                    toast.success("Thành công");
+                    toast.success("Khóa bệnh nhân thành công");
                     setUpdateShow((prev) => !prev);
                 } catch (error) {
-                    toast.error("Thất bại");
+                    toast.error("Khóa bệnh nhân thất bại");
                 }
-                Swal.fire({
-                    title: "khóa thành công",
-                    text: `The doctor has been `,
-                    icon: "success"
-                });
-
             }
         });
     };
 
-    return(
+    return (
         <>
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                <TableHead>
-                    <TableRow>
-                        <StyledTableCell sx={{ width: 10 }}>#</StyledTableCell>
-                        <StyledTableCell>TÊN BỆNH NHÂN </StyledTableCell>
-                        <StyledTableCell> NGÀY SINH </StyledTableCell>
-                        <StyledTableCell> SỐ ĐIỆN THOẠI </StyledTableCell>
-                        <StyledTableCell> EMAIL </StyledTableCell>
-                        <StyledTableCell> ĐỊA CHỈ </StyledTableCell>
-                        <StyledTableCell> GIỚI TÍNH </StyledTableCell>
-                        <StyledTableCell sx={{ width: 25 }}> TRẠNG THÁI </StyledTableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {currentCustomerList.map((item) => (
-                        <StyledTableRow key={item.id}>
-                            <StyledTableCell sx={{ width: 10 }} component="th" scope="row">
-                                {item?.id}
-                            </StyledTableCell>
-                            <StyledTableCell>
-                                {item?.fullName}
-                            </StyledTableCell>
-                            <StyledTableCell>{item?.dob}</StyledTableCell>
-                            <StyledTableCell>{item?.phone}</StyledTableCell>
-                            <StyledTableCell>{item?.email}</StyledTableCell>
-                            <StyledTableCell>{item?.address}</StyledTableCell>
-                            <StyledTableCell>{item?.gender}</StyledTableCell>
-                            <StyledTableCell align="right">
-                                <Button
-                                    variant="contained"
-                                    color='error'
-                                    onClick={() => handleChangeLock(item.id, item.user.id)}
-                                >
-                                    Khoá
-                                </Button>
-                            </StyledTableCell>
-                        </StyledTableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+            <Typography variant="h5" align="center" gutterBottom>Danh sách bệnh nhân trên hệ thống</Typography>
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell sx={{ width: 10 }}>#</StyledTableCell>
+                            <StyledTableCell>TÊN BỆNH NHÂN </StyledTableCell>
+                            <StyledTableCell> NGÀY SINH </StyledTableCell>
+                            <StyledTableCell> SỐ ĐIỆN THOẠI </StyledTableCell>
+                            <StyledTableCell> EMAIL </StyledTableCell>
+                            <StyledTableCell> ĐỊA CHỈ </StyledTableCell>
+                            <StyledTableCell> GIỚI TÍNH </StyledTableCell>
+                            <StyledTableCell sx={{ width: 25 }}>KHÓA</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {currentCustomerList.map((item) => (
+                            <StyledTableRow key={item.id}>
+                                <StyledTableCell sx={{ width: 10 }} component="th" scope="row">
+                                    {item?.id}
+                                </StyledTableCell>
+                                <StyledTableCell>
+                                    {item?.fullName}
+                                </StyledTableCell>
+                                <StyledTableCell>{item?.dob}</StyledTableCell>
+                                <StyledTableCell>{item?.phone}</StyledTableCell>
+                                <StyledTableCell>{item?.email}</StyledTableCell>
+                                <StyledTableCell>{item?.address}</StyledTableCell>
+                                <StyledTableCell>{item?.gender}</StyledTableCell>
+                                <StyledTableCell align="right">
+                                    <Button
+                                        variant="contained"
+                                        color='error'
+                                        onClick={() => handleChangeLock(item.id, item.user.id)}
+                                    >
+                                        <i className="fa-solid fa-ban"></i>
+                                    </Button>
+                                </StyledTableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
             <Pagination
                 count={Math.ceil(customerList.length / itemsPerPage)}
                 page={currentPage}

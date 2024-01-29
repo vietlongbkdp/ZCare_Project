@@ -26,14 +26,12 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     const [showSchedule, setShowSchedule] = useState(false)
     const [showDoctorDetail, setShowDoctorDetail] = useState(false)
     const [doctorId, setDoctorId] = useState();
-    console.log(clinicId)
+    
     useEffect(() => {
-
         const getDoctors = async () => {
             try {
                 axios.defaults.withCredentials = true;
                 const response = await axios.get(API_URL);
-                console.log(response)
                 setDoctorList(response.data)
             } catch (error) {
                 console.error(error);

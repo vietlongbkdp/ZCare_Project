@@ -60,8 +60,8 @@ function AdminCooperate() {
     const currentCooperateList = cooperateList.slice(startIndex, endIndex);
 
     return (
-        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4, mb: 5, pb: 5 }}>
-            <Typography variant="h4" align="center" gutterBottom>
+        <>
+            <Typography variant="h5" align="center" gutterBottom>
                 Danh sách hợp tác cùng ZCare
             </Typography>
             <TableContainer component={Paper}>
@@ -118,7 +118,7 @@ function AdminCooperate() {
                 showLastButton
                 style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
             />
-        </Container>
+        </>
     );
 }
 

@@ -13,7 +13,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import Swal from 'sweetalert2'
 import { toast } from "react-toastify";
-import { Pagination } from "@mui/material";
+import { Pagination, Typography } from "@mui/material";
 import AddClinic from './AddClinic';
 import EditClinic from './EditClinic';
 import { ApiContext } from '../ApiContext/ApiProvider';
@@ -21,6 +21,7 @@ import DoctorInClinic from '../Doctor/DoctorInClinic';
 import "./clinic.css"
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import ClinicDetail from './ClinicDetail';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -66,6 +67,7 @@ export default function CustomizedTables() {
     const [showDoctorList, setShowDoctorList] = useState(false);
     const [showAddDoctor, setShowAddDoctor] = useState(false);
     const [clinicAdminUser, setClinicAdminUser] = useState();
+    const [showClinicDetail, setShowClinicDetail] = useState(false)
 
     const { API_DOCTOR } = useContext(ApiContext)
 
@@ -110,6 +112,21 @@ export default function CustomizedTables() {
         setShowContent(true)
         setShowCreateBtn(true)
         setShowPagination(true)
+    }
+
+    const handleHideClinicDetail = () => {
+        setShowClinicDetail(false)
+        setShowContent(true)
+        setShowCreateBtn(true)
+        setShowPagination(true)
+    }
+
+    const handleShowClinicDetail = (id) => {
+        setClinicId(id)
+        setShowClinicDetail(true)
+        setShowContent(false)
+        setShowCreateBtn(false)
+        setShowPagination(false)
     }
 
     useEffect(() => {
@@ -175,15 +192,18 @@ export default function CustomizedTables() {
     return (
         <>
             <Box>
-                {showCreateBtn && <Button
-                    type="submit"
-                    variant="contained"
-                    color='success'
-                    sx={{ mt: 3, mb: 1 }}
-                    onClick={handleCreateClinic}
-                >
-                    TẠO PHÒNG KHÁM
-                </Button>}
+                {showCreateBtn && <>
+                    <Typography variant="h5" align="center" gutterBottom>Danh sách phòng khám trên hệ thống</Typography>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color='success'
+                        sx={{ mt: 3, mb: 1 }}
+                        onClick={handleCreateClinic}
+                    >
+                        TẠO PHÒNG KHÁM
+                    </Button>
+                </>}
                 {showAddClinic && <AddClinic
                     setShow={setShowAddClinic}
                     setISupdate={setIsupdate}
@@ -199,11 +219,14 @@ export default function CustomizedTables() {
                     setShowCreateBtn={setShowCreateBtn}
                     setShowPagination={setShowPagination}
                 />}
-                {
-                    showDoctorList && <DoctorInClinic
-                        API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
-                        clinicId={clinicId}
-                        handleHideDoctor={handleHideDoctor} />
+                {showDoctorList && <DoctorInClinic
+                    API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
+                    clinicId={clinicId}
+                    handleHideDoctor={handleHideDoctor} />}
+                {showClinicDetail && <ClinicDetail
+                    clinicId={clinicId}
+                    handleHideClinicDetail={handleHideClinicDetail}
+                />
                 }
                 <Box >
                     {showContent &&
@@ -218,7 +241,7 @@ export default function CustomizedTables() {
                                         <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
                                         <StyledTableCell>HOTLINE</StyledTableCell>
                                         <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >BÁC SĨ</StyledTableCell>
-                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >CHI TIẾT</StyledTableCell>
                                         <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >CẬP NHẬT</StyledTableCell>
                                         <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >KHÓA</StyledTableCell>
                                     </TableRow>
@@ -243,7 +266,8 @@ export default function CustomizedTables() {
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell sx={{ padding: '5px', align: 'center' }}>
-                                                <Button variant='contained' color='primary' sx={{ width: 4 }}>
+                                                <Button variant='contained' color='primary'
+                                                    onClick={() => handleShowClinicDetail(item?.id)} sx={{ width: 4 }}>
                                                     <i className="fa-solid fa-list-ul"></i>
                                                 </Button>
                                             </StyledTableCell>
