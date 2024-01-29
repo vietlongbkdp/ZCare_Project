@@ -9,8 +9,8 @@ import com.cg.model.enumeration.EStatusBooking;
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.ICustomerService;
 import com.cg.service.schedule.IScheduleService;
-import com.cg.until.EmailUntil;
-import com.cg.until.SendEmail;
+import com.cg.util.EmailUtil;
+import com.cg.util.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +28,7 @@ public class BookingService implements IBookingService {
     @Autowired
     private ICustomerService customerService;
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
     @Override
     public List<Booking> findAll() {
         return iBookingRepository.findAll();
@@ -80,6 +80,6 @@ public class BookingService implements IBookingService {
         String title="Xác nhận đặt lịch hẹn khám tại ZCare";
         String body= SendEmail.EmailScheduledSuccessfully(
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
-        emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
+        emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
     }
 }

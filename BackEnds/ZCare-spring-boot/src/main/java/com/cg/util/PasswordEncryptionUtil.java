@@ -1,4 +1,4 @@
-package com.cg.until;
+package com.cg.util;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class PasswordEncryptionUtil {

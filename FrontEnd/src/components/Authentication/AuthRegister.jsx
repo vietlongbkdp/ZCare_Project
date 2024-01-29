@@ -17,6 +17,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
+import { differenceInYears } from "date-fns";
 
 const schema = yup.object({
   fullName: yup
@@ -34,7 +35,11 @@ const schema = yup.object({
   address: yup.string().required("Địa chỉ không được để trống"),
   gender: yup.string().required("Giới tính không được để trống"),
   password: yup.string().required("Mật khẩu không được để trống"),
-  dob: yup.string().required("Ngày sinh không được để trống"),
+  dob: yup.string()
+    .required("Ngày sinh không được để trống")
+    .test("dob", "Bạn phải lớn hơn 15 tuổi", function (value) {
+      return differenceInYears(new Date(), new Date(value)) >= 15;
+    }),
 });
 
 function AuthRegister() {

@@ -8,7 +8,10 @@ import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.ERole;
 import com.cg.repository.ICustomerRepository;
 import com.cg.repository.IUserRepository;
-import com.cg.until.*;
+import com.cg.util.EmailUtil;
+import com.cg.util.PasswordEncryptionUtil;
+import com.cg.util.RandomCode;
+import com.cg.util.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +28,7 @@ public class CustomerService implements ICustomerService {
     private IUserRepository iUserRepository;
 
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
     @Override
     public List<Customer> findAll() {
         return iCustomerRepository.findAll();
@@ -81,7 +84,7 @@ public class CustomerService implements ICustomerService {
             user.setCode(code);
             iUserRepository.save(user);
             String body= SendEmail.EmailResetPassword(user.getEmail(),code);
-            emailUntil.sendEmail(email,title,body);
+            emailUtil.sendEmail(email,title,body);
             return true;
         } else {
             return false;

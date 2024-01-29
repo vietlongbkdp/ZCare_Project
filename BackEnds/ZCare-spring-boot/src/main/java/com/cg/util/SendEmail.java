@@ -1,4 +1,4 @@
-package com.cg.until;
+package com.cg.util;
 
 public class SendEmail {
     public static String EmailCooperate(String username) {
