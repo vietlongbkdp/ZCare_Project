@@ -1,23 +1,24 @@
 import * as React from 'react';
-import {styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, {tableCellClasses} from '@mui/material/TableCell';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from "axios";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
-import {Box} from "@mui/system";
+import { Box } from "@mui/system";
 import Swal from "sweetalert2";
-import {toast} from "react-toastify";
-import {Pagination} from "@mui/material";
-import {getHeader} from '../utils/ApiComponen';
+import { toast } from "react-toastify";
+import { Pagination, Typography } from "@mui/material";
+import { getHeader } from '../utils/ApiComponen';
 import './style.css'
+import DoctorDetail from './DoctorDetail';
 
-const StyledTableCell = styled(TableCell)(({theme}) => ({
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: 'white',
         color: theme.palette.common.black,
@@ -27,7 +28,7 @@ const StyledTableCell = styled(TableCell)(({theme}) => ({
     },
 }));
 
-const StyledTableRow = styled(TableRow)(({theme}) => ({
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
         backgroundColor: theme.palette.action.hover,
     },
@@ -37,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({theme}) => ({
     height: '70px'
 }));
 
-export default function DoctorAdmin({API_URL, handleHideDoctor, clinicId}) {
+export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -48,13 +49,12 @@ export default function DoctorAdmin({API_URL, handleHideDoctor, clinicId}) {
     const endIndex = startIndex + itemsPerPage;
 
     const [doctorList, setDoctorList] = useState([])
-    const [showAdd, setShowAdd] = useState(false)
-    const [showEdit, setShowEdit] = useState(false);
     const [updateShow, setUpdateShow] = useState(false)
-    const [buttonCreate, setButtonCreate] = useState(true)
     const [buttonDisable, setButtonDisable] = useState(true)
-    const [showPage, setShowPage] = useState(true);
-    const [doctorId, setDoctorId] = useState();
+    const [showPage, setShowPage] = useState(true)
+    const [showDoctorDetail, setShowDoctorDetail] = useState(false)
+    const [doctorId, setDoctorId] = useState()
+    const [showDoctorList, setShowDoctorList] = useState(true)
 
     useEffect(() => {
         if (!clinicId) {
@@ -108,92 +108,83 @@ export default function DoctorAdmin({API_URL, handleHideDoctor, clinicId}) {
         });
     };
 
+    const handleShowDoctorDetail = (doctorId) => {
+        setDoctorId(doctorId);
+        setShowDoctorDetail(true);
+        setShowDoctorList(false);
+    }
+
     return (
-        <Box>
-            <TableContainer component={Paper}>
-                <Table sx={{minWidth: 700}} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell>#</StyledTableCell>
-                            <StyledTableCell align="left">ẢNH ĐẠI DIỆN</StyledTableCell>
-                            <StyledTableCell align="left">TÊN BÁC SĨ</StyledTableCell>
-                            <StyledTableCell align="left">CHỨC DANH</StyledTableCell>
-                            <StyledTableCell align="left">CHUYÊN KHOA</StyledTableCell>
-                            <StyledTableCell align="left">PHÒNG KHÁM</StyledTableCell>
-                            <StyledTableCell align="left">NGÀY SINH</StyledTableCell>
-                            <StyledTableCell align="left">EMAIL</StyledTableCell>
-                            <StyledTableCell align="left">SĐT</StyledTableCell>
-                            <StyledTableCell align="left">NGÀY ĐĂNG KÍ</StyledTableCell>
-                            <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
-                            <StyledTableCell align="left">SAO ĐÁNH GIÁ</StyledTableCell>
-                            <StyledTableCell align="center">KHÓA</StyledTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {currentDoctorList.map((item) => (
-                            <StyledTableRow key={item.id}>
-                                <StyledTableCell component="th" align="center" scope="row">{item?.id}</StyledTableCell>
-                                <StyledTableCell align="left">
-                                    <img src={item?.avatarImg} alt="Avatar"
-                                         style={{width: '50px', height: '50px', borderRadius: '25px'}}/>
-                                </StyledTableCell>
-                                <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.clinic?.clinicName}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.dob}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.email}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.phone}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.createAt}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.fee}</StyledTableCell>
-                                <StyledTableCell align="left">{item?.star}</StyledTableCell>
-                                {/*<StyledTableCell align="right">*/}
-                                {/*    <Button*/}
-                                {/*        variant="contained"*/}
-                                {/*        style={{backgroundColor: 'red'}}*/}
-                                {/*        onClick={() => handleChangeLock(item.id, item.user.id)}*/}
-                                {/*    >*/}
-                                {/*        LOCK*/}
-                                {/*    </Button>*/}
-                                {/*</StyledTableCell>*/}
-                                <StyledTableCell align="center">
-                                    <Button
-                                        variant="contained"
-                                        color='error'
-                                        onClick={() => handleChangeLock(item.id, item.user.id)}
-                                    >
-                                        Khoá
-                                    </Button>
-                                </StyledTableCell>
-                                    {/* <StyledTableCell align="center">
-                                    <Button variant="contained" color="warning"
-                                        onClick={() => handleEditId(item.id)}>
-                                        <i className="fa-solid fa-pen-to-square"></i>
-                                    </Button>
-                                </StyledTableCell> */}
-                                    {/* <StyledTableCell align="center">
-                                    <Button variant="contained" color="error"
-                                        onClick={() => handleDelete(item.id)}
-                                        sx={{ marginLeft: 'auto' }}>
-                                        <i className="fa-solid fa-delete-left"></i>
-                                    </Button>
-                                </StyledTableCell> */}
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            {showPage &&
-                <Pagination
-                    count={Math.ceil(doctorList.length / itemsPerPage)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    showFirstButton
-                    showLastButton
-                    style={{marginTop: '1rem', display: 'flex', justifyContent: 'center'}}
-                />
-            }
-        </Box>
+        <>
+            {showDoctorDetail && <DoctorDetail doctorId={doctorId} setShowDoctorList={setShowDoctorList} setShowDoctorDetail={setShowDoctorDetail} />}
+            {showDoctorList &&
+                <Box>
+                    <Typography variant="h5" align="center" gutterBottom>Danh sách bác sĩ trên hệ thống</Typography>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell>#</StyledTableCell>
+                                    <StyledTableCell align="left">ẢNH ĐẠI DIỆN</StyledTableCell>
+                                    <StyledTableCell align="left">TÊN BÁC SĨ</StyledTableCell>
+                                    <StyledTableCell align="left">CHỨC DANH</StyledTableCell>
+                                    <StyledTableCell align="left">CHUYÊN KHOA</StyledTableCell>
+                                    <StyledTableCell align="left">PHÒNG KHÁM</StyledTableCell>
+                                    <StyledTableCell align="left">PHÍ KHÁM (VNĐ)</StyledTableCell>
+                                    <StyledTableCell align="left">ĐÁNH GIÁ</StyledTableCell>
+                                    <StyledTableCell align="center">CHI TIẾT</StyledTableCell>
+                                    <StyledTableCell align="center">KHÓA</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentDoctorList.map((item) => (
+                                    <StyledTableRow key={item.id}>
+                                        <StyledTableCell component="th" align="center" scope="row">{item?.id}</StyledTableCell>
+                                        <StyledTableCell align="left">
+                                            <img src={item?.avatarImg} alt="Avatar"
+                                                style={{ width: '50px', height: '50px', borderRadius: '25px' }} />
+                                        </StyledTableCell>
+                                        <StyledTableCell align="left">{item?.doctorName}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.clinic?.clinicName}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.fee}</StyledTableCell>
+                                        <StyledTableCell align="left">{item?.star}</StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Button
+                                                variant="contained"
+                                                color='primary'
+                                                onClick={() => handleShowDoctorDetail(item.id)}
+                                            >
+                                                <i className="fa-solid fa-list-ul"></i>
+                                            </Button>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="center">
+                                            <Button
+                                                variant="contained"
+                                                color='error'
+                                                onClick={() => handleChangeLock(item.id, item.user.id)}
+                                            >
+                                                <i className="fa-solid fa-ban"></i>
+                                            </Button>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    {showPage &&
+                        <Pagination
+                            count={Math.ceil(doctorList.length / itemsPerPage)}
+                            page={currentPage}
+                            onChange={handlePageChange}
+                            color="primary"
+                            showFirstButton
+                            showLastButton
+                            style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+                        />
+                    }
+                </Box>}
+        </>
     );
 }

@@ -56,9 +56,9 @@ export default function App() {
           <Route path="/clinicadmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
-            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="doctor" element={<DoctorInClinic />}></Route>
-            <Route path="editClinic" element={<EditAdminClinic />}></Route>
+            <Route path="doctorInfor" element={<DoctorInfor/>} />
+            <Route path="doctor" element={<DoctorInClinic />} />
+            <Route path="editClinic" element={<EditAdminClinic />} />
           </Route>
         </Route>
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>

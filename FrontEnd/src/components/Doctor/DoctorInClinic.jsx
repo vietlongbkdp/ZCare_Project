@@ -45,7 +45,6 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
         finddUser();
     },[])
 
-
     useEffect(() => {
         if (clinicId !== undefined) {
             const getDoctors = async () => {

@@ -2,20 +2,18 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import {styled} from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
-import {
-    Paper,
-    TextField
-} from "@mui/material";
-import {useForm} from "react-hook-form";
-import React, {useEffect, useRef, useState} from "react";
+import { Paper, TextField } from "@mui/material";
+import { useForm } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import {yupResolver} from "@hookform/resolvers/yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import Cookies from "js-cookie";
-import AdminClinicDetailEditor from "../CkEditor/AdminClinicDetailEditor";
+import ClinicEditor from "../CkEditor/ClinicEditor";
+import { useNavigate } from "react-router-dom";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -42,7 +40,6 @@ const schema = yup.object().shape({
         .max(30, 'Nhập dưới 30 kí tự'),
 })
 
-
 const StyledErrorText = styled('p')({
     color: '#d32f2f',
     fontSize: '14px',
@@ -61,7 +58,7 @@ const VisuallyHiddenInput = styled('input')({
     width: 1,
 });
 
-const Item = styled(Paper)(({theme}) => ({
+const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
     padding: theme.spacing(2),
@@ -77,14 +74,16 @@ export default function EditAdminClinic() {
     const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
         reset,
         setValue,
         getValues
-    } = useForm({resolver: yupResolver(schema)});
+    } = useForm({ resolver: yupResolver(schema) });
+
     const [clinicUserId, setClinicUserId] = useState();
+    const [showCkEditor, setShowCkEditor] = useState(false);
     const storedUserId = Cookies.get('userId');
-    const clinicInfoValue = useRef(null);
+    let navigate = useNavigate();
 
     useEffect(() => {
         const finddUser = async () => {
@@ -93,7 +92,7 @@ export default function EditAdminClinic() {
                 const res = await axios.get(`http://localhost:8080/api/clinic/${response.data.id}`);
                 if (res.status === 200) {
                     const result = await res.data;
-                    console.log(result)
+                    setShowCkEditor(true)
                     setValue("clinicName", result.clinicName)
                     setValue("legalRepresentative", result.legalRepresentative)
                     setValue("email", result.email)
@@ -101,27 +100,17 @@ export default function EditAdminClinic() {
                     setValue("operatingLicence", result.operatingLicence)
                     setValue("address", result.address)
                     setValue("clinicInfo", result.clinicInfo)
-                    clinicInfoValue.current = result.clinicInfo;
-                    console.log(clinicInfoValue.current)
                     presentAvatar = result.clinicLogo;
                     updateAvatar = result.clinicLogo;
                     document.getElementById('blah').src = presentAvatar;
-
+                    setClinicUserId(response.data.id);
                 }
             } catch (error) {
                 console.error(error);
             }
         }
         finddUser();
-    }, [clinicInfoValue])
-
-    useEffect(() => {
-        setValue("clinicInfo", clinicInfoValue.current)
-    }, [clinicInfoValue.current]);
-    console.log(clinicInfoValue.current);
-    const resetModal = () => {
-
-    }
+    }, [])
 
     const handleUpdateClinic = async (data) => {
         if (presentAvatar === updateAvatar) {
@@ -131,9 +120,9 @@ export default function EditAdminClinic() {
         }
         try {
             await axios.put(`http://localhost:8080/api/clinic/${clinicUserId}`, data);
-            toast.success("Cập nhật phòng khám thành công!")
+            toast.success("Cập nhật phòng khám thành công!");
+            navigate('/clinicadmin/list-clinic');
             reset();
-
         } catch (error) {
             toast.error("Cập nhật phòng khám thất bại!")
         }
@@ -150,22 +139,22 @@ export default function EditAdminClinic() {
 
     return (
         <>
-            <Container sx={{backgroundColor: 'white', paddingY: '15px', borderRadius: '10px'}}>
+            <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     Cập nhật phòng khám
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit(handleUpdateClinic)} sx={{width: '100%'}} mt={3}>
+                <Box component="form" onSubmit={handleSubmit(handleUpdateClinic)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={3}>
                             <Item>
-                                <Button component="label" sx={{borderRadius: 50}}>
-                                    <img id={"blah"} style={{borderRadius: 100}}
-                                         src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png"
-                                         width={170} height={170}
-                                         alt={"avatar"}/>
+                                <Button component="label" sx={{ borderRadius: 50 }}>
+                                    <img id={"blah"} style={{ borderRadius: 100 }}
+                                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png"
+                                        width={170} height={170}
+                                        alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         handleUpload(event)
-                                    }}/>
+                                    }} />
                                 </Button>
                                 {errors?.clinicLogo && <StyledErrorText>{errors?.clinicLogo?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
@@ -178,7 +167,7 @@ export default function EditAdminClinic() {
                         </Grid>
                         <Grid item xs={9}>
                             <Item>
-                                <Box sx={{mt: 3}}>
+                                <Box sx={{ mt: 3 }}>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6} mb={1}>
                                             <TextField
@@ -187,7 +176,7 @@ export default function EditAdminClinic() {
                                                 id="clinicName"
                                                 label="Tên phòng khám"
                                                 type="text"
-                                                InputLabelProps={{shrink: true}}
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.clinicName)}
                                                 helperText={errors.clinicName?.message || ''}
                                                 {...register('clinicName')}
@@ -200,7 +189,7 @@ export default function EditAdminClinic() {
                                                 id="address"
                                                 type={"text"}
                                                 label="Địa chỉ"
-                                                InputLabelProps={{shrink: true}}
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
                                                 {...register("address")}
@@ -213,7 +202,7 @@ export default function EditAdminClinic() {
                                                 id="legalRepresentative"
                                                 type={"text"}
                                                 label="Người đại diện"
-                                                InputLabelProps={{shrink: true}}
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.legalRepresentative)}
                                                 helperText={errors.legalRepresentative?.message || ''}
                                                 {...register("legalRepresentative")}
@@ -237,7 +226,7 @@ export default function EditAdminClinic() {
                                                 id="hotline"
                                                 label="Hotline"
                                                 type="tel"
-                                                InputLabelProps={{shrink: true}}
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.hotline)}
                                                 helperText={errors.hotline?.message || ''}
                                                 {...register("hotline")}
@@ -249,7 +238,7 @@ export default function EditAdminClinic() {
                                                 fullWidth
                                                 id="operatingLicence"
                                                 type={"text"}
-                                                InputLabelProps={{shrink: true}}
+                                                InputLabelProps={{ shrink: true }}
                                                 label="Giấy phép hoạt động"
                                                 error={Boolean(errors.operatingLicence)}
                                                 helperText={errors.operatingLicence?.message || ''}
@@ -262,7 +251,8 @@ export default function EditAdminClinic() {
                         </Grid>
                         <Grid item xs={12}>
                             <Grid item xs={12} sm={12}>
-                                <AdminClinicDetailEditor {...register("clinicInfo")}  setValue={setValue} getValues={getValues}/>
+                                {showCkEditor &&
+                                    <ClinicEditor {...register("clinicInfo")} setValue={setValue} getValues={getValues} />}
                             </Grid>
 
                             <Grid item container xs={12} sm={6}>
@@ -270,12 +260,12 @@ export default function EditAdminClinic() {
                                     variant="contained"
                                     color="success"
                                     type={"submit"}
-                                    sx={{mt: 3, mb: 1, mr: 1}}
+                                    sx={{ mt: 3, mb: 1, mr: 1 }}
                                 >
                                     Cập nhật
                                 </Button>
-                                <Button variant="contained" onClick={resetModal}
-                                        sx={{mt: 3, mb: 1}}>
+                                <Button variant="contained" onClick={() => navigate('/clinicadmin/list-clinic')}
+                                    sx={{ mt: 3, mb: 1 }}>
                                     Hủy
                                 </Button>
                             </Grid>

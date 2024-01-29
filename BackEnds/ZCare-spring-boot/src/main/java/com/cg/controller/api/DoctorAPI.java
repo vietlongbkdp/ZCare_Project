@@ -109,7 +109,7 @@ public class DoctorAPI {
         updateDoctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         updateDoctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
         updateDoctor.setDoctorInfo(doctorReqDTO.getDoctorInfo());
-//        doctorService.save(updateDoctor);
+        doctorService.save(updateDoctor);
 
         if (!updateAvatarImg.equals(doctorReqDTO.getAvatarImg())) {
             avatarService.deleteImage(updateAvatarImg);
