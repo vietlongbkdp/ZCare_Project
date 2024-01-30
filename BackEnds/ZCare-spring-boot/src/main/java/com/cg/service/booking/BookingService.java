@@ -93,7 +93,7 @@ public class BookingService implements IBookingService {
         for (Booking booking : bookings) {
             if (!booking.getReminderSent()) {
                 String body = SendEmail.ExamScheduleReminder(booking.getCustomer().getFullName(), booking.getBookingDate(), booking.getBookingTime());
-                emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
+                emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
                 booking.setReminderSent(true);
                 iBookingRepository.save(booking);
             }
