@@ -41,7 +41,6 @@ const schema = yup.object().shape({
         .max(30, 'Nhập dưới 30 kí tự'),
 })
 
-
 const StyledErrorText = styled('p')({
     color: '#d32f2f',
     fontSize: '14px',
@@ -81,9 +80,10 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
         setShowCreateBtn(true)
         setShowPagination(true)
     }
-
+    console.log('vao trang edit');
     useEffect(() => {
         if (clinicId) {
+            console.log('vao use effect');
             const getClinic = async () => {
                 const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`);
                 const result = await res.data;

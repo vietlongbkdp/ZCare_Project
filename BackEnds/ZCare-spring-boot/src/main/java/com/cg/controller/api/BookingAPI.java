@@ -1,5 +1,6 @@
 package com.cg.controller.api;
 import com.cg.model.Booking;
+import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.Customer;
 import com.cg.model.Schedule;
@@ -49,11 +50,29 @@ public class BookingAPI {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/admin")
+    public ResponseEntity<?> createBookingAdmin(@RequestBody BookingAdminDTO bookingAdminDTO) {
+        Schedule schedule = scheduleService.findById(bookingAdminDTO.getScheduleId()).get();
+        if(schedule.getStatus() == EStatus.AVAILABLE){
+            bookingService.createBookingAdmin(bookingAdminDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("{userId}")
     public ResponseEntity<?> getAllBookingByCustomerId(@PathVariable Long userId){
         Customer customer=customerService.findByUser_Id(userId);
         List<Booking> booking=bookingService.findAllByCustomerId(customer.getId());
         return new ResponseEntity<>(booking,HttpStatus.OK);
+    }
+
+    @PostMapping("/send")
+    public ResponseEntity<String> sendReminderEmails() {
+        bookingService.checkBookingDatesAndSendReminderEmails();
+        return ResponseEntity.ok("Reminder emails sent successfully.");
     }
 
 }

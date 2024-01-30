@@ -12,8 +12,8 @@ import Rating from '@mui/material/Rating';
 import RatingDoctor from "../RatingDoctor/RatingDoctor";
 
 function DoctorInfo() {
-    const dateNows = dayjs().format('DD/MM/YYYY')
-    const parsedDate = parse(dateNows, 'dd/MM/yyyy', new Date()).toLocaleDateString('vi-VN', {weekday: 'long'});
+    const dateNows = dayjs().format('D/M/YYYY');
+    const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
     const [recentDates, setRecentDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateNows);

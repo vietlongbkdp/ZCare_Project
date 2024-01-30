@@ -8,6 +8,7 @@ import Link from '@mui/material/Link';
 import Navigator from './Navigator';
 import Header from './Header';
 import { Outlet } from "react-router-dom";
+import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
 function Copyright() {
     return (
@@ -175,6 +176,8 @@ export default function Paperbase() {
     };
 
     return (
+        <>
+        <ReminderTimer/>
         <ThemeProvider theme={theme}>
             <Box sx={{ display: 'flex', minHeight: '100vh' }}>
                 <CssBaseline />
@@ -207,5 +210,6 @@ export default function Paperbase() {
                 </Box>
             </Box>
         </ThemeProvider>
+        </>
     );
 }

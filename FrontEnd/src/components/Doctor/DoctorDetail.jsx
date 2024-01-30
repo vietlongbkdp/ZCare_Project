@@ -4,8 +4,9 @@ import dayjs from "dayjs";
 import { parse } from "date-fns";
 import axios from "axios";
 import HTMLReactParser from "html-react-parser";
+import { useLocation } from 'react-router-dom';
 
-export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShowDoctorInClinic }) {
+export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShowDoctorInClinic, setShowDoctorList }) {
     const dateNows = dayjs().format('D/M/YYYY')
     const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -14,6 +15,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
+    const location = useLocation();
 
     useEffect(() => {
         setCurrentDate(new Date());
@@ -65,7 +67,12 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
     };
 
     const handleHideDoctorDetail = () => {
-        handleShowDoctorInClinic();
+        if (location.pathname === '/admin/clinic' || location.pathname === '/clinicadmin/doctor') {
+            handleShowDoctorInClinic();
+        }
+        else {
+            setShowDoctorList(true)
+        }
         setShowDoctorDetail(false);
     }
 
@@ -81,13 +88,13 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
             <Button
                 type="button"
                 variant="contained"
-                sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
+                sx={{ mb: 3, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
                 onClick={handleHideDoctorDetail}
             >
                 Trở lại
             </Button>
-            <div className={"container-fluid border-bottom"}>
-                <div className={"container pb-4 "}>
+            <div className={"container-fluid border-bottom bg-light"}>
+                <div className={"container p-4 "}>
                     <div className={"d-flex "}>
                         <div className="avatar">
                             <div className="w-24 rounded">
@@ -166,7 +173,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
                 </div>
             </div>
             <div className={"container-fluid border-bottom"} style={{ backgroundColor: "rgb(248 250 250)" }}>
-                <div className={"container pb-4"}>
+                <div className={"container p-4"}>
                     <div className={"d-flex flex-column mt-3"}>
                         {doctorInfo && doctorInfo?.doctorInfo && HTMLReactParser(doctorInfo?.doctorInfo)}
                     </div>

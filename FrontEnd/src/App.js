@@ -30,10 +30,10 @@ import AdminViewer from "./components/adminViewer/adminViewer";
 import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
 import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
-// import Result from "./components/Result/Result";
-// import ResultList from "./components/Result/ResultList";
 import MapRender from "./components/MapRender/MapRender";
 import ResultTyping from "./components/Result/ResultTyping";
+import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
+import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -58,9 +58,9 @@ export default function App() {
           <Route path="/clinicadmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
-            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="doctor" element={<DoctorInClinic />}></Route>
-            <Route path="editClinic" element={<EditAdminClinic />}></Route>
+            <Route path="doctorInfor" element={<DoctorInfor/>} />
+            <Route path="doctor" element={<DoctorInClinic />} />
+            <Route path="editClinic" element={<EditAdminClinic />} />
           </Route>
         </Route>
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
@@ -87,6 +87,8 @@ export default function App() {
           <Route path="/information-customer" element={<CustomerDashboard/>}/>
           <Route path="/appointment-schedule" element={<AppointmentSchedule/>}/>
         </Route>
+        <Route path="/registerCustomerAdmin" element={<RegisterCustomerAdmin/>} />
+        <Route path="/bookingAdmin/:scheduleId/:day/:month/:year" element={<BookingAdmin />} />
       </Routes>
     </>
   );

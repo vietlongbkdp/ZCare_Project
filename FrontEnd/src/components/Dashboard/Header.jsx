@@ -13,16 +13,16 @@ import AdbIcon from '@mui/icons-material/Adb';
 import SearchIcon from "@mui/icons-material/Search";
 import {alpha, styled} from "@mui/material/styles";
 import {InputBase} from "@mui/material";
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate } from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
+import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
-    const { userId } = useParams();
     const [dashboarduser, setDashboarduser] = useState('');
 
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -119,7 +119,6 @@ function ResponsiveAppBar() {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
                 console.log(response.data.id)
                 setDashboarduser(response.data)
-                // setRoleuser(dashboarduser.user)
                 console.log(dashboarduser)
             }catch (error) {
                 console.error(error);
@@ -137,10 +136,10 @@ function ResponsiveAppBar() {
     const token = Cookies.get('JWT');
     const decodedToken = jwtDecode(token);
     const userRole = decodedToken.roles[0];
-    console.log(userRole)
 
     return (
         <AppBar position="fixed" sx={{ height: '54px' }}>
+            <ReminderTimer/>
             <Container sx={{width: '100%', marginLeft: '265px', paddingRight: '50px !important' }}>
                 <Toolbar disableGutters>
                     {userRole === "ROLE_ADMIN_CLINIC" && (

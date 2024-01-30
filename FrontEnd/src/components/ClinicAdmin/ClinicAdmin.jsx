@@ -13,7 +13,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import Swal from 'sweetalert2'
 import { toast } from "react-toastify";
-import { Pagination } from "@mui/material";
+import { Pagination, Typography } from "@mui/material";
 import AddClinic from './AddClinic';
 import EditClinic from './EditClinic';
 import { ApiContext } from '../ApiContext/ApiProvider';
@@ -21,6 +21,7 @@ import DoctorInClinic from '../Doctor/DoctorInClinic';
 import "./clinic.css"
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
+import ClinicDetail from './ClinicDetail';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -66,6 +67,7 @@ export default function CustomizedTables() {
     const [showDoctorList, setShowDoctorList] = useState(false);
     const [showAddDoctor, setShowAddDoctor] = useState(false);
     const [clinicAdminUser, setClinicAdminUser] = useState();
+    const [showClinicDetail, setShowClinicDetail] = useState(false)
 
     const { API_DOCTOR } = useContext(ApiContext)
 
@@ -112,6 +114,21 @@ export default function CustomizedTables() {
         setShowPagination(true)
     }
 
+    const handleHideClinicDetail = () => {
+        setShowClinicDetail(false)
+        setShowContent(true)
+        setShowCreateBtn(true)
+        setShowPagination(true)
+    }
+
+    const handleShowClinicDetail = (id) => {
+        setClinicId(id)
+        setShowClinicDetail(true)
+        setShowContent(false)
+        setShowCreateBtn(false)
+        setShowPagination(false)
+    }
+
     useEffect(() => {
         const findClinicidUser = async () => {
             try {
@@ -127,64 +144,41 @@ export default function CustomizedTables() {
     const handleChangeLock = async (id, currentLockStatus) => {
         Swal.fire({
             title: "Bạn muốn khóa",
-            text: "You won't be able to revert this!",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, change it!"
+            confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
                     await axios.put(`http://localhost:8080/api/clinic/lock/${id}`, {
                         userId: currentLockStatus
                     });
-                    toast.success("Thành công");
+                    toast.success("Khóa phòng khám thành công");
                     setIsupdate(pre => !pre);
                 } catch (error) {
-                    toast.error("Thất bại");
+                    toast.error("Khóa phòng khám thất bại");
                 }
-                Swal.fire({
-                    title: "khóa thành công",
-                    text: `The doctor has been `,
-                    icon: "success"
-                });
-
             }
         });
     };
 
-
-
-    // useEffect(() => {
-    //     const finddUser = async () => {
-    //         try {
-    //             const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-    //             console.log(response.data)
-    //             setClinicId(response.data.id)
-    //             console.log(clinicId)
-    //         } catch (error) {
-    //             console.error(error);
-    //         }
-    //     }
-    //     finddUser();
-    // }, [])
-    //
-    //
-    // console.log(clinicId)
-
     return (
         <>
             <Box>
-                {showCreateBtn && <Button
-                    type="submit"
-                    variant="contained"
-                    color='success'
-                    sx={{ mt: 3, mb: 1 }}
-                    onClick={handleCreateClinic}
-                >
-                    TẠO PHÒNG KHÁM
-                </Button>}
+                {showCreateBtn && <>
+                    <Typography variant="h5" align="center" gutterBottom>Danh sách phòng khám trên hệ thống</Typography>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color='success'
+                        sx={{ mt: 3, mb: 1 }}
+                        onClick={handleCreateClinic}
+                    >
+                        TẠO PHÒNG KHÁM
+                    </Button>
+                </>}
                 {showAddClinic && <AddClinic
                     setShow={setShowAddClinic}
                     setISupdate={setIsupdate}
@@ -200,11 +194,14 @@ export default function CustomizedTables() {
                     setShowCreateBtn={setShowCreateBtn}
                     setShowPagination={setShowPagination}
                 />}
-                {
-                    showDoctorList && <DoctorInClinic
-                        API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
-                        clinicId={clinicId}
-                        handleHideDoctor={handleHideDoctor} />
+                {showDoctorList && <DoctorInClinic
+                    API_URL={`${API_DOCTOR}/byClinicId/${clinicId}`}
+                    clinicId={clinicId}
+                    handleHideDoctor={handleHideDoctor} />}
+                {showClinicDetail && <ClinicDetail
+                    clinicId={clinicId}
+                    handleHideClinicDetail={handleHideClinicDetail}
+                />
                 }
                 <Box >
                     {showContent &&
@@ -219,7 +216,7 @@ export default function CustomizedTables() {
                                         <StyledTableCell>NGƯỜI ĐẠI DIỆN</StyledTableCell>
                                         <StyledTableCell>HOTLINE</StyledTableCell>
                                         <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >BÁC SĨ</StyledTableCell>
-                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >THÔNG TIN</StyledTableCell>
+                                        <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >CHI TIẾT</StyledTableCell>
                                         <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >CẬP NHẬT</StyledTableCell>
                                         <StyledTableCell sx={{ padding: '5px', textAlign: 'center !important' }} >KHÓA</StyledTableCell>
                                     </TableRow>
@@ -244,7 +241,8 @@ export default function CustomizedTables() {
                                                 </Button>
                                             </StyledTableCell>
                                             <StyledTableCell sx={{ padding: '5px', align: 'center' }}>
-                                                <Button variant='contained' color='primary' sx={{ width: 4 }}>
+                                                <Button variant='contained' color='primary'
+                                                    onClick={() => handleShowClinicDetail(item?.id)} sx={{ width: 4 }}>
                                                     <i className="fa-solid fa-list-ul"></i>
                                                 </Button>
                                             </StyledTableCell>

@@ -1,21 +1,25 @@
 package com.cg.service.booking;
 import com.cg.model.Booking;
 import com.cg.model.Customer;
+import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.Schedule;
+import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
 
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.ICustomerService;
 import com.cg.service.schedule.IScheduleService;
-import com.cg.until.EmailUntil;
-import com.cg.until.SendEmail;
+import com.cg.util.EmailUtil;
+import com.cg.util.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -28,7 +32,7 @@ public class BookingService implements IBookingService {
     @Autowired
     private ICustomerService customerService;
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
     @Override
     public List<Booking> findAll() {
         return iBookingRepository.findAll();
@@ -80,6 +84,47 @@ public class BookingService implements IBookingService {
         String title="Xác nhận đặt lịch hẹn khám tại ZCare";
         String body= SendEmail.EmailScheduledSuccessfully(
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
-        emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
+        emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
     }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void checkBookingDatesAndSendReminderEmails() {
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));
+        List<Booking> bookings = iBookingRepository.findByBookingDate(currentDate);
+        String title = "Nhắc nhở lịch khám bệnh";
+        for (Booking booking : bookings) {
+            if (!booking.getReminderSent()) {
+                String body = SendEmail.ExamScheduleReminder(booking.getCustomer().getFullName(), booking.getBookingDate(), booking.getBookingTime());
+                emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
+                booking.setReminderSent(true);
+                iBookingRepository.save(booking);
+            }
+        }
+    }
+
+    public void createBookingAdmin(BookingAdminDTO bookingAdminDTO) {
+        Schedule schedule = scheduleService.findById(bookingAdminDTO.getScheduleId()).get();
+        schedule.setStatus(EStatus.SELECTED);
+        Optional<Customer> customer = customerService.findCustomerByEmail(bookingAdminDTO.getEmailCus());
+        if(customer.isEmpty()){
+            Customer customerNew=new Customer();
+            customerNew.setGender(EGender.valueOf(bookingAdminDTO.getGender()));
+            customerNew.setPhone(bookingAdminDTO.getPhoneCus());
+            customerNew.setEmail(bookingAdminDTO.getEmailCus());
+            customerNew.setFullName(bookingAdminDTO.getCustomerName());
+            customerNew.setAddress(bookingAdminDTO.getAddress());
+            customerNew.setDob(LocalDate.parse(bookingAdminDTO.getDobCus()));
+            customerService.save(customerNew);
+            Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customerNew).setSchedule(schedule)
+                    .setBookingDate(bookingAdminDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
+                    .setCreateAt(LocalDate.now())
+                    .setStatus(EStatusBooking.CUSTOMERCONFIMED)
+                    .setReminderSent(true);
+            if(bookingAdminDTO.getReason() != null){
+                booking.setReason(bookingAdminDTO.getReason());
+            }
+            iBookingRepository.save(booking);
+        }
+    }
+
 }

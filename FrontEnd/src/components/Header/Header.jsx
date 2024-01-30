@@ -13,6 +13,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Cookies from "js-cookie";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
 library.add(fas)
 export default function Header() {
@@ -87,6 +88,8 @@ export default function Header() {
     };
 
     return (
+        <>
+        <ReminderTimer/>
         <div className={"container-fluid"} style={{ padding: 0 }}>
             <div className={"d-flex justify-content-between align-items-center fw-bold topHead"}>
                 <div className={"d-flex justify-content-between"}>
@@ -163,5 +166,6 @@ export default function Header() {
                 </div>
             </div>
         </div>
+        </>
     )
 } 

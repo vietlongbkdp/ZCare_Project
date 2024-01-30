@@ -1,4 +1,5 @@
 package com.cg.controller.api;
+import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
@@ -55,6 +56,14 @@ public class DoctorAPI {
         return doctorService.findDoctorsWithFilters(specialityId, clinicId, doctorName);
     }
 
+    @GetMapping("/clinic/{userId}")
+    public ResponseEntity<?> getAllDoctorByClinicId(@PathVariable Long userId) {
+        Clinic clinic=clinicService.findByUser_Id(userId);
+        List<Doctor> doctorList=doctorService.findAllByClinicId(clinic.getId());
+        return new ResponseEntity<>(doctorList, HttpStatus.OK);
+    }
+
+
     @GetMapping("/schedule")
     public ResponseEntity<?> getDoctorSchedule() {
         List<Doctor> doctorList = doctorService.findAll();
@@ -100,7 +109,7 @@ public class DoctorAPI {
         updateDoctor.setClinic(clinicService.findById(doctorReqDTO.getClinicId()).get());
         updateDoctor.setSpeciality(specialityService.findById(Long.parseLong(doctorReqDTO.getSpeciality())).get());
         updateDoctor.setDoctorInfo(doctorReqDTO.getDoctorInfo());
-//        doctorService.save(updateDoctor);
+        doctorService.save(updateDoctor);
 
         if (!updateAvatarImg.equals(doctorReqDTO.getAvatarImg())) {
             avatarService.deleteImage(updateAvatarImg);

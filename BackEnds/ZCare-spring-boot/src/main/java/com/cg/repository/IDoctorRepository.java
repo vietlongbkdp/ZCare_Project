@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.print.Doc;
 import java.util.List;
 
 @Repository
@@ -21,7 +22,7 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
                                         @Param("doctorName") String doctorName);
 
     List<Doctor> findAllByUser_Unlock(boolean user_unlock);
-
     Doctor findByUser_Id(Long id);
+    List<Doctor> findAllByClinicId(Long clinicId);
 }
 

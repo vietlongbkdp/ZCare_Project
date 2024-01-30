@@ -29,7 +29,6 @@ function DoctorListByClinic() {
     // },[])
     // console.log(clinicUserId)
     useEffect(() => {
-
             axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
                 .then(response => {
                     setClinic(response.data);
@@ -37,8 +36,6 @@ function DoctorListByClinic() {
                 .catch(error => {
                     console.error('Error:', error);
                 });
-
-
 
     }, []);
 

@@ -1,4 +1,4 @@
-package com.cg.until;
+package com.cg.util;
 
 import jakarta.activation.DataSource;
 import jakarta.mail.MessagingException;
@@ -10,12 +10,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 @Service
-public class EmailUntil {
+public class EmailUtil {
     @Autowired
     private JavaMailSender mailSender;
 

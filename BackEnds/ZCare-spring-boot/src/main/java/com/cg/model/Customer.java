@@ -37,8 +37,6 @@ public class Customer {
     private EGender gender;
     @Enumerated(EnumType.STRING)
     private ELockStatus lockStatus;
-    @Valid
-    @NotNull(message = "Khách hàng không được null")
     @OneToOne
     @JoinColumn(name="user_id")
     private User user;

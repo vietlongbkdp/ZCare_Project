@@ -1,20 +1,17 @@
 package com.cg.controller.api;
-import com.cg.model.Clinic;
 import com.cg.model.Customer;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.DTO.UpdateCustomer;
-import com.cg.model.Doctor;
 import com.cg.model.User;
 import com.cg.model.enumeration.EGender;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.User.UserService;
-import com.cg.until.DateUtils;
+import com.cg.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController

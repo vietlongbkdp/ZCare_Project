@@ -9,7 +9,10 @@ import com.cg.repository.IUserRepository;
 import com.cg.service.clinic.IClinicService;
 import com.cg.service.position.IPositionService;
 import com.cg.service.speciality.ISpecialityService;
-import com.cg.until.*;
+import com.cg.util.EmailUtil;
+import com.cg.util.PasswordEncryptionUtil;
+import com.cg.util.RandomCode;
+import com.cg.util.SendEmail;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +35,7 @@ public class DoctorServiceImpl implements IDoctorService{
     @Autowired
     private IUserRepository iUserRepository;
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
 
     @Override
     public List<Doctor> findAll() {
@@ -64,7 +67,7 @@ public class DoctorServiceImpl implements IDoctorService{
 
         String title="Chúc mừng! Tài khoản ZCare đã được tạo thành công";
         String body= SendEmail.EmailRegisterDoctor(doctorReqDTO.getDoctorName(),password,doctorReqDTO.getEmail());
-        emailUntil.sendEmail(doctorReqDTO.getEmail(),title,body);
+        emailUtil.sendEmail(doctorReqDTO.getEmail(),title,body);
 
         Doctor doctor = new Doctor();
         doctor.setPosition(iPositionService.findById(Long.parseLong(doctorReqDTO.getPosition())).get());
@@ -95,6 +98,11 @@ public class DoctorServiceImpl implements IDoctorService{
     @Override
     public List<Doctor> findAllByUser_Unlock(boolean user_unlock) {
         return doctorRepository.findAllByUser_Unlock(user_unlock);
+    }
+
+    @Override
+    public List<Doctor> findAllByClinicId(Long clinicId) {
+        return doctorRepository.findAllByClinicId(clinicId);
     }
 
     @Override
