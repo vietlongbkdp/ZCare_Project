@@ -16,7 +16,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { differenceInYears } from "date-fns";
 import Loading from "../Loading/Loading";
 
@@ -54,6 +54,7 @@ function AuthRegister() {
     resolver: yupResolver(schema),
   });
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     setLoading(true)
     try {
@@ -61,6 +62,7 @@ function AuthRegister() {
       toast.success("Đăng kí thành công");
       setLoading(false)
       reset();
+      navigate(`/login`);
     } catch (error) {
       toast.error("Đăng kí thất bại");
       setLoading(false)
