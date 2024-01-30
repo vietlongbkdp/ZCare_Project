@@ -5,6 +5,7 @@ import {toast } from "react-toastify";
 import {styled} from "@mui/material/styles";
 import {tableCellClasses} from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
+import Loading from "../Loading/Loading";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -29,25 +30,31 @@ function AdminCooperate() {
     const [cooperateList, setCooperateList] = useState([]);
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getAllCooperate = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/cooperate');
                 setCooperateList(response.data);
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         };
         getAllCooperate();
     }, [currentPage]);
 
     const handleClick = async (id) => {
+        setLoading(true)
         try {
             await axios.get(`http://localhost:8080/api/cooperate/${id}`);
             toast.success("Xác nhận thành công");
+            setLoading(false)
         } catch (error) {
             console.error(error);
+            setLoading(false)
         }
     };
 
@@ -60,8 +67,9 @@ function AdminCooperate() {
     const currentCooperateList = cooperateList.slice(startIndex, endIndex);
 
     return (
-        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4, mb: 5, pb: 5 }}>
-            <Typography variant="h4" align="center" gutterBottom>
+        <>
+            {loading && <Loading/>}
+            <Typography variant="h5" align="center" gutterBottom>
                 Danh sách hợp tác cùng ZCare
             </Typography>
             <TableContainer component={Paper}>
@@ -118,7 +126,7 @@ function AdminCooperate() {
                 showLastButton
                 style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
             />
-        </Container>
+        </>
     );
 }
 

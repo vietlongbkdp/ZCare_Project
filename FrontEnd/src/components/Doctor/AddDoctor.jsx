@@ -18,6 +18,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -76,7 +77,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
-
+    const [loading, setLoading] = useState(true);
     const { register, handleSubmit, formState: { errors }, reset } = useForm(
         {
             resolver: yupResolver(schema)
@@ -84,6 +85,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
     );
 
     const createDoctor = async (data) => {
+        setLoading(true)
         console.log('data', data);
         let imagesImport = Array.from(data.avatarImg);
         const formData = new FormData();
@@ -99,10 +101,12 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
                 setUpdateShow(pre => !pre);
                 reset();
                 handleShowDoctorInClinic();
+                setLoading(false)
             }
             else {
                 await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
                 toast.error("Tạo bác sĩ thất bại!")
+                setLoading(false)
             }
         }
         else {
@@ -115,8 +119,10 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
             try {
                 const response = await axios.get('http://localhost:8080/api/clinic');
                 setClinicList(response.data);
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getClinics();
@@ -153,6 +159,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     TẠO BÁC SĨ

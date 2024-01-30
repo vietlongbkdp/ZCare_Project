@@ -21,5 +21,9 @@ public class Result {
     @Lob
     @Column(name = "file", columnDefinition = "LONGBLOB")
     private byte[] file;
+    @Column(name = "note", columnDefinition = "LONGTEXT")
     private String note;
+    private String doctorNotice;
+    private String diagResult;
+    private String advice;
 }

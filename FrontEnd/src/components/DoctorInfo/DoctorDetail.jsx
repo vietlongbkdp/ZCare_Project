@@ -6,6 +6,7 @@ import "./Doctorinfo.css"
 import axios from "axios";
 import { parse } from 'date-fns';
 import dayjs from "dayjs";
+import Loading from "../Loading/Loading";
 
 function DoctorDetail() {
     const  dateNows = dayjs().format('D/M/YYYY')
@@ -16,6 +17,7 @@ function DoctorDetail() {
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setCurrentDate(new Date());
@@ -28,6 +30,7 @@ function DoctorDetail() {
                 recentDates.push(date);
             }
             setRecentDates(recentDates);
+            setLoading(false)
         };
         getRecentDates();
     }, []);
@@ -41,9 +44,11 @@ function DoctorDetail() {
                 const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching doctor info:', error);
+                setLoading(false)
             }
         };
 
@@ -52,9 +57,11 @@ function DoctorDetail() {
                 const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching schedule data:', error);
+                setLoading(false)
             }
         };
 
@@ -81,6 +88,7 @@ function DoctorDetail() {
 
     return (
         <>
+            {loading && <Loading/>}
             <Header/>
             <div className={"w-100 d-flex flex-column justify-content-center align-items-center"} style={{height:"200px" ,backgroundColor: "rgb(237 255 250)"}}>
                     <h2 className={" mt-2"}>{doctorInfo?.doctorName}</h2>

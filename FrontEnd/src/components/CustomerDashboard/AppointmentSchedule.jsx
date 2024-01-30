@@ -6,26 +6,25 @@ import {Link} from "react-router-dom";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
-
-
-
-
+import Loading from "../Loading/Loading";
 function AppointmentSchedule() {
     const [booking, setBooking] = useState([]);
+    const [loading, setLoading] = useState(true);
     const UserId = Cookies.get('userId');
     useEffect(() => {
         axios.get(`http://localhost:8080/api/booking/${UserId}`)
             .then(response => {
                 setBooking(response.data);
+                setLoading(false)
             })
             .catch(error => {
                 console.error('Error:', error);
+                setLoading(false)
             });
     }, [UserId]);
-    console.log(booking)
-    console.log(dayjs().format("DD/MM/YYYY HH:mm"))
     return (
         <div>
+            {loading && <Loading/>}
             <Header/>
             <div className="d-flex justify-content-center align-items-center"
                  style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>

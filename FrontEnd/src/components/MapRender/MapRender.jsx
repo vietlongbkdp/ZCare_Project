@@ -14,7 +14,7 @@ export default function MapRender() {
     useEffect(() => {
         const getAddressCoordinates = async () => {
             try {
-                const api_key = 'AIzaSyDLAzBOtor8ODp47ZIcQNErgcuKwCQ7c_8';
+                const api_key = 'AIzaSyDpb2PDiOMv3MvEtzecIb5Hm7Wr5nD4Lpk';
 
                 const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${api_key}`;
                 const response = await axios.get(url);
@@ -75,7 +75,7 @@ export default function MapRender() {
         <div>
             <div id={"map"} style={{height: '300px', width: '50%'}}>
                 <GoogleMapReact
-                    bootstrapURLKeys={{key: 'AIzaSyDLAzBOtor8ODp47ZIcQNErgcuKwCQ7c_8'}}
+                    bootstrapURLKeys={{key: 'AIzaSyDpb2PDiOMv3MvEtzecIb5Hm7Wr5nD4Lpk'}}
                     defaultZoom={18}
                     center={coords}
                 >

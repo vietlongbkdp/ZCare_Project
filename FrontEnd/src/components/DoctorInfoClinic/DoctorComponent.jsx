@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import "./DoctorInfoClinic.css"
-
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import dayjs from "dayjs";
 import { parse } from "date-fns";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 
 function DoctorComponent({ doctor }) {
@@ -16,6 +16,7 @@ function DoctorComponent({ doctor }) {
     const [selectedDate, setSelectedDate] = useState(dateNows);
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const convertStringDetailToNumDetail = (timeItem) => {
         const [startTime, endTime] = timeItem.split(' - ');
         const [startHour, startMinute] = startTime.split(':').map(Number);
@@ -47,6 +48,7 @@ function DoctorComponent({ doctor }) {
                 recentDates.push(date);
             }
             setRecentDates(recentDates);
+            setLoading(false)
         };
         getRecentDates();
     }, []);
@@ -57,9 +59,11 @@ function DoctorComponent({ doctor }) {
             if (response.status === 200) {
                 const sortedScheduleList = sortObjectsByStartTime(response.data);
                 setScheduleList(sortedScheduleList);
+                setLoading(false)
             }
         } catch (error) {
             console.error('Error fetching schedule data:', error);
+            setLoading(false)
         }
     };
 
@@ -83,6 +87,8 @@ function DoctorComponent({ doctor }) {
     }, [selectedDate]);
 
     return (
+        <>
+        {loading && <Loading/>}
         <div key={doctor.id} className={"container d-flex mt-2 rounded border shadow-sm row col-9 p-4 mx-auto"} style={{backgroundColor:"white"}}>
             <div className={"d-flex mt-2 "}>
                 <div className={"d-flex flex-column justify-content-around col-6 border-end"}>
@@ -171,6 +177,7 @@ function DoctorComponent({ doctor }) {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

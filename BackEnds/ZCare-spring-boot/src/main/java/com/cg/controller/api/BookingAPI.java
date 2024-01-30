@@ -1,5 +1,7 @@
 package com.cg.controller.api;
 import com.cg.model.*;
+import com.cg.model.Booking;
+import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
@@ -53,6 +55,18 @@ public class BookingAPI {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping("/admin")
+    public ResponseEntity<?> createBookingAdmin(@RequestBody BookingAdminDTO bookingAdminDTO) {
+        Schedule schedule = scheduleService.findById(bookingAdminDTO.getScheduleId()).get();
+        if(schedule.getStatus() == EStatus.AVAILABLE){
+            bookingService.createBookingAdmin(bookingAdminDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("{userId}")
     public ResponseEntity<?> getAllBookingByCustomerId(@PathVariable Long userId){
         Customer customer=customerService.findByUser_Id(userId);
@@ -75,6 +89,12 @@ public class BookingAPI {
         Doctor doctor = doctorService.findByUser_Id(userId);
         List<Booking> bookingList = bookingService.findAllByDoctor_Id(doctor.getId());
         return new ResponseEntity<>(bookingList,HttpStatus.OK);
+    }
+
+    @PostMapping("/send")
+    public ResponseEntity<String> sendReminderEmails() {
+        bookingService.checkBookingDatesAndSendReminderEmails();
+        return ResponseEntity.ok("Reminder emails sent successfully.");
     }
 
 }

@@ -2,7 +2,7 @@ package com.cg.service.Result;
 import com.cg.model.DTO.ResultReqDTO;
 import com.cg.model.Result;
 import com.cg.repository.IResultRepository;
-import com.cg.until.EmailUntil;
+import com.cg.util.EmailUtil;
 import jakarta.mail.MessagingException;
 import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.safety.Whitelist;
 
 
 @Service
@@ -22,7 +21,7 @@ public class ResultService implements IResultService{
     @Autowired
     private IResultRepository iResultRepository;
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
     @Override
     public List<Result> findAll() {
         return iResultRepository.findAll();
@@ -52,7 +51,7 @@ public class ResultService implements IResultService{
         result.setNote(resultReqDTO.getEditorContent());
         iResultRepository.save(result);
 
-        String toEmail = "doanvanphuocvinh1510@gmail.com";
+        String toEmail = "vietlongbkdp@gmail.com";
         String subject = "Trả kết quả khám";
         String plainText = resultReqDTO.getEditorContent();
         Document document = Jsoup.parse(plainText);
@@ -67,6 +66,6 @@ public class ResultService implements IResultService{
         String plainTextContent = formattedText.toString();
         byte[] fileBytes = resultReqDTO.getFile().getBytes();
         String fileName=resultReqDTO.getFile().getOriginalFilename();
-        emailUntil.sendEmailWithAttachment(toEmail, subject, plainTextContent, fileBytes, fileName);
+        emailUtil.sendEmailWithAttachment(toEmail, subject, plainTextContent, fileBytes, fileName);
     }
 }

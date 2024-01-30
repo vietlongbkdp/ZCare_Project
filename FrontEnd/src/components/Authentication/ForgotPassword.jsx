@@ -6,6 +6,7 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import { useForm } from 'react-hook-form';
 import { Link,useNavigate  } from 'react-router-dom';
+import Loading from "../Loading/Loading";
 
 const schema = yup.object({
     email: yup.string()
@@ -21,6 +22,7 @@ export default function ForgotPassword() {
     const {register, handleSubmit, formState: {errors},reset, setValue, getValues } = useForm({
         resolver: yupResolver(schema)
     });
+    const [loading, setLoading] = useState(false);
     const onSubmit = async (data) => {
       try {
         const response = await axios.post('http://localhost:8080/api/user/forgot-password', data);
@@ -35,11 +37,13 @@ export default function ForgotPassword() {
 
 
     const handleClick = async () => {
+        setLoading(true)
         try {
           setIsButtonDisabled(true);
           const emailValue = getValues('email');
           if (!emailValue) {
             toast.error("Vui lòng nhập email.");
+              setLoading(false)
             return;
           }
           const response = await axios.post('http://localhost:8080/api/user/email', { email: emailValue });
@@ -51,6 +55,7 @@ export default function ForgotPassword() {
           toast.error("Đã xảy ra lỗi khi gửi mã xác nhận.");
         } finally {
           setIsButtonDisabled(false);
+            setLoading(false)
         }
       };
 
@@ -68,6 +73,8 @@ export default function ForgotPassword() {
 
 
   return (
+      <>
+      {loading && <Loading/>}
     <Box sx={{ display: 'flex', alignItems: 'center' , justifyContent: 'center',
     backgroundImage: `url(https://png.pngtree.com/background/20210711/original/pngtree-hospital-culture-publicity-column-background-picture-image_1085829.jpg)`,
     backgroundSize: 'cover',
@@ -145,5 +152,6 @@ export default function ForgotPassword() {
         </form>
     </Box>
 </Box>
+      </>
   )
 }

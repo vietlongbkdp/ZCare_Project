@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import DoctorDetail from './DoctorDetail';
 import {ApiContext} from "../ApiContext/ApiProvider";
 import Cookies from "js-cookie";
+import Loading from "../Loading/Loading";
 
 export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) {
     const { API_DOCTOR } = useContext(ApiContext)
@@ -30,6 +31,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     const [showDoctorDetail, setShowDoctorDetail] = useState(false)
     const [doctorId, setDoctorId] = useState();
     const [clinicUserId, setClinicUserId]= useState();
+    const [loading, setLoading] = useState(true);
     const storedUserId = Cookies.get('userId');
 
     useEffect(()=>{
@@ -38,13 +40,14 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
                 console.log(response.data)
                 setClinicUserId(response.data.id)
+                setLoading(false)
             }catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         finddUser();
     },[])
-
 
     useEffect(() => {
         if (clinicId !== undefined) {
@@ -54,8 +57,10 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                     const response = await axios.get(`${API_DOCTOR}/byClinicId/${clinicId}`);
                     console.log(response);
                     setDoctorList(response.data);
+                    setLoading(false)
                 } catch (error) {
                     console.error(error);
+                    setLoading(false)
                 }
             };
             getDoctors();
@@ -136,6 +141,8 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     };
 
     return (
+        <>
+        {loading && <Loading/>}
         <Container>
             {buttonCreate &&
                 <>
@@ -245,5 +252,6 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                 }
             </Grid>
         </Container>
+        </>
     )
 }

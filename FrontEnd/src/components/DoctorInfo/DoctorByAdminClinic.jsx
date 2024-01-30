@@ -11,6 +11,7 @@ import Footer from "../Footer/Footer";
 import Rating from '@mui/material/Rating';
 import RatingDoctor from "../RatingDoctor/RatingDoctor";
 import Cookies from "js-cookie";
+import Loading from "../Loading/Loading";
 
 function DoctorInfo() {
     const dateNows = dayjs().format('D/M/YYYY')
@@ -23,6 +24,7 @@ function DoctorInfo() {
     const [doctorInfo, setDoctorInfo] = useState('');
     const [ratingList, setRatingList] = useState([]);
     const [ratingSubmitted, setRatingSubmitted] = useState(false);
+    const [loading, setLoading] = useState(true);
     const {doctorId} = useParams();
 
     const [doctorUserId, setDoctorUserId]= useState();
@@ -35,8 +37,10 @@ function DoctorInfo() {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
                 console.log(response.data)
                 setDoctorUserId(response.data.id)
+                setLoading(false)
             }catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         finddUser();
@@ -53,6 +57,7 @@ function DoctorInfo() {
                 recentDates.push(date);
             }
             setRecentDates(recentDates);
+            setLoading(false)
         };
         getRecentDates();
     }, []);
@@ -64,9 +69,11 @@ function DoctorInfo() {
                 console.log(response.data)
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching doctor info:', error);
+                setLoading(false)
             }
         };
 
@@ -75,9 +82,11 @@ function DoctorInfo() {
                 const response = await axios.get(`http://localhost:8080/api/schedule/${doctorUserId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching schedule data:', error);
+                setLoading(false)
             }
         };
 
@@ -113,6 +122,7 @@ function DoctorInfo() {
     }, [selectedDate]);
 
     return (<>
+        {loading && <Loading/>}
         <div className="w-100" >
             {/*<div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>*/}
             {/*    <h2>THÔNG TIN BÁC SỸ</h2>*/}

@@ -29,6 +29,7 @@ public class ClinicAPI {
     private UserService userService;
     @Autowired
     private DoctorServiceImpl doctorService;
+
     @GetMapping
     public ResponseEntity<?> getAllClinic() {
         List<Clinic> clinicList = clinicService.findAllByUser_Unlock(true);
@@ -36,23 +37,23 @@ public class ClinicAPI {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getClinic (@PathVariable Long id){
+    public ResponseEntity<?> getClinic(@PathVariable Long id) {
         Clinic clinic = clinicService.findById(id).get();
-        return new ResponseEntity<>(clinic,HttpStatus.OK);
+        return new ResponseEntity<>(clinic, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createClinic(@RequestBody Clinic clinic){
-       try{
-           clinicService.save(clinic);
-           return new ResponseEntity<>(HttpStatus.OK);
-       }catch (Exception e) {
-           return new ResponseEntity<>("Failed to create clinic", HttpStatus.INTERNAL_SERVER_ERROR);
-       }
+    public ResponseEntity<?> createClinic(@RequestBody Clinic clinic) {
+        try {
+            clinicService.save(clinic);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to create clinic", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateClinic(@PathVariable Long id, @RequestBody Clinic clinic){
+    public ResponseEntity<?> updateClinic(@PathVariable Long id, @RequestBody Clinic clinic) {
         Clinic updateClinic = clinicService.findById(id).get();
         String updateClinicLogo = updateClinic.getClinicLogo();
 
@@ -72,21 +73,19 @@ public class ClinicAPI {
     }
 
     @PutMapping("/lock/{id}")
-    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
-        User user= userService.findById(lockStatusReqDTO.getUserId()).get();
+    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO) {
+        User user = userService.findById(lockStatusReqDTO.getUserId()).get();
         user.setUnlock(false);
         userService.save(user);
         Clinic clinic = clinicService.findById(id).get();
         clinic.setUser(user);
         List<Doctor> doctorList = doctorService.findAllDoctorInClinic(clinic.getId());
-        for(Doctor doctor : doctorList){
+        for (Doctor doctor : doctorList) {
             User userdoctor = doctor.getUser();
             userdoctor.setUnlock(false);
             doctor.setUser(userdoctor);
             doctorService.save(doctor);
         }
-
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

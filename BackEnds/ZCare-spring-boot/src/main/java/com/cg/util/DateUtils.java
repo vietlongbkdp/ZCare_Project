@@ -1,4 +1,4 @@
-package com.cg.until;
+package com.cg.util;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

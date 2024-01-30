@@ -4,8 +4,8 @@ import com.cg.model.Cooperate;
 import com.cg.model.DTO.CooperateReqDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.service.Cooperate.ICooperateService;
-import com.cg.until.EmailUntil;
-import com.cg.until.SendEmail;
+import com.cg.util.EmailUtil;
+import com.cg.util.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class CooperateAPI {
     private ICooperateService cooperateService;
 
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
 
     @GetMapping
     public ResponseEntity<?> findAll() {
@@ -45,7 +45,7 @@ public class CooperateAPI {
         String name = cooperate.getFullName();
         String title="Xác nhận hợp tác thành công";
         String body= SendEmail.EmailCooperate(name);
-        emailUntil.sendEmail(email,title,body);
+        emailUtil.sendEmail(email,title,body);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

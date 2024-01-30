@@ -1,4 +1,4 @@
-package com.cg.until;
+package com.cg.util;
 
 public class SendEmail {
     public static String EmailCooperate(String username) {
@@ -34,12 +34,19 @@ public class SendEmail {
         return "Kính gửi " + username + ",\n\n"
                 + "Bạn đã đặt lịch khám thành công tại ZCare.\n"
                 + "Thông tin đặt lịch:\n"
-                + "Ngày khám: " + day + "\n"
+                + "Ngày khám: " + day
                 + "Thời gian: " + time + "\n\n"
                 + "Vui lòng xác nhận đặt lịch khám bằng cách truy cập đường liên kết sau:\n"
                 + url + "\n\n"
                 + "Cám ơn bạn đã sử dụng dịch vụ của chúng tôi.\n\n"
                 + "Chúc bạn một ngày tốt lành!\n\n"
+                + "Trân trọng,\n"
+                + "ZCare Team";
+    }
+    public static String ExamScheduleReminder(String name, String bookingDate, String bookingTime) {
+        return "Xin chào " + name + ",\n\n"
+                + "Bạn đã đặt lịch khám vào ngày " + bookingDate + " vào lúc " + bookingTime + "\n"
+                + ". Đây là một nhắc nhở để bạn không quên.\n\n"
                 + "Trân trọng,\n"
                 + "ZCare Team";
     }

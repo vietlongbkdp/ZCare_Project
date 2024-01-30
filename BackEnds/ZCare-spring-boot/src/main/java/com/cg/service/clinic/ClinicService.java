@@ -1,15 +1,14 @@
 package com.cg.service.clinic;
 
 import com.cg.model.Clinic;
-import com.cg.model.Customer;
 import com.cg.model.User;
 import com.cg.model.enumeration.ERole;
 import com.cg.repository.IClinicRepository;
 import com.cg.repository.IUserRepository;
-import com.cg.until.EmailUntil;
-import com.cg.until.PasswordEncryptionUtil;
-import com.cg.until.RandomCode;
-import com.cg.until.SendEmail;
+import com.cg.util.EmailUtil;
+import com.cg.util.PasswordEncryptionUtil;
+import com.cg.util.RandomCode;
+import com.cg.util.SendEmail;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +24,7 @@ public class ClinicService implements IClinicService {
     @Autowired
     private IUserRepository iUserRepository;
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
 
     @Override
     public List<Clinic> findAll() {
@@ -48,7 +47,7 @@ public class ClinicService implements IClinicService {
 
         String title = "Chúc mừng! Tài khoản ZCare đã được tạo thành công";
         String body = SendEmail.EmailRegisterDoctor(clinic.getClinicName(), password, clinic.getEmail());
-        emailUntil.sendEmail(clinic.getEmail(), title, body);
+        emailUtil.sendEmail(clinic.getEmail(), title, body);
         clinic.setUser(user);
         clinicRepository.save(clinic);
     }

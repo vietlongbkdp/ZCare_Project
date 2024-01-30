@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -52,12 +52,8 @@ export default function ClinicEditor({ setValue, getValues }) {
                         extraPlugins: [uploadPlugin]
                     }}
                     onReady={(editor) => {
-                        console.log('ready', getValues("clinicInfo"))
-
                         if (getValues("clinicInfo")) {
                             editor.setData(getValues("clinicInfo"))
-                            console.log('ready', getValues("clinicInfo"))
-
                         }
                     }}
                     onBlur={(event, editor) => {
