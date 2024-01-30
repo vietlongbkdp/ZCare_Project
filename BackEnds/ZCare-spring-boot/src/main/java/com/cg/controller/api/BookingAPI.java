@@ -127,4 +127,10 @@ public class BookingAPI {
         return ResponseEntity.ok("Reminder emails sent successfully.");
     }
 
+    @PostMapping("/setSchedule")
+    public ResponseEntity<String> setScheduleBooking() {
+        bookingService.setSchedule();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

@@ -125,6 +125,21 @@ public class BookingService implements IBookingService {
         }
     }
 
+    @Scheduled(cron = "0 */5 * * * *")
+    public void setSchedule() {
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));
+        List<Booking> bookingSetSchedule = iBookingRepository.findAll();
+        for(Booking booking :bookingSetSchedule){
+            LocalDate bookingDate = LocalDate.parse(booking.getBookingDate(), DateTimeFormatter.ofPattern("dd/M/yyyy"));
+            LocalDate currentDateParsed = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern("dd/M/yyyy"));
+            if (currentDateParsed.isAfter(bookingDate)) {
+                Schedule schedule = scheduleService.findById(booking.getSchedule().getId()).get();
+                schedule.setStatus(EStatus.AVAILABLE);
+                scheduleService.save(schedule);
+            }
+        }
+    }
+
     public void createBookingAdmin(BookingAdminDTO bookingAdminDTO) {
         Schedule schedule = scheduleService.findById(bookingAdminDTO.getScheduleId()).get();
         schedule.setStatus(EStatus.SELECTED);

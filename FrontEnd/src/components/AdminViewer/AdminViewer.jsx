@@ -135,18 +135,8 @@ export default function AdminViewer() {
                 </Grid>
                 <Grid xs={12} sm={6} md={3}>
                     <AppWidgetSummary
-                        title="Booking hôm nay"
-                        total={totalbooking}
-                        color="error"
-                        icon={<img alt="icon"
-                                   src="https://res.cloudinary.com/dqcrxfewu/image/upload/v1706603536/example/vbtnnru17uj0cpq9aybn.png"
-                                   style={{width: '100%', height: 'auto'}}/>}
-                    />
-                </Grid>
-                <Grid xs={12} sm={6} md={3}>
-                    <AppWidgetSummary
                         title="Lịch khám hôm nay"
-                        total={totalCustomer}
+                        total={totalbooking}
                         color="error"
                         icon={<img alt="icon"
                                    src="https://thumbs.dreamstime.com/b/vecteur-d-ic%C3%B4ne-de-calendrier-appli-ordre-du-jour-date-butoir-affaires-page-illustration-isolement-sur-le-fond-blanc-rappel-ligne-140057422.jpg"
