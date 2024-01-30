@@ -1,14 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
+import { toast } from 'react-toastify';
+
 function AppointmentSchedule() {
     const [booking, setBooking] = useState([]);
     const UserId = Cookies.get('userId');
+    const location = useLocation();
+
+    useEffect(() => {
+      const searchParams = new URLSearchParams(location.search);
+      const toastSuccessMessage = searchParams.get('toastSuccessMessage');
+      const toastErrorMessage = searchParams.get('toastErrorMessage')
+      if (toastSuccessMessage) {
+        toast.success(toastSuccessMessage);
+      }
+      if (toastErrorMessage) {
+        toast.error(toastErrorMessage)
+      }
+    }, [location.search]);
+
     useEffect(() => {
         axios.get(`http://localhost:8080/api/booking/${UserId}`)
             .then(response => {
@@ -18,6 +34,7 @@ function AppointmentSchedule() {
                 console.error('Error:', error);
             });
     }, [UserId]);
+
     return (
         <div>
             <Header/>
@@ -75,9 +92,9 @@ function AppointmentSchedule() {
                                     {booking?.status && (
                                         (() => {
                                             if (booking?.status === "CONFIRMING") {
-                                                return "Tiếp nhận";
+                                                return "Chưa xác nhận";
                                             } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                return "Khách hàng đã xác nhận";
+                                                return "Đã xác nhận";
                                             } else if (booking?.status === "DOCTORCONFIRMED") {
                                                 return "Bác sỹ đã xác nhận";
                                             } else if (booking?.status === "PAID") {

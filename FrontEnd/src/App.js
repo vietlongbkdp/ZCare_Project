@@ -1,7 +1,7 @@
 import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./pages/Home/HomePage";
 import AuthLogin from "./components/Authentication/AuthLogin";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, unstable_HistoryRouter, useNavigate } from "react-router-dom";
 import AuthRegister from "./components/Authentication/AuthRegister";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Pagerbase from "./components/Dashboard/Paperbase";
@@ -9,7 +9,7 @@ import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { ApiContext } from "./components/ApiContext/ApiProvider";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import CustomerAdmin from "./components/CustomerAdmin/CustomerAdmin"
@@ -33,8 +33,10 @@ import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
 import Result from "./components/Result/Result";
 import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
+
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
+
   return (
     <>
       <Routes>
@@ -43,30 +45,30 @@ export default function App() {
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/change-password/:userId" element={<ChangePassword />} />
-        <Route element={<PrivateRouteAdmin/>}>
-          <Route path="/admin" element={<Pagerbase/>}>
-            <Route path="" element={<AdminViewer/>}></Route>
-            <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR}/>}></Route>
-            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="clinic" element={<ClinicAdmin/>}></Route>
-            <Route path="customer" element={<CustomerAdmin/>}></Route>
+        <Route element={<PrivateRouteAdmin />}>
+          <Route path="/admin" element={<Pagerbase />}>
+            <Route path="" element={<AdminViewer />}></Route>
+            <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR} />}></Route>
+            <Route path="doctorInfor" element={<DoctorInfor />}></Route>
+            <Route path="clinic" element={<ClinicAdmin />}></Route>
+            <Route path="customer" element={<CustomerAdmin />}></Route>
           </Route>
         </Route>
-        <Route element={<PrivateRouteClinicAdmin/>}>
-          <Route path="/clinicadmin" element={<Pagerbase/>}>
+        <Route element={<PrivateRouteClinicAdmin />}>
+          <Route path="/clinicadmin" element={<Pagerbase />}>
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
-            <Route path="doctorInfor" element={<DoctorInfor/>} />
+            <Route path="doctorInfor" element={<DoctorInfor />} />
             <Route path="doctor" element={<DoctorInClinic />} />
             <Route path="editClinic" element={<EditAdminClinic />} />
           </Route>
         </Route>
-        <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
-          <Route path="/doctoradmin" element={<Pagerbase/>}>
-            <Route path="" element={<DoctorByAdminClinic/>}></Route>
-            <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
-            <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
-            <Route path="clinic" element={<Result/>}></Route>
+        <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor" />}>
+          <Route path="/doctoradmin" element={<Pagerbase />}>
+            <Route path="" element={<DoctorByAdminClinic />}></Route>
+            <Route path="doctorInfor" element={<DoctorByAdminClinic />}></Route>
+            <Route path="doctorInfor1" element={<DoctorInfor />}></Route>
+            <Route path="clinic" element={<Result />}></Route>
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>
@@ -77,13 +79,13 @@ export default function App() {
         <Route path="/booking/:scheduleId/:day/:month/:year" element={<Booking />} />
         <Route path="/list-speciality/:specialityId" element={<DoctorListBySpeciality />} />
         <Route path="/list-clinic/:clinicId" element={<DoctorListByClinic />} />
-        <Route path="/search" element={<Search/>} />
-        <Route path="/doctorDetail/:doctorId" element={<DoctorInfo/>} />
-        <Route element={<PrivateRouteCustomer/>}>
-          <Route path="/information-customer" element={<CustomerDashboard/>}/>
-          <Route path="/appointment-schedule" element={<AppointmentSchedule/>}/>
+        <Route path="/search" element={<Search />} />
+        <Route path="/doctorDetail/:doctorId" element={<DoctorInfo />} />
+        <Route element={<PrivateRouteCustomer />}>
+          <Route path="/information-customer" element={<CustomerDashboard />} />
+          <Route path="/appointment-schedule" element={<AppointmentSchedule />} />
         </Route>
-        <Route path="/registerCustomerAdmin" element={<RegisterCustomerAdmin/>} />
+        <Route path="/registerCustomerAdmin" element={<RegisterCustomerAdmin />} />
         <Route path="/bookingAdmin/:scheduleId/:day/:month/:year" element={<BookingAdmin />} />
       </Routes>
     </>

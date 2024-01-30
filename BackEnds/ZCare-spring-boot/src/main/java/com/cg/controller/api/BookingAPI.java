@@ -10,10 +10,13 @@ import com.cg.service.Customer.CustomerService;
 import com.cg.service.booking.BookingService;
 import com.cg.service.schedule.IScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -35,11 +38,26 @@ public class BookingAPI {
     @GetMapping ("/confirm/{customerId}/{scheduleId}")
     public ResponseEntity<?> confirmBooking(@PathVariable Long customerId,@PathVariable Long scheduleId){
         Booking booking = bookingService.findByCustomerIdAndScheduleId(customerId,scheduleId);
-        booking.setStatus(EStatusBooking.CUSTOMERCONFIMED);
-        bookingService.save(booking);
-        return new ResponseEntity<>("Xác nhận booking thành công", HttpStatus.OK);
-    }
+        String redirectUrl;
+        if (booking == null) {
+            String toastErrorMessage = "Lịch khám của bạn đã hết hạn, vui lòng đặt lại!";
+            redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:3001/appointment-schedule")
+                    .queryParam("toastErrorMessage", toastErrorMessage)
+                    .toUriString();
+        }
+        else {
+            booking.setStatus(EStatusBooking.CUSTOMERCONFIMED);
+            bookingService.save(booking);
+            String toastSuccessMessage = "Xác nhận đặt lịch thành công!";
+            redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:3001/appointment-schedule")
+                    .queryParam("toastSuccessMessage", toastSuccessMessage)
+                    .toUriString();
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create(redirectUrl));
 
+        return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
+    }
     @PostMapping
     public ResponseEntity<?> createBooking(@RequestBody BookingDTO bookingDTO) {
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();

@@ -7,7 +7,6 @@ import com.cg.model.Schedule;
 import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
-
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.ICustomerService;
 import com.cg.service.schedule.IScheduleService;
@@ -22,6 +21,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+
 @Service
 @Transactional
 public class BookingService implements IBookingService {
@@ -85,6 +87,22 @@ public class BookingService implements IBookingService {
         String body= SendEmail.EmailScheduledSuccessfully(
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
         emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Booking bookingConfirm = findById(booking.getId()).get();
+                Schedule scheduleConfirm = scheduleService.findById(schedule.getId()).get();
+                if (bookingConfirm.getStatus().equals(EStatusBooking.CONFIRMING)) {
+                    scheduleConfirm.setStatus(EStatus.AVAILABLE);
+                    scheduleService.save(scheduleConfirm);
+                    deleteById(bookingConfirm.getId());
+                }
+                timer.cancel();
+            }
+        };
+        timer.schedule(task, 60*1000);
     }
 
     @Scheduled(cron = "0 */5 * * * *")

@@ -28,7 +28,7 @@ public class ScheduleService implements IScheduleService{
 
     @Override
     public void save(Schedule schedule) {
-
+        scheduleRepository.save(schedule);
     }
 
     @Override

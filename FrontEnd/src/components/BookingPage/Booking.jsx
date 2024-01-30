@@ -16,11 +16,11 @@ import { useForm } from "react-hook-form"
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import {toast} from "react-toastify";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Cookies from "js-cookie";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import Swal from 'sweetalert2';
 
 
 const schemaBooking = yup.object().shape({
@@ -55,6 +55,7 @@ export default function Booking(){
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
+    const navigate = useNavigate();
     const [gender, setGender] = useState(null)
     useEffect(() => {
         axios.get('http://localhost:8080/api/customer/get/'+ userId).then(response => {
@@ -105,8 +106,11 @@ export default function Booking(){
             data: {...fullData}
         });
             if(res.status == '200'){
-                console.log(fullData)
-                toast.success("Bạn đã đặt lịch thành công!")
+                Swal.fire({
+                    title: "Bạn đã đặt lịch thành công!",
+                    text: "Vui lòng kiểm tra mail để xác nhận đặt khám!"
+                })
+                navigate('/appointment-schedule')
             }
     }
     return(

@@ -46,7 +46,7 @@ public class SendEmail {
     public static String ExamScheduleReminder(String name, String bookingDate, String bookingTime) {
         return "Xin chào " + name + ",\n\n"
                 + "Bạn đã đặt lịch khám vào ngày " + bookingDate + " vào lúc " + bookingTime + "\n"
-                + ". Đây là một nhắc nhở để bạn không quên.\n\n"
+                + "Bạn hãy sắp xếp thời gian để đến đúng lịch hẹn nhé!"
                 + "Trân trọng,\n"
                 + "ZCare Team";
     }
