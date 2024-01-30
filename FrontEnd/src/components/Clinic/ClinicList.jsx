@@ -6,18 +6,21 @@ import { Facebook, Instagram, LinkedIn, Twitter } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 function ClinicList() {
     const [clinicData, setClinicData] = useState(null);
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         axios.get('http://localhost:8080/api/clinic')
             .then(response => {
                 setClinicData(response.data);
                 console.log(response.data);
+                setLoading(false)
             })
             .catch(error => {
                 console.error(error);
+                setLoading(false)
             });
     }, []);
 
@@ -27,6 +30,7 @@ function ClinicList() {
 
     return (
         <>
+            {loading && <Loading/>}
             <div className={"w-100 d-flex flex-column justify-content-center align-items-center"}
                  style={{height: "200px", backgroundColor: "rgb(237 255 250)"}}>
                 <h2 className={" mt-2"}>Danh sách phòng khám</h2>

@@ -7,10 +7,12 @@ import HTMLReactParser from "html-react-parser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Button from "@mui/material/Button";
+import Loading from "../Loading/Loading";
 
 function DoctorListByClinic() {
     const { clinicId } = useParams();
     const [clinic,setClinic]=useState();
+    const [loading, setLoading] = useState(true);
     // const [clinicUserId, setClinicUserId]= useState();
     //
     // const storedUserId = Cookies.get('userId');
@@ -32,15 +34,18 @@ function DoctorListByClinic() {
             axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
                 .then(response => {
                     setClinic(response.data);
+                    setLoading(false)
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    setLoading(false)
                 });
 
     }, []);
 
     return (
         <>
+            {loading && <Loading/>}
                     <Header />
                     <div className="w-100 d-flex flex-column justify-content-center align-items-center"
                          style={{ height: "200px", backgroundColor: "rgb(237 255 250)" }}>

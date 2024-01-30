@@ -21,6 +21,7 @@ import {useParams} from "react-router-dom";
 import Cookies from "js-cookie";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import Loading from "../Loading/Loading";
 
 
 const schemaBooking = yup.object().shape({
@@ -56,6 +57,7 @@ export default function Booking(){
         setBookFor(event.target.value)
     }
     const [gender, setGender] = useState(null)
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         axios.get('http://localhost:8080/api/customer/get/'+ userId).then(response => {
             const [year, month, day] = response.data.dob;
@@ -67,10 +69,11 @@ export default function Booking(){
             setValue("dobCus", dob.toISOString().split('T')[0])
             console.log(response.data);
             setGender(response.data.gender)
-
+            setLoading(false)
         })
             .catch(error => {
                 console.error(error);
+                setLoading(false)
             });
     }, []);
 
@@ -78,9 +81,11 @@ export default function Booking(){
         axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
             .then(response => {
                 setSchedule(response.data);
+                setLoading(false)
             })
             .catch(error => {
                 console.error('Error:', error);
+                setLoading(false)
             });
     }, []);
 
@@ -93,6 +98,7 @@ export default function Booking(){
     }));
     const {register, handleSubmit, formState: { errors }, reset,setValue} = useForm({resolver: yupResolver(schemaBooking)})
     async function createBooking(data){
+        setLoading(true)
         const fullData = {
             ...data,
             scheduleId,
@@ -107,10 +113,12 @@ export default function Booking(){
             if(res.status == '200'){
                 console.log(fullData)
                 toast.success("Bạn đã đặt lịch thành công!")
+                setLoading(false)
             }
     }
     return(
         <>
+            {loading && <Loading/>}
             <Header/>
             <div className="d-flex justify-content-center align-items-center"
                  style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>

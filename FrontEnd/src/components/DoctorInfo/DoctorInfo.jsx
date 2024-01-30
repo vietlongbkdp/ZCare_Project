@@ -10,6 +10,7 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Rating from '@mui/material/Rating';
 import RatingDoctor from "../RatingDoctor/RatingDoctor";
+import Loading from "../Loading/Loading";
 
 function DoctorInfo() {
     const dateNows = dayjs().format('D/M/YYYY');
@@ -22,6 +23,7 @@ function DoctorInfo() {
     const [doctorInfo, setDoctorInfo] = useState('');
     const [ratingList, setRatingList] = useState([]);
     const [ratingSubmitted, setRatingSubmitted] = useState(false);
+    const [loading, setLoading] = useState(true);
     const {doctorId} = useParams();
     useEffect(() => {
         setCurrentDate(new Date());
@@ -34,6 +36,7 @@ function DoctorInfo() {
                 recentDates.push(date);
             }
             setRecentDates(recentDates);
+            setLoading(false)
         };
         getRecentDates();
     }, []);
@@ -44,9 +47,11 @@ function DoctorInfo() {
                 const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching doctor info:', error);
+                setLoading(false)
             }
         };
 
@@ -55,9 +60,11 @@ function DoctorInfo() {
                 const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching schedule data:', error);
+                setLoading(false)
             }
         };
 
@@ -93,6 +100,7 @@ function DoctorInfo() {
     }, [selectedDate]);
 
     return (<>
+        {loading && <Loading/>}
         <Header/>
         <div className="w-100" >
             <div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>
