@@ -87,6 +87,11 @@ public class BookingService implements IBookingService {
         emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
     }
 
+    @Override
+    public List<Booking> findAllByDoctor_Id(Long doctorId) {
+        return iBookingRepository.findAllByDoctor_Id(doctorId);
+    }
+
     @Scheduled(cron = "0 */5 * * * *")
     public void checkBookingDatesAndSendReminderEmails() {
         String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));

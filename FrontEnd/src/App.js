@@ -30,10 +30,15 @@ import AdminViewer from "./components/adminViewer/adminViewer";
 import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
 import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
+import Result from "./components/Result/Result";
+import ResultList from "./components/Result/ResultList";
+import CustomerBookingAdminClinic from "./components/CustomerDashboard/CustomerBookingAdminClinic";
+import CustomerBookingDoctor from "./components/CustomerDashboard/CustomerBookingDoctor";
 import MapRender from "./components/MapRender/MapRender";
 import ResultTyping from "./components/Result/ResultTyping";
 import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
+
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -58,19 +63,22 @@ export default function App() {
           <Route path="/clinicadmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
-            <Route path="doctorInfor" element={<DoctorInfor/>} />
-            <Route path="doctor" element={<DoctorInClinic />} />
-            <Route path="editClinic" element={<EditAdminClinic />} />
+            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
+            <Route path="booking" element={<CustomerBookingAdminClinic/>}></Route>
+            <Route path="doctor" element={<DoctorInClinic />}></Route>
+            <Route path="editClinic" element={<EditAdminClinic />}></Route>
           </Route>
         </Route>
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
           <Route path="/doctoradmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
+            <Route path="doctor" element={<CustomerBookingDoctor/>}></Route>
+            <Route path="clinic" element={<Result/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
             {/*<Route path="clinic" element={<Result/>}></Route>*/}
 
-            <Route path="clinic" element={<ResultTyping/>}></Route>
+            {/*<Route path="clinic" element={<ResultTyping/>}></Route>*/}
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>
