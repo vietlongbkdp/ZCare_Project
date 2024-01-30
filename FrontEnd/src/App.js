@@ -32,6 +32,7 @@ import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClini
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
 import Result from "./components/Result/Result";
 import ResultList from "./components/Result/ResultList";
+import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -82,6 +83,7 @@ export default function App() {
           <Route path="/information-customer" element={<CustomerDashboard/>}/>
           <Route path="/appointment-schedule" element={<AppointmentSchedule/>}/>
         </Route>
+        <Route path="/registerCustomerAdmin" element={<RegisterCustomerAdmin/>} />
       </Routes>
     </>
   );

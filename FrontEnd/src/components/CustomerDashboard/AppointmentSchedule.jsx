@@ -6,10 +6,6 @@ import {Link} from "react-router-dom";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
-
-
-
-
 function AppointmentSchedule() {
     const [booking, setBooking] = useState([]);
     const UserId = Cookies.get('userId');
@@ -22,8 +18,6 @@ function AppointmentSchedule() {
                 console.error('Error:', error);
             });
     }, [UserId]);
-    console.log(booking)
-    console.log(dayjs().format("DD/MM/YYYY HH:mm"))
     return (
         <div>
             <Header/>

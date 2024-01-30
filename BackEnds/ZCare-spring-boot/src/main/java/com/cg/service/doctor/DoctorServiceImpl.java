@@ -101,6 +101,11 @@ public class DoctorServiceImpl implements IDoctorService{
     }
 
     @Override
+    public List<Doctor> findAllByClinicId(Long clinicId) {
+        return doctorRepository.findAllByClinicId(clinicId);
+    }
+
+    @Override
     public Doctor findByUser_Id(Long id) {
         return doctorRepository.findByUser_Id(id);
     }

@@ -1,4 +1,5 @@
 package com.cg.controller.api;
+import com.cg.model.Clinic;
 import com.cg.model.DTO.DoctorReqDTO;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.Doctor;
@@ -54,6 +55,14 @@ public class DoctorAPI {
                                               @RequestParam(value = "doctorName", required = false) String doctorName) {
         return doctorService.findDoctorsWithFilters(specialityId, clinicId, doctorName);
     }
+
+    @GetMapping("/clinic/{userId}")
+    public ResponseEntity<?> getAllDoctorByClinicId(@PathVariable Long userId) {
+        Clinic clinic=clinicService.findByUser_Id(userId);
+        List<Doctor> doctorList=doctorService.findAllByClinicId(clinic.getId());
+        return new ResponseEntity<>(doctorList, HttpStatus.OK);
+    }
+
 
     @GetMapping("/schedule")
     public ResponseEntity<?> getDoctorSchedule() {

@@ -18,6 +18,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
+import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -138,6 +139,7 @@ function ResponsiveAppBar() {
 
     return (
         <AppBar position="fixed" sx={{ height: '54px' }}>
+            <ReminderTimer/>
             <Container sx={{width: '100%', marginLeft: '265px', paddingRight: '50px !important' }}>
                 <Toolbar disableGutters>
                     {userRole === "ROLE_ADMIN_CLINIC" && (

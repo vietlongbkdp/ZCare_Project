@@ -56,4 +56,10 @@ public class BookingAPI {
         return new ResponseEntity<>(booking,HttpStatus.OK);
     }
 
+    @PostMapping("/send")
+    public ResponseEntity<String> sendReminderEmails() {
+        bookingService.checkBookingDatesAndSendReminderEmails();
+        return ResponseEntity.ok("Reminder emails sent successfully.");
+    }
+
 }
