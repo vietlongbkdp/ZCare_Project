@@ -14,6 +14,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import Cookies from "js-cookie";
 import ClinicEditor from "../CkEditor/ClinicEditor";
 import { useNavigate } from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -84,6 +85,7 @@ export default function EditAdminClinic() {
     const [showCkEditor, setShowCkEditor] = useState(false);
     const storedUserId = Cookies.get('userId');
     let navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const finddUser = async () => {
@@ -104,15 +106,18 @@ export default function EditAdminClinic() {
                     updateAvatar = result.clinicLogo;
                     document.getElementById('blah').src = presentAvatar;
                     setClinicUserId(response.data.id);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         finddUser();
     }, [])
 
     const handleUpdateClinic = async (data) => {
+        setLoading(true)
         if (presentAvatar === updateAvatar) {
             data.clinicLogo = presentAvatar;
         } else {
@@ -122,9 +127,11 @@ export default function EditAdminClinic() {
             await axios.put(`http://localhost:8080/api/clinic/${clinicUserId}`, data);
             toast.success("Cập nhật phòng khám thành công!");
             navigate('/clinicadmin/list-clinic');
+            setLoading(false)
             reset();
         } catch (error) {
             toast.error("Cập nhật phòng khám thất bại!")
+            setLoading(false)
         }
     };
 
@@ -139,6 +146,7 @@ export default function EditAdminClinic() {
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     Cập nhật phòng khám

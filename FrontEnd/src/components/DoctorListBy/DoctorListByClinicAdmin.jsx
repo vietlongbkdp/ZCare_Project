@@ -7,10 +7,12 @@ import HTMLReactParser from "html-react-parser";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Button from "@mui/material/Button";
+import Loading from "../Loading/Loading";
 
 function DoctorListByClinic() {
     const [clinic, setClinic] = useState();
     const [clinicUserId, setClinicUserId] = useState();
+    const [loading, setLoading] = useState(true);
 
     const storedUserId = Cookies.get('userId');
 
@@ -20,8 +22,10 @@ function DoctorListByClinic() {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
                 console.log(response.data)
                 setClinicUserId(response.data.id)
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         finddUser();
@@ -33,9 +37,11 @@ function DoctorListByClinic() {
             axios.get(`http://localhost:8080/api/clinic/${clinicUserId}`)
                 .then(response => {
                     setClinic(response.data);
+                    setLoading(false)
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    setLoading(false)
                 });
         }
 
@@ -43,6 +49,7 @@ function DoctorListByClinic() {
 
     return (
         <>
+            {loading && <Loading/>}
             <div className={"my-2"} >
                 <div className={"container pb-4"}>
                     <div className={"d-flex flex-column mt-3"}>

@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import DoctorEditor from "../CkEditor/DoctorEditor";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -83,13 +84,14 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
     const [clinicId, setClinicId] = useState(0);
     const [position, setPosition] = useState(0);
     const [speciality, setSpeciality] = useState(0);
-
+    const [loading, setLoading] = useState(true);
     const { register, handleSubmit, formState: { errors }, reset, setValue,getValues } = useForm(
         {
             resolver: yupResolver(schema)
         }
     );
     const handleUpdateDoctor = async (data) => {
+        setLoading(true)
         if (presentAvatar === updateAvatar) {
             data.avatarImg = presentAvatar;
         } else {
@@ -100,12 +102,14 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
             console.log(data)
             await axios.put(`http://localhost:8080/api/doctor/update/${doctorId}`, data);
             toast.success("Cập nhật bác sĩ thành công")
+            setLoading(false)
             reset();
             setShowEdit(false)
             handleShowDoctorInClinic()
             setUpdateShow(pre => !pre);
         } catch (error) {
             toast.error("Cập nhật bác sĩ thất bại")
+            setLoading(false)
         }
     };
     console.log(presentAvatar);
@@ -132,6 +136,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
                 presentAvatar = result.avatarImg;
                 updateAvatar = result.avatarImg;
                 document.getElementById('blah').src = presentAvatar;
+                setLoading(false)
             }
             getDoctor();
         }
@@ -142,8 +147,10 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
             try {
                 const response = await axios.get('http://localhost:8080/api/position');
                 setPositionList(response.data);
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getPositions();
@@ -154,8 +161,10 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
             try {
                 const response = await axios.get('http://localhost:8080/api/speciality');
                 setSpecialityList(response.data);
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getSpeciality();
@@ -177,6 +186,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} component="h2" mt={2}>
                     Cập nhật bác sĩ

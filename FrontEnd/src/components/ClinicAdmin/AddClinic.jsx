@@ -6,12 +6,13 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Paper, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from '../CkEditor/ClinicEditor';
+import Loading from "../Loading/Loading";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -83,8 +84,10 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm(
         { resolver: yupResolver(schema) }
     );
+    const [loading, setLoading] = useState(false);
 
     const createClinic = async (data) => {
+        setLoading(true)
         console.log('data', data);
         let imagesImport = Array.from(data.clinicLogo);
         const formData = new FormData();
@@ -96,6 +99,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
             console.log(response);
             if (response.status == '200') {
                 toast.success("Tạo phòng khám thành công!")
+                setLoading(false);
                 reset();
                 setShowContent(true)
                 setShowCreateBtn(true)
@@ -106,15 +110,18 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
             else {
                 await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
                 toast.error("Tạo phòng khám thất bại!")
+                setLoading(false);
             }
         }
         else {
             toast.error("Tải logo thất bại!")
+            setLoading(false);
         }
     }
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     TẠO PHÒNG KHÁM

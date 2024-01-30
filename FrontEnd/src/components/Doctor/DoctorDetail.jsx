@@ -5,6 +5,7 @@ import { parse } from "date-fns";
 import axios from "axios";
 import HTMLReactParser from "html-react-parser";
 import { useLocation } from 'react-router-dom';
+import Loading from "../Loading/Loading";
 
 export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShowDoctorInClinic, setShowDoctorList }) {
     const dateNows = dayjs().format('D/M/YYYY')
@@ -15,6 +16,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
+    const [loading, setLoading] = useState(true);
     const location = useLocation();
 
     useEffect(() => {
@@ -28,6 +30,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
                 recentDates.push(date);
             }
             setRecentDates(recentDates);
+            setLoading(false)
         };
         getRecentDates();
     }, []);
@@ -38,9 +41,11 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
                 const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching doctor info:', error);
+                setLoading(false)
             }
         };
 
@@ -85,6 +90,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
 
     return (
         <>
+            {loading && <Loading/>}
             <Button
                 type="button"
                 variant="contained"

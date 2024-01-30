@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -27,6 +27,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loading from "../Loading/Loading";
 
 export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, setShowSchedule }) {
     const [dateCreate, setDateCreate] = useState([])
@@ -46,6 +47,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
     const [timeValueStart, setTimeValueStart] = useState(null);
     const [timeValueEnd, setTimeValueEnd] = useState(null);
     const [betweenTime, setBetweenTime] = useState("30")
+    const [loading, setLoading] = useState(true);
     const handleDeleteWeekday = (event) => {
         const strWeekdayDelete = event.target.closest(".chipWeekday").firstChild.innerText
         let listWeekdayUpdate = weekday.filter(item => item !== strWeekdayDelete)
@@ -101,8 +103,10 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
                     index.listDetailTimes = listDetailPush
                 })
                 setDateCreate(listTimeDetails)
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getScheduleAPI();
@@ -121,6 +125,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
         }
     }
     const handleSubmit = (event) => {
+        setLoading(true)
         event.preventDefault()
         const listWeek = weekday
         const listWeekdayExist = []
@@ -143,6 +148,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
             }
         })
         setDateCreate(listSchedule)
+        setLoading(false)
     }
     const handleClickAddTimes = (event) => {
         setIsAddTimes({
@@ -159,14 +165,17 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
         setTimeValueEnd(null)
     }
     const handleCreateSche = event => {
+        setLoading(true)
         const strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`;
         const startTimeGet = timeValueStart;
         const endTimeGet = timeValueEnd;
         if ((startTimeGet === null) || (endTimeGet === null)) {
             toast.error("Quy trình chọn giờ chưa đúng, hãy chọn thơì gian rồi bấm OK để lưu!")
+            setLoading(false)
         } else {
             if ((endTimeGet - startTimeGet) < (parseInt(betweenTime) * 60000)) {
                 toast.error("Lựa chọn thời gian không hợp lệ!")
+                setLoading(false)
             } else {
                 const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
                 const newSchedule = {
@@ -190,10 +199,12 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
                         });
                     } else {
                         flag = true
+                        setLoading(false)
                     }
                 })
                 if (flag) {
                     toast.error("Có xung đột thời gian, vui lòng kiểm tra lại, hệ thống đã tự động bỏ đi lịch khám bị xung đột")
+                    setLoading(false)
                 }
             }
         }
@@ -242,6 +253,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
 
     }
     const handleSaveSchedule = async () => {
+        setLoading(true)
         const listScheduleGet = []
         dateCreate.map((item) => (
             listScheduleGet.push({
@@ -261,6 +273,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
         });
         if (countItem === 0) {
             toast.error("Lịch đang trống, vui lòng kiểm tra lại")
+            setLoading(false)
         } else {
             const resp = await axios.post('http://localhost:8080/api/schedule/create', data)
             if (resp.status === 200) {
@@ -268,10 +281,12 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
                 setLoadPage(prevState => !prevState)
                 setWeekday(["Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7", "Chủ nhật"])
                 toast.success("Lưu thành công");
+                setLoading(false)
                 handleCloseSchedule();
                 handleCancelTimeSet();
             } else {
                 toast.error("Lưu thất bại")
+                setLoading(false)
             }
         }
     }
@@ -293,6 +308,8 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
         handleShowDoctorInClinic()
     }
     return (
+        <>
+        {loading && <Loading/>}
         <Container maxWidth="md">
             <Item>
                 <Box component={"form"} onSubmit={(event) => {
@@ -450,5 +467,6 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
                 </TableContainer>
             </Item>
         </Container>
+        </>
     )
 }

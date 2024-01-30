@@ -1,10 +1,12 @@
 import { Button, Container, Typography } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
+import Loading from "../Loading/Loading";
 
 export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
     const [clinicDetail, setClinicDetail] = useState();
     const [buttonCreate, setButtonCreate] = useState(true)
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getClinicById = async () => {
@@ -12,14 +14,18 @@ export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
             if (res.status === 200) {
                 setClinicDetail(res.data)
                 console.log(clinicDetail);
+                setLoading(false)
             }
             else {
                 console.error("Thất bại");
+                setLoading(false)
             }
         }
         getClinicById();
     })
     return (
+        <>
+        {loading && <Loading/>}
         <Container>
             {buttonCreate &&
                 <Button
@@ -34,5 +40,6 @@ export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
                 <Typography variant='h5' align='center' gutterBottom>{clinicDetail?.clinicName}</Typography>
             </Container>
         </Container>
+        </>
     )
 }

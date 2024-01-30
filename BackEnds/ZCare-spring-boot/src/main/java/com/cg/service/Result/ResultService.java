@@ -51,7 +51,7 @@ public class ResultService implements IResultService{
         result.setNote(resultReqDTO.getEditorContent());
         iResultRepository.save(result);
 
-        String toEmail = "doanvanphuocvinh1510@gmail.com";
+        String toEmail = "vietlongbkdp@gmail.com";
         String subject = "Trả kết quả khám";
         String plainText = resultReqDTO.getEditorContent();
         Document document = Jsoup.parse(plainText);

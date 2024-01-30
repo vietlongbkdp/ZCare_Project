@@ -13,6 +13,7 @@ import * as React from "react";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Pagination, Typography } from "@mui/material";
+import Loading from "../Loading/Loading";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -47,14 +48,16 @@ function GetCustomerAdmin() {
 
     const [customerList, setCustomerList] = useState([])
     const [updateShow, setUpdateShow] = useState(false)
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const getCustomers = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/customer');
                 setCustomerList(response.data);
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getCustomers();
@@ -71,15 +74,18 @@ function GetCustomerAdmin() {
             cancelButtonColor: "#d33",
             confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
+            setLoading(true)
             if (result.isConfirmed) {
                 try {
                     await axios.put(`http://localhost:8080/api/customer/lock/${id}`, {
                         userId: currentLockStatus
                     });
                     toast.success("Khóa bệnh nhân thành công");
+                    setLoading(false)
                     setUpdateShow((prev) => !prev);
                 } catch (error) {
                     toast.error("Khóa bệnh nhân thất bại");
+                    setLoading(false)
                 }
             }
         });
@@ -87,6 +93,7 @@ function GetCustomerAdmin() {
 
     return (
         <>
+            {loading && <Loading/>}
             <Typography variant="h5" align="center" gutterBottom>Danh sách bệnh nhân trên hệ thống</Typography>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">

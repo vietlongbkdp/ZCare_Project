@@ -1,7 +1,7 @@
 import "react-toastify/dist/ReactToastify.css";
 import HomePage from "./pages/Home/HomePage";
 import AuthLogin from "./components/Authentication/AuthLogin";
-import { Route, Routes, unstable_HistoryRouter, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AuthRegister from "./components/Authentication/AuthRegister";
 import ForgotPassword from "./components/Authentication/ForgotPassword";
 import Pagerbase from "./components/Dashboard/Paperbase";
@@ -26,11 +26,16 @@ import PrivateRouteClinicAdmin from "./components/routing/PrivateRouteClinicAdmi
 import PrivateRouteDoctor from "./components/routing/PrivateRouteDoctor";
 import PrivateRouteCustomer from "./components/routing/PrivateRouteCustomer";
 import DoctorInClinic from "./components/Doctor/DoctorInClinic";
-import AdminViewer from "./components/adminViewer/adminViewer";
+import AdminViewer from "./components/AdminViewer/AdminViewer";
 import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
 import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
 import Result from "./components/Result/Result";
+import ResultList from "./components/Result/ResultList";
+import CustomerBookingAdminClinic from "./components/CustomerDashboard/CustomerBookingAdminClinic";
+import CustomerBookingDoctor from "./components/CustomerDashboard/CustomerBookingDoctor";
+import MapRender from "./components/MapRender/MapRender";
+import ResultTyping from "./components/Result/ResultTyping";
 import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
 
@@ -41,6 +46,7 @@ export default function App() {
     <>
       <Routes>
         <Route path="/home/*" element={<HomePage />} />
+        <Route path="/home/map" element={<MapRender />} />
         <Route path="/login" element={<AuthLogin />} />
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -58,17 +64,22 @@ export default function App() {
           <Route path="/clinicadmin" element={<Pagerbase />}>
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
-            <Route path="doctorInfor" element={<DoctorInfor />} />
-            <Route path="doctor" element={<DoctorInClinic />} />
-            <Route path="editClinic" element={<EditAdminClinic />} />
+            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
+            <Route path="booking" element={<CustomerBookingAdminClinic/>}></Route>
+            <Route path="doctor" element={<DoctorInClinic />}></Route>
+            <Route path="editClinic" element={<EditAdminClinic />}></Route>
           </Route>
         </Route>
-        <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor" />}>
-          <Route path="/doctoradmin" element={<Pagerbase />}>
-            <Route path="" element={<DoctorByAdminClinic />}></Route>
-            <Route path="doctorInfor" element={<DoctorByAdminClinic />}></Route>
-            <Route path="doctorInfor1" element={<DoctorInfor />}></Route>
-            <Route path="clinic" element={<Result />}></Route>
+        <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
+          <Route path="/doctoradmin" element={<Pagerbase/>}>
+            <Route path="" element={<DoctorByAdminClinic/>}></Route>
+            <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
+            <Route path="doctor" element={<CustomerBookingDoctor/>}></Route>
+            <Route path="clinic" element={<Result/>}></Route>
+            <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
+            {/*<Route path="clinic" element={<Result/>}></Route>*/}
+
+            {/*<Route path="clinic" element={<ResultTyping/>}></Route>*/}
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>

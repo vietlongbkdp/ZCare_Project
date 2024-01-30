@@ -19,8 +19,7 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import {useParams} from "react-router-dom";
 import Cookies from "js-cookie";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
+import Loading from "../Loading/Loading";
 
 
 const schemaBooking = yup.object().shape({
@@ -47,7 +46,6 @@ const schemaBooking = yup.object().shape({
         .max(100, 'Địa chỉ quá dài'),
     phoneCus: yup.string()
         .required("Số điện thoại không được để trống"),
-    // .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
 })
 export default function BookingAdmin(){
     const { scheduleId, day,month,year } = useParams();
@@ -56,7 +54,7 @@ export default function BookingAdmin(){
     const [schedule,setSchedule]=useState('');
     const [gender, setGender] = useState('MALE');
     const [selectedGender, setSelectedGender] = useState('MALE');
-
+    const [loading, setLoading] = useState(true);
     const handleGenderChange = (event) => {
         const selectedGender = event.target.value;
         setSelectedGender(selectedGender);
@@ -67,9 +65,11 @@ export default function BookingAdmin(){
         axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
             .then(response => {
                 setSchedule(response.data);
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error:', error);
+                setLoading(false);
             });
     }, []);
 
@@ -89,18 +89,22 @@ export default function BookingAdmin(){
             bookDay,
             userId
         }
-        const res = await axios({
-            method: 'post',
-            url: 'http://localhost:8080/api/booking/admin',
-            data: {...fullData}
-        });
-        if(res.status === '200'){
-            reset()
-            toast.success("Đã đặt lịch thành công!")
+        setLoading(true);
+        try {
+            await axios.post("http://localhost:8080/api/booking/admin", fullData);
+            toast.success("Đặt lịch thành công");
+            reset();
+            setLoading(false);
+        } catch (error) {
+            toast.error("Đặt lịch thất bại");
+            console.error(error);
+            setLoading(false);
         }
     }
+
     return(
         <>
+            {loading && <Loading/>}
             <div className="d-flex justify-content-center align-items-center"
                  style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>
                 <h2>ĐẶT LỊCH KHÁM BỆNH</h2>

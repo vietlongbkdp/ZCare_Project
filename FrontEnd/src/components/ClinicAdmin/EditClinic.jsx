@@ -9,12 +9,13 @@ import {
     TextField
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from "../CkEditor/ClinicEditor";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -73,7 +74,7 @@ let presentAvatar;
 
 export default function EditClinic({ setShow, setISupdate, clinicId, setShowContent, setShowCreateBtn, setShowPagination }) {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
-
+    const [loading, setLoading] = useState(true);
     const resetModal = () => {
         setShow(false)
         setShowContent(true)
@@ -97,6 +98,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                 presentAvatar = result.clinicLogo;
                 updateAvatar = result.clinicLogo;
                 document.getElementById('blah').src = presentAvatar;
+                setLoading(false)
             }
             getClinic();
         }
@@ -104,6 +106,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
 
 
     const handleUpdateClinic = async (data) => {
+        setLoading(true)
         if (presentAvatar === updateAvatar) {
             data.clinicLogo = presentAvatar;
         } else {
@@ -113,6 +116,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
             await axios.put(`http://localhost:8080/api/clinic/${clinicId}`, data);
             toast.success("Cập nhật phòng khám thành công!")
             reset();
+            setLoading(false)
             setShowContent(true)
             setShowCreateBtn(true)
             setShow(false)
@@ -120,6 +124,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
             setISupdate(prev => !prev);
         } catch (error) {
             toast.error("Cập nhật phòng khám thất bại!")
+            setLoading(false)
         }
     };
 
@@ -134,6 +139,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     Cập nhật phòng khám
