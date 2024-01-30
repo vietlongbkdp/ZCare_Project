@@ -71,6 +71,23 @@ export default function AdminViewer() {
         setTotalSpeciality(total);
     }, [SpecialityList]);
 
+    const [bookingList, setBookingList] = useState([]);
+    const [totalbooking, setTotalbooking] = useState(0);
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/booking/bookingDate')
+            .then(response => {
+                setBookingList(response.data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }, []);
+    useEffect(() => {
+        const total = bookingList.length;
+        setTotalbooking(total);
+    }, [bookingList]);
+
+
     return (
         <>
         <Container maxWidth="xl">
@@ -114,6 +131,26 @@ export default function AdminViewer() {
                         color="error"
                         icon={<img alt="icon"
                                    src="https://minimal-kit-react.vercel.app/assets/icons/glass/ic_glass_users.png"/>}
+                    />
+                </Grid>
+                <Grid xs={12} sm={6} md={3}>
+                    <AppWidgetSummary
+                        title="Booking hôm nay"
+                        total={totalbooking}
+                        color="error"
+                        icon={<img alt="icon"
+                                   src="https://th.bing.com/th/id/R.5bbcdb115136ff3150fc2a5828bda9d5?rik=RZ%2bncnrm2rVReg&riu=http%3a%2f%2fulam.ai%2fwp-content%2fuploads%2f2017%2f09%2fbook-768x768.png&ehk=a9wa4z1y0GjjmsrchKBczLq2G4p%2fSE0M1zEZ78vXAOw%3d&risl=&pid=ImgRaw&r=0"
+                                   style={{width: '100%', height: 'auto'}}/>}
+                    />
+                </Grid>
+                <Grid xs={12} sm={6} md={3}>
+                    <AppWidgetSummary
+                        title="Lịch khám hôm nay"
+                        total={totalCustomer}
+                        color="error"
+                        icon={<img alt="icon"
+                                   src="https://thumbs.dreamstime.com/b/vecteur-d-ic%C3%B4ne-de-calendrier-appli-ordre-du-jour-date-butoir-affaires-page-illustration-isolement-sur-le-fond-blanc-rappel-ligne-140057422.jpg"
+                                   style={{width: '120%', height: 'auto'}} />}
                     />
                 </Grid>
             </Grid>

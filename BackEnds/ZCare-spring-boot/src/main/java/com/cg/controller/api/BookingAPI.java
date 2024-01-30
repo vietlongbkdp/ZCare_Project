@@ -5,6 +5,7 @@ import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
+import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.booking.BookingService;
 import com.cg.service.clinic.IClinicService;
@@ -15,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -31,6 +34,8 @@ public class BookingAPI {
     private IClinicService clinicService;
     @Autowired
     private IDoctorService doctorService;
+    @Autowired
+    private IBookingRepository iBookingRepository;
     @GetMapping
     public ResponseEntity<?> getAllBooking(){
         List<Booking> bookingList = bookingService.findAll();
@@ -73,6 +78,14 @@ public class BookingAPI {
         List<Booking> booking=bookingService.findAllByCustomerId(customer.getId());
         return new ResponseEntity<>(booking,HttpStatus.OK);
     }
+
+    @GetMapping("bookingDate")
+    public ResponseEntity<?> getAllBookingByBookingDate(){
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));
+        List<Booking> bookings = iBookingRepository.findByBookingDate(currentDate);
+        return new ResponseEntity<>(bookings,HttpStatus.OK);
+    }
+
     @GetMapping("/adminclinic/{userId}")
     public ResponseEntity<?> GetAlllBookingbyClinicId(@PathVariable Long userId){
         Clinic clinic = clinicService.findByUser_Id(userId);
