@@ -32,6 +32,8 @@ import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClini
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
 import Result from "./components/Result/Result";
 import ResultList from "./components/Result/ResultList";
+import CustomerBookingAdminClinic from "./components/CustomerDashboard/CustomerBookingAdminClinic";
+import CustomerBookingDoctor from "./components/CustomerDashboard/CustomerBookingDoctor";
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -56,6 +58,7 @@ export default function App() {
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
+            <Route path="booking" element={<CustomerBookingAdminClinic/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
           </Route>
@@ -64,7 +67,7 @@ export default function App() {
           <Route path="/doctoradmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
-            <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
+            <Route path="doctor" element={<CustomerBookingDoctor/>}></Route>
             <Route path="clinic" element={<Result/>}></Route>
           </Route>
         </Route>

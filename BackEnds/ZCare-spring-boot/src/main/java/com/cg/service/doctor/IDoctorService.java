@@ -12,4 +12,5 @@ public interface IDoctorService extends IGeneralService<Doctor,Long> {
     List<Doctor> findAllByUser_Unlock(boolean user_unlock);
 
     Doctor findByUser_Id(Long id);
+    List<Doctor> findAllByClinic_Id(Long clinicId);
 }

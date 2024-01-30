@@ -82,4 +82,9 @@ public class BookingService implements IBookingService {
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
         emailUntil.sendEmail( booking.getCustomer().getEmail(),title,body);
     }
+
+    @Override
+    public List<Booking> findAllByDoctor_Id(Long doctorId) {
+        return iBookingRepository.findAllByDoctor_Id(doctorId);
+    }
 }
