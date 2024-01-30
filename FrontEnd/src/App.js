@@ -30,14 +30,17 @@ import AdminViewer from "./components/adminViewer/adminViewer";
 import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
 import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
-import Result from "./components/Result/Result";
-import ResultList from "./components/Result/ResultList";
+// import Result from "./components/Result/Result";
+// import ResultList from "./components/Result/ResultList";
+import MapRender from "./components/MapRender/MapRender";
+import ResultTyping from "./components/Result/ResultTyping";
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
     <>
       <Routes>
         <Route path="/home/*" element={<HomePage />} />
+        <Route path="/home/map" element={<MapRender />} />
         <Route path="/login" element={<AuthLogin />} />
         <Route path="/register" element={<AuthRegister />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -65,7 +68,9 @@ export default function App() {
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
-            <Route path="clinic" element={<Result/>}></Route>
+            {/*<Route path="clinic" element={<Result/>}></Route>*/}
+
+            <Route path="clinic" element={<ResultTyping/>}></Route>
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>
