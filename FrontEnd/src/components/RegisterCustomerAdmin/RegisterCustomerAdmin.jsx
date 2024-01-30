@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import Cookies from "js-cookie";
 import axios from "axios";
-import DoctorComponent from "../DoctorInfoClinic/DoctorComponent";
+import DoctorComponentAdmin from "./DoctorComponentAdmin";
 
 function RegisterCustomerAdmin() {
     const userId = Cookies.get('userId');
@@ -25,7 +25,7 @@ function RegisterCustomerAdmin() {
     return (
         <>
             {doctorInfo.map((doctor, index) => (
-                <DoctorComponent key={doctor.id} doctor={doctor} />
+                <DoctorComponentAdmin key={doctor.id} doctor={doctor} />
             ))}
         </>
     );

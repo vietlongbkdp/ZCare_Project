@@ -7,7 +7,7 @@ import axios from "axios";
 import {Link} from "react-router-dom";
 
 
-function DoctorComponent({ doctor }) {
+function DoctorComponentAdmin({ doctor }) {
     const dateNows = dayjs().format('D/M/YYYY');
     const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -110,7 +110,7 @@ function DoctorComponent({ doctor }) {
                                 <p>Đánh giá: {doctor?.star}</p>
                             </div>
                             <div className={"d-flex"}>
-                            <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
+                                <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
                                 <h6>Hồ Chí Minh</h6>
                             </div>
                         </div>
@@ -147,7 +147,7 @@ function DoctorComponent({ doctor }) {
                     </div>
                     <div className={"d-flex flex-wrap gap-3"}>
                         {scheduleList.map((schedule, index) => (
-                            <Link key={schedule.id} to={`/booking/${schedule.id}/${selectedDate}`} className="schedule">
+                            <Link key={schedule.id} to={`/bookingAdmin/${schedule.id}/${selectedDate}`} className="schedule">
                                 {schedule.timeItem}
                             </Link>
                         ))}
@@ -173,4 +173,4 @@ function DoctorComponent({ doctor }) {
     );
 }
 
-export default DoctorComponent;
+export default DoctorComponentAdmin;
