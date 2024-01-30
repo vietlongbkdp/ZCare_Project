@@ -31,8 +31,8 @@ import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
 import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
 import Result from "./components/Result/Result";
-import ResultList from "./components/Result/ResultList";
 import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
+import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
   return (
@@ -84,6 +84,7 @@ export default function App() {
           <Route path="/appointment-schedule" element={<AppointmentSchedule/>}/>
         </Route>
         <Route path="/registerCustomerAdmin" element={<RegisterCustomerAdmin/>} />
+        <Route path="/bookingAdmin/:scheduleId/:day/:month/:year" element={<BookingAdmin />} />
       </Routes>
     </>
   );

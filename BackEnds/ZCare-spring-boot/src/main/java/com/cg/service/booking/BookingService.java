@@ -1,8 +1,10 @@
 package com.cg.service.booking;
 import com.cg.model.Booking;
 import com.cg.model.Customer;
+import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
 import com.cg.model.Schedule;
+import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
 
@@ -100,5 +102,29 @@ public class BookingService implements IBookingService {
         }
     }
 
+    public void createBookingAdmin(BookingAdminDTO bookingAdminDTO) {
+        Schedule schedule = scheduleService.findById(bookingAdminDTO.getScheduleId()).get();
+        schedule.setStatus(EStatus.SELECTED);
+        Optional<Customer> customer = customerService.findCustomerByEmail(bookingAdminDTO.getEmailCus());
+        if(customer.isEmpty()){
+            Customer customerNew=new Customer();
+            customerNew.setGender(EGender.valueOf(bookingAdminDTO.getGender()));
+            customerNew.setPhone(bookingAdminDTO.getPhoneCus());
+            customerNew.setEmail(bookingAdminDTO.getEmailCus());
+            customerNew.setFullName(bookingAdminDTO.getCustomerName());
+            customerNew.setAddress(bookingAdminDTO.getAddress());
+            customerNew.setDob(LocalDate.parse(bookingAdminDTO.getDobCus()));
+            customerService.save(customerNew);
+            Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customerNew).setSchedule(schedule)
+                    .setBookingDate(bookingAdminDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
+                    .setCreateAt(LocalDate.now())
+                    .setStatus(EStatusBooking.CUSTOMERCONFIMED)
+                    .setReminderSent(true);
+            if(bookingAdminDTO.getReason() != null){
+                booking.setReason(bookingAdminDTO.getReason());
+            }
+            iBookingRepository.save(booking);
+        }
+    }
 
 }
