@@ -78,7 +78,7 @@ export default function App() {
           <Route path="/doctoradmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
-            <Route path="doctor" element={<CustomerBookingDoctor/>}></Route>
+            <Route path="bookingHistory" element={<CustomerBookingDoctor/>}></Route>
             <Route path="clinic" element={<Result/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
             {/*<Route path="clinic" element={<Result/>}></Route>*/}
