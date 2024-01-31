@@ -29,7 +29,6 @@ function DoctorListByClinic() {
     }, [])
 
     useEffect(() => {
-
         if (clinicUserId !== undefined) {
             axios.get(`http://localhost:8080/api/clinic/${clinicUserId}`)
                 .then(response => {

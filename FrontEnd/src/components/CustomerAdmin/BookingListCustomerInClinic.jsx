@@ -1,15 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import Cookies from "js-cookie";
+import React, {useEffect, useState} from 'react'
 import dayjs from "dayjs";
-import './custom.css'
 
-function AppointmentSchedule() {
+export default function BookingListCustomerInClinic({clinicId, userId}) {
     const [booking, setBooking] = useState([]);
-    const userId = Cookies.get('userId');
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/adminClinic/${userId}`)
+        axios.get(`http://localhost:8080/api/booking/${clinicId}/${userId}`)
             .then(response => {
                 setBooking(response.data);
             })
@@ -95,5 +91,3 @@ function AppointmentSchedule() {
         </div>
     );
 }
-
-export default AppointmentSchedule;
