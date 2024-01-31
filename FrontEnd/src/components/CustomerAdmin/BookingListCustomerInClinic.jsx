@@ -1,59 +1,22 @@
-import React, { useEffect, useState} from 'react';
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import axios from "axios";
-import {Link, useLocation} from "react-router-dom";
-import Cookies from "js-cookie";
+import React, {useEffect, useState} from 'react'
 import dayjs from "dayjs";
-import './custom.css'
-import { toast } from 'react-toastify';
-import Loading from "../Loading/Loading";
 
-function AppointmentSchedule() {
+export default function BookingListCustomerInClinic({clinicId, userId}) {
     const [booking, setBooking] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const UserId = Cookies.get('userId');
-    const location = useLocation();
 
     useEffect(() => {
-      const searchParams = new URLSearchParams(location.search);
-      const toastSuccessMessage = searchParams.get('toastSuccessMessage');
-      const toastErrorMessage = searchParams.get('toastErrorMessage')
-      if (toastSuccessMessage) {
-        toast.success(toastSuccessMessage);
-      }
-      if (toastErrorMessage) {
-        toast.error(toastErrorMessage)
-      }
-    }, [location.search]);
-
-    useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/${UserId}`)
+        axios.get(`http://localhost:8080/api/booking/${clinicId}/${userId}`)
             .then(response => {
                 setBooking(response.data);
-                setLoading(false)
             })
             .catch(error => {
                 console.error('Error:', error);
-                setLoading(false)
             });
-    }, [UserId]);
+    }, [userId]);
 
     return (
         <div>
-            {loading && <Loading/>}
-            <Header/>
-            <div className="d-flex justify-content-center align-items-center"
-                 style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>
-                <h2>THÔNG TIN LỊCH HẸN</h2>
-            </div>
             <div className={"container justify-content-center"}>
-                <Link to='/home' className="d-flex" style={{textDecoration: 'none'}}>
-                    <span className="me-2"><i className="fa-solid fa-house"></i></span>
-                    /
-                    <p className="ms-2">Lịch đã hẹn</p>
-                </Link>
-                <h4>Lịch hẹn đã đặt</h4>
                 <table className="table table-bordered table-striped" key={booking.id}>
                     <thead>
                     <tr>
@@ -97,9 +60,9 @@ function AppointmentSchedule() {
                                     {booking?.status && (
                                         (() => {
                                             if (booking?.status === "CONFIRMING") {
-                                                return "Chưa xác nhận";
+                                                return "Tiếp nhận";
                                             } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                return "Đã xác nhận";
+                                                return "Khách hàng đã xác nhận";
                                             } else if (booking?.status === "DOCTORCONFIRMED") {
                                                 return "Bác sỹ đã xác nhận";
                                             } else if (booking?.status === "PAID") {
@@ -119,15 +82,12 @@ function AppointmentSchedule() {
                         ))
                     ) : (
                         <p className="d-flex justify-content-center" style={{color: "red"}}>
-                            Bạn chưa đặt lịch hẹn trên trình duyệt này!
+                            Bạn chưa có lịch hẹn!
                         </p>
                     )}
                     </tbody>
                 </table>
             </div>
-            <Footer/>
         </div>
     );
 }
-
-export default AppointmentSchedule;

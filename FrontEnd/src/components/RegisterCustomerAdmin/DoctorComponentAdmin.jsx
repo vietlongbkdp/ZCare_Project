@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import { parse } from "date-fns";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 
 function DoctorComponentAdmin({ doctor }) {
@@ -15,6 +16,7 @@ function DoctorComponentAdmin({ doctor }) {
     const [selectedDate, setSelectedDate] = useState(dateNows);
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
+    const [loading, setLoading] = useState(true);
     const convertStringDetailToNumDetail = (timeItem) => {
         const [startTime, endTime] = timeItem.split(' - ');
         const [startHour, startMinute] = startTime.split(':').map(Number);
@@ -56,9 +58,11 @@ function DoctorComponentAdmin({ doctor }) {
             if (response.status === 200) {
                 const sortedScheduleList = sortObjectsByStartTime(response.data);
                 setScheduleList(sortedScheduleList);
+                setLoading(false);
             }
         } catch (error) {
             console.error('Error fetching schedule data:', error);
+            setLoading(false);
         }
     };
 
@@ -82,6 +86,8 @@ function DoctorComponentAdmin({ doctor }) {
     }, [selectedDate]);
 
     return (
+        <>
+        {loading && <Loading/>}
         <div key={doctor.id} className={"container d-flex mt-2 rounded border shadow-sm row col-9 p-4 mx-auto"} style={{backgroundColor:"white"}}>
             <div className={"d-flex mt-2 "}>
                 <div className={"d-flex flex-column justify-content-around col-6 border-end"}>
@@ -99,10 +105,7 @@ function DoctorComponentAdmin({ doctor }) {
                         </div>
                         <div className={"d-flex flex-column justify-content-center ms-3"}>
                             <div>
-                                <Link to={`/doctorDetail/${doctor.id}`} style={{textDecoration: 'none',color: 'black'}}>
                                     <h5 style={{color: "#74b9ff"}}>{doctor?.doctorName}</h5>
-                                </Link>
-
                             </div>
                             <div>
                                 <p>Chức danh: {doctor?.position?.name}</p>
@@ -147,7 +150,7 @@ function DoctorComponentAdmin({ doctor }) {
                     </div>
                     <div className={"d-flex flex-wrap gap-3"}>
                         {scheduleList.map((schedule, index) => (
-                            <Link key={schedule.id} to={`/bookingAdmin/${schedule.id}/${selectedDate}`} className="schedule">
+                            <Link key={schedule.id} to={`/clinicadmin/bookingAdmin/${schedule.id}/${selectedDate}`} className="schedule">
                                 {schedule.timeItem}
                             </Link>
                         ))}
@@ -170,6 +173,7 @@ function DoctorComponentAdmin({ doctor }) {
                 </div>
             </div>
         </div>
+        </>
     );
 }
 

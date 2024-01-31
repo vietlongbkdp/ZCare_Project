@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Box,
   Typography,
@@ -16,8 +16,9 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import { differenceInYears } from "date-fns";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object({
   fullName: yup
@@ -52,19 +53,26 @@ function AuthRegister() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
-    console.log(data);
+    setLoading(true)
     try {
       await axios.post("http://localhost:8080/api/user", data);
       toast.success("Đăng kí thành công");
+      setLoading(false)
       reset();
+      navigate(`/login`);
     } catch (error) {
       toast.error("Đăng kí thất bại");
+      setLoading(false)
       console.error(error);
     }
   };
 
   return (
+      <>
+      {loading && <Loading/>}
     <Box
       sx={{
         display: "flex",
@@ -263,6 +271,7 @@ function AuthRegister() {
         </Box>
       </Box>
     </Box>
+      </>
   );
 }
 export default AuthRegister;

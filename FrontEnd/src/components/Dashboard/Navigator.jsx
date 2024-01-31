@@ -20,15 +20,17 @@ import { Link, useParams } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./dashboard.css"
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const categories = [
     {
         id: 'ADMIN',
         children: [
             {
-                id: 'Danh sách lịch khám ',
+                id: 'Trang chủ ',
                 icon: <PeopleIcon />,
                 active: true,
+                url: ''
             },
             { id: 'Phòng khám', icon: <PublicIcon />, url: "clinic" },
             {
@@ -36,8 +38,8 @@ const categories = [
                 icon: <SettingsInputComponentIcon />,
                 url: "doctor"
             },
+            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "booking" },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
-            { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
             { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
         ],
@@ -46,18 +48,19 @@ const categories = [
         id: 'ADMIN_CLINIC',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
-            { id: 'Doanh thu', icon: <SettingsIcon /> },
-            { id: 'Danh sách booking', icon: <TimerIcon /> },
-            { id: 'Bệnh nhân', icon: <TimerIcon /> },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "booking" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
+            { id: 'Bệnh nhân', icon: <TimerIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
+            { id: 'Đặt lịch khám tại quầy', icon: <CalendarMonthIcon />, url: "registerCustomerAdmin" },
         ],
     },
     {
         id: 'DOCTOR',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
-            // { id: 'Doanh thu', icon: <SettingsIcon /> },
-            { id: 'Danh sách booking', icon: <TimerIcon /> },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctor" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],
     },
@@ -87,7 +90,6 @@ const itemCategory = {
 };
 
 export default function Navigator(props) {
-    const { userId } = useParams();
     const location = useLocation();
     const isAdmin = location.pathname.startsWith('/admin');
     const isAdminClinic = location.pathname.startsWith(`/clinicadmin`);
@@ -105,9 +107,6 @@ export default function Navigator(props) {
     } else if (isDoctor) {
         filteredCategories = categories.filter((category) => category.id === 'DOCTOR');
     }
-    // const filteredCategories = categories.filter(
-    //     category => isAdmin ? category.id === 'ADMIN' : category.id === 'CLINIC-DOCTOR'
-    // );
 
     const { ...other } = props;
 

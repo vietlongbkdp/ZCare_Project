@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Pagination, Typography } from "@mui/material";
 import Loading from "../Loading/Loading";
+import Cookies from "js-cookie";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,19 +37,50 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         border: 0,
     },
 }));
-function GetCustomerAdmin() {
+function CustomerInClinic() {
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
     };
-
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-
     const [customerList, setCustomerList] = useState([])
     const [updateShow, setUpdateShow] = useState(false)
     const [loading, setLoading] = useState(true);
+    const [clinic, setClinic] = useState();
+    const [clinicUserId, setClinicUserId] = useState();
+    const storedUserId = Cookies.get('userId');
+
+    useEffect(() => {
+        const finddUser = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                console.log(response.data)
+                setClinicUserId(response.data.id)
+                setLoading(false)
+            } catch (error) {
+                console.error(error);
+                setLoading(false)
+            }
+        }
+        finddUser();
+    }, [])
+
+    useEffect(() => {
+        if (clinicUserId !== undefined) {
+            axios.get(`http://localhost:8080/api/clinic/${clinicUserId}`)
+                .then(response => {
+                    setClinic(response.data);
+                    setLoading(false)
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    setLoading(false)
+                });
+        }
+    }, [clinicUserId]);
+
     useEffect(() => {
         const getCustomers = async () => {
             try {
@@ -94,6 +126,10 @@ function GetCustomerAdmin() {
         });
     };
 
+    const handleShowBooking = async (userId) => {
+        
+    }
+
     return (
         <>
             {loading && <Loading/>}
@@ -109,6 +145,7 @@ function GetCustomerAdmin() {
                             <StyledTableCell> EMAIL </StyledTableCell>
                             <StyledTableCell> ĐỊA CHỈ </StyledTableCell>
                             <StyledTableCell> GIỚI TÍNH </StyledTableCell>
+                            <StyledTableCell sx={{ width: 25 }}>LỊCH SỬ KHÁM</StyledTableCell>
                             <StyledTableCell sx={{ width: 25 }}>KHÓA</StyledTableCell>
                         </TableRow>
                     </TableHead>
@@ -141,6 +178,15 @@ function GetCustomerAdmin() {
                                 <StyledTableCell align="right">
                                     <Button
                                         variant="contained"
+                                        color='primary'
+                                        onClick={() => handleShowBooking(item.user.id)}
+                                    >
+                                        <i className="fa-solid fa-list"></i>
+                                    </Button>
+                                </StyledTableCell>
+                                <StyledTableCell align="right">
+                                    <Button
+                                        variant="contained"
                                         color='error'
                                         onClick={() => handleChangeLock(item.id, item.user.id)}
                                     >
@@ -166,4 +212,4 @@ function GetCustomerAdmin() {
     )
 }
 
-export default GetCustomerAdmin;
+export default CustomerInClinic;

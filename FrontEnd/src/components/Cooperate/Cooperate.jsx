@@ -1,10 +1,11 @@
 
-import React from "react";
+import React, {useState} from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loading from "../Loading/Loading";
 const schema = yup.object({
   fullName: yup.string().required("tên không được để trống"),
   phone: yup.string().required("Số điện thoại không được để trống"),
@@ -27,20 +28,25 @@ function Cooperate() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const [loading, setLoading] = useState(false);
   const onSubmit = async (data) => {
+    setLoading(true)
     try {
       await axios.post("http://localhost:8080/api/cooperate", data);
       toast.success("Gửi thông tin thành công");
       reset();
+      setLoading(false)
     } catch (error) {
       console.error(error);
+      setLoading(false)
     }
   };
 
   return (
       <>
+        {loading && <Loading/>}
         <div className="d-flex flex-column justify-content-center align-items-center"
-             style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>
+             style={{backgroundColor: "rgb(237 255 250)", height: "200px"}}>
           <h2>Đăng kí hợp tác</h2>
           <p>Tham gia ngay cùng Zcare để cùng chúng tôi cùng xây dựng hành trình sức khỏe hoàn hảo nào! </p>
         </div>

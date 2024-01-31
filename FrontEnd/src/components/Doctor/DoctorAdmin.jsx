@@ -17,6 +17,7 @@ import { Pagination, Typography } from "@mui/material";
 import { getHeader } from '../utils/ApiComponen';
 import './style.css'
 import DoctorDetail from './DoctorDetail';
+import Loading from "../Loading/Loading";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -55,7 +56,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
     const [showDoctorDetail, setShowDoctorDetail] = useState(false)
     const [doctorId, setDoctorId] = useState()
     const [showDoctorList, setShowDoctorList] = useState(true)
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         if (!clinicId) {
             setButtonDisable(false)
@@ -72,9 +73,11 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                     }
                 );
                 setDoctorList(response.data)
+                setLoading(false)
 
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getDoctors();
@@ -86,12 +89,12 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
         console.log(typeof currentLockStatus)
 
         Swal.fire({
-            title: "Bạn muốn khóa",
-            text: "Bạn sẽ không thể phục hồi!",
+            title: "Bạn có chắc chắn muốn khóa?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
+            cancelButtonText: "Hủy",
             confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -116,6 +119,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
 
     return (
         <>
+            {loading && <Loading/>}
             {showDoctorDetail && <DoctorDetail doctorId={doctorId} setShowDoctorList={setShowDoctorList} setShowDoctorDetail={setShowDoctorDetail} />}
             {showDoctorList &&
                 <Box>

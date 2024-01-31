@@ -1,10 +1,11 @@
 import DoctorComponent from "./DoctorComponent";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Link} from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
     const [doctorInfo, setDoctorInfo] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchDoctorInfo = async () => {
@@ -18,9 +19,11 @@ function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
                 });
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
+                    setLoading(false)
                 }
             } catch (error) {
                 console.error('Error fetching doctor info:', error);
+                setLoading(false)
             }
         };
         fetchDoctorInfo();
@@ -28,6 +31,7 @@ function DoctorInfoClinic({specialityId,clinicId,doctorName}) {
 
     return (
         <>
+            {loading && <Loading/>}
             {doctorInfo.map((doctor, index) => (
                 <DoctorComponent key={doctor.id} doctor={doctor} />
             ))}

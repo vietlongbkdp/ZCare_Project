@@ -16,6 +16,7 @@ import {toast} from "react-toastify";
 import moment from 'moment';
 import {Link} from "react-router-dom";
 import Cookies from "js-cookie";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object().shape({
     fullName: yup.string()
@@ -50,7 +51,7 @@ function CustomerDashboard() {
     const [gender, setGender] = useState("");
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
     const UserId = Cookies.get('userId');
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (UserId) {
@@ -64,6 +65,7 @@ function CustomerDashboard() {
                 setValue("dob",moment(result.dob).format('DD/MM/YYYY'))
                 setValue("address", result.address)
                 setValue("user", result.user)
+                setLoading(false)
             }
             getCustomer();
         }
@@ -71,6 +73,7 @@ function CustomerDashboard() {
 
 
     const handleUpdateCustomer = async (data) => {
+        setLoading(true)
         const obj={
             ...data,
             gender:gender
@@ -79,9 +82,11 @@ function CustomerDashboard() {
         try {
             await axios.put(`http://localhost:8080/api/customer/${UserId}`, obj);
             toast.success("Cập nhật thông tin thành công!")
+            setLoading(false)
             // reset();
         } catch (error) {
             toast.error("Cập nhật thông tin thất bại!")
+            setLoading(false)
         }
     };
 
@@ -92,6 +97,7 @@ function CustomerDashboard() {
 
     return (
         <div>
+            {loading && <Loading/>}
             <Header/>
             <div className="d-flex justify-content-center align-items-center"
                  style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>

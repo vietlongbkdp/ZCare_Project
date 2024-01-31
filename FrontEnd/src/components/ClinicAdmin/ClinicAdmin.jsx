@@ -22,6 +22,7 @@ import "./clinic.css"
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import ClinicDetail from './ClinicDetail';
+import Loading from "../Loading/Loading";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -68,6 +69,7 @@ export default function CustomizedTables() {
     const [showAddDoctor, setShowAddDoctor] = useState(false);
     const [clinicAdminUser, setClinicAdminUser] = useState();
     const [showClinicDetail, setShowClinicDetail] = useState(false)
+    const [loading, setLoading] = useState(true);
 
     const { API_DOCTOR } = useContext(ApiContext)
 
@@ -75,9 +77,11 @@ export default function CustomizedTables() {
         const getClinics = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/clinic');
+                setLoading(false)
                 setClinicList(response.data);
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         }
         getClinics();
@@ -143,11 +147,12 @@ export default function CustomizedTables() {
 
     const handleChangeLock = async (id, currentLockStatus) => {
         Swal.fire({
-            title: "Bạn muốn khóa",
+            title: "Bạn có chắc chắn muốn khóa?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
+            cancelButtonText: "Hủy",
             confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -166,6 +171,7 @@ export default function CustomizedTables() {
 
     return (
         <>
+            {loading && <Loading/>}
             <Box>
                 {showCreateBtn && <>
                     <Typography variant="h5" align="center" gutterBottom>Danh sách phòng khám trên hệ thống</Typography>
