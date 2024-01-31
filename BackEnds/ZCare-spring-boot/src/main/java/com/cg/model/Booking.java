@@ -29,6 +29,10 @@ public class Booking {
     @ManyToOne
     private Doctor doctor;
     @Valid
+    @NotNull(message = "Phòng khám không được để trống")
+    @ManyToOne
+    private Clinic clinic;
+    @Valid
     @NotNull(message = "Bệnh nhân không được để trống")
     @ManyToOne
     private Customer customer;

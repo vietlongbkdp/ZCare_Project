@@ -38,6 +38,7 @@ import MapRender from "./components/MapRender/MapRender";
 import ResultTyping from "./components/Result/ResultTyping";
 import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
+import CustomerInClinic from "./components/CustomerAdmin/CustomerInClinic";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="booking" element={<CustomerBookingAdminClinic/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
+            <Route path="customer" element={<CustomerInClinic />}></Route>
           </Route>
         </Route>
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>

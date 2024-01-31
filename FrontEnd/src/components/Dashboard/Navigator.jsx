@@ -49,7 +49,7 @@ const categories = [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
             { id: 'Doanh thu', icon: <SettingsIcon /> },
             { id: 'Danh sách booking', icon: <TimerIcon />, url: "booking" },
-            { id: 'Bệnh nhân', icon: <TimerIcon /> },
+            { id: 'Bệnh nhân', icon: <TimerIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
         ],
     },

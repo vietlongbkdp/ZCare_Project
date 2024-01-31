@@ -69,7 +69,7 @@ public class BookingService implements IBookingService {
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
         schedule.setStatus(EStatus.SELECTED);
         Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
-        Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
+        Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setClinic(schedule.getDoctor().getClinic()).setSchedule(schedule)
                 .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
                 .setCreateAt(LocalDate.now())
                 .setStatus(EStatusBooking.CONFIRMING);
@@ -153,7 +153,7 @@ public class BookingService implements IBookingService {
             customerNew.setAddress(bookingAdminDTO.getAddress());
             customerNew.setDob(LocalDate.parse(bookingAdminDTO.getDobCus()));
             customerService.save(customerNew);
-            Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customerNew).setSchedule(schedule)
+            Booking booking = new Booking().setDoctor(schedule.getDoctor()).setClinic(schedule.getDoctor().getClinic()).setCustomer(customerNew).setSchedule(schedule)
                     .setBookingDate(bookingAdminDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
                     .setCreateAt(LocalDate.now())
                     .setStatus(EStatusBooking.CUSTOMERCONFIMED)
