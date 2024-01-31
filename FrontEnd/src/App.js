@@ -66,7 +66,7 @@ export default function App() {
             <Route path="" element={<DoctorListByClinicAdmin />} />
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="booking" element={<CustomerBookingAdminClinic/>}></Route>
+            <Route path="bookingHistory" element={<CustomerBookingAdminClinic/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
             <Route path="customer" element={<CustomerInClinic />}></Route>
