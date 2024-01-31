@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import DoctorComponentAdmin from "./DoctorComponentAdmin";
 import Loading from "../Loading/Loading";
+import {Typography} from "@mui/material";
 
 function RegisterCustomerAdmin() {
     const userId = Cookies.get('userId');
@@ -29,6 +30,7 @@ function RegisterCustomerAdmin() {
     return (
         <>
             {loading && <Loading/>}
+            <Typography variant="h5" align="center" gutterBottom>Đặt lịch khám tại quầy</Typography>
             {doctorInfo.map((doctor, index) => (
                 <DoctorComponentAdmin key={doctor.id} doctor={doctor} />
             ))}

@@ -70,6 +70,8 @@ export default function App() {
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
             <Route path="customer" element={<CustomerInClinic />}></Route>
+            <Route path="registerCustomerAdmin" element={<RegisterCustomerAdmin />} />
+            <Route path="bookingAdmin/:scheduleId/:day/:month/:year" element={<BookingAdmin />} />
           </Route>
         </Route>
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
@@ -98,8 +100,7 @@ export default function App() {
           <Route path="/information-customer" element={<CustomerDashboard />} />
           <Route path="/appointment-schedule" element={<AppointmentSchedule />} />
         </Route>
-        <Route path="/registerCustomerAdmin" element={<RegisterCustomerAdmin />} />
-        <Route path="/bookingAdmin/:scheduleId/:day/:month/:year" element={<BookingAdmin />} />
+
       </Routes>
     </>
   );

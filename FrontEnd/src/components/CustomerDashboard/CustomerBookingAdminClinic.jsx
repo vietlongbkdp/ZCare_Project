@@ -52,7 +52,17 @@ function AppointmentSchedule() {
                                 <td>
                                     <p>Mã bệnh nhân: {booking?.customer?.id}</p>
                                     <p>Bệnh nhân: {booking?.customer?.fullName}</p>
-                                    <p>Giới tính: {booking?.customer?.gender} </p>
+                                    <p>Giới tính: {
+                                        booking?.customer?.gender && (()=>{
+                                            if(booking?.customer?.gender==='MALE'){
+                                                return 'Nam'
+                                            }else if(booking?.customer?.gender==='FEMALE'){
+                                                return 'Nữ'
+                                            }else{
+                                                return 'Khác'
+                                            }
+                                        })()
+                                    } </p>
                                     <p>Phone: {booking?.customer?.phone} </p>
                                     <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
                                 </td>
