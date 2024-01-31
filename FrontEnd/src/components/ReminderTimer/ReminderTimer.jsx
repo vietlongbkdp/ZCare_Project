@@ -18,6 +18,22 @@ const ReminderTimer = () => {
         };
     }, []);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            axios.post('http://localhost:8080/api/booking/setSchedule')
+                .then(res => {
+                    console.log('cập nhâp trạng thái thành công');
+                })
+                .catch(error => {
+                    console.log('cập nhâp trạng thái thất bại');
+                });
+        },  5 * 60 * 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
+
     return null;
 };
 
