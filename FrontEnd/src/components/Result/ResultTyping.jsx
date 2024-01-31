@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
 import IconButton from '@mui/material/IconButton';
-import { jsPDF } from 'jspdf';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import Table from '@mui/material/Table';
@@ -21,6 +22,8 @@ import Box from "@mui/material/Box";
 import Autocomplete from '@mui/material/Autocomplete';
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const schema = yup.object().shape({
     diagResult: yup.string().required("Kết quả không được để trống"),
     advice: yup.string().required("Bác sĩ cần đưa ra lời khuyên cho bệnh nhân")
@@ -136,14 +139,36 @@ function ResultTyping() {
         });
     }
 
-    async function createPDF(data) {
-        const doc = new jsPDF();
-        doc.setFont("aria");
-        doc.setFontSize(12);
-        doc.text("Chuan doan: " + data.diagResult, 10, 10);
-        doc.text("Loi khuyen bac si: " + data.advice, 10, 20);
-        doc.save(idCustomer + ".pdf");
-        console.log(doc)
+    function createPDF() {
+        const documentDefinition = {
+            content: [
+                { text: 'Xin chào, đây là một đoạn văn bản sử dụng font chữ Open Sans.', style: 'openSans' },
+                { text: 'Hello, this is a sample text using Open Sans font.', style: 'openSans' },
+            ],
+            styles: {
+                openSans: {
+                    fontFamily: 'Open Sans',
+                }
+            },
+            defaultStyle: {
+                font: 'Roboto'
+            },
+            fonts: {
+                OpenSans: {
+                    normal: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-U1Ug.ttf',
+                    bold: 'https://fonts.gstatic.com/s/opensans/v18/mem5YaGs126MiZpBA-UN_r8OUuhs.ttf',
+                    italics: 'https://fonts.gstatic.com/s/opensans/v18/mem6YaGs126MiZpBA-UFUK0Zdcg.ttf',
+                    bolditalics: 'https://fonts.gstatic.com/s/opensans/v18/memnYaGs126MiZpBA-UFUKWiUNhrIqY.ttf'
+                },
+                Roboto: {
+                    normal: 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff2',
+                    bold: 'https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBBc4.woff2',
+                    italics: 'https://fonts.gstatic.com/s/roboto/v20/KFOjCnqEu92Fr1Mu51TzBic4.woff2',
+                    bolditalics: 'https://fonts.gstatic.com/s/roboto/v20/KFOiCnqEu92Fr1Mu51QrIzc4.woff2'
+                }
+            }
+        };
+        pdfMake.createPdf(documentDefinition).download('example.pdf');
     }
     return (
         <div>
