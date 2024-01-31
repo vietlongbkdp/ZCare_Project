@@ -99,11 +99,11 @@ public class BookingAPI {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-//    @GetMapping("{clinicId}")
-//    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId) {
-//        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinicId);
-//        return new ResponseEntity<>(bookingList, HttpStatus.OK);
-//    }
+    @GetMapping("{clinicId}/{customerId}")
+    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable Long customerId) {
+        List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndCustomerId(clinicId, customerId);
+        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+    }
 
     @GetMapping("bookingDate")
     public ResponseEntity<?> getAllBookingByBookingDate() {
@@ -120,7 +120,7 @@ public class BookingAPI {
     }
 
     @GetMapping("/doctor/{userId}")
-    public ResponseEntity<?> GetAllBookingbyDoctorId(@PathVariable Long userId) {
+    public ResponseEntity<?> getAllBookingByDoctorId(@PathVariable Long userId) {
         Doctor doctor = doctorService.findByUser_Id(userId);
         List<Booking> bookingList = bookingService.findAllByDoctor_Id(doctor.getId());
         return new ResponseEntity<>(bookingList, HttpStatus.OK);

@@ -6,10 +6,6 @@ import {parse} from "date-fns";
 import axios from "axios";
 import {Link, useParams} from "react-router-dom";
 import HTMLReactParser from "html-react-parser";
-import Header from "../Header/Header";
-import Footer from "../Footer/Footer";
-import Rating from '@mui/material/Rating';
-import RatingDoctor from "../RatingDoctor/RatingDoctor";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
 
@@ -35,7 +31,6 @@ function DoctorInfo() {
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data)
                 setDoctorUserId(response.data.id)
                 setLoading(false)
             }catch (error) {

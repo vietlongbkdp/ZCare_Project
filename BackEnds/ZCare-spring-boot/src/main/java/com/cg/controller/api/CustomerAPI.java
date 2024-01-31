@@ -1,5 +1,7 @@
 package com.cg.controller.api;
 
+import com.cg.model.Booking;
+import com.cg.model.Clinic;
 import com.cg.model.Customer;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.DTO.UpdateCustomer;
@@ -7,12 +9,13 @@ import com.cg.model.User;
 import com.cg.model.enumeration.EGender;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.User.UserService;
+import com.cg.service.booking.BookingService;
+import com.cg.service.clinic.IClinicService;
 import com.cg.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -23,13 +26,16 @@ public class CustomerAPI {
     private CustomerService customerService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private IClinicService clinicService;
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping
     public ResponseEntity<?> getAll() {
         List<Customer> customerList = customerService.findAllByUser_Unlock(true);
         return new ResponseEntity<>(customerList, HttpStatus.OK);
     }
-
 
     @GetMapping("{userId}")
     public ResponseEntity<?> getCustomerById(@PathVariable Long userId) {
@@ -41,6 +47,14 @@ public class CustomerAPI {
     public ResponseEntity<?> getCustomerByIdCus(@PathVariable Long userId) {
         Customer customer = customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
+    }
+
+    @GetMapping("/clinic/{userId}")
+    public ResponseEntity<?> getAllCustomerInClinic(@PathVariable Long userId) {
+        Clinic clinic = clinicService.findByUser_Id(userId);
+        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinic.getId());
+        List<Customer> customerList = bookingList.stream().map(Booking::getCustomer).distinct().toList();
+        return new ResponseEntity<>(customerList, HttpStatus.OK);
     }
 
     @GetMapping("/getCustomer/{idCustomer}")

@@ -38,7 +38,6 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data)
                 setClinicUserId(response.data.id)
                 setLoading(false)
             }catch (error) {

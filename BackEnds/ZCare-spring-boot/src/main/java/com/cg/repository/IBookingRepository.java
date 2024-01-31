@@ -9,7 +9,10 @@ import java.util.List;
 @Repository
 public interface IBookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> findAllByCustomerId(Long customerId);
+
     List<Booking> findAllByClinicId(Long clinicId);
+    List<Booking> findAllByClinicIdAndCustomerId(Long clinicId, Long customerId);
+
     Booking findByCustomerIdAndScheduleId(Long customerId, Long scheduleId);
 
     List<Booking> findAllByDoctor_Id(Long doctorId);
