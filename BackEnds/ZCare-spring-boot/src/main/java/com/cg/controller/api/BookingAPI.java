@@ -4,6 +4,7 @@ import com.cg.model.*;
 import com.cg.model.Booking;
 import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
+import com.cg.model.DTO.ChangeStatusDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
 import com.cg.repository.IBookingRepository;
@@ -99,11 +100,11 @@ public class BookingAPI {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-//    @GetMapping("{clinicId}")
-//    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId) {
-//        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinicId);
-//        return new ResponseEntity<>(bookingList, HttpStatus.OK);
-//    }
+    @GetMapping("{clinicId}/{customerId}")
+    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable Long customerId) {
+        List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndCustomerId(clinicId, customerId);
+        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+    }
 
     @GetMapping("bookingDate")
     public ResponseEntity<?> getAllBookingByBookingDate() {
@@ -126,7 +127,7 @@ public class BookingAPI {
     }
 
     @GetMapping("/doctor/{userId}")
-    public ResponseEntity<?> GetAllBookingbyDoctorId(@PathVariable Long userId) {
+    public ResponseEntity<?> getAllBookingByDoctorId(@PathVariable Long userId) {
         Doctor doctor = doctorService.findByUser_Id(userId);
         List<Booking> bookingList = bookingService.findAllByDoctorId(doctor.getId());
         List<Booking> bookings1 = new ArrayList<>();
@@ -147,6 +148,14 @@ public class BookingAPI {
     @PostMapping("/setSchedule")
     public ResponseEntity<String> setScheduleBooking() {
         bookingService.setSchedule();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/changeStatus")
+    public ResponseEntity<String> changeStatus(@RequestBody ChangeStatusDTO changeStatusDTO) {
+        Booking booking =bookingService.findById(changeStatusDTO.getBookingId()).get();
+        booking.setStatus(EStatusBooking.valueOf(changeStatusDTO.getSelectedStatus()));
+        bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

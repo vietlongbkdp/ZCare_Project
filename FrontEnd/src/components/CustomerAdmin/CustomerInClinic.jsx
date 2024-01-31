@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import { Pagination, Typography } from "@mui/material";
 import Loading from "../Loading/Loading";
 import Cookies from "js-cookie";
+import BookingListCustomerInClinic from "./BookingListCustomerInClinic";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,47 +46,21 @@ function CustomerInClinic() {
     };
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const [customerList, setCustomerList] = useState([])
-    const [updateShow, setUpdateShow] = useState(false)
+    const [customerList, setCustomerList] = useState([]);
+    const [updateShow, setUpdateShow] = useState(false);
+    const [showCustomer, setShowCustomer] = useState(true);
+    const [showBookingList, setShowBookingList] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [clinic, setClinic] = useState();
-    const [clinicUserId, setClinicUserId] = useState();
-    const storedUserId = Cookies.get('userId');
-
-    useEffect(() => {
-        const finddUser = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data)
-                setClinicUserId(response.data.id)
-                setLoading(false)
-            } catch (error) {
-                console.error(error);
-                setLoading(false)
-            }
-        }
-        finddUser();
-    }, [])
-
-    useEffect(() => {
-        if (clinicUserId !== undefined) {
-            axios.get(`http://localhost:8080/api/clinic/${clinicUserId}`)
-                .then(response => {
-                    setClinic(response.data);
-                    setLoading(false)
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    setLoading(false)
-                });
-        }
-    }, [clinicUserId]);
+    const [clinicId, setClinicId] = useState();
+    const [customerId, setCustomerId] = useState();
+    const userId = Cookies.get('userId');
 
     useEffect(() => {
         const getCustomers = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/customer');
-                setCustomerList(response.data);
+                const response = await axios.get(`http://localhost:8080/api/customer/clinic/${userId}`);
+                const result = await response.data;
+                setCustomerList(result);
                 setLoading(false)
             } catch (error) {
                 console.error(error);
@@ -94,6 +69,20 @@ function CustomerInClinic() {
         }
         getCustomers();
     }, [updateShow, currentPage]);
+
+    useEffect(() => {
+        const getClinic = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${userId}`)
+                const result = await response.data;
+                setClinicId(result.id)
+            } catch (error) {
+                console.error(error);
+                setLoading(false)
+            }
+        }
+        getClinic();
+    }, [])
 
     const currentCustomerList = customerList.slice(startIndex, endIndex);
     const handleChangeLock = async (id, currentLockStatus) => {
@@ -126,88 +115,101 @@ function CustomerInClinic() {
         });
     };
 
-    const handleShowBooking = async (userId) => {
-        
+    const handleShowBookingHistory = async (customerId) => {
+        setCustomerId(customerId);
+        setShowBookingList(true);
+        setShowCustomer(false);
+    }
+
+    const handleHideBookingHistory = () => {
+        setShowBookingList(false);
+        setShowCustomer(true);
     }
 
     return (
         <>
-            {loading && <Loading/>}
-            <Typography variant="h5" align="center" gutterBottom>Danh sách bệnh nhân trên hệ thống</Typography>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 700 }} aria-label="customized table">
-                    <TableHead>
-                        <TableRow>
-                            <StyledTableCell sx={{ width: 10 }}>#</StyledTableCell>
-                            <StyledTableCell>TÊN BỆNH NHÂN </StyledTableCell>
-                            <StyledTableCell> NGÀY SINH </StyledTableCell>
-                            <StyledTableCell> SỐ ĐIỆN THOẠI </StyledTableCell>
-                            <StyledTableCell> EMAIL </StyledTableCell>
-                            <StyledTableCell> ĐỊA CHỈ </StyledTableCell>
-                            <StyledTableCell> GIỚI TÍNH </StyledTableCell>
-                            <StyledTableCell sx={{ width: 25 }}>LỊCH SỬ KHÁM</StyledTableCell>
-                            <StyledTableCell sx={{ width: 25 }}>KHÓA</StyledTableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {currentCustomerList.map((item) => (
-                            <StyledTableRow key={item.id}>
-                                <StyledTableCell sx={{ width: 10 }} component="th" scope="row">
-                                    {item?.id}
-                                </StyledTableCell>
-                                <StyledTableCell>
-                                    {item?.fullName}
-                                </StyledTableCell>
-                                <StyledTableCell>{item?.dob}</StyledTableCell>
-                                <StyledTableCell>{item?.phone}</StyledTableCell>
-                                <StyledTableCell>{item?.email}</StyledTableCell>
-                                <StyledTableCell>{item?.address}</StyledTableCell>
-                                <StyledTableCell>{
-                                    item?.gender && (() => {
-                                        if (item?.gender == "MALE") {
-                                            return "NAM"
-                                        }
-                                        else if (item?.gender == "FEMALE") {
-                                            return "NỮ"
-                                        }
-                                        else {
-                                            return "KHÁC"
-                                        }
-                                    })()}
-                                </StyledTableCell>
-                                <StyledTableCell align="right">
-                                    <Button
-                                        variant="contained"
-                                        color='primary'
-                                        onClick={() => handleShowBooking(item.user.id)}
-                                    >
-                                        <i className="fa-solid fa-list"></i>
-                                    </Button>
-                                </StyledTableCell>
-                                <StyledTableCell align="right">
-                                    <Button
-                                        variant="contained"
-                                        color='error'
-                                        onClick={() => handleChangeLock(item.id, item.user.id)}
-                                    >
-                                        <i className="fa-solid fa-ban"></i>
-                                    </Button>
-                                </StyledTableCell>
-                            </StyledTableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Pagination
-                count={Math.ceil(customerList.length / itemsPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-                color="primary"
-                showFirstButton
-                showLastButton
-                style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
-            />
-
+            {loading && <Loading />}
+            {showBookingList && <BookingListCustomerInClinic 
+                customerId={customerId} 
+                clinicId={clinicId}
+                handleHideBookingHistory={handleHideBookingHistory} />}
+            {showCustomer &&
+                <>
+                    <Typography variant="h5" align="center" gutterBottom>Danh sách bệnh nhân trên hệ thống</Typography>
+                    <TableContainer component={Paper}>
+                        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                            <TableHead>
+                                <TableRow>
+                                    <StyledTableCell sx={{ width: 10 }}>#</StyledTableCell>
+                                    <StyledTableCell>TÊN BỆNH NHÂN </StyledTableCell>
+                                    <StyledTableCell> NGÀY SINH </StyledTableCell>
+                                    <StyledTableCell> SỐ ĐIỆN THOẠI </StyledTableCell>
+                                    <StyledTableCell> EMAIL </StyledTableCell>
+                                    <StyledTableCell> ĐỊA CHỈ </StyledTableCell>
+                                    <StyledTableCell> GIỚI TÍNH </StyledTableCell>
+                                    <StyledTableCell sx={{ width: 25 }}>LỊCH SỬ KHÁM</StyledTableCell>
+                                    <StyledTableCell sx={{ width: 25 }}>KHÓA</StyledTableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {currentCustomerList.map((item) => (
+                                    <StyledTableRow key={item.id}>
+                                        <StyledTableCell sx={{ width: 10 }} component="th" scope="row">
+                                            {item?.id}
+                                        </StyledTableCell>
+                                        <StyledTableCell>
+                                            {item?.fullName}
+                                        </StyledTableCell>
+                                        <StyledTableCell>{item?.dob}</StyledTableCell>
+                                        <StyledTableCell>{item?.phone}</StyledTableCell>
+                                        <StyledTableCell>{item?.email}</StyledTableCell>
+                                        <StyledTableCell>{item?.address}</StyledTableCell>
+                                        <StyledTableCell>{
+                                            item?.gender && (() => {
+                                                if (item?.gender == "MALE") {
+                                                    return "NAM"
+                                                }
+                                                else if (item?.gender == "FEMALE") {
+                                                    return "NỮ"
+                                                }
+                                                else {
+                                                    return "KHÁC"
+                                                }
+                                            })()}
+                                        </StyledTableCell>
+                                        <StyledTableCell align="right">
+                                            <Button
+                                                variant="contained"
+                                                color='primary'
+                                                onClick={() => handleShowBookingHistory(item.id)}
+                                            >
+                                                <i className="fa-solid fa-list"></i>
+                                            </Button>
+                                        </StyledTableCell>
+                                        <StyledTableCell align="right">
+                                            <Button
+                                                variant="contained"
+                                                color='error'
+                                                onClick={() => handleChangeLock(item.id, item.user.id)}
+                                            >
+                                                <i className="fa-solid fa-ban"></i>
+                                            </Button>
+                                        </StyledTableCell>
+                                    </StyledTableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    <Pagination
+                        count={Math.ceil(customerList.length / itemsPerPage)}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                        showFirstButton
+                        showLastButton
+                        style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+                    />
+                </>}
         </>
     )
 }
