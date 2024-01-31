@@ -74,6 +74,11 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findAllByClinicId(clinicId);
     }
 
+    @Override
+    public List<Booking> findAllByDoctorId(Long doctorId) {
+        return iBookingRepository.findAllByDoctorId(doctorId);
+    }
+
     public List<Booking> getAllBookingByClinicIdAndCustomerId(Long clinicId, Long customerId) {
         return iBookingRepository.findAllByClinicIdAndCustomerId(clinicId, customerId);
     }
@@ -118,10 +123,6 @@ public class BookingService implements IBookingService {
         timer.schedule(task, 60*1000);
     }
 
-    @Override
-    public List<Booking> findAllByDoctor_Id(Long doctorId) {
-        return iBookingRepository.findAllByDoctor_Id(doctorId);
-    }
 
     @Scheduled(cron = "0 */5 * * * *")
     public void checkBookingDatesAndSendReminderEmails() {
