@@ -15,7 +15,6 @@ function ClinicList() {
         axios.get('http://localhost:8080/api/clinic')
             .then(response => {
                 setClinicData(response.data);
-                console.log(response.data);
                 setLoading(false)
             })
             .catch(error => {

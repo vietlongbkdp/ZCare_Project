@@ -69,6 +69,10 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findAllByClinicId(clinicId);
     }
 
+    public List<Booking> getAllBookingByClinicIdAndCustomerId(Long clinicId, Long customerId) {
+        return iBookingRepository.findAllByClinicIdAndCustomerId(clinicId, customerId);
+    }
+
     public void createBooking(BookingDTO bookingDTO) {
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
         schedule.setStatus(EStatus.SELECTED);
