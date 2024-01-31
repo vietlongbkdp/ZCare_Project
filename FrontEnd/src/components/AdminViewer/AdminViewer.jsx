@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import AppWidgetSummary from "./AppWidgetSummary";
 import {useEffect, useState} from "react";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 export default function AdminViewer() {
     const [DoctorList,setDoctorList]=useState([]);
@@ -96,7 +97,8 @@ export default function AdminViewer() {
             </Typography>
 
             <Grid container spacing={3}>
-                <Grid xs={12} sm={6} md={3}>
+                <Grid xs={12} sm={6} md={3} >
+                    <Link to="/admin/clinic" style={{textDecoration:"none", color:'black'}}>
                     <AppWidgetSummary
                         title="Số phòng khám"
                         total={totalClinic}
@@ -104,8 +106,10 @@ export default function AdminViewer() {
                         icon={<img alt="icon"
                                    src="https://minimal-kit-react.vercel.app/assets/icons/glass/ic_glass_message.png"/>}
                     />
+                    </Link>
                 </Grid>
                 <Grid xs={12} sm={6} md={3}>
+                    <Link to="" style={{textDecoration:"none", color:'black'}}>
                     <AppWidgetSummary
                         title="Số chuyên khoa"
                         total={totalSpeciality}
@@ -114,26 +118,32 @@ export default function AdminViewer() {
                                    src="https://static.vecteezy.com/system/resources/previews/000/353/690/original/vector-hospital-icon.jpg"
                                    style={{width: '100%', height: 'auto'}}/>}
                     />
+                    </Link>
                 </Grid>
                 <Grid xs={12} sm={6} md={3}>
-                    <AppWidgetSummary
-                        title="Số bác sĩ"
-                        total={totalDoctor}
-                        color="warning"
-                        icon={<img alt="icon" src="https://cdn.haynhat.com/wp-content/uploads/2020/07/bac-si.jpg"
-                                   style={{width: '120%', height: 'auto'}}/>}
-                    />
+                    <Link to="/admin/doctor" style={{textDecoration:"none", color:'black'}}>
+                        <AppWidgetSummary
+                            title="Số bác sĩ"
+                            total={totalDoctor}
+                            color="warning"
+                            icon={<img alt="icon" src="https://cdn.haynhat.com/wp-content/uploads/2020/07/bac-si.jpg"
+                                       style={{width: '120%', height: 'auto'}}/>}
+                        />
+                    </Link>
                 </Grid>
                 <Grid xs={12} sm={6} md={3}>
-                    <AppWidgetSummary
-                        title="Số bệnh nhân"
-                        total={totalCustomer}
-                        color="error"
-                        icon={<img alt="icon"
-                                   src="https://minimal-kit-react.vercel.app/assets/icons/glass/ic_glass_users.png"/>}
-                    />
+                    <Link to="/admin/customer" style={{textDecoration:"none", color:'black'}}>
+                        <AppWidgetSummary
+                            title="Số bệnh nhân"
+                            total={totalCustomer}
+                            color="error"
+                            icon={<img alt="icon"
+                                       src="https://minimal-kit-react.vercel.app/assets/icons/glass/ic_glass_users.png"/>}
+                        />
+                    </Link>
                 </Grid>
                 <Grid xs={12} sm={6} md={3}>
+                    <Link to="" style={{textDecoration:"none", color:'black'}}>
                     <AppWidgetSummary
                         title="Lịch khám hôm nay"
                         total={totalbooking}
@@ -142,6 +152,7 @@ export default function AdminViewer() {
                                    src="https://thumbs.dreamstime.com/b/vecteur-d-ic%C3%B4ne-de-calendrier-appli-ordre-du-jour-date-butoir-affaires-page-illustration-isolement-sur-le-fond-blanc-rappel-ligne-140057422.jpg"
                                    style={{width: '120%', height: 'auto'}} />}
                     />
+                    </Link>
                 </Grid>
             </Grid>
         </Container>
