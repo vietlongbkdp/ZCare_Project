@@ -2,10 +2,18 @@ import React, {useEffect, useState} from 'react';
 import Cookies from "js-cookie";
 import axios from "axios";
 import dayjs from "dayjs";
+import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import {parse} from "date-fns";
 
 function MedicalBookingList() {
     const [booking, setBooking] = useState([]);
     const [pre,setPre] = useState(true);
+    const dateNows = dayjs().format('D/M/YYYY');
+    const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [recentDates, setRecentDates] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(dateNows);
+    const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const userId = Cookies.get('userId');
     const statusColors = {
         CUSTOMERCONFIMED: "green",
@@ -25,6 +33,28 @@ function MedicalBookingList() {
             });
     }, [userId,pre]);
 
+    useEffect(() => {
+        setCurrentDate(new Date());
+        const getRecentDates = () => {
+            const today = new Date();
+            const recentDates = [];
+            for (let i = 0; i < 6; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                recentDates.push(date);
+            }
+            setRecentDates(recentDates);
+        };
+        getRecentDates();
+    }, []);
+
+    useEffect(() => {
+        if (selectedDate !== '') {
+            const selected = new Date(selectedDate);
+            setCurrentDate(selected);
+        }
+    }, [selectedDate]);
+
     const handleChangeStatus = (bookingId,event) => {
         const selectedStatus = event.target.value;
         const selectElement = event.target;
@@ -43,8 +73,47 @@ function MedicalBookingList() {
             });
     };
 
+    const handleDateChange = (event) => {
+        const dateValue = event.target.value;
+        setSelectedDate(dateValue);
+        const parsedDate = parse(dateValue, 'd/M/yyyy', new Date());
+        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
+        setSelectedWeekday(selectedWeekday);
+
+        // axios.post('http://localhost:8080/api/booking/changeStatus',data)
+        //     .then(response => {
+        //         setBooking(response.data);
+        //         setPre(!pre);
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //     });
+
+    };
+
     return (
         <div>
+            <div>
+                <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
+                    <InputLabel id="recent-dates-label">Ngày</InputLabel>
+                    <Select
+                        style={{color: "#0097e6"}}
+                        labelId="recent-dates-label"
+                        id="date"
+                        value={selectedDate || currentDate.toLocaleDateString()}
+                        onChange={handleDateChange}
+                        label="Ngày"
+                    >
+                        {recentDates.map((date, index) => (<MenuItem
+                            key={index}
+                            value={date.toLocaleDateString()}
+                            selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
+                        >
+                            {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', {weekday: 'long'})})`}
+                        </MenuItem>))}
+                    </Select>
+                </FormControl>
+            </div>
             <div className={"container justify-content-center"}>
                 <table className="table table-bordered table-striped" key={booking.id}>
                     <thead>
@@ -103,20 +172,32 @@ function MedicalBookingList() {
                                                 borderRadius: '5px',
                                                 backgroundColor: statusColors[booking?.status],
                                                 color: 'white',
-                                                padding:3,
+                                                padding: 3,
                                                 appearance: 'none',
                                                 WebkitAppearance: 'none',
                                                 MozAppearance: 'none',
                                                 textAlign: 'center',
                                             }}
                                             value={booking?.status}
-                                            onChange={(event)=>{handleChangeStatus(booking?.id, event)}}
+                                            onChange={(event) => {
+                                                handleChangeStatus(booking?.id, event)
+                                            }}
                                         >
-                                            <option value="CUSTOMERCONFIMED" style={{backgroundColor:'white',color:'black'}}>Đã xác nhận</option>
-                                            <option value="EXAMINING" style={{backgroundColor:'white',color:'black'}}>Đang khám</option>
-                                            <option value="RESULTING" style={{backgroundColor:'white',color:'black'}}>Đã trả kết quả</option>
-                                            <option value="PAID" style={{backgroundColor:'white',color:'black'}}>Đã Thanh toán</option>
-                                            <option value="CANCEL" style={{backgroundColor:'white',color:'black'}}>Đã hủy</option>
+                                            <option value="CUSTOMERCONFIMED"
+                                                    style={{backgroundColor: 'white', color: 'black'}}>Đã xác nhận
+                                            </option>
+                                            <option value="EXAMINING"
+                                                    style={{backgroundColor: 'white', color: 'black'}}>Đang khám
+                                            </option>
+                                            <option value="RESULTING"
+                                                    style={{backgroundColor: 'white', color: 'black'}}>Đã trả kết quả
+                                            </option>
+                                            <option value="PAID" style={{backgroundColor: 'white', color: 'black'}}>Đã
+                                                Thanh toán
+                                            </option>
+                                            <option value="CANCEL" style={{backgroundColor: 'white', color: 'black'}}>Đã
+                                                hủy
+                                            </option>
                                         </select>
                                     )}
                                 </td>

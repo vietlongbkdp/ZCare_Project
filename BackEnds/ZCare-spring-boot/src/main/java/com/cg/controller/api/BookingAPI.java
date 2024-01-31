@@ -7,6 +7,7 @@ import com.cg.model.DTO.BookingDTO;
 import com.cg.model.DTO.ChangeStatusDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
+import com.cg.model.enumeration.EWeekday;
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.booking.BookingService;
@@ -164,5 +165,10 @@ public class BookingAPI {
         bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
+    @GetMapping("/{clinicId}/{weekday}")
+    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable String weekday) {
+        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
+        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinicId, weekday);
+        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+    }
 }
