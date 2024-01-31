@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -77,11 +78,18 @@ public class BookingAPI {
     public ResponseEntity<?> GetAlllBookingbyClinicId(@PathVariable Long userId){
         Clinic clinic = clinicService.findByUser_Id(userId);
         List<Doctor> doctorList = doctorService.findAllByClinic_Id(clinic.getId());
+        List<Booking> allBookings = new ArrayList<>();
+
         for (Doctor doctor: doctorList){
             List<Booking> bookingList = bookingService.findAllByDoctor_Id(doctor.getId());
-            return new ResponseEntity<>(bookingList ,HttpStatus.OK);
+            allBookings.addAll(bookingList);
         }
-        return ResponseEntity.notFound().build();
+
+        if (!allBookings.isEmpty()) {
+            return new ResponseEntity<>(allBookings, HttpStatus.OK);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/doctor/{userId}")
