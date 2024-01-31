@@ -125,7 +125,6 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
         }
     }
     const handleSubmit = (event) => {
-        setLoading(true)
         event.preventDefault()
         const listWeek = weekday
         const listWeekdayExist = []
@@ -148,7 +147,6 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
             }
         })
         setDateCreate(listSchedule)
-        setLoading(false)
     }
     const handleClickAddTimes = (event) => {
         setIsAddTimes({
@@ -165,17 +163,14 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
         setTimeValueEnd(null)
     }
     const handleCreateSche = event => {
-        setLoading(true)
         const strTimes = `${event.target.closest(".getTimes").querySelector('.startTimes input').value} - ${event.target.closest(".getTimes").querySelector('.endTimes input').value}`;
         const startTimeGet = timeValueStart;
         const endTimeGet = timeValueEnd;
         if ((startTimeGet === null) || (endTimeGet === null)) {
             toast.error("Quy trình chọn giờ chưa đúng, hãy chọn thơì gian rồi bấm OK để lưu!")
-            setLoading(false)
         } else {
             if ((endTimeGet - startTimeGet) < (parseInt(betweenTime) * 60000)) {
                 toast.error("Lựa chọn thời gian không hợp lệ!")
-                setLoading(false)
             } else {
                 const indexSet = parseInt(event.target.closest(".recordDate").firstChild.innerText) - 1;
                 const newSchedule = {
@@ -199,12 +194,10 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
                         });
                     } else {
                         flag = true
-                        setLoading(false)
                     }
                 })
                 if (flag) {
                     toast.error("Có xung đột thời gian, vui lòng kiểm tra lại, hệ thống đã tự động bỏ đi lịch khám bị xung đột")
-                    setLoading(false)
                 }
             }
         }
