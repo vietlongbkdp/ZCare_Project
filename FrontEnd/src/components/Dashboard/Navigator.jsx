@@ -38,6 +38,7 @@ const categories = [
                 icon: <SettingsInputComponentIcon />,
                 url: "doctor"
             },
+            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "booking" },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
             { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
@@ -47,7 +48,8 @@ const categories = [
         id: 'ADMIN_CLINIC',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
-            { id: 'Danh sách booking', icon: <TimerIcon />, url: "booking" },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "booking" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Bệnh nhân', icon: <TimerIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
             { id: 'Đặt lịch khám tại quầy', icon: <CalendarMonthIcon />, url: "registerCustomerAdmin" },
@@ -57,7 +59,8 @@ const categories = [
         id: 'DOCTOR',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
-            { id: 'Danh sách booking', icon: <TimerIcon />, url: "doctor" },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctor" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],
     },

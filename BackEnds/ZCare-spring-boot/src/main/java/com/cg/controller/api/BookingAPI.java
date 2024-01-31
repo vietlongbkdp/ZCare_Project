@@ -4,6 +4,7 @@ import com.cg.model.*;
 import com.cg.model.Booking;
 import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
+import com.cg.model.DTO.ChangeStatusDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
 import com.cg.repository.IBookingRepository;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -135,6 +135,14 @@ public class BookingAPI {
     @PostMapping("/setSchedule")
     public ResponseEntity<String> setScheduleBooking() {
         bookingService.setSchedule();
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/changeStatus")
+    public ResponseEntity<String> changeStatus(@RequestBody ChangeStatusDTO changeStatusDTO) {
+        Booking booking =bookingService.findById(changeStatusDTO.getBookingId()).get();
+        booking.setStatus(EStatusBooking.valueOf(changeStatusDTO.getSelectedStatus()));
+        bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
