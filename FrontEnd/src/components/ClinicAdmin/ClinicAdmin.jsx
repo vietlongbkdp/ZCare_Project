@@ -147,11 +147,12 @@ export default function CustomizedTables() {
 
     const handleChangeLock = async (id, currentLockStatus) => {
         Swal.fire({
-            title: "Bạn muốn khóa",
+            title: "Bạn có chắc chắn muốn khóa?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
+            cancelButtonText: "Hủy",
             confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             if (result.isConfirmed) {

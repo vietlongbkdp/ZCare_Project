@@ -20,8 +20,6 @@ import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
 import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
 function ResponsiveAppBar() {
     const [dashboarduser, setDashboarduser] = useState('');
 
@@ -48,69 +46,14 @@ function ResponsiveAppBar() {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const Search = styled('div')(({ theme }) => ({
-        position: 'relative',
-        borderRadius: theme.shape.borderRadius,
-        backgroundColor: '#18a2b9',
-        '&:hover': {
-            backgroundColor: alpha(theme.palette.common.white, 0.25),
-        },
-        marginRight: theme.spacing(2),
-        marginLeft: 0,
-        width: '100%',
-        [theme.breakpoints.up('sm')]: {
-            marginLeft: theme.spacing(3),
-            width: 'auto',
-        },
-    }));
 
-    const SearchIconWrapper = styled('div')(({ theme }) => ({
-        padding: theme.spacing(0, 2),
-        height: '100%',
-        position: 'absolute',
-        pointerEvents: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    }));
-
-    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-        color: 'inherit',
-        '& .MuiInputBase-input': {
-            padding: theme.spacing(1, 1, 1, 0),
-            // vertical padding + font size from searchIcon
-            paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-            transition: theme.transitions.create('width'),
-            width: '100%',
-            [theme.breakpoints.up('md')]: {
-                width: '20ch',
-            },
-        },
-    }));
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-    const handleOpenNavMenu = (event) => {
-        setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event) => {
-        setAnchorElUser(event.currentTarget);
-    };
 
     const isCustomer = location.pathname.startsWith("/user")
     const isCooperate = location.pathname.startsWith("/clinicadmin");
     const isAdmin = location.pathname.startsWith("/admin");
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-        if (isCustomer) {
-            navigate("/user/doctorInfor");
-        } else if (isCooperate) {
-            navigate("/cooperate/doctorInfor")
-        } else if (isAdmin) {
-            navigate("/admin/doctorInfor")
-        }
-    };
     const storedUserId = Cookies.get('userId');
 
     useEffect(()=>{
@@ -141,24 +84,20 @@ function ResponsiveAppBar() {
         <AppBar position="fixed" sx={{ height: '54px' }}>
             <ReminderTimer/>
             <Container sx={{width: '100%', marginLeft: '265px', paddingRight: '50px !important' }}>
-                <Toolbar disableGutters>
+                <Toolbar sx={{ height: '54px' }}>
                     {userRole === "ROLE_ADMIN_CLINIC" && (
                         <Box sx={{display: 'flex'}}>
-                            <Avatar alt="Remy Sharp" sx={{mt: 1.7}} src={dashboarduser.clinicLogo} />
+                            <Avatar alt="Avatar" sx={{mt: 1.7, borderRadius: 'none'}} src={dashboarduser.clinicLogo} />
                             <Typography
                                 variant="h6"
                                 noWrap
-                                component="a"
-                                href="#app-bar-with-responsive-menu"
                                 sx={{
                                     ml:2,
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
-                                    fontFamily: 'monospace',
                                     fontWeight: 700,
-                                    letterSpacing: '.3rem',
+                                    letterSpacing: '.1rem',
                                     color: 'inherit',
-                                    textDecoration: 'none',
                                     my: 2,
                                 }}
                             >
@@ -178,18 +117,9 @@ function ResponsiveAppBar() {
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
 
                     </Box>
-                    <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings" onClick={handleClick}>
+                        <Tooltip title="Thông tin cá nhân" onClick={handleClick}>
                             <IconButton sx={{ p: 0 }}>
                                 <Avatar alt="Remy Sharp" src={dashboarduser.avatarImg} />
                                 <Typography sx={{ color: 'white', ml: 1 }}>{getDisplayName()}</Typography>
@@ -206,12 +136,7 @@ function ResponsiveAppBar() {
                         >
                             <MenuItem onClick={handleClose}>
                                 <Link to="editClinic" style={{ textDecoration: 'none', color: 'black' }}>
-                                    Cập nhập
-                                </Link>
-                            </MenuItem>
-                            <MenuItem onClick={handleClose}>
-                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
-                                    Lịch hẹn
+                                    Cập nhật thông tin
                                 </Link>
                             </MenuItem>
                             <MenuItem onClick={handleLogout}>

@@ -7,7 +7,6 @@ import com.cg.model.Schedule;
 import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
-
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.ICustomerService;
 import com.cg.service.schedule.IScheduleService;
@@ -22,6 +21,9 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
+import java.util.TimerTask;
+
 @Service
 @Transactional
 public class BookingService implements IBookingService {
@@ -63,11 +65,15 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findByCustomerIdAndScheduleId(customerId,scheduleId);
     }
 
+    public List<Booking> getAllBookingByClinicId(Long clinicId) {
+        return iBookingRepository.findAllByClinicId(clinicId);
+    }
+
     public void createBooking(BookingDTO bookingDTO) {
         Schedule schedule = scheduleService.findById(bookingDTO.getScheduleId()).get();
         schedule.setStatus(EStatus.SELECTED);
         Customer customer = customerService.findByUser_Id(bookingDTO.getUserId());
-        Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setSchedule(schedule)
+        Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customer).setClinic(schedule.getDoctor().getClinic()).setSchedule(schedule)
                 .setBookingDate(bookingDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
                 .setCreateAt(LocalDate.now())
                 .setStatus(EStatusBooking.CONFIRMING);
@@ -85,6 +91,22 @@ public class BookingService implements IBookingService {
         String body= SendEmail.EmailScheduledSuccessfully(
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
         emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                Booking bookingConfirm = findById(booking.getId()).get();
+                Schedule scheduleConfirm = scheduleService.findById(schedule.getId()).get();
+                if (bookingConfirm.getStatus().equals(EStatusBooking.CONFIRMING)) {
+                    scheduleConfirm.setStatus(EStatus.AVAILABLE);
+                    scheduleService.save(scheduleConfirm);
+                    deleteById(bookingConfirm.getId());
+                }
+                timer.cancel();
+            }
+        };
+        timer.schedule(task, 60*1000);
     }
 
     @Override
@@ -107,6 +129,21 @@ public class BookingService implements IBookingService {
         }
     }
 
+    @Scheduled(cron = "0 */5 * * * *")
+    public void setSchedule() {
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));
+        List<Booking> bookingSetSchedule = iBookingRepository.findAll();
+        for(Booking booking :bookingSetSchedule){
+            LocalDate bookingDate = LocalDate.parse(booking.getBookingDate(), DateTimeFormatter.ofPattern("dd/M/yyyy"));
+            LocalDate currentDateParsed = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern("dd/M/yyyy"));
+            if (currentDateParsed.isAfter(bookingDate)) {
+                Schedule schedule = scheduleService.findById(booking.getSchedule().getId()).get();
+                schedule.setStatus(EStatus.AVAILABLE);
+                scheduleService.save(schedule);
+            }
+        }
+    }
+
     public void createBookingAdmin(BookingAdminDTO bookingAdminDTO) {
         Schedule schedule = scheduleService.findById(bookingAdminDTO.getScheduleId()).get();
         schedule.setStatus(EStatus.SELECTED);
@@ -120,7 +157,7 @@ public class BookingService implements IBookingService {
             customerNew.setAddress(bookingAdminDTO.getAddress());
             customerNew.setDob(LocalDate.parse(bookingAdminDTO.getDobCus()));
             customerService.save(customerNew);
-            Booking booking = new Booking().setDoctor(schedule.getDoctor()).setCustomer(customerNew).setSchedule(schedule)
+            Booking booking = new Booking().setDoctor(schedule.getDoctor()).setClinic(schedule.getDoctor().getClinic()).setCustomer(customerNew).setSchedule(schedule)
                     .setBookingDate(bookingAdminDTO.getBookDay()).setBookingTime(schedule.getTimeItem()).setFee(schedule.getDoctor().getFee())
                     .setCreateAt(LocalDate.now())
                     .setStatus(EStatusBooking.CUSTOMERCONFIMED)

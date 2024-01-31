@@ -105,10 +105,7 @@ function DoctorComponentAdmin({ doctor }) {
                         </div>
                         <div className={"d-flex flex-column justify-content-center ms-3"}>
                             <div>
-                                <Link to={`/doctorDetail/${doctor.id}`} style={{textDecoration: 'none',color: 'black'}}>
                                     <h5 style={{color: "#74b9ff"}}>{doctor?.doctorName}</h5>
-                                </Link>
-
                             </div>
                             <div>
                                 <p>Chức danh: {doctor?.position?.name}</p>
@@ -153,7 +150,7 @@ function DoctorComponentAdmin({ doctor }) {
                     </div>
                     <div className={"d-flex flex-wrap gap-3"}>
                         {scheduleList.map((schedule, index) => (
-                            <Link key={schedule.id} to={`/bookingAdmin/${schedule.id}/${selectedDate}`} className="schedule">
+                            <Link key={schedule.id} to={`/clinicadmin/bookingAdmin/${schedule.id}/${selectedDate}`} className="schedule">
                                 {schedule.timeItem}
                             </Link>
                         ))}

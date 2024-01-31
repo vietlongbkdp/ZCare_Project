@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router-dom";
-import Header from "../Header/Header";
-import DoctorInfoClinic from "../DoctorInfoClinic/DoctorInfoClinic";
-import Footer from "../Footer/Footer";
 import HTMLReactParser from "html-react-parser";
 import axios from "axios";
-import Cookies from "js-cookie";
-import Button from "@mui/material/Button";
+import { Box, Container, Typography } from '@mui/material'
 import Loading from "../Loading/Loading";
+import { Stack } from '@mui/system';
+import Cookies from "js-cookie";
 
 function DoctorListByClinic() {
     const [clinic, setClinic] = useState();
@@ -32,7 +29,6 @@ function DoctorListByClinic() {
     }, [])
 
     useEffect(() => {
-
         if (clinicUserId !== undefined) {
             axios.get(`http://localhost:8080/api/clinic/${clinicUserId}`)
                 .then(response => {
@@ -49,14 +45,32 @@ function DoctorListByClinic() {
 
     return (
         <>
-            {loading && <Loading/>}
-            <div className={"my-2"} >
-                <div className={"container pb-4"}>
-                    <div className={"d-flex flex-column mt-3"}>
+            {loading && <Loading />}
+                <Container>
+                    <Typography variant='h4' align='center' gutterBottom>{clinic?.clinicName}</Typography>
+                    <Stack direction='row' sx={{ borderBottom: '1 solid black' }}>
+                        <Box px={2} mx={3}>
+                            <img src={clinic?.clinicLogo} style={{ width: '200px', height: '130px' }} alt="Logo" />
+                        </Box>
+                        <Box pr={3}>
+                            <Typography variant='subtitle1'>Người đại diện:</Typography>
+                            <Typography variant='subtitle1'>Email:</Typography>
+                            <Typography variant='subtitle1'>Đường dây nóng:</Typography>
+                            <Typography variant='subtitle1'>Giấy phép hoạt động:</Typography>
+                            <Typography variant='subtitle1'>Địa chỉ:</Typography>
+                        </Box>
+                        <Box>
+                            <Typography variant='subtitle1'>{clinic?.legalRepresentative}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.email}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.hotline}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.operatingLicence}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.address}</Typography>
+                        </Box>
+                    </Stack>
+                    <Box p={1} mt={3}>
                         {clinic && clinic.clinicInfo && HTMLReactParser(clinic.clinicInfo)}
-                    </div>
-                </div>
-            </div>
+                    </Box>
+                </Container>
         </>
     );
 }

@@ -1,7 +1,9 @@
-import { Button, Container, Typography } from '@mui/material'
+import { Box, Button, Container, Typography } from '@mui/material'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import Loading from "../Loading/Loading";
+import { Stack } from '@mui/system';
+import HTMLReactParser from 'html-react-parser';
 
 export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
     const [clinicDetail, setClinicDetail] = useState();
@@ -22,24 +24,46 @@ export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
             }
         }
         getClinicById();
-    })
+    }, [])
     return (
         <>
-        {loading && <Loading/>}
-        <Container>
-            {buttonCreate &&
-                <Button
-                    type="button"
-                    variant="contained"
-                    sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
-                    onClick={handleHideClinicDetail}
-                >
-                    Trở lại
-                </Button>}
+            {loading && <Loading />}
             <Container>
-                <Typography variant='h5' align='center' gutterBottom>{clinicDetail?.clinicName}</Typography>
+                {buttonCreate &&
+                    <Button
+                        type="button"
+                        variant="contained"
+                        sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
+                        onClick={handleHideClinicDetail}
+                    >
+                        Trở lại
+                    </Button>}
+                <Container sx={{ backgroundColor: 'white', pt: 1 }}>
+                    <Typography variant='h4' align='center' gutterBottom>{clinicDetail?.clinicName}</Typography>
+                    <Stack direction='row' sx={{ borderBottom: '1 solid black' }}>
+                        <Box px={2} mx={3}>
+                            <img src={clinicDetail?.clinicLogo} style={{ width: '200px', height: '130px' }} alt="Logo" />
+                        </Box>
+                        <Box pr={3}>
+                            <Typography variant='subtitle1'>Người đại diện:</Typography>
+                            <Typography variant='subtitle1'>Email:</Typography>
+                            <Typography variant='subtitle1'>Đường dây nóng:</Typography>
+                            <Typography variant='subtitle1'>Giấy phép hoạt động:</Typography>
+                            <Typography variant='subtitle1'>Địa chỉ:</Typography>
+                        </Box>
+                        <Box>
+                            <Typography variant='subtitle1'>{clinicDetail?.legalRepresentative}</Typography>
+                            <Typography variant='subtitle1'>{clinicDetail?.email}</Typography>
+                            <Typography variant='subtitle1'>{clinicDetail?.hotline}</Typography>
+                            <Typography variant='subtitle1'>{clinicDetail?.operatingLicence}</Typography>
+                            <Typography variant='subtitle1'>{clinicDetail?.address}</Typography>
+                        </Box>
+                    </Stack>
+                    <Box p={1} mt={3}>
+                        {clinicDetail && clinicDetail?.clinicInfo && HTMLReactParser(clinicDetail?.clinicInfo)}
+                    </Box>
+                </Container>
             </Container>
-        </Container>
         </>
     )
 }

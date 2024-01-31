@@ -5,62 +5,72 @@ import DoctorInfoClinic from "../DoctorInfoClinic/DoctorInfoClinic";
 import Footer from "../Footer/Footer";
 import HTMLReactParser from "html-react-parser";
 import axios from "axios";
-import Cookies from "js-cookie";
-import Button from "@mui/material/Button";
 import Loading from "../Loading/Loading";
+import {Box, Container, Typography} from "@mui/material";
+import {Stack} from "@mui/system";
 
 function DoctorListByClinic() {
-    const { clinicId } = useParams();
-    const [clinic,setClinic]=useState();
+    const {clinicId} = useParams();
+    const [clinic, setClinic] = useState();
     const [loading, setLoading] = useState(true);
-    // const [clinicUserId, setClinicUserId]= useState();
-    //
-    // const storedUserId = Cookies.get('userId');
-    //
-    // useEffect(()=>{
-    //     const finddUser = async () => {
-    //         try {
-    //             const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-    //             console.log(response.data)
-    //             setClinicUserId(response.data.id)
-    //         }catch (error) {
-    //             console.error(error);
-    //         }
-    //     }
-    //     finddUser();
-    // },[])
-    // console.log(clinicUserId)
     useEffect(() => {
-            axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
-                .then(response => {
-                    setClinic(response.data);
-                    setLoading(false)
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    setLoading(false)
-                });
+        axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
+            .then(response => {
+                setClinic(response.data);
+                setLoading(false)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setLoading(false)
+            });
 
     }, []);
 
     return (
         <>
             {loading && <Loading/>}
-                    <Header />
-                    <div className="w-100 d-flex flex-column justify-content-center align-items-center"
-                         style={{ height: "200px", backgroundColor: "rgb(237 255 250)" }}>
-                        <h2 className="mt-2">Thông tin Phòng khám</h2>
-                        <p className="mt-3">Phòng khám là nơi cung cấp dịch vụ y tế cơ bản và chẩn đoán ban đầu cho bệnh nhân.</p>
-                    </div>
-                    <DoctorInfoClinic clinicId={clinicId} />
-            <div className={"my-5"} >
+            <Header/>
+            <div className="w-100 d-flex flex-column justify-content-center align-items-center"
+                 style={{height: "200px", backgroundColor: "rgb(237 255 250)"}}>
+                <Container >
+                    <Typography variant='h5' align='center' gutterBottom>{clinic?.clinicName}</Typography>
+                    <Stack direction='row'  sx={{borderBottom: '1 solid black', justifyContent: 'center' }}>
+                        <Box px={2} mx={3}>
+                            <img src={clinic?.clinicLogo} style={{ width: '150px', height: '130px' }} alt="Logo" />
+                        </Box>
+                        <Box pr={3}>
+                            <Typography variant='subtitle1'>Người đại diện:</Typography>
+                            <Typography variant='subtitle1'>Email:</Typography>
+                            <Typography variant='subtitle1'>Đường dây nóng:</Typography>
+                            <Typography variant='subtitle1'>Giấy phép hoạt động:</Typography>
+                            <Typography variant='subtitle1'>Địa chỉ:</Typography>
+                        </Box>
+                        <Box>
+                            <Typography variant='subtitle1'>{clinic?.legalRepresentative}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.email}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.hotline}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.operatingLicence}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.address}</Typography>
+                        </Box>
+                    </Stack>
+                </Container>
+                {/*<h2 className="mt-2">Thông tin Phòng khám</h2>*/}
+                {/*<p className="mt-3">Phòng khám là nơi cung cấp dịch vụ y tế cơ bản và chẩn đoán ban đầu cho bệnh*/}
+                {/*    nhân.</p>*/}
+            </div>
+
+
+
+
+            <DoctorInfoClinic clinicId={clinicId}/>
+            <div className={"my-5"}>
                 <div className={"container pb-4"}>
                     <div className={"d-flex flex-column mt-3"}>
                         {clinic && clinic.clinicInfo && HTMLReactParser(clinic.clinicInfo)}
                     </div>
                 </div>
             </div>
-                <Footer/>
+            <Footer/>
 
 
         </>
