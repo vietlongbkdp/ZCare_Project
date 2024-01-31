@@ -81,11 +81,8 @@ export default function App() {
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctor" element={<CustomerBookingDoctor/>}></Route>
-            <Route path="clinic" element={<Result/>}></Route>
+            <Route path="clinic" element={<ResultTyping/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
-            {/*<Route path="clinic" element={<Result/>}></Route>*/}
-
-            {/*<Route path="clinic" element={<ResultTyping/>}></Route>*/}
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>
