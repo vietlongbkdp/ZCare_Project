@@ -26,9 +26,10 @@ const categories = [
         id: 'ADMIN',
         children: [
             {
-                id: 'Danh sách lịch khám ',
+                id: 'Trang chủ ',
                 icon: <PeopleIcon />,
                 active: true,
+                url: ''
             },
             { id: 'Phòng khám', icon: <PublicIcon />, url: "clinic" },
             {
@@ -56,7 +57,6 @@ const categories = [
         id: 'DOCTOR',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
-            // { id: 'Doanh thu', icon: <SettingsIcon /> },
             { id: 'Danh sách booking', icon: <TimerIcon />, url: "doctor" },
             { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],
@@ -87,7 +87,6 @@ const itemCategory = {
 };
 
 export default function Navigator(props) {
-    const { userId } = useParams();
     const location = useLocation();
     const isAdmin = location.pathname.startsWith('/admin');
     const isAdminClinic = location.pathname.startsWith(`/clinicadmin`);
@@ -105,9 +104,6 @@ export default function Navigator(props) {
     } else if (isDoctor) {
         filteredCategories = categories.filter((category) => category.id === 'DOCTOR');
     }
-    // const filteredCategories = categories.filter(
-    //     category => isAdmin ? category.id === 'ADMIN' : category.id === 'CLINIC-DOCTOR'
-    // );
 
     const { ...other } = props;
 

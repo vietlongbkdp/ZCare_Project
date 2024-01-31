@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from "react";
-import {UserContext} from "../utils/ApiUserLogin"
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../utils/ApiUserLogin"
 import {
   Box,
   Typography,
@@ -26,7 +26,7 @@ const schema = yup.object({
 });
 
 function AuthLogin() {
-  const {API_USER} = useContext(UserContext);
+  const { API_USER } = useContext(UserContext);
   const {
     register,
     handleSubmit,
@@ -42,30 +42,6 @@ function AuthLogin() {
       handleSubmit();
     }
   };
-  
-  // const [user, setUser] = useState();
-  // useEffect(() => {
-  //   const token = Cookies.get('JWT');
-  //   console.log(token)
-  //   if (token) {
-  //
-  //     const decodedToken = jwtDecode(token);
-  //     console.log(decodedToken)
-  //     const useremail = decodedToken.sub;
-  //
-  //     const getUser = async () => {
-  //       try {
-  //         const user1 =  await axios.get(`http://localhost:8080/api/user/finduser/${useremail}`);
-  //         setUser(user1.data);
-  //
-  //         console.log(user.id)
-  //       } catch (error) {
-  //         console.error(error);
-  //       }
-  //     }
-  //     getUser();
-  //   }
-  // }, []);
 
   console.log(API_USER)
   const onSubmit = async (data) => {
@@ -74,7 +50,6 @@ function AuthLogin() {
       const response = await axios.post("http://localhost:8080/api/user/login", data);
       console.log(response)
       const userId = response.data.id;
-      // const userRole = response.data.roles[0];
       Cookies.set('userId', userId, { expires: 7, secure: true });
       const storedUserId = Cookies.get('userId');
       console.log(storedUserId)
@@ -95,9 +70,9 @@ function AuthLogin() {
         } else {
           window.location.href = "/home";
         }
-      }else if(userRole==="ROLE_ADMIN_CLINIC"){
+      } else if (userRole === "ROLE_ADMIN_CLINIC") {
         window.location.href = `/clinicadmin`;
-      }else if(userRole==="ROLE_DOCTOR") {
+      } else if (userRole === "ROLE_DOCTOR") {
         window.location.href = `/doctoradmin`;
       }
       reset();
@@ -232,6 +207,7 @@ function AuthLogin() {
             <span className="ms-2"> Facebook</span>
           </Button>
         </Box>
+        <Link to='/home' style={{ marginTop: 4, width: 'fit-content' }}>Trở về trang chủ</Link>
       </Box>
     </Box>
   );

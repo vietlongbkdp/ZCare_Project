@@ -44,14 +44,16 @@ function AdminCooperate() {
             }
         };
         getAllCooperate();
-    }, [currentPage]);
+    }, [currentPage, loading]);
 
     const handleClick = async (id) => {
         setLoading(true)
         try {
-            await axios.get(`http://localhost:8080/api/cooperate/${id}`);
-            toast.success("Xác nhận thành công");
-            setLoading(false)
+            const res = await axios.get(`http://localhost:8080/api/cooperate/${id}`);
+            if (res.status === 200) {
+                toast.success("Xác nhận thành công");
+                setLoading(false)
+            }
         } catch (error) {
             console.error(error);
             setLoading(false)

@@ -181,7 +181,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
                                 </Button>
                                 {errors?.avatarImg && <StyledErrorText>{errors?.avatarImg?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
-                                    Tải ảnh phòng khám tại đây
+                                    Tải ảnh bác sĩ tại đây
                                 </Typography>
                                 <Typography fontSize={12} fontStyle={"italic"}>
                                     Chỉ cho phép các định dạng *.jpeg, *.jpg, *.png, *.gif kích thước tối đa 1MB
