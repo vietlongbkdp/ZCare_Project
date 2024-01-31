@@ -40,6 +40,7 @@ import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCu
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
 import CustomerInClinic from "./components/CustomerAdmin/CustomerInClinic";
 import MedicalBookingList from "./components/ClinicAdmin/MedicalBookingList";
+import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -60,6 +61,7 @@ export default function App() {
             <Route path="doctorInfor" element={<DoctorInfor />}></Route>
             <Route path="clinic" element={<ClinicAdmin />}></Route>
             <Route path="customer" element={<CustomerAdmin />}></Route>
+            <Route path="bookingHistory" element={<CustomerBookingAdmin/>}></Route>
           </Route>
         </Route>
         <Route element={<PrivateRouteClinicAdmin />}>
