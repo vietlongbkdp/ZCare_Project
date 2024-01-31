@@ -1,4 +1,5 @@
 package com.cg.controller.api;
+
 import com.cg.model.Customer;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.DTO.UpdateCustomer;
@@ -24,28 +25,32 @@ public class CustomerAPI {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<?> getAll(){
-        List<Customer> customerList=customerService.findAllByUser_Unlock(true);
+    public ResponseEntity<?> getAll() {
+        List<Customer> customerList = customerService.findAllByUser_Unlock(true);
         return new ResponseEntity<>(customerList, HttpStatus.OK);
     }
 
+
     @GetMapping("{userId}")
-    public ResponseEntity<?> getCustomerById(@PathVariable Long userId){
-        Customer customer=customerService.findByUser_Id(userId);
+    public ResponseEntity<?> getCustomerById(@PathVariable Long userId) {
+        Customer customer = customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
+
     @GetMapping("/get/{userId}")
-    public ResponseEntity<?> getCustomerByIdCus(@PathVariable Long userId){
-            Customer customer = customerService.findByUser_Id(userId);
+    public ResponseEntity<?> getCustomerByIdCus(@PathVariable Long userId) {
+        Customer customer = customerService.findByUser_Id(userId);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
+
     @GetMapping("/getCustomer/{idCustomer}")
-    public ResponseEntity<?> getCustomerByIdCustomer(@PathVariable Long idCustomer){
+    public ResponseEntity<?> getCustomerByIdCustomer(@PathVariable Long idCustomer) {
         Customer customer = customerService.findById(idCustomer).get();
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
+
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long userId, @RequestBody UpdateCustomer updateCustomer){
+    public ResponseEntity<?> updateCustomer(@PathVariable Long userId, @RequestBody UpdateCustomer updateCustomer) {
         Customer customer = customerService.findByUser_Id(userId);
         customer.setFullName(updateCustomer.getFullName());
         customer.setEmail(updateCustomer.getEmail());
@@ -58,8 +63,8 @@ public class CustomerAPI {
     }
 
     @PutMapping("/lock/{id}")
-    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
-        User user= userService.findById(lockStatusReqDTO.getUserId()).get();
+    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO) {
+        User user = userService.findById(lockStatusReqDTO.getUserId()).get();
         user.setUnlock(false);
         userService.save(user);
         Customer customer = customerService.findById(id).get();

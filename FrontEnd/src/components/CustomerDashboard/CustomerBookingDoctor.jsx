@@ -12,6 +12,8 @@ import {styled} from "@mui/material/styles";
 import {IconButton, InputAdornment, InputBase, TextField} from "@mui/material";
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import {Box} from "@mui/system";
+import {ClearIcon, DatePicker, LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 
 const filter = createFilterOptions();
@@ -20,7 +22,7 @@ function AppointmentSchedule() {
     const [bookingCustomer, setBookingCustomer] = useState([]);
     const [selectedDate, setSelectedDate] = useState(''); // Ngày được chọn để lọc
     const [filteredBooking, setFilteredBooking] = useState([]);
-    const [value, setValue] = React.useState(null);
+    const [defaultDateValue, setDefaultDateValue] = useState("MM/DD/YYYY");
     const userId = Cookies.get('userId');
 
     useEffect(() => {
@@ -33,22 +35,41 @@ function AppointmentSchedule() {
                 console.error('Error:', error);
             });
     }, [userId]);
-
-    const filterBookingByDate = (date) => {
-        const formattedDate = dayjs(date).format('DD/M/YYYY');
-        console.log(formattedDate)
-        setSelectedDate(formattedDate);
-        const filtered = bookingCustomer.filter(item => item.bookingDate === formattedDate);
-        console.log(filtered)
-        setFilteredBooking(filtered);
+    const selectAllPatients = () => {
+        setSelectedDate('MM/DD/YYYY');
+        setDefaultDateValue("MM/DD/YYYY");
+        setFilteredBooking(bookingCustomer);
     };
+    const filterBookingByDate = (date) => {
+        const formattedDate = dayjs(date).format("DD/M/YYYY");
+        setSelectedDate(formattedDate);
+        console.log(formattedDate)
+        if (formattedDate !== null) {
+            const filtered = bookingCustomer.filter(
+                (item) => item.bookingDate === formattedDate
+            );
+            setFilteredBooking(filtered);
+
+        }else {
+            setDefaultDateValue("MM/DD/YYYY");
+        }
+
+    };
+
 
 
     return (
         <div>
 
             <div className={"container justify-content-center"}>
-                <input  type="date" onChange={(e) => filterBookingByDate(e.target.value)}/>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                            label="Lịch khám"
+                            value={selectedDate}
+                            onChange={(date) => filterBookingByDate(date)}
+                        />
+                        <button onClick={selectAllPatients}>Select All</button>
+                </LocalizationProvider>
                 <TextField
                     sx={{ml: 1}}
                     label='Tìm kiếm bệnh nhân'
