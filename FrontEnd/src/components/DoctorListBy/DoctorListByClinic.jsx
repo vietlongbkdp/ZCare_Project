@@ -6,6 +6,8 @@ import Footer from "../Footer/Footer";
 import HTMLReactParser from "html-react-parser";
 import axios from "axios";
 import Loading from "../Loading/Loading";
+import {Box, Container, Typography} from "@mui/material";
+import {Stack} from "@mui/system";
 
 function DoctorListByClinic() {
     const {clinicId} = useParams();
@@ -30,16 +32,33 @@ function DoctorListByClinic() {
             <Header/>
             <div className="w-100 d-flex flex-column justify-content-center align-items-center"
                  style={{height: "200px", backgroundColor: "rgb(237 255 250)"}}>
-                <h2 className="mt-2">Thông tin Phòng khám</h2>
-                <p className="mt-3">Phòng khám là nơi cung cấp dịch vụ y tế cơ bản và chẩn đoán ban đầu cho bệnh
-                    nhân.</p>
+                <Container >
+                    <Typography variant='h5' align='center' gutterBottom>{clinic?.clinicName}</Typography>
+                    <Stack direction='row'  sx={{borderBottom: '1 solid black', justifyContent: 'center' }}>
+                        <Box px={2} mx={3}>
+                            <img src={clinic?.clinicLogo} style={{ width: '150px', height: '130px' }} alt="Logo" />
+                        </Box>
+                        <Box pr={3}>
+                            <Typography variant='subtitle1'>Người đại diện:</Typography>
+                            <Typography variant='subtitle1'>Email:</Typography>
+                            <Typography variant='subtitle1'>Đường dây nóng:</Typography>
+                            <Typography variant='subtitle1'>Giấy phép hoạt động:</Typography>
+                            <Typography variant='subtitle1'>Địa chỉ:</Typography>
+                        </Box>
+                        <Box>
+                            <Typography variant='subtitle1'>{clinic?.legalRepresentative}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.email}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.hotline}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.operatingLicence}</Typography>
+                            <Typography variant='subtitle1'>{clinic?.address}</Typography>
+                        </Box>
+                    </Stack>
+                </Container>
+                {/*<h2 className="mt-2">Thông tin Phòng khám</h2>*/}
+                {/*<p className="mt-3">Phòng khám là nơi cung cấp dịch vụ y tế cơ bản và chẩn đoán ban đầu cho bệnh*/}
+                {/*    nhân.</p>*/}
             </div>
-                <div className={"container d-flex justify-content-center my-3 row"}>
-                    <div className={"col-4"}>
-                        <img src={clinic.clinicLogo} alt="..." style={{width:'200px'}}/>
-                    </div>
-                    <div className={"col-8"}>aaa</div>
-                </div>
+
 
 
 
