@@ -44,28 +44,28 @@ public class ResultService implements IResultService{
 
     @Override
     public void Create(ResultReqDTO resultReqDTO) throws IOException, MessagingException {
-        Result result = new Result();
-        result.setFileName(resultReqDTO.getFile().getOriginalFilename());
-        result.setFileType(resultReqDTO.getFile().getContentType());
-        result.setFile(resultReqDTO.getFile().getBytes());
-        result.setNote(resultReqDTO.getEditorContent());
-        iResultRepository.save(result);
-
-        String toEmail = "vietlongbkdp@gmail.com";
-        String subject = "Trả kết quả khám";
-        String plainText = resultReqDTO.getEditorContent();
-        Document document = Jsoup.parse(plainText);
-        Element body = document.body();
-        StringBuilder formattedText = new StringBuilder();
-        for (Element element : body.children()) {
-            formattedText.append(element.text()).append("\n");
-        }
-        if (formattedText.length() > 0 && formattedText.charAt(formattedText.length() - 1) == '\n') {
-            formattedText.setLength(formattedText.length() - 1);
-        }
-        String plainTextContent = formattedText.toString();
-        byte[] fileBytes = resultReqDTO.getFile().getBytes();
-        String fileName=resultReqDTO.getFile().getOriginalFilename();
-        emailUtil.sendEmailWithAttachment(toEmail, subject, plainTextContent, fileBytes, fileName);
+//        Result result = new Result();
+//        result.setFileName(resultReqDTO.getFile().getOriginalFilename());
+//        result.setFileType(resultReqDTO.getFile().getContentType());
+//        result.setFile(resultReqDTO.getFile().getBytes());
+//        result.setNote(resultReqDTO.getEditorContent());
+//        iResultRepository.save(result);
+//
+//        String toEmail = "vietlongbkdp@gmail.com";
+//        String subject = "Trả kết quả khám";
+//        String plainText = resultReqDTO.getEditorContent();
+//        Document document = Jsoup.parse(plainText);
+//        Element body = document.body();
+//        StringBuilder formattedText = new StringBuilder();
+//        for (Element element : body.children()) {
+//            formattedText.append(element.text()).append("\n");
+//        }
+//        if (formattedText.length() > 0 && formattedText.charAt(formattedText.length() - 1) == '\n') {
+//            formattedText.setLength(formattedText.length() - 1);
+//        }
+//        String plainTextContent = formattedText.toString();
+//        byte[] fileBytes = resultReqDTO.getFile().getBytes();
+//        String fileName=resultReqDTO.getFile().getOriginalFilename();
+//        emailUtil.sendEmailWithAttachment(toEmail, subject, plainTextContent, fileBytes, fileName);
     }
 }

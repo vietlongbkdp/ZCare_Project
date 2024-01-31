@@ -6,11 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResultReqDTO {
-    private MultipartFile file;
-    private String editorContent;
+    private String diagResult;
+    private String advice;
+    private String doctorNotice;
+    private List<MedicineDTO> medicineList;
 }

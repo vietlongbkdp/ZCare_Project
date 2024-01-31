@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import IconButton from '@mui/material/IconButton';
+import { jsPDF } from 'jspdf';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import Table from '@mui/material/Table';
@@ -20,9 +21,9 @@ import Box from "@mui/material/Box";
 import Autocomplete from '@mui/material/Autocomplete';
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
-import Stack from "@mui/material/Stack";
 const schema = yup.object().shape({
-    file: yup.mixed().required("File không được để trống"),
+    diagResult: yup.string().required("Kết quả không được để trống"),
+    advice: yup.string().required("Bác sĩ cần đưa ra lời khuyên cho bệnh nhân")
 });
 function ResultTyping() {
     const idCustomer = 1;
@@ -64,25 +65,21 @@ function ResultTyping() {
         reset,
         setValue,
     } = useForm({ resolver: yupResolver(schema),});
-    const [editorContent, setEditorContent] = useState("");
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Lọ", "Gói"]
     const onSubmit = async (data) => {
-        const formData = new FormData();
-        formData.append("file", data.file[0]);
-        formData.append("editorContent", editorContent);
-        try {
-            await axios.post("http://localhost:8080/api/result", formData);
-            toast.success("Gửi API thành công");
+        const dataNew = {
+            ...data,
+            medicineList: listMedicine
+        }
+        console.log(dataNew)
+        const resp = await axios.post("http://localhost:8080/api/result", dataNew)
+        if (resp.status == '200') {
+            await createPDF(dataNew);
+            toast.success("Đã tạo được đơn thuốc");
             reset();
-            setEditorContent("");
-        } catch (error) {
-            if (error.response) {
-                const errorMessage = error.response.data;
-                toast.error(errorMessage);
-            } else {
-                toast.error("Gửi API thất bại");
-                console.error(error);
-            }
+            setListMedicine([]);
+        } else {
+            toast.error("Có lỗi, chưa lưu được")
         }
     };
     const checkExistMedicine = (listMed, medicineName) =>{
@@ -92,7 +89,6 @@ function ResultTyping() {
                 flag = true
             }
         })
-        console.log(flag)
         return flag
     }
     const handleSaveMedicineDetail = ()=>{
@@ -139,7 +135,16 @@ function ResultTyping() {
             }
         });
     }
-    console.log("listMedicine", listMedicine)
+
+    async function createPDF(data) {
+        const doc = new jsPDF();
+        doc.setFont("aria");
+        doc.setFontSize(12);
+        doc.text("Chuan doan: " + data.diagResult, 10, 10);
+        doc.text("Loi khuyen bac si: " + data.advice, 10, 20);
+        doc.save(idCustomer + ".pdf");
+        console.log(doc)
+    }
     return (
         <div>
                 <div className={"d-flex flex-column justify-content-center col-6 ms-3"}>
@@ -293,7 +298,7 @@ function ResultTyping() {
                                 </TableContainer>
                             </Grid>
                             <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px"}}>Lưu đơn thuốc</Button>
-
+                            <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "20px"}} onClick={createPDF}>In file</Button>
                         </Box>
                         <div className="border" style={{height: "auto", marginTop: "20px", borderRadius: "5px"}}>
                         </div>

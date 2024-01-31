@@ -19,13 +19,13 @@ public class MedicineDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="medicine_id")
     private Medicine medicine;
     private Long quantity;
     @Enumerated(EnumType.STRING)
     private EUnitMedicine unitMedicine;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="result_id")
     private Result result;
     private String useNote;
