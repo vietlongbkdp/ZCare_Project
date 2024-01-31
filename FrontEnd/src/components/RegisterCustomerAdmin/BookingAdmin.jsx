@@ -17,7 +17,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
 
@@ -60,6 +60,7 @@ export default function BookingAdmin(){
         setSelectedGender(selectedGender);
         setGender(selectedGender);
     };
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
@@ -95,6 +96,7 @@ export default function BookingAdmin(){
             toast.success("Đặt lịch thành công");
             reset();
             setLoading(false);
+            navigate(`/clinicadmin/booking`);
         } catch (error) {
             toast.error("Đặt lịch thất bại");
             console.error(error);
@@ -105,10 +107,6 @@ export default function BookingAdmin(){
     return(
         <>
             {loading && <Loading/>}
-            <div className="d-flex justify-content-center align-items-center"
-                 style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>
-                <h2>ĐẶT LỊCH KHÁM BỆNH</h2>
-            </div>
             <Container maxWidth="md" sx={{marginTop: 1}}>
                 <Stack>
                     <Stack direction={"row"} px={5} py={2} sx={{backgroundColor: "#f6f6f6"}}>

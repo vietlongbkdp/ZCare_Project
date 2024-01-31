@@ -20,6 +20,7 @@ import { Link, useParams } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./dashboard.css"
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const categories = [
     {
@@ -38,7 +39,6 @@ const categories = [
                 url: "doctor"
             },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
-            { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
             { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
         ],
@@ -47,10 +47,10 @@ const categories = [
         id: 'ADMIN_CLINIC',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
-            { id: 'Doanh thu', icon: <SettingsIcon /> },
             { id: 'Danh sách booking', icon: <TimerIcon />, url: "booking" },
             { id: 'Bệnh nhân', icon: <TimerIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
+            { id: 'Đặt lịch khám tại quầy', icon: <CalendarMonthIcon />, url: "registerCustomerAdmin" },
         ],
     },
     {
