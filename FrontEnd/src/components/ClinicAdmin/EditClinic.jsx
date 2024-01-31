@@ -149,7 +149,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                         <Grid item xs={3} >
                             <Item>
                                 <Button component="label" sx={{ borderRadius: 50 }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
+                                    <img id={"blah"} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                          alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         handleUpload(event)

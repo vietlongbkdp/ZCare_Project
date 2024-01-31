@@ -46,7 +46,7 @@ function Cooperate() {
       <>
         {loading && <Loading/>}
         <div className="d-flex flex-column justify-content-center align-items-center"
-             style={{backgroundColor: "rgb(237 255 250)", height: "150px"}}>
+             style={{backgroundColor: "rgb(237 255 250)", height: "200px"}}>
           <h2>Đăng kí hợp tác</h2>
           <p>Tham gia ngay cùng Zcare để cùng chúng tôi cùng xây dựng hành trình sức khỏe hoàn hảo nào! </p>
         </div>

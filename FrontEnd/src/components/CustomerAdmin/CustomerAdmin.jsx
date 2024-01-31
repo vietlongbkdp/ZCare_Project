@@ -66,12 +66,12 @@ function GetCustomerAdmin() {
     const currentCustomerList = customerList.slice(startIndex, endIndex);
     const handleChangeLock = async (id, currentLockStatus) => {
         Swal.fire({
-            title: "Bạn muốn khóa",
-            text: "Bạn sẽ không thể phục hồi!",
+            title: "Bạn có chắc chắn muốn khóa?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
+            cancelButtonText: "Hủy",
             confirmButtonText: "Đồng ý, khóa!"
         }).then(async (result) => {
             setLoading(true)
@@ -87,6 +87,9 @@ function GetCustomerAdmin() {
                     toast.error("Khóa bệnh nhân thất bại");
                     setLoading(false)
                 }
+            }
+            else {
+                setLoading(false)
             }
         });
     };
@@ -122,7 +125,19 @@ function GetCustomerAdmin() {
                                 <StyledTableCell>{item?.phone}</StyledTableCell>
                                 <StyledTableCell>{item?.email}</StyledTableCell>
                                 <StyledTableCell>{item?.address}</StyledTableCell>
-                                <StyledTableCell>{item?.gender}</StyledTableCell>
+                                <StyledTableCell>{
+                                    item?.gender && (() => {
+                                        if (item?.gender == "MALE") {
+                                            return "NAM"
+                                        }
+                                        else if (item?.gender == "FEMALE") {
+                                            return "NỮ"
+                                        }
+                                        else {
+                                            return "KHÁC"
+                                        }
+                                    })()}
+                                </StyledTableCell>
                                 <StyledTableCell align="right">
                                     <Button
                                         variant="contained"
