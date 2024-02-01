@@ -72,7 +72,7 @@ function AdminCooperate() {
         <>
             {loading && <Loading/>}
             <Typography variant="h5" align="center" gutterBottom>
-                Danh sách hợp tác cùng ZCare
+                DANH SÁCH HỢP TÁC CÙNG ZCARE
             </Typography>
             <TableContainer component={Paper}>
                 <Table  sx={{ minWidth: 700 }} aria-label="customized table">

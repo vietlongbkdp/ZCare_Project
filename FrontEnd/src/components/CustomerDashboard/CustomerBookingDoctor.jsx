@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
-import {Pagination} from "@mui/material";
-
+import { Pagination } from "@mui/material";
+import {Typography} from '@mui/material';
 
 function AppointmentSchedule() {
     const itemsPerPage = 6;
@@ -50,78 +50,79 @@ function AppointmentSchedule() {
 
     return (
         <div>
+            <Typography variant='h5' align='center' gutterBottom>LỊCH SỬ KHÁM BỆNH TRÊN HỆ THỐNG</Typography>
             <div className={"container justify-content-center"}>
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                    <h6 style={{marginRight: '10px'}}> Lịch sử khám: </h6>
-                    <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)}/>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <h6 style={{ marginRight: '10px' }}> Tìm kiếm theo ngày: </h6>
+                    <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)} />
                 </div>
-                <table style={{marginTop: '20px'}} className="table table-bordered table-striped"
-                       key={filteredBooking.id}>
+                <table style={{ marginTop: '20px' }} className="table table-bordered table-striped"
+                    key={filteredBooking.id}>
                     <thead>
-                    <tr>
-                        <th scope="col">STT</th>
-                        <th scope="col">Thông tin bệnh nhân</th>
-                        <th scope="col">Ngày đặt</th>
-                        <th scope="col">Thời gian</th>
-                        <th scope="col">Giá</th>
-                        <th scope="col">Trạng thái</th>
-                        <th scope="col">Thời gian tạo</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">STT</th>
+                            <th scope="col">Thông tin bệnh nhân</th>
+                            <th scope="col">Ngày đặt</th>
+                            <th scope="col">Thời gian</th>
+                            <th scope="col">Giá</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col">Thời gian tạo</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    { currentCustomerBookingList.length > 0 ? (
-                        currentCustomerBookingList.map((booking, index) => (
-                            <tr key={booking.id} className="customTable" style={{verticalAlign: 'middle'}}>
-                                <td>{index + 1}</td>
-                                <td>
-                                    <p>Mã bệnh nhân: {booking?.customer?.id}</p>
-                                    <p>Bệnh nhân: {booking?.customer?.fullName}</p>
-                                    <p>Giới tính: {
-                                        booking?.customer?.gender && (() => {
-                                            if (booking?.customer?.gender === 'MALE') {
-                                                return 'Nam'
-                                            } else if (booking?.customer?.gender === 'FEMALE') {
-                                                return 'Nữ'
-                                            } else {
-                                                return 'Khác'
-                                            }
-                                        })()
-                                    } </p>
-                                    <p>Phone: {booking?.customer?.phone} </p>
-                                    <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
-                                </td>
-                                <td>{booking?.bookingDate}</td>
-                                <td>{booking?.schedule?.timeItem}</td>
-                                <td>{booking?.fee}</td>
-                                <td>
-                                    {booking?.status && (
-                                        (() => {
-                                            if (booking?.status === "CONFIRMING") {
-                                                return "Tiếp nhận";
-                                            } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                return "Khách hàng đã xác nhận";
-                                            } else if (booking?.status === "DOCTORCONFIRMED") {
-                                                return "Bác sỹ đã xác nhận";
-                                            } else if (booking?.status === "PAID") {
-                                                return "Đã Thanh toán";
-                                            } else if (booking?.status === "EXAMINED") {
-                                                return "Đã khám";
-                                            } else if (booking?.status === "RESULTING") {
-                                                return "Đã trả kết quả";
-                                            } else if (booking?.status === "CANCEL") {
-                                                return "Đã hủy";
-                                            }
-                                        })()
-                                    )}
-                                </td>
-                                <td>{dayjs(booking.createAt).format("DD/MM/YYYY")}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <p className="d-flex justify-content-center" style={{color: "red"}}>
-                            Bạn chưa có lịch hẹn!
-                        </p>
-                    )}
+                        {currentCustomerBookingList.length > 0 ? (
+                            currentCustomerBookingList.map((booking, index) => (
+                                <tr key={booking.id} className="customTable" style={{ verticalAlign: 'middle' }}>
+                                    <td>{index + 1}</td>
+                                    <td>
+                                        <p>Mã bệnh nhân: {booking?.customer?.id}</p>
+                                        <p>Bệnh nhân: {booking?.customer?.fullName}</p>
+                                        <p>Giới tính: {
+                                            booking?.customer?.gender && (() => {
+                                                if (booking?.customer?.gender === 'MALE') {
+                                                    return 'Nam'
+                                                } else if (booking?.customer?.gender === 'FEMALE') {
+                                                    return 'Nữ'
+                                                } else {
+                                                    return 'Khác'
+                                                }
+                                            })()
+                                        } </p>
+                                        <p>Phone: {booking?.customer?.phone} </p>
+                                        <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
+                                    </td>
+                                    <td>{booking?.bookingDate}</td>
+                                    <td>{booking?.schedule?.timeItem}</td>
+                                    <td>{booking?.fee}</td>
+                                    <td>
+                                        {booking?.status && (
+                                            (() => {
+                                                if (booking?.status === "CONFIRMING") {
+                                                    return "Tiếp nhận";
+                                                } else if (booking?.status === "CUSTOMERCONFIMED") {
+                                                    return "Khách hàng đã xác nhận";
+                                                } else if (booking?.status === "DOCTORCONFIRMED") {
+                                                    return "Bác sỹ đã xác nhận";
+                                                } else if (booking?.status === "PAID") {
+                                                    return "Đã Thanh toán";
+                                                } else if (booking?.status === "EXAMINED") {
+                                                    return "Đã khám";
+                                                } else if (booking?.status === "RESULTING") {
+                                                    return "Đã trả kết quả";
+                                                } else if (booking?.status === "CANCEL") {
+                                                    return "Đã hủy";
+                                                }
+                                            })()
+                                        )}
+                                    </td>
+                                    <td>{dayjs(booking.createAt).format("DD/MM/YYYY")}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <p className="d-flex justify-content-center" style={{ color: "red" }}>
+                                Bạn chưa có lịch hẹn!
+                            </p>
+                        )}
                     </tbody>
                 </table>
                 <Pagination
