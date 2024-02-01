@@ -140,6 +140,14 @@ public class BookingAPI {
         return new ResponseEntity<>(bookings1, HttpStatus.OK);
     }
 
+    @GetMapping("/{userId}/{date}/{month}/{year}")
+    public ResponseEntity<?> getAllBookingByClinicIdAndBookingDate(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
+        Clinic clinic = clinicService.findByUser_Id(userId);
+        String bookingDate = String.format("%02d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinic.getId(), bookingDate);
+        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+    }
+
     @PostMapping("/send")
     public ResponseEntity<String> sendReminderEmails() {
         bookingService.checkBookingDatesAndSendReminderEmails();

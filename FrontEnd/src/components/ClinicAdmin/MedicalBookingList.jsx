@@ -24,14 +24,16 @@ function MedicalBookingList() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/adminClinic/${userId}`)
+        axios.get(`http://localhost:8080/api/booking/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
+                console.log(response.data)
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [userId,pre]);
+    }, [userId, pre, selectedDate]);
+
 
     useEffect(() => {
         setCurrentDate(new Date());
