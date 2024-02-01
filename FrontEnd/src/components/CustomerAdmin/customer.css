@@ -1,3 +1,7 @@
 .tableContent p {
     margin-bottom: 10px;
 }
+
+.css-bknq2d-MuiFormLabel-root-MuiInputLabel-root {
+    transform: translate(14px, 10px) scale(1) !important;
+}

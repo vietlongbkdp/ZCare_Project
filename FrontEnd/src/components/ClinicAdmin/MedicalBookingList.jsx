@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Cookies from "js-cookie";
 import axios from "axios";
 import dayjs from "dayjs";
-import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead, Typography} from "@mui/material";
 import {parse} from "date-fns";
 import {styled} from "@mui/material/styles";
 import TableCell, {tableCellClasses} from "@mui/material/TableCell";
@@ -110,6 +110,8 @@ function MedicalBookingList() {
 
     return (
         <div>
+            <Typography variant='h5' align='center'>DANH SÁCH ĐẶT KHÁM</Typography>
+        
             <div>
                 <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel id="recent-dates-label">Ngày</InputLabel>

@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import {parse} from "date-fns";
 import Cookies from "js-cookie";
 import axios from "axios";
-import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import TableCell, {tableCellClasses} from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -97,6 +97,7 @@ function BookingListDoctor() {
 
     return (
         <div>
+            <Typography variant='h5' align='center'>DANH SÁCH ĐẶT KHÁM</Typography>
             <div>
                 <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel id="recent-dates-label">Ngày</InputLabel>

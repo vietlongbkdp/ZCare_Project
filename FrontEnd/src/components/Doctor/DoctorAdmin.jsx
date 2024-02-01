@@ -123,7 +123,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
             {showDoctorDetail && <DoctorDetail doctorId={doctorId} setShowDoctorList={setShowDoctorList} setShowDoctorDetail={setShowDoctorDetail} />}
             {showDoctorList &&
                 <Box>
-                    <Typography variant="h5" align="center" gutterBottom>Danh sách bác sĩ trên hệ thống</Typography>
+                    <Typography variant="h5" align="center" gutterBottom>DANH SÁCH BÁC SĨ TRÊN HỆ THỐNG</Typography>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
                             <TableHead>

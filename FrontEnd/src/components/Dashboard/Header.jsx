@@ -10,11 +10,8 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import SearchIcon from "@mui/icons-material/Search";
-import {alpha, styled} from "@mui/material/styles";
-import {InputBase} from "@mui/material";
-import {Link, useLocation, useNavigate } from "react-router-dom";
-import {useEffect, useState} from "react";
+import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
@@ -44,31 +41,21 @@ function ResponsiveAppBar() {
         }
     };
 
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-    const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-    const isCustomer = location.pathname.startsWith("/user")
-    const isCooperate = location.pathname.startsWith("/clinicadmin");
-    const isAdmin = location.pathname.startsWith("/admin");
-
     const storedUserId = Cookies.get('userId');
 
-    useEffect(()=>{
+    useEffect(() => {
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
                 console.log(response.data.id)
                 setDashboarduser(response.data)
                 console.log(dashboarduser)
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
             }
         }
         finddUser();
-    },[])
+    }, [])
 
     const handleLogout = () => {
         Cookies.remove('JWT');
@@ -82,17 +69,17 @@ function ResponsiveAppBar() {
 
     return (
         <AppBar position="fixed" sx={{ height: '54px' }}>
-            <ReminderTimer/>
-            <Container sx={{width: '100%', marginLeft: '265px', paddingRight: '50px !important' }}>
+            <ReminderTimer />
+            <Container sx={{ width: '100%', marginLeft: '265px', paddingRight: '50px !important' }}>
                 <Toolbar sx={{ height: '54px' }}>
                     {userRole === "ROLE_ADMIN_CLINIC" && (
-                        <Box sx={{display: 'flex'}}>
-                            <Avatar alt="Avatar" sx={{mt: 1.7, borderRadius: 'none'}} src={dashboarduser.clinicLogo} />
+                        <Box sx={{ display: 'flex' }}>
+                            <Avatar alt="Avatar" sx={{ mt: 1.7, borderRadius: 'none' }} src={dashboarduser.clinicLogo} />
                             <Typography
                                 variant="h6"
                                 noWrap
                                 sx={{
-                                    ml:2,
+                                    ml: 2,
                                     mr: 2,
                                     display: { xs: 'none', md: 'flex' },
                                     fontWeight: 700,
@@ -134,16 +121,55 @@ function ResponsiveAppBar() {
                                 'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>
-                                <Link to="editClinic" style={{ textDecoration: 'none', color: 'black' }}>
-                                    Cập nhật thông tin
-                                </Link>
-                            </MenuItem>
-                            <MenuItem onClick={handleLogout}>
-                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
-                                    Đăng xuất
-                                </Link>
-                            </MenuItem>
+                            {userRole === "ROLE_ADMIN_CLINIC" && (
+                                <>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="editClinic" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Cập nhật thông tin
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="/home" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Trang chủ
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Đăng xuất
+                                        </Link>
+                                    </MenuItem>
+                                </>
+                            )}
+
+                            {userRole === "ROLE_DOCTOR" && (
+                                <>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="/home" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Trang chủ
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Đăng xuất
+                                        </Link>
+                                    </MenuItem>
+                                </>
+                            )}
+
+                            {userRole === "ROLE_ADMIN" && (
+                                <>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="/home" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Trang chủ
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Đăng xuất
+                                        </Link>
+                                    </MenuItem>
+                                </>
+                            )}
                         </Menu>
                     </Box>
                 </Toolbar>
