@@ -134,16 +134,55 @@ function ResponsiveAppBar() {
                                 'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem onClick={handleClose}>
-                                <Link to="editClinic" style={{ textDecoration: 'none', color: 'black' }}>
-                                    Cập nhật thông tin
-                                </Link>
-                            </MenuItem>
-                            <MenuItem onClick={handleLogout}>
-                                <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
-                                    Đăng xuất
-                                </Link>
-                            </MenuItem>
+                            {userRole === "ROLE_ADMIN_CLINIC" && (
+                                <>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="editClinic" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Cập nhật thông tin
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="/home" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Trang chủ
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Đăng xuất
+                                        </Link>
+                                    </MenuItem>
+                                </>
+                            )}
+
+                            {userRole === "ROLE_DOCTOR" && (
+                                <>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="/home" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Trang chủ
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Đăng xuất
+                                        </Link>
+                                    </MenuItem>
+                                </>
+                            )}
+
+                            {userRole === "ROLE_ADMIN" && (
+                                <>
+                                    <MenuItem onClick={handleClose}>
+                                        <Link to="/home" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Trang chủ
+                                        </Link>
+                                    </MenuItem>
+                                    <MenuItem onClick={handleLogout}>
+                                        <Link to="" style={{ textDecoration: 'none', color: 'black' }}>
+                                            Đăng xuất
+                                        </Link>
+                                    </MenuItem>
+                                </>
+                            )}
                         </Menu>
                     </Box>
                 </Toolbar>
