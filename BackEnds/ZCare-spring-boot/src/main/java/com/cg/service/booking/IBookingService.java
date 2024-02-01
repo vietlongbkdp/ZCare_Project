@@ -11,5 +11,6 @@ public interface IBookingService extends IGeneralService<Booking,Long> {
     Booking findByCustomerIdAndScheduleId(Long customerId, Long scheduleId);
     List<Booking>findByClinicIdAndBookingDate(Long clinicId, String bookingDate);
     List<Booking> findAllByDoctorId(Long doctorId);
+    List<Booking> findByClinicIdAndDoctorIdAndBookingDateAndStatus(Long clinic_id, Long doctor_id, String bookingDate, EStatusBooking status);
 
 }

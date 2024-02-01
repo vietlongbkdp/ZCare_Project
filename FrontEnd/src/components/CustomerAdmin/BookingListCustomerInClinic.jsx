@@ -101,9 +101,9 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
                                         {booking?.status && (
                                             (() => {
                                                 if (booking?.status === "CONFIRMING") {
-                                                    return "Tiếp nhận";
+                                                    return "Chưa xác nhận";
                                                 } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                    return "Khách hàng đã xác nhận";
+                                                    return "Đã xác nhận";
                                                 } else if (booking?.status === "DOCTORCONFIRMED") {
                                                     return "Bác sỹ đã xác nhận";
                                                 } else if (booking?.status === "PAID") {

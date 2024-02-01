@@ -79,6 +79,12 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findAllByDoctorId(doctorId);
     }
 
+    @Override
+    public List<Booking> findByClinicIdAndDoctorIdAndBookingDateAndStatus(Long clinic_id, Long doctor_id, String bookingDate, EStatusBooking status) {
+        return iBookingRepository.findByClinicIdAndDoctorIdAndBookingDateAndStatus(clinic_id,doctor_id,bookingDate,status);
+    }
+
+
     public List<Booking> getAllBookingByClinicIdAndCustomerId(Long clinicId, Long customerId) {
         return iBookingRepository.findAllByClinicIdAndCustomerId(clinicId, customerId);
     }

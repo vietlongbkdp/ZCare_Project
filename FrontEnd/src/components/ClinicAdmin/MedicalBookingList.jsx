@@ -2,9 +2,34 @@ import React, {useEffect, useState} from 'react';
 import Cookies from "js-cookie";
 import axios from "axios";
 import dayjs from "dayjs";
-import {FormControl, InputLabel, MenuItem, Select, Typography} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead, Typography} from "@mui/material";
 import {parse} from "date-fns";
+import {styled} from "@mui/material/styles";
+import TableCell, {tableCellClasses} from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: 'white',
+        color: theme.palette.common.black,
+        textAlign: 'left'
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+        textAlign: 'left',
+        padding: '10px'
+    },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
 function MedicalBookingList() {
     const [booking, setBooking] = useState([]);
     const [pre,setPre] = useState(true);
@@ -24,14 +49,16 @@ function MedicalBookingList() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/adminClinic/${userId}`)
+        axios.get(`http://localhost:8080/api/booking/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
+                console.log(response.data)
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [userId,pre]);
+    }, [userId, pre, selectedDate]);
+
 
     useEffect(() => {
         setCurrentDate(new Date());
@@ -79,16 +106,6 @@ function MedicalBookingList() {
         const parsedDate = parse(dateValue, 'd/M/yyyy', new Date());
         const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
         setSelectedWeekday(selectedWeekday);
-
-        // axios.post('http://localhost:8080/api/booking/changeStatus',data)
-        //     .then(response => {
-        //         setBooking(response.data);
-        //         setPre(!pre);
-        //     })
-        //     .catch(error => {
-        //         console.error('Error:', error);
-        //     });
-
     };
 
     return (
@@ -116,75 +133,73 @@ function MedicalBookingList() {
                     </Select>
                 </FormControl>
             </div>
-            <div className={"container justify-content-center"}>
-                <table className="table table-bordered table-striped" key={booking.id}>
-                    <thead>
-                    <tr>
-                        <th scope="col">STT</th>
-                        <th scope="col">Thông tin bác sĩ</th>
-                        <th scope="col">Thông tin bệnh nhân</th>
-                        <th scope="col">Ngày đặt</th>
-                        <th scope="col">Thời gian</th>
-                        <th scope="col">Giá</th>
-                        <th scope="col">Kết quả</th>
-                        <th scope="col">Trạng thái</th>
-                        <th scope="col">Thời gian tạo</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {booking.length > 0 ? (
-                        booking.map((booking, index) => (
-                            <tr key={booking.id} className="customTable" style={{verticalAlign: 'middle'}}>
-                                <td>{index + 1}</td>
-                                <td>
-                                    <div className={"d-flex flex-column"}>
-                                        <p>Mã Bác sĩ: {booking?.doctor?.id}</p>
-                                        <p>Bác sĩ: {booking?.doctor?.doctorName}</p>
-                                        <p>Phòng khám: {booking?.doctor?.clinic?.clinicName} </p>
-                                        <p>Chuyên khoa: {booking?.doctor?.speciality?.specialtyName} </p>
-                                        <p>Địa chỉ khám: {booking?.doctor?.clinic?.address} </p>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p>Mã bệnh nhân: {booking?.customer?.id}</p>
-                                    <p>Bệnh nhân: {booking?.customer?.fullName}</p>
-                                    <p>Giới tính: {
-                                        booking?.customer?.gender && (() => {
-                                            if (booking?.customer?.gender === 'MALE') {
-                                                return 'Nam'
-                                            } else if (booking?.customer?.gender === 'FEMALE') {
-                                                return 'Nữ'
-                                            } else {
-                                                return 'Khác'
-                                            }
-                                        })()
-                                    } </p>
-                                    <p>Phone: {booking?.customer?.phone} </p>
-                                    <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
-                                </td>
-                                <td>{booking?.bookingDate}</td>
-                                <td>{booking?.schedule?.timeItem}</td>
-                                <td>{booking?.fee}</td>
-                                <td>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</td>
-                                <td>
-                                    {booking?.status && (
-                                        <select
-                                            style={{
-                                                border: 'none',
-                                                borderRadius: '5px',
-                                                backgroundColor: statusColors[booking?.status],
-                                                color: 'white',
-                                                padding: 3,
-                                                appearance: 'none',
-                                                WebkitAppearance: 'none',
-                                                MozAppearance: 'none',
-                                                textAlign: 'center',
-                                            }}
-                                            value={booking?.status}
-                                            onChange={(event) => {
-                                                handleChangeStatus(booking?.id, event)
-                                            }}
-                                        >
+            <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 700 }} aria-label="customized table" key={booking.id}>
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell >STT</StyledTableCell>
+                            <StyledTableCell >Thông tin bác sĩ</StyledTableCell>
+                            <StyledTableCell >Thông tin bệnh nhân</StyledTableCell>
+                            <StyledTableCell >Ngày đặt</StyledTableCell>
+                            <StyledTableCell>Thời gian</StyledTableCell>
+                            <StyledTableCell>Giá</StyledTableCell>
+                            <StyledTableCell>Kết quả</StyledTableCell>
+                            <StyledTableCell>Trạng thái</StyledTableCell>
+                            <StyledTableCell>Thời gian tạo</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {booking.length > 0 ? (
+                            booking.map((booking, index) => (
+                                <StyledTableRow key={booking.id} className='tableContent'>
+                                    <StyledTableCell>{index + 1}</StyledTableCell>
+                                    <StyledTableCell>
+                                        <div className={"d-flex flex-column"}>
+                                            <p>Bác sĩ: {booking?.doctor?.doctorName}</p>
+                                            <p>Phòng khám: {booking?.doctor?.clinic?.clinicName} </p>
+                                            <p>Chuyên khoa: {booking?.doctor?.speciality?.specialtyName} </p>
+                                            <p>Địa chỉ khám: {booking?.doctor?.clinic?.address} </p>
+                                        </div>
+                                    </StyledTableCell>
+                                    <StyledTableCell>
+                                        <p>Bệnh nhân: {booking?.customer?.fullName}</p>
+                                        <p>Giới tính: {
+                                            booking?.customer?.gender && (() => {
+                                                if (booking?.customer?.gender === 'MALE') {
+                                                    return 'Nam'
+                                                } else if (booking?.customer?.gender === 'FEMALE') {
+                                                    return 'Nữ'
+                                                } else {
+                                                    return 'Khác'
+                                                }
+                                            })()
+                                        } </p>
+                                        <p>Phone: {booking?.customer?.phone} </p>
+                                        <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
+                                    </StyledTableCell>
+                                    <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
+                                    <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
+                                    <StyledTableCell>{booking?.fee}</StyledTableCell>
+                                    <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
+                                    <StyledTableCell>
+                                        {booking?.status && (
+                                            <select
+                                                style={{
+                                                    border: 'none',
+                                                    borderRadius: '5px',
+                                                    backgroundColor: statusColors[booking?.status],
+                                                    color: 'white',
+                                                    padding: 3,
+                                                    appearance: 'none',
+                                                    WebkitAppearance: 'none',
+                                                    MozAppearance: 'none',
+                                                    textAlign: 'center',
+                                                }}
+                                                value={booking?.status}
+                                                onChange={(event) => {
+                                                    handleChangeStatus(booking?.id, event)
+                                                }}
+                                            >
                                             <option value="CUSTOMERCONFIMED"
                                                     style={{backgroundColor: 'white', color: 'black'}}>Đã xác nhận
                                             </option>
@@ -202,18 +217,18 @@ function MedicalBookingList() {
                                             </option>
                                         </select>
                                     )}
-                                </td>
-                                <td>{dayjs(booking.createAt).format("DD/MM/YYYY")}</td>
-                            </tr>
-                        ))
-                    ) : (
-                        <p className="d-flex justify-content-center" style={{color: "red"}}>
-                            Bạn chưa có lịch hẹn!
-                        </p>
-                    )}
-                    </tbody>
-                </table>
-            </div>
+                                    </StyledTableCell>
+                                    <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
+                                </StyledTableRow>
+                            ))
+                        ) : (
+                            <p className="d-flex justify-content-center" style={{color: "red"}}>
+                                Bạn chưa có lịch hẹn!
+                            </p>
+                        )}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     );
 }
