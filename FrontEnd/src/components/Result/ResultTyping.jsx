@@ -22,6 +22,7 @@ import Box from "@mui/material/Box";
 import Autocomplete from '@mui/material/Autocomplete';
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
+import dayjs from "dayjs";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const schema = yup.object().shape({
@@ -77,7 +78,7 @@ function ResultTyping() {
         console.log(dataNew)
         const resp = await axios.post("http://localhost:8080/api/result", dataNew)
         if (resp.status == '200') {
-            await createPDF(dataNew);
+            await createPDF(dataNew, customer, doctor, "open");
             toast.success("Đã tạo được đơn thuốc");
             reset();
             setListMedicine([]);
@@ -139,15 +140,74 @@ function ResultTyping() {
         });
     }
 
-    function createPDF() {
+    function createPDF(data, customer, doctor, action) {
         const documentDefinition = {
             content: [
-                { text: 'Xin chào, đây là một đoạn văn bản sử dụng font chữ Open Sans.', style: 'openSans' },
-                { text: 'Hello, this is a sample text using Open Sans font.', style: 'openSans' },
+                {
+                    text: 'Kết quả khám chữa bệnh',
+                    style: 'header'
+                },
+                {
+                    ul: [
+                        'Họ và tên bệnh nhân: ' + customer?.fullName,
+                        'Giới tính: ' + customer?.gender.valueOf(),
+                        'Số điện thoại: ' + customer?.phone,
+                        'Địa chỉ: ' + customer?.address,
+                        'Bác sĩ khám: '+ doctor?.doctorName,
+                        'Chuyên khoa: '+ doctor?.speciality?.specialtyName,
+                        'Ngày khám: '+ dayjs().format("DD/MM/YYYY"),
+                        'Kết luận: '+ data.diagResult,
+                        'Lời khuyên của bác sĩ: '+ data.advice,
+                        'Ghi chú thêm: '+ data.doctorNotice,
+                    ],
+                    style: 'openSans',
+                    margin: [0, 0, 10, 5] // margin top-bottom-left-right
+                },
+                {
+                    text: 'Đơn thuốc',
+                    style: 'subHeader'
+                },
+                {
+                    layout: 'lightHorizontalLines lightVerticalLines', // optional
+                    table: {
+                        headerRows: 1,
+                        widths: [ 30, 'auto', 50 , 50 , 'auto' ],
+
+                        body: [
+                            [ { text: 'Stt', bold: true, alignment: 'center' }, { text: 'Tên thuốc', bold: true, alignment: 'center' }, { text: 'Số lượng', bold: true, alignment: 'center' }, { text: 'Đơn vị', bold: true, alignment: 'center' }, { text: 'Sử dụng', bold: true, alignment: 'center' } ],
+                            ...data.medicineList.map(((item, index) => [{text: index+1, alignment: 'center'},{text: item.medicineName}, {text: item.quantity, alignment: 'center'} , {text: item.unit, alignment: 'center'}, {text: item.useNote, alignment: 'center'}]))]
+                    }
+                },
+                {
+                    text: 'Xác nhận của bác sĩ',
+                    bold: true,
+                    margin: [300, 30, 0,0],
+                    fontSize: 15
+                },
+                {
+                    text: doctor?.doctorName,
+                    margin: [300, 60, 0,0],
+                    italics: true,
+                    fontSize: 12
+                },
             ],
             styles: {
+                header: {
+                    fontSize: 25,
+                    bold: true,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 20]
+                },
                 openSans: {
                     fontFamily: 'Open Sans',
+                    lineHeight: 1.5,
+                    fontSize: 13,
+                },
+                subHeader: {
+                    fontSize: 20,
+                    bold: true,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 20]
                 }
             },
             defaultStyle: {
@@ -168,7 +228,13 @@ function ResultTyping() {
                 }
             }
         };
-        pdfMake.createPdf(documentDefinition).download('example.pdf');
+        if(action === "open"){
+            pdfMake.createPdf(documentDefinition).open();
+        }else if(action === "print"){
+            pdfMake.createPdf(documentDefinition).print();
+        }else if(action === "download"){
+            pdfMake.createPdf(documentDefinition).download(customer?.fullName + dayjs().format("DD/MM/YYYY") + '.pdf');
+        }
     }
     return (
         <div>
@@ -322,8 +388,9 @@ function ResultTyping() {
                                     </Table>
                                 </TableContainer>
                             </Grid>
-                            <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px"}}>Lưu đơn thuốc</Button>
-                            <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "20px"}} onClick={createPDF}>In file</Button>
+                            <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px", marginRight: "20px"}}>Lưu đơn thuốc</Button>
+                            <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "20px", marginRight: "20px"}}>Download</Button>
+                            <Button type={"button"} variant="contained" color="info" sx={{marginTop: "20px", marginRight: "20px"}}>In đơn thuốc</Button>
                         </Box>
                         <div className="border" style={{height: "auto", marginTop: "20px", borderRadius: "5px"}}>
                         </div>
