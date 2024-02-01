@@ -61,16 +61,10 @@ const categories = [
     {
         id: 'DOCTOR',
         children: [
-<<<<<<< HEAD
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
             { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctorBooking" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" }
-=======
-            { id: ' Trang chủ ', icon: <ApartmentIcon />, url: "doctorInfor" },
-            { id: 'Danh sách đặt khám', icon: <AssignmentIcon />, url: "doctorBooking" },
-            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
-            { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
->>>>>>> main
+
         ],
     },
     {
