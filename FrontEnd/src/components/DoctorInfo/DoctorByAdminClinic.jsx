@@ -195,7 +195,7 @@ function DoctorInfo() {
                                 <div>{doctorInfo?.clinic?.address}</div>
                             </div>
                             <div className={"d-flex mt-3  "}>
-                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee}.000đ</div>
+                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee}đ</div>
                             </div>
                         </div>
                     </div>
