@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import './custom.css'
 import { toast } from 'react-toastify';
 import Loading from "../Loading/Loading";
+import { saveAs } from 'file-saver';
 
 function AppointmentSchedule() {
     const [booking, setBooking] = useState([]);
@@ -38,28 +39,37 @@ function AppointmentSchedule() {
                 setLoading(false)
             });
     }, [UserId]);
+    const handleClickView = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                window.open(url);
+            }
+        });
+    };
     const handleClickDownload = (idBooking) => {
         booking.forEach((item) => {
             if (item.id === idBooking) {
                 const fileBytes = item.result.file;
-                const arrayBuffer = new Uint8Array(fileBytes).buffer;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
                 const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
-                downloadBlob(blob, "123.pdf");
+                saveAs(blob, item?.customer?.fullName + "_" + item?.bookingDate + '.pdf');
             }
         });
     };
-    function downloadBlob(blob, fileName) {
-        const url = URL.createObjectURL(blob);
-
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-
-        link.click();
-
-        URL.revokeObjectURL(url);
-    }
-
     return (
         <div>
             {loading && <Loading/>}
@@ -113,7 +123,16 @@ function AppointmentSchedule() {
                                 <td>{booking?.bookingDate}</td>
                                 <td>{booking?.schedule?.timeItem}</td>
                                 <td>{booking?.fee}</td>
-                                <td>{(booking?.result?.file) ? (<button type="button" class="btn btn-success" onClick={()=>{handleClickDownload(booking.id)}}>Tải</button>) : "Chưa có kết quả"}</td>
+                                <td>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
+                                    <button type="button" className="btn btn-success" style={{width: "150px", marginBottom: "10px"}} onClick={() => {
+                                        handleClickDownload(booking.id)
+                                    }}>Download
+                                    </button>
+                                    <button type="button" className="btn btn-warning" style={{width: "150px"}} onClick={() => {
+                                        handleClickView(booking.id)
+                                    }}>Xem kết quả
+                                    </button>
+                                </div>) : "Chưa có kết quả"}</td>
                                 <td>
                                     {booking?.status && (
                                         (() => {

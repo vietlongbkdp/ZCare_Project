@@ -31,6 +31,7 @@
     "date-fns": "^3.3.1",
     "dayjs": "^1.11.10",
     "faker": "^6.6.6",
+    "file-saver": "^2.0.5",
     "google-map-react": "^2.2.1",
     "html-react-parser": "^5.1.1",
     "js-cookie": "^3.0.5",
