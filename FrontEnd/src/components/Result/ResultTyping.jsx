@@ -31,8 +31,7 @@ const schema = yup.object().shape({
     advice: yup.string().required("Bác sĩ cần đưa ra lời khuyên cho bệnh nhân")
 });
 function ResultTyping() {
-    const {idCustomer, idDoctor} = useParams();
-    console.log(idCustomer, idDoctor)
+    const {idCustomer, idDoctor, idBooking} = useParams();
     const [customer, setCustomer] = useState(null);
     const [doctor, setDoctor] = useState(null);
     const [medicine, setMedicine] = useState(null);
@@ -74,19 +73,46 @@ function ResultTyping() {
     const onSubmit = async (data) => {
         const dataNew = {
             ...data,
+            idBooking: idBooking,
             medicineList: listMedicine
-        }
-        console.log(dataNew)
-        const resp = await axios.post("http://localhost:8080/api/result", dataNew)
-        if (resp.status == '200') {
-            await createPDF(dataNew, customer, doctor, "open");
-            toast.success("Đã tạo được đơn thuốc");
-            reset();
-            setListMedicine([]);
-        } else {
-            toast.error("Có lỗi, chưa lưu được")
+        };
+
+        try {
+            const blob = await getFilePDF(dataNew, customer, doctor);
+            const formData = new FormData();
+            formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
+            formData.append('data', JSON.stringify(dataNew));
+
+            const resp = await axios.post('http://localhost:8080/api/result', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (resp.status === 200) {
+                openBlob(blob);
+                toast.success('Đã tạo được đơn thuốc');
+                reset();
+                setListMedicine([]);
+            } else {
+                toast.error('Có lỗi, chưa lưu được');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Có lỗi xảy ra');
         }
     };
+    function downloadBlob(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
     const checkExistMedicine = (listMed, medicineName) =>{
         let flag = false;
         listMed.forEach((item)=>{
@@ -140,7 +166,106 @@ function ResultTyping() {
             }
         });
     }
+    function getFilePDF(data, customer, doctor) {
+        const documentDefinition = {
+            content: [
+                {
+                    text: 'Kết quả khám chữa bệnh',
+                    style: 'header'
+                },
+                {
+                    ul: [
+                        'Họ và tên bệnh nhân: ' + customer?.fullName,
+                        'Giới tính: ' + customer?.gender.valueOf(),
+                        'Số điện thoại: ' + customer?.phone,
+                        'Địa chỉ: ' + customer?.address,
+                        'Bác sĩ khám: '+ doctor?.doctorName,
+                        'Chuyên khoa: '+ doctor?.speciality?.specialtyName,
+                        'Ngày khám: '+ dayjs().format("DD/MM/YYYY"),
+                        'Kết luận: '+ data.diagResult,
+                        'Lời khuyên của bác sĩ: '+ data.advice,
+                        'Ghi chú thêm: '+ data.doctorNotice,
+                    ],
+                    style: 'openSans',
+                    margin: [0, 0, 10, 5] // margin top-bottom-left-right
+                },
+                {
+                    text: 'Đơn thuốc',
+                    style: 'subHeader'
+                },
+                {
+                    layout: 'lightHorizontalLines lightVerticalLines', // optional
+                    table: {
+                        headerRows: 1,
+                        widths: [ 30, 'auto', 50 , 50 , 'auto' ],
 
+                        body: [
+                            [ { text: 'Stt', bold: true, alignment: 'center' }, { text: 'Tên thuốc', bold: true, alignment: 'center' }, { text: 'Số lượng', bold: true, alignment: 'center' }, { text: 'Đơn vị', bold: true, alignment: 'center' }, { text: 'Sử dụng', bold: true, alignment: 'center' } ],
+                            ...data.medicineList.map(((item, index) => [{text: index+1, alignment: 'center'},{text: item.medicineName}, {text: item.quantity, alignment: 'center'} , {text: item.unit, alignment: 'center'}, {text: item.useNote, alignment: 'center'}]))]
+                    }
+                },
+                {
+                    text: 'Xác nhận của bác sĩ',
+                    bold: true,
+                    margin: [300, 30, 0,0],
+                    fontSize: 15
+                },
+                {
+                    text: doctor?.doctorName,
+                    margin: [300, 60, 0,0],
+                    italics: true,
+                    fontSize: 12
+                },
+            ],
+            styles: {
+                header: {
+                    fontSize: 25,
+                    bold: true,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 20]
+                },
+                openSans: {
+                    fontFamily: 'Open Sans',
+                    lineHeight: 1.5,
+                    fontSize: 13,
+                },
+                subHeader: {
+                    fontSize: 20,
+                    bold: true,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 20]
+                }
+            },
+            defaultStyle: {
+                font: 'Roboto'
+            },
+            fonts: {
+                OpenSans: {
+                    normal: 'https://fonts.gstatic.com/s/opensans/v18/mem8YaGs126MiZpBA-U1Ug.ttf',
+                    bold: 'https://fonts.gstatic.com/s/opensans/v18/mem5YaGs126MiZpBA-UN_r8OUuhs.ttf',
+                    italics: 'https://fonts.gstatic.com/s/opensans/v18/mem6YaGs126MiZpBA-UFUK0Zdcg.ttf',
+                    bolditalics: 'https://fonts.gstatic.com/s/opensans/v18/memnYaGs126MiZpBA-UFUKWiUNhrIqY.ttf'
+                },
+                Roboto: {
+                    normal: 'https://fonts.gstatic.com/s/roboto/v20/KFOmCnqEu92Fr1Mu4mxK.woff2',
+                    bold: 'https://fonts.gstatic.com/s/roboto/v20/KFOlCnqEu92Fr1MmWUlfBBc4.woff2',
+                    italics: 'https://fonts.gstatic.com/s/roboto/v20/KFOjCnqEu92Fr1Mu51TzBic4.woff2',
+                    bolditalics: 'https://fonts.gstatic.com/s/roboto/v20/KFOiCnqEu92Fr1Mu51QrIzc4.woff2'
+                }
+            }
+        };
+        return new Promise((resolve, reject) => {
+            pdfMake.createPdf(documentDefinition).getBlob((blob) => {
+                resolve(blob);
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
+    function openBlob(blob) {
+        const url = URL.createObjectURL(blob);
+        window.open(url);
+    }
     function createPDF(data, customer, doctor, action) {
         const documentDefinition = {
             content: [

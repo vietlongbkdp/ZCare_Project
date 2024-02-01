@@ -1,25 +1,21 @@
 package com.cg.model.DTO;
 
+import com.cg.model.Medicine;
+import com.cg.model.MedicineDetail;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Accessors(chain = true)
-public class ResultReqDTO {
+public class ResultJsonDTO {
     private String diagResult;
-    private String fileName;
-    private String fileType;
-    private byte[] file;
     private String advice;
     private String doctorNotice;
+    private String idBooking;
     private List<MedicineDTO> medicineList;
 }
