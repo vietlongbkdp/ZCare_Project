@@ -11,6 +11,7 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import './customer.css'
+import { Typography } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -21,7 +22,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
         fontSize: 14,
         textAlign: 'left',
-        padding: '16px'
+        padding: '10px'
     },
 }));
 
@@ -57,6 +58,7 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
             >
                 Trở lại
             </Button>
+            <Typography variant='h5' align='center' gutterBottom>LỊCH SỬ KHÁM BỆNH</Typography>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
@@ -76,10 +78,9 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
                         {booking.length > 0 ? (
                             booking.map((booking, index) => (
                                 <StyledTableRow key={booking.id} className='tableContent'>
-                                    <StyledTableCell>{index + 1}</StyledTableCell>
+                                    <StyledTableCell sx={{ textAlign: 'center !important' }}>{index + 1}</StyledTableCell>
                                     <StyledTableCell>
                                         <div className={"d-flex flex-column"}>
-                                            <p>Mã Bác sĩ: {booking?.doctor?.id}</p>
                                             <p>Bác sĩ: {booking?.doctor?.doctorName}</p>
                                             <p>Phòng khám: {booking?.doctor?.clinic?.clinicName} </p>
                                             <p>Chuyên khoa: {booking?.doctor?.speciality?.specialtyName} </p>
@@ -87,7 +88,6 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
                                         </div>
                                     </StyledTableCell>
                                     <StyledTableCell>
-                                        <p>Mã bệnh nhân: {booking?.customer?.id}</p>
                                         <p>Bệnh nhân: {booking?.customer?.fullName}</p>
                                         <p>Giới tính: {booking?.customer?.gender} </p>
                                         <p>Phone: {booking?.customer?.phone} </p>

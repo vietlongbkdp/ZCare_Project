@@ -135,7 +135,7 @@ function CustomerInClinic() {
                 handleHideBookingHistory={handleHideBookingHistory} />}
             {showCustomer &&
                 <>
-                    <Typography variant="h5" align="center" gutterBottom>Danh sách bệnh nhân trên hệ thống</Typography>
+                    <Typography variant="h5" align="center" gutterBottom>DANH SÁCH BỆNH NHÂN TRÊN HỆ THỐNG</Typography>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
                             <TableHead>

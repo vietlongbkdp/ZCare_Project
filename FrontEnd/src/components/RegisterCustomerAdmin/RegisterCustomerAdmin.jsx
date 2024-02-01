@@ -30,7 +30,7 @@ function RegisterCustomerAdmin() {
     return (
         <>
             {loading && <Loading/>}
-            <Typography variant="h5" align="center" gutterBottom>Đặt lịch khám tại quầy</Typography>
+            <Typography variant="h5" align="center" gutterBottom>ĐẶT LỊCH KHÁM TẠI QUẦY</Typography>
             {doctorInfo.map((doctor, index) => (
                 <DoctorComponentAdmin key={doctor.id} doctor={doctor} />
             ))}

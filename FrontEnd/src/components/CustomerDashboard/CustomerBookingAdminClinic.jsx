@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
-import {Pagination} from "@mui/material";
+import {Pagination, Typography} from "@mui/material";
 
 
 function AppointmentSchedule() {
@@ -50,9 +50,10 @@ function AppointmentSchedule() {
 
     return (
         <div>
+            <Typography variant='h5' align='center' gutterBottom>LỊCH SỬ KHÁM BỆNH TRÊN PHÒNG KHÁM</Typography>
             <div className={"container justify-content-center"}>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <h6 style={{marginRight: '10px'}}> Lịch sử khám: </h6>
+                    <h6 style={{marginRight: '10px'}}> Tìm kiếm theo ngày: </h6>
                     <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)}/>
                 </div>
                 <table style={{marginTop: '20px'}} className="table table-bordered table-striped"
