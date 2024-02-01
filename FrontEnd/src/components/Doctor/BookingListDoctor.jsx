@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
+import dayjs from "dayjs";
+import {parse} from "date-fns";
 import Cookies from "js-cookie";
 import axios from "axios";
-import dayjs from "dayjs";
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
-import {parse} from "date-fns";
 
-function MedicalBookingList() {
+function BookingListDoctor() {
     const [booking, setBooking] = useState([]);
     const [pre,setPre] = useState(true);
     const dateNows = dayjs().format('D/M/YYYY');
@@ -24,7 +24,7 @@ function MedicalBookingList() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/${userId}/${selectedDate}`)
+        axios.get(`http://localhost:8080/api/booking/historyDoctor/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
                 console.log(response.data)
@@ -61,10 +61,10 @@ function MedicalBookingList() {
         const selectedStatus = event.target.value;
         const selectElement = event.target;
         selectElement.style.backgroundColor = statusColors[selectedStatus];
-       const data={
-           bookingId,
-           selectedStatus
-       }
+        const data={
+            bookingId,
+            selectedStatus
+        }
         axios.post('http://localhost:8080/api/booking/changeStatus',data)
             .then(response => {
                 setBooking(response.data);
@@ -208,4 +208,4 @@ function MedicalBookingList() {
     );
 }
 
-export default MedicalBookingList;
+export default BookingListDoctor;
