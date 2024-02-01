@@ -46,7 +46,13 @@ public class BookingAPI {
     @GetMapping
     public ResponseEntity<?> getAllBooking() {
         List<Booking> bookingList = bookingService.findAll();
-        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+        List<Booking> bookings = new ArrayList<>();
+        for(Booking booking: bookingList){
+            if(booking.getStatus()== EStatusBooking.PAID){
+                bookings.add(booking);
+            }
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/confirm/{customerId}/{scheduleId}")
@@ -166,11 +172,5 @@ public class BookingAPI {
         booking.setStatus(EStatusBooking.valueOf(changeStatusDTO.getSelectedStatus()));
         bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-    @GetMapping("/{clinicId}/{weekday}")
-    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable String weekday) {
-        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
-        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinicId, weekday);
-        return new ResponseEntity<>(bookingList, HttpStatus.OK);
     }
 }

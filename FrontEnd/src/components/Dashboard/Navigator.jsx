@@ -38,7 +38,7 @@ const categories = [
                 icon: <SettingsInputComponentIcon />,
                 url: "doctor"
             },
-            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "booking" },
+            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "bookingHistory" },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
             { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 

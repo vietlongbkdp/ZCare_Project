@@ -21,7 +21,7 @@ function AppointmentSchedule() {
     const userId = Cookies.get('userId');
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/doctor/${userId}`)
+        axios.get(`http://localhost:8080/api/booking`)
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);
@@ -60,6 +60,7 @@ function AppointmentSchedule() {
                     <thead>
                     <tr>
                         <th scope="col">STT</th>
+                        <th scope="col">Thông tin bác sĩ</th>
                         <th scope="col">Thông tin bệnh nhân</th>
                         <th scope="col">Ngày đặt</th>
                         <th scope="col">Thời gian</th>
@@ -73,6 +74,15 @@ function AppointmentSchedule() {
                         currentCustomerBookingList.map((booking, index) => (
                             <tr key={booking.id} className="customTable" style={{verticalAlign: 'middle'}}>
                                 <td>{index + 1}</td>
+                                <td>
+                                    <div className={"d-flex flex-column"}>
+                                        <p>Mã Bác sĩ: {booking?.doctor?.id}</p>
+                                        <p>Bác sĩ: {booking?.doctor?.doctorName}</p>
+                                        <p>Phòng khám: {booking?.doctor?.clinic?.clinicName} </p>
+                                        <p>Chuyên khoa: {booking?.doctor?.speciality?.specialtyName} </p>
+                                        <p>Địa chỉ khám: {booking?.doctor?.clinic?.address} </p>
+                                    </div>
+                                </td>
                                 <td>
                                     <p>Mã bệnh nhân: {booking?.customer?.id}</p>
                                     <p>Bệnh nhân: {booking?.customer?.fullName}</p>
