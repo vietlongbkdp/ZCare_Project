@@ -49,5 +49,6 @@ public class Booking {
     private String patientName;
     private String reason;
     private Boolean reminderSent = false ;
+    private Boolean rated=false;
 }
 

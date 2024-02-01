@@ -12,7 +12,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {toast} from "react-toastify";
 import Cookies from "js-cookie";
 
-function RatingDoctor({doctorId,setRatingSubmitted}) {
+function RatingDoctor({doctorId,setRatingSubmitted,ratingSubmitted}) {
     const [ratingValue, setRatingValue] = useState(0);
     const [commentValue, setCommentValue] = useState('');
     const [error, setError] = useState('');
@@ -37,10 +37,15 @@ function RatingDoctor({doctorId,setRatingSubmitted}) {
                 console.log(response.data);
                 setRatingValue(0);
                 setCommentValue("");
-                setRatingSubmitted(true);
+                setRatingSubmitted(!ratingSubmitted);
                 toast.success("Đánh giá thành công");
             })
             .catch(error => {
+                if (error.response && error.response.status === 409) {
+                    toast.error("Đã đánh giá, không được đánh giá lại");
+                } else {
+                    toast.error("Bạn cần phải booking mới được đánh giá")
+                }
                 console.error('Error:', error);
             });
     };
