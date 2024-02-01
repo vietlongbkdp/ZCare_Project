@@ -21,7 +21,7 @@ function AppointmentSchedule() {
     const userId = Cookies.get('userId');
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/adminClinic/${userId}`)
+        axios.get(`http://localhost:8080/api/booking`)
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);
@@ -57,7 +57,7 @@ function AppointmentSchedule() {
                 </div>
                 <table style={{marginTop: '20px'}} className="table table-bordered table-striped"
                        key={filteredBooking.id}>
-                <thead>
+                    <thead>
                     <tr>
                         <th scope="col">STT</th>
                         <th scope="col">Thông tin bác sĩ</th>

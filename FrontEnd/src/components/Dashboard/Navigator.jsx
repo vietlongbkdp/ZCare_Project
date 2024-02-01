@@ -38,7 +38,7 @@ const categories = [
                 icon: <SettingsInputComponentIcon />,
                 url: "doctor"
             },
-            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "booking" },
+            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "bookingHistory" },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
             { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
@@ -59,7 +59,7 @@ const categories = [
         id: 'DOCTOR',
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
-            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctor" },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctorBooking" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],

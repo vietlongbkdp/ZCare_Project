@@ -65,8 +65,28 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findByCustomerIdAndScheduleId(customerId,scheduleId);
     }
 
+    @Override
+    public List<Booking> findByClinicIdAndBookingDate(Long clinicId, String bookingDate) {
+        return iBookingRepository.findByClinicIdAndBookingDate(clinicId,bookingDate);
+    }
+
     public List<Booking> getAllBookingByClinicId(Long clinicId) {
         return iBookingRepository.findAllByClinicId(clinicId);
+    }
+
+    @Override
+    public List<Booking> findAllByDoctorId(Long doctorId) {
+        return iBookingRepository.findAllByDoctorId(doctorId);
+    }
+
+    @Override
+    public List<Booking> findByClinicIdAndDoctorIdAndBookingDateAndStatus(Long clinic_id, Long doctor_id, String bookingDate, EStatusBooking status) {
+        return iBookingRepository.findByClinicIdAndDoctorIdAndBookingDateAndStatus(clinic_id,doctor_id,bookingDate,status);
+    }
+
+
+    public List<Booking> getAllBookingByClinicIdAndCustomerId(Long clinicId, Long customerId) {
+        return iBookingRepository.findAllByClinicIdAndCustomerId(clinicId, customerId);
     }
 
     public void createBooking(BookingDTO bookingDTO) {
@@ -109,10 +129,6 @@ public class BookingService implements IBookingService {
         timer.schedule(task, 60*1000);
     }
 
-    @Override
-    public List<Booking> findAllByDoctor_Id(Long doctorId) {
-        return iBookingRepository.findAllByDoctor_Id(doctorId);
-    }
 
     @Scheduled(cron = "0 */5 * * * *")
     public void checkBookingDatesAndSendReminderEmails() {

@@ -3,11 +3,10 @@ package com.cg.model.enumeration;
 public enum EStatusBooking {
     CONFIRMING(1L,"Chưa xác nhận"),
     CUSTOMERCONFIMED(2L,"Đã xác nhận"),
-    DOCTORCONFIRMED(3L,"Bác sĩ xác nhận"),
-    PAID(4L,"Đã thanh toán"),
-    EXAMINED(5L,"Đã khám"),
-    RESULTING(6L,"Đã trả kết quả"),
-    CANCEL(7L,"Đã huỷ");
+    EXAMINING(3L,"Đang khám"),
+    RESULTING(4L,"Đã trả kết quả"),
+    PAID(5L,"Đã thanh toán"),
+    CANCEL(6L,"Đã huỷ");
     private final Long id;
     private final String status;
     EStatusBooking(Long id, String status) {

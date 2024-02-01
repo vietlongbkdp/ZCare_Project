@@ -37,6 +37,11 @@ import ResultTyping from "./components/Result/ResultTyping";
 import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCustomerAdmin";
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
 import CustomerInClinic from "./components/CustomerAdmin/CustomerInClinic";
+import MedicalBookingList from "./components/ClinicAdmin/MedicalBookingList";
+import BookingListDoctor from "./components/Doctor/BookingListDoctor";
+import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
+import Result from "./components/Result/Result";
+
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -57,6 +62,7 @@ export default function App() {
             <Route path="doctorInfor" element={<DoctorInfor />}></Route>
             <Route path="clinic" element={<ClinicAdmin />}></Route>
             <Route path="customer" element={<CustomerAdmin />}></Route>
+            <Route path="bookingHistory" element={<CustomerBookingAdmin/>}></Route>
           </Route>
         </Route>
         <Route element={<PrivateRouteClinicAdmin />}>
@@ -65,6 +71,7 @@ export default function App() {
             <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
             <Route path="bookingHistory" element={<CustomerBookingAdminClinic/>}></Route>
+            <Route path="booking" element={<MedicalBookingList/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
             <Route path="customer" element={<CustomerInClinic />}></Route>
@@ -76,12 +83,10 @@ export default function App() {
           <Route path="/doctoradmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
-            <Route path="doctor" element={<CustomerBookingDoctor/>}></Route>
-            <Route path="clinic" element={<ResultTyping/>}></Route>
+            <Route path="bookingHistory" element={<CustomerBookingDoctor/>}></Route>
+            <Route path="doctorBooking" element={<BookingListDoctor/>}></Route>
+            <Route path="clinic" element={<Result/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
-            {/*<Route path="clinic" element={<Result/>}></Route>*/}
-
-            {/*<Route path="clinic" element={<ResultTyping/>}></Route>*/}
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>

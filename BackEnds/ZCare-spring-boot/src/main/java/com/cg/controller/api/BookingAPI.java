@@ -4,8 +4,10 @@ import com.cg.model.*;
 import com.cg.model.Booking;
 import com.cg.model.DTO.BookingAdminDTO;
 import com.cg.model.DTO.BookingDTO;
+import com.cg.model.DTO.ChangeStatusDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
+import com.cg.model.enumeration.EWeekday;
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.booking.BookingService;
@@ -21,6 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,7 +46,13 @@ public class BookingAPI {
     @GetMapping
     public ResponseEntity<?> getAllBooking() {
         List<Booking> bookingList = bookingService.findAll();
-        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+        List<Booking> bookings = new ArrayList<>();
+        for(Booking booking: bookingList){
+            if(booking.getStatus()== EStatusBooking.PAID){
+                bookings.add(booking);
+            }
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/confirm/{customerId}/{scheduleId}")
@@ -98,11 +107,11 @@ public class BookingAPI {
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
 
-//    @GetMapping("{clinicId}")
-//    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId) {
-//        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinicId);
-//        return new ResponseEntity<>(bookingList, HttpStatus.OK);
-//    }
+    @GetMapping("{clinicId}/{customerId}")
+    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable Long customerId) {
+        List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndCustomerId(clinicId, customerId);
+        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+    }
 
     @GetMapping("bookingDate")
     public ResponseEntity<?> getAllBookingByBookingDate() {
@@ -115,14 +124,42 @@ public class BookingAPI {
     public ResponseEntity<?> getAllBookingByUserId(@PathVariable Long userId) {
         Clinic clinic = clinicService.findByUser_Id(userId);
         List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinic.getId());
-        return new ResponseEntity<>(bookingList, HttpStatus.OK);
+        List<Booking> bookings = new ArrayList<>();
+        for(Booking booking: bookingList){
+            if(booking.getStatus()== EStatusBooking.PAID){
+                bookings.add(booking);
+            }
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
     @GetMapping("/doctor/{userId}")
-    public ResponseEntity<?> GetAllBookingbyDoctorId(@PathVariable Long userId) {
+    public ResponseEntity<?> getAllBookingByDoctorId(@PathVariable Long userId) {
         Doctor doctor = doctorService.findByUser_Id(userId);
-        List<Booking> bookingList = bookingService.findAllByDoctor_Id(doctor.getId());
+        List<Booking> bookingList = bookingService.findAllByDoctorId(doctor.getId());
+        List<Booking> bookings1 = new ArrayList<>();
+        for(Booking booking: bookingList){
+            if(booking.getStatus()== EStatusBooking.PAID){
+                bookings1.add(booking);
+            }
+        }
+        return new ResponseEntity<>(bookings1, HttpStatus.OK);
+    }
+
+    @GetMapping("/{userId}/{date}/{month}/{year}")
+    public ResponseEntity<?> getAllBookingByClinicIdAndBookingDate(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
+        Clinic clinic = clinicService.findByUser_Id(userId);
+        String bookingDate = String.format("%02d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinic.getId(), bookingDate);
         return new ResponseEntity<>(bookingList, HttpStatus.OK);
+    }
+
+    @GetMapping("/doctorBooking/{userId}/{date}/{month}/{year}")
+    public ResponseEntity<?> findByClinicIdAndDoctorIdAndBookingDateAndStatus(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
+        Doctor doctor=doctorService.findByUser_Id(userId);
+        String bookingDate = String.format("%02d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        List<Booking> bookingListDoctor = bookingService.findByClinicIdAndDoctorIdAndBookingDateAndStatus(doctor.getClinic().getId(), doctor.getId(), bookingDate, EStatusBooking.EXAMINING);
+        return new ResponseEntity<>(bookingListDoctor, HttpStatus.OK);
     }
 
     @PostMapping("/send")
@@ -137,4 +174,11 @@ public class BookingAPI {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/changeStatus")
+    public ResponseEntity<String> changeStatus(@RequestBody ChangeStatusDTO changeStatusDTO) {
+        Booking booking =bookingService.findById(changeStatusDTO.getBookingId()).get();
+        booking.setStatus(EStatusBooking.valueOf(changeStatusDTO.getSelectedStatus()));
+        bookingService.save(booking);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
