@@ -119,10 +119,6 @@ function DoctorInfo() {
     return (<>
         {loading && <Loading/>}
         <div className="w-100" >
-            {/*<div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>*/}
-            {/*    <h2>THÔNG TIN BÁC SỸ</h2>*/}
-            {/*</div>*/}
-
             <div className={"container-fluid"}>
                 <div className={"container pb-4 "}>
                     <div className={"d-flex mt-5"}>
@@ -195,7 +191,7 @@ function DoctorInfo() {
                                 <div>{doctorInfo?.clinic?.address}</div>
                             </div>
                             <div className={"d-flex mt-3  "}>
-                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee}.000đ</div>
+                                <div className={"me-2"}>Giá Khám: {doctorInfo && doctorInfo.fee ? (doctorInfo.fee * 1000).toLocaleString() + " đ" : ""}</div>
                             </div>
                         </div>
                     </div>

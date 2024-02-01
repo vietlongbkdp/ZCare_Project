@@ -75,7 +75,6 @@ function AppointmentSchedule() {
                                 <tr key={booking.id} className="customTable" style={{ verticalAlign: 'middle' }}>
                                     <td>{index + 1}</td>
                                     <td>
-                                        <p>Mã bệnh nhân: {booking?.customer?.id}</p>
                                         <p>Bệnh nhân: {booking?.customer?.fullName}</p>
                                         <p>Giới tính: {
                                             booking?.customer?.gender && (() => {
@@ -93,7 +92,7 @@ function AppointmentSchedule() {
                                     </td>
                                     <td>{booking?.bookingDate}</td>
                                     <td>{booking?.schedule?.timeItem}</td>
-                                    <td>{booking?.fee}</td>
+                                    <td>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</td>
                                     <td>
                                         {booking?.status && (
                                             (() => {

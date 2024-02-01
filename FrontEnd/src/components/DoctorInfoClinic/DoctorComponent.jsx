@@ -172,7 +172,7 @@ function DoctorComponent({ doctor }) {
                         <div>{doctor?.clinic?.address}</div>
                     </div>
                     <div className={"d-flex mt-3 border-bottom py-3"}>
-                        <div className={"me-2"}>Giá Khám: {doctor?.fee}đ</div>
+                        <div className="me-2">Giá Khám: {doctor && doctor.fee ? (doctor.fee * 1000).toLocaleString() + " đ" : ""}</div>
                     </div>
                 </div>
             </div>

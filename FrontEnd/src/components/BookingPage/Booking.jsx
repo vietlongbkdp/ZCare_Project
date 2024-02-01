@@ -148,7 +148,7 @@ export default function Booking(){
                                 {schedule?.timeItem} - {schedule?.weekday} - {bookDay}
                             </Typography>
                             <Typography variant="h7" fontWeight={"bold"}>
-                                Giá khám: {schedule?.doctor?.fee} đồng/lượt
+                                Giá khám: {schedule && schedule?.doctor?.fee ? (schedule?.doctor?.fee * 1000).toLocaleString() + " đ" : ""}/lượt
                             </Typography>
                         </Stack>
                     </Stack>
@@ -295,7 +295,7 @@ export default function Booking(){
                                                         <Stack my={1} direction="row" flexWrap="wrap"
                                                                justifyContent={"space-between"}>
                                                             <Typography>Giá khám</Typography>
-                                                            <Typography>{schedule?.doctor?.fee} đồng</Typography>
+                                                            <Typography>{schedule && schedule?.doctor?.fee ? (schedule?.doctor?.fee * 1000).toLocaleString() + " đ" : ""}</Typography>
                                                         </Stack>
                                                         <Stack my={1} direction="row" flexWrap="wrap"
                                                                justifyContent={"space-between"}>
@@ -310,7 +310,7 @@ export default function Booking(){
                                                                justifyContent={"space-between"}>
                                                             <Typography>Tổng cộng</Typography>
                                                             <Typography color={"red"}
-                                                                        fontWeight={"bold"}>{schedule?.doctor?.fee} đồng</Typography>
+                                                                        fontWeight={"bold"}>{schedule && schedule?.doctor?.fee ? (schedule?.doctor?.fee * 1000).toLocaleString() + " đ" : ""}</Typography>
                                                         </Stack>
                                                     </Box>
                                                     <Typography variant="p" sx={{fontStyle: "italic", color: "#337ab7"}}

@@ -152,7 +152,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
                                         <StyledTableCell align="left">{item?.position?.name}</StyledTableCell>
                                         <StyledTableCell align="left">{item?.speciality?.specialtyName}</StyledTableCell>
                                         <StyledTableCell align="left">{item?.clinic?.clinicName}</StyledTableCell>
-                                        <StyledTableCell align="left">{item?.fee}</StyledTableCell>
+                                        <StyledTableCell align="left">{item && item.fee ? (item.fee * 1000).toLocaleString() + " đ" : ""}</StyledTableCell>
                                         <StyledTableCell align="left">{item?.star}</StyledTableCell>
                                         <StyledTableCell align="center">
                                             <Button

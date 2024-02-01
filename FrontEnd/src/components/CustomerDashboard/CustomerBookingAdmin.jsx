@@ -77,7 +77,6 @@ function AppointmentSchedule() {
                                 <td>{index + 1}</td>
                                 <td>
                                     <div className={"d-flex flex-column"}>
-                                        <p>Mã Bác sĩ: {booking?.doctor?.id}</p>
                                         <p>Bác sĩ: {booking?.doctor?.doctorName}</p>
                                         <p>Phòng khám: {booking?.doctor?.clinic?.clinicName} </p>
                                         <p>Chuyên khoa: {booking?.doctor?.speciality?.specialtyName} </p>
@@ -85,7 +84,6 @@ function AppointmentSchedule() {
                                     </div>
                                 </td>
                                 <td>
-                                    <p>Mã bệnh nhân: {booking?.customer?.id}</p>
                                     <p>Bệnh nhân: {booking?.customer?.fullName}</p>
                                     <p>Giới tính: {
                                         booking?.customer?.gender && (() => {
@@ -103,7 +101,7 @@ function AppointmentSchedule() {
                                 </td>
                                 <td>{booking?.bookingDate}</td>
                                 <td>{booking?.schedule?.timeItem}</td>
-                                <td>{booking?.fee}</td>
+                                <td>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</td>
                                 <td>
                                     {booking?.status && (
                                         (() => {

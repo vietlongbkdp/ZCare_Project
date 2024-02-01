@@ -54,14 +54,7 @@ function DoctorListByClinic() {
                         </Box>
                     </Stack>
                 </Container>
-                {/*<h2 className="mt-2">Thông tin Phòng khám</h2>*/}
-                {/*<p className="mt-3">Phòng khám là nơi cung cấp dịch vụ y tế cơ bản và chẩn đoán ban đầu cho bệnh*/}
-                {/*    nhân.</p>*/}
             </div>
-
-
-
-
             <DoctorInfoClinic clinicId={clinicId}/>
             <div className={"my-5"}>
                 <div className={"container pb-4"}>

@@ -116,7 +116,7 @@ function AppointmentSchedule() {
                                     </StyledTableCell>
                                     <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                     <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
-                                    <StyledTableCell>{booking?.fee}</StyledTableCell>
+                                    <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</StyledTableCell>
                                     <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
                                     <StyledTableCell>
                                         {booking?.status && (

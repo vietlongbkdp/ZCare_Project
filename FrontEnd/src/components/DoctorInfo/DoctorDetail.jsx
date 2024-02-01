@@ -186,7 +186,7 @@ function DoctorDetail() {
                                 <div className={"d-flex mt-3"}>
                                     <span className={"me-2"}><i className="fa-solid fa-tag"></i></span>
                                     <p>GÍA KHÁM: </p>
-                                    <p className={"fw-bold"}> {doctorInfo?.fee}.000 đ</p>
+                                    <p className={"fw-bold"}> {doctorInfo && doctorInfo.fee ? (doctorInfo.fee * 1000).toLocaleString() + " đ" : ""}</p>
                                 </div>
                             </div>
                         </div>
