@@ -59,7 +59,7 @@ function AppointmentSchedule() {
     }, [userId, currentPage]);
 
     const filterBookingByDate = (date) => {
-        const formattedDate = dayjs(date).format("DD/M/YYYY");
+        const formattedDate = dayjs(date).format("D/M/YYYY");
         console.log(formattedDate);
         if (formattedDate !== "Invalid Date") {
             const filtered = bookingCustomer.filter(

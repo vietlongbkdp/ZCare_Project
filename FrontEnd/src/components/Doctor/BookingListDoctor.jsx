@@ -8,6 +8,8 @@ import {styled} from "@mui/material/styles";
 import TableCell, {tableCellClasses} from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import {useNavigate} from "react-router-dom";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -44,6 +46,7 @@ function BookingListDoctor() {
         EXAMINING: "blue",
         RESULTING: "purple",
     };
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get(`http://localhost:8080/api/booking/doctorBooking/${userId}/${selectedDate}`)
@@ -79,23 +82,7 @@ function BookingListDoctor() {
         }
     }, [selectedDate]);
 
-    const handleChangeStatus = (bookingId,event) => {
-        const selectedStatus = event.target.value;
-        const selectElement = event.target;
-        selectElement.style.backgroundColor = statusColors[selectedStatus];
-        const data={
-            bookingId,
-            selectedStatus
-        }
-        axios.post('http://localhost:8080/api/booking/changeStatus',data)
-            .then(response => {
-                setBooking(response.data);
-                setPre(!pre);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    };
+
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -104,6 +91,9 @@ function BookingListDoctor() {
         const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
         setSelectedWeekday(selectedWeekday);
     };
+    const handleExaming = (idCustomer, idDoctor)=>{
+        navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}`)
+    }
 
     return (
         <div>
@@ -178,33 +168,7 @@ function BookingListDoctor() {
                                 <StyledTableCell>{booking?.fee}</StyledTableCell>
                                 <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
                                 <StyledTableCell>
-                                    {booking?.status && (
-                                        <select
-                                            style={{
-                                                border: 'none',
-                                                borderRadius: '5px',
-                                                backgroundColor: statusColors[booking?.status],
-                                                color: 'white',
-                                                padding: 3,
-                                                appearance: 'none',
-                                                WebkitAppearance: 'none',
-                                                MozAppearance: 'none',
-                                                textAlign: 'center',
-                                            }}
-                                            value={booking?.status}
-                                            onChange={(event) => {
-                                                handleChangeStatus(booking?.id, event)
-                                            }}
-                                        >
-                                            <option value="EXAMINING"
-                                                    style={{backgroundColor: 'white', color: 'black'}}>Đang khám
-                                            </option>
-                                            <option value="RESULTING"
-                                                    style={{backgroundColor: 'white', color: 'black'}}>Đã trả kết quả
-                                            </option>
-
-                                        </select>
-                                    )}
+                                    <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "15px", textAlign: "center"}} onClick={()=>{handleExaming(booking.customer.id, booking.doctor.id)}}>Khám</Button>
                                 </StyledTableCell>
                                 <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
                             </StyledTableRow>
