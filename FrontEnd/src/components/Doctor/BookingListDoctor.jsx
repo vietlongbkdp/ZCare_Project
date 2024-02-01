@@ -91,8 +91,8 @@ function BookingListDoctor() {
         const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
         setSelectedWeekday(selectedWeekday);
     };
-    const handleExaming = (idCustomer, idDoctor)=>{
-        navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}`)
+    const handleExaming = (idCustomer, idDoctor, idBooking)=>{
+        navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}/${idBooking}`)
     }
 
     return (
@@ -167,7 +167,7 @@ function BookingListDoctor() {
                                 <StyledTableCell>{booking?.fee}</StyledTableCell>
                                 <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
                                 <StyledTableCell>
-                                    <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "15px", textAlign: "center"}} onClick={()=>{handleExaming(booking.customer.id, booking.doctor.id)}}>Khám</Button>
+                                    <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "15px", textAlign: "center"}} onClick={()=>{handleExaming(booking.customer.id, booking.doctor.id, booking.id)}}>Khám</Button>
                                 </StyledTableCell>
                                 <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
                             </StyledTableRow>

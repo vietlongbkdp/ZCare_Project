@@ -60,8 +60,7 @@ const categories = [
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
             { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctorBooking" },
-            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
-            { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" }
         ],
     },
     {
