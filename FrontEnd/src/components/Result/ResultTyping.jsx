@@ -23,6 +23,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
+import {useParams} from "react-router-dom";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const schema = yup.object().shape({
@@ -30,8 +31,8 @@ const schema = yup.object().shape({
     advice: yup.string().required("Bác sĩ cần đưa ra lời khuyên cho bệnh nhân")
 });
 function ResultTyping() {
-    const idCustomer = 1;
-    const idDoctor = 1;
+    const {idCustomer, idDoctor} = useParams();
+    console.log(idCustomer, idDoctor)
     const [customer, setCustomer] = useState(null);
     const [doctor, setDoctor] = useState(null);
     const [medicine, setMedicine] = useState(null);

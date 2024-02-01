@@ -149,7 +149,7 @@ public class BookingAPI {
     @GetMapping("/{userId}/{date}/{month}/{year}")
     public ResponseEntity<?> getAllBookingByClinicIdAndBookingDate(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
         Clinic clinic = clinicService.findByUser_Id(userId);
-        String bookingDate = String.format("%02d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        String bookingDate = String.format("%d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
         List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinic.getId(), bookingDate);
         return new ResponseEntity<>(bookingList, HttpStatus.OK);
     }
@@ -157,7 +157,7 @@ public class BookingAPI {
     @GetMapping("/doctorBooking/{userId}/{date}/{month}/{year}")
     public ResponseEntity<?> findByClinicIdAndDoctorIdAndBookingDateAndStatus(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
         Doctor doctor=doctorService.findByUser_Id(userId);
-        String bookingDate = String.format("%02d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        String bookingDate = String.format("%d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
         List<Booking> bookingListDoctor = bookingService.findByClinicIdAndDoctorIdAndBookingDateAndStatus(doctor.getClinic().getId(), doctor.getId(), bookingDate, EStatusBooking.EXAMINING);
         return new ResponseEntity<>(bookingListDoctor, HttpStatus.OK);
     }
