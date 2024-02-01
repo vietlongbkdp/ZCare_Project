@@ -175,7 +175,7 @@ function BookingListDoctor() {
                         ))
                     ) : (
                         <p className="d-flex justify-content-center" style={{color: "red"}}>
-                            Bạn chưa có lịch hẹn!
+                            Bạn chưa có lịch hẹn khám vào hôm nay!
                         </p>
                     )}
                     </TableBody>

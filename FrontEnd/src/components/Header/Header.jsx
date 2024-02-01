@@ -88,23 +88,13 @@ export default function Header() {
         window.location.href = '/login';
     };
 
-    // const token = Cookies.get('JWT') ;
-    // const decodedToken = jwtDecode(token) ;
-    // const userRole = decodedToken.roles[0] ;
-    // console.log(typeof token)
-    // const getDisplayName = () => {
-    //     if (userRole === "ROLE_CUSTOMER") {
-    //         return customer.fullName;
-    //     } else if (userRole === "ROLE_DOCTOR") {
-    //         return 'DOCTOR'
-    //     } else if (userRole === "ROLE_ADMIN") {
-    //         return 'ADMIN'
-    //     } else if (userRole === "ROLE_ADMIN_CLINIC") {
-    //         return 'ADMIN-CLINIC'
-    //     } else  {
-    //         return null;
-    //     }
-    // };
+    const token = Cookies.get('JWT');
+    let userRole = '';
+
+    if (token) {
+        const decodedToken = jwtDecode(token);
+        userRole = decodedToken.roles[0];
+    }
     return (
         <>
             <ReminderTimer/>
@@ -129,28 +119,121 @@ export default function Header() {
                             <FontAwesomeIcon icon="fas fa-user" className={"mx-2"}/>
                             {userId ? (
                                 <div>
-                                    <Button
-                                        id="basic-button"
-                                        aria-controls={open ? 'basic-menu' : undefined}
-                                        aria-haspopup="true"
-                                        aria-expanded={open ? 'true' : undefined}
-                                        onClick={handleClick}
-                                    >
-                                        {customer.fullName}
-                                    </Button>
-                                    <Menu
-                                        id="basic-menu"
-                                        anchorEl={anchorEl}
-                                        open={open}
-                                        onClose={handleClose}
-                                        MenuListProps={{
-                                            'aria-labelledby': 'basic-button',
-                                        }}
-                                    >
-                                        <Link style={{textDecoration: 'none', color: 'black'}} to='/information-customer'> <MenuItem onClick={handleClose}>Cập nhập</MenuItem></Link>
-                                        <Link style={{textDecoration: 'none', color: 'black'}} to='/appointment-schedule'> <MenuItem onClick={handleClose}>Lịch hẹn</MenuItem></Link>
-                                        <Link style={{textDecoration: 'none', color: 'black'}} to='' onClick={handleLogout}>  <MenuItem onClick={handleClose}>Đăng xuất</MenuItem></Link>
-                                    </Menu>
+                                    {userRole === "ROLE_CUSTOMER" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {customer.fullName}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/information-customer">
+                                                    <MenuItem onClick={handleClose}>Cập nhập</MenuItem>
+                                                </Link>
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/appointment-schedule">
+                                                    <MenuItem onClick={handleClose}>Lịch hẹn</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                    {userRole === "ROLE_DOCTOR" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {'DOCTOR'}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/doctoradmin">
+                                                    <MenuItem onClick={handleClose}>Trang cá nhân</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                    {userRole === "ROLE_ADMIN_CLINIC" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {'ADMIN-CLINIC'}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/clinicadmin">
+                                                    <MenuItem onClick={handleClose}>phòng khám</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                    {userRole === "ROLE_ADMIN" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {'ADMIN'}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/admin">
+                                                    <MenuItem onClick={handleClose}>Admin</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
                                 </div>
                             ) : (
                                 <Link style={{textDecoration: 'none', color: 'black'}} to='/login'>Đăng ký/ Đăng nhập</Link>
