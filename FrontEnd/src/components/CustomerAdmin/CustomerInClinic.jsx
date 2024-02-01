@@ -56,19 +56,22 @@ function CustomerInClinic() {
     const [customerId, setCustomerId] = useState();
     const userId = Cookies.get('userId');
     const [searchText, setSearchText] = useState('');
+    const [search, setSearch] = useState(true)
 
     const handleSearch = () => {
-        // onSearch(searchText);
+        setSearch(!search);
     };
 
     const handleChange = (event) => {
         setSearchText(event.target.value);
-      };
+    };
 
     useEffect(() => {
         const getCustomers = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/customer/clinic/${userId}`);
+                const response = await axios.get(`http://localhost:8080/api/customer/clinic/${userId}`,
+                    { params: { searchText } }
+                );
                 const result = await response.data;
                 result.map(cus => {
                     const [year, month, day] = cus.dob;
@@ -82,7 +85,7 @@ function CustomerInClinic() {
             }
         }
         getCustomers();
-    }, [updateShow, currentPage]);
+    }, [updateShow, currentPage, search]);
 
     useEffect(() => {
         const getClinic = async () => {
@@ -150,16 +153,16 @@ function CustomerInClinic() {
             {showCustomer &&
                 <>
                     <Typography variant="h5" align="center" gutterBottom>DANH SÁCH BỆNH NHÂN TRÊN HỆ THỐNG</Typography>
-                    <div style={{marginBottom: '10px', height: '40px'}}>
+                    <div style={{ marginBottom: '10px', height: '40px' }}>
                         <TextField
                             label="Tìm kiếm bệnh nhân"
                             value={searchText}
                             variant="outlined"
                             onChange={handleChange}
                             inputProps={{ style: { height: '9px' } }}
-                            sx={{marginRight: '5px', width: '300px'}}
+                            sx={{ marginRight: '5px', width: '300px' }}
                         />
-                        <Button variant="contained" color="secondary" onClick={handleSearch} sx={{ height: '41.6px'}}>Tìm kiếm</Button>
+                        <Button variant="contained" color="secondary" onClick={handleSearch} sx={{ height: '41.6px' }}>Tìm kiếm</Button>
                     </div>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
