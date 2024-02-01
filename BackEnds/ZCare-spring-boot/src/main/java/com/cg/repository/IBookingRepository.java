@@ -16,5 +16,6 @@ public interface IBookingRepository extends JpaRepository<Booking,Long> {
     List<Booking> findAllByDoctorId(Long doctorId);
     List<Booking> findByBookingDate(String bookingDate);
     List<Booking>findByClinicIdAndBookingDate(Long clinicId, String bookingDate);
+    List<Booking> findByClinicIdAndDoctorIdAndBookingDateAndStatus(Long clinic_id, Long doctor_id, String bookingDate, EStatusBooking status);
 
 }

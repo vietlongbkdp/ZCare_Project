@@ -16,15 +16,12 @@ function BookingListDoctor() {
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const userId = Cookies.get('userId');
     const statusColors = {
-        CUSTOMERCONFIMED: "green",
         EXAMINING: "blue",
         RESULTING: "purple",
-        PAID: "orange",
-        CANCEL: "red",
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/historyDoctor/${userId}/${selectedDate}`)
+        axios.get(`http://localhost:8080/api/booking/doctorBooking/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
                 console.log(response.data)
@@ -175,21 +172,13 @@ function BookingListDoctor() {
                                                 handleChangeStatus(booking?.id, event)
                                             }}
                                         >
-                                            <option value="CUSTOMERCONFIMED"
-                                                    style={{backgroundColor: 'white', color: 'black'}}>Đã xác nhận
-                                            </option>
                                             <option value="EXAMINING"
                                                     style={{backgroundColor: 'white', color: 'black'}}>Đang khám
                                             </option>
                                             <option value="RESULTING"
                                                     style={{backgroundColor: 'white', color: 'black'}}>Đã trả kết quả
                                             </option>
-                                            <option value="PAID" style={{backgroundColor: 'white', color: 'black'}}>Đã
-                                                Thanh toán
-                                            </option>
-                                            <option value="CANCEL" style={{backgroundColor: 'white', color: 'black'}}>Đã
-                                                hủy
-                                            </option>
+
                                         </select>
                                     )}
                                 </td>
