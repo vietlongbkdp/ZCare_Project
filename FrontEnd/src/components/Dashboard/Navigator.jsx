@@ -21,6 +21,9 @@ import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./dashboard.css"
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import ApartmentIcon from '@mui/icons-material/Apartment';
 
 const categories = [
     {
@@ -47,10 +50,10 @@ const categories = [
     {
         id: 'ADMIN_CLINIC',
         children: [
-            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
-            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "booking" },
+            { id: ' Trang chủ ', icon: <ApartmentIcon />, url: "list-clinic" },
+            { id: 'Danh sách đặt khám', icon: <AssignmentIcon />, url: "booking" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
-            { id: 'Bệnh nhân', icon: <TimerIcon />, url: 'customer' },
+            { id: 'Bệnh nhân', icon: <PeopleAltIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
             { id: 'Đặt lịch khám tại quầy', icon: <CalendarMonthIcon />, url: "registerCustomerAdmin" },
         ],
@@ -58,8 +61,8 @@ const categories = [
     {
         id: 'DOCTOR',
         children: [
-            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
-            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctor" },
+            { id: ' Trang chủ ', icon: <ApartmentIcon />, url: "doctorInfor" },
+            { id: 'Danh sách đặt khám', icon: <AssignmentIcon />, url: "doctorBooking" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],

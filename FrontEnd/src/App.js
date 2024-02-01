@@ -9,7 +9,7 @@ import DoctorInfor from "./components/Cooperate/AdminCooperate";
 import ClinicAdmin from "./components/ClinicAdmin/ClinicAdmin";
 import ChangePassword from "./components/Authentication/ChangePassword";
 import ScheduleCreate from "./components/ScheduleCreate/ScheduleCreate";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { ApiContext } from "./components/ApiContext/ApiProvider";
 import DoctorAdmin from "./components/Doctor/DoctorAdmin"
 import CustomerAdmin from "./components/CustomerAdmin/CustomerAdmin"
@@ -30,8 +30,6 @@ import AdminViewer from "./components/AdminViewer/AdminViewer";
 import EditAdminClinic from "./components/ClinicAdmin/EditAdminClinic"
 import DoctorListByClinicAdmin from "./components/DoctorListBy/DoctorListByClinicAdmin";
 import DoctorByAdminClinic from "./components/DoctorInfo/DoctorByAdminClinic";
-import Result from "./components/Result/Result";
-import ResultList from "./components/Result/ResultList";
 import CustomerBookingAdminClinic from "./components/CustomerDashboard/CustomerBookingAdminClinic";
 import CustomerBookingDoctor from "./components/CustomerDashboard/CustomerBookingDoctor";
 import MapRender from "./components/MapRender/MapRender";
@@ -40,7 +38,9 @@ import RegisterCustomerAdmin from "./components/RegisterCustomerAdmin/RegisterCu
 import BookingAdmin from "./components/RegisterCustomerAdmin/BookingAdmin";
 import CustomerInClinic from "./components/CustomerAdmin/CustomerInClinic";
 import MedicalBookingList from "./components/ClinicAdmin/MedicalBookingList";
+import BookingListDoctor from "./components/Doctor/BookingListDoctor";
 import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
+
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -83,7 +83,8 @@ export default function App() {
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
             <Route path="bookingHistory" element={<CustomerBookingDoctor/>}></Route>
-            <Route path="clinic" element={<Result/>}></Route>
+            <Route path="doctorBooking" element={<BookingListDoctor/>}></Route>
+            <Route path="clinic/:idCustomer/:idDoctor" element={<ResultTyping/>}></Route>
             <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
           </Route>
         </Route>

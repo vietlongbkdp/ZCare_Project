@@ -145,6 +145,30 @@ public class BookingAPI {
         }
         return new ResponseEntity<>(bookings1, HttpStatus.OK);
     }
+    @GetMapping("/{userId}/{date}/{month}/{year}")
+    public ResponseEntity<?> getAllBookingByClinicIdAndBookingDate(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
+        Clinic clinic = clinicService.findByUser_Id(userId);
+        String bookingDate = String.format("%d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinic.getId(), bookingDate);
+
+        List<Booking> filteredBookings = new ArrayList<>();
+        for (Booking booking : bookingList) {
+            if (booking.getStatus()== EStatusBooking.CONFIRMING  || booking.getStatus()==EStatusBooking.PAID ) {
+                continue;
+            }
+            filteredBookings.add(booking);
+        }
+
+        return new ResponseEntity<>(filteredBookings, HttpStatus.OK);
+    }
+
+    @GetMapping("/doctorBooking/{userId}/{date}/{month}/{year}")
+    public ResponseEntity<?> findByClinicIdAndDoctorIdAndBookingDateAndStatus(@PathVariable Long userId, @PathVariable String date, @PathVariable String month, @PathVariable String year) {
+        Doctor doctor=doctorService.findByUser_Id(userId);
+        String bookingDate = String.format("%d/%d/%04d", Integer.parseInt(date), Integer.parseInt(month), Integer.parseInt(year));
+        List<Booking> bookingListDoctor = bookingService.findByClinicIdAndDoctorIdAndBookingDateAndStatus(doctor.getClinic().getId(), doctor.getId(), bookingDate, EStatusBooking.EXAMINING);
+        return new ResponseEntity<>(bookingListDoctor, HttpStatus.OK);
+    }
 
     @PostMapping("/send")
     public ResponseEntity<String> sendReminderEmails() {
@@ -164,11 +188,5 @@ public class BookingAPI {
         booking.setStatus(EStatusBooking.valueOf(changeStatusDTO.getSelectedStatus()));
         bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-    @GetMapping("/{clinicId}/{weekday}")
-    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable String weekday) {
-        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
-        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinicId, weekday);
-        return new ResponseEntity<>(bookingList, HttpStatus.OK);
     }
 }
