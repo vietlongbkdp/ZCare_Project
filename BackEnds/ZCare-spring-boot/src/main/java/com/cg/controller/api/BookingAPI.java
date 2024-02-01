@@ -165,10 +165,4 @@ public class BookingAPI {
         bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    @GetMapping("/{clinicId}/{weekday}")
-    public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable String weekday) {
-        EWeekday weekdayEnum = EWeekday.getDayById(weekday);
-        List<Booking> bookingList = bookingService.findByClinicIdAndBookingDate(clinicId, weekday);
-        return new ResponseEntity<>(bookingList, HttpStatus.OK);
-    }
 }
