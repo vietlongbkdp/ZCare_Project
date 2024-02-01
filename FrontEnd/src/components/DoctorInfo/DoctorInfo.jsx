@@ -212,7 +212,7 @@ function DoctorInfo() {
                         <div className="border-bottom py-3">{rating?.comment}</div>
                     </>))}
                     <div className={"mt-3 pb-3"}>
-                        <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>
+                        <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted} ratingSubmitted={ratingSubmitted}/>
                     </div>
                 </div>
             </div>
