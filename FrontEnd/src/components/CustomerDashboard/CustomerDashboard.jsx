@@ -78,12 +78,10 @@ function CustomerDashboard() {
             ...data,
             gender:gender
         }
-        console.log(obj);
         try {
             await axios.put(`http://localhost:8080/api/customer/${UserId}`, obj);
             toast.success("Cập nhật thông tin thành công!")
             setLoading(false)
-            // reset();
         } catch (error) {
             toast.error("Cập nhật thông tin thất bại!")
             setLoading(false)

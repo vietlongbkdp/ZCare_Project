@@ -117,7 +117,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
                             </div>
                             <div className={"d-flex"}>
                                 <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
-                                <h6>Hà Nội</h6>
+                                <h6>Hồ Chí Minh</h6>
                             </div>
                         </div>
                     </div>
@@ -172,7 +172,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
                                 <div>{doctorInfo?.clinic?.address}</div>
                             </div>
                             <div className={"d-flex mt-3  "}>
-                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee} đ</div>
+                                <div className={"me-2"}>Giá Khám: {doctorInfo && doctorInfo.fee ? (doctorInfo.fee * 1000).toLocaleString() + " đ" : ""}</div>
                             </div>
                         </div>
                     </div>

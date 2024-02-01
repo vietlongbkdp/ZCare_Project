@@ -179,7 +179,8 @@ function DoctorInfo() {
                                 <div>{doctorInfo?.clinic?.address}</div>
                             </div>
                             <div className={"d-flex mt-3  "}>
-                                <div className={"me-2"}>Giá Khám: {doctorInfo?.fee}.000đ</div>
+                                <div className="me-2">Giá
+                                    Khám: {doctorInfo && doctorInfo.fee ? (doctorInfo.fee * 1000).toLocaleString() + " đ" : ""}</div>
                             </div>
                         </div>
                     </div>

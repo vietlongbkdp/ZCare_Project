@@ -3,7 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
-import {Pagination} from "@mui/material";
+import {Pagination, Typography} from "@mui/material";
 
 
 function AppointmentSchedule() {
@@ -34,7 +34,7 @@ function AppointmentSchedule() {
 
 
     const filterBookingByDate = (date) => {
-        const formattedDate = dayjs(date).format("DD/M/YYYY");
+        const formattedDate = dayjs(date).format("D/M/YYYY");
         console.log(formattedDate);
         if (formattedDate !== "Invalid Date") {
             const filtered = bookingCustomer.filter(
@@ -50,9 +50,10 @@ function AppointmentSchedule() {
 
     return (
         <div>
+            <Typography variant='h5' align='center'>LỊCH SỬ KHÁM BỆNH TRÊN HỆ THỐNG</Typography>
             <div className={"container justify-content-center"}>
                 <div style={{display: 'flex', alignItems: 'center'}}>
-                    <h6 style={{marginRight: '10px'}}> Lịch sử khám: </h6>
+                    <h6 style={{marginRight: '10px'}}> Tìm theo ngày: </h6>
                     <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)}/>
                 </div>
                 <table style={{marginTop: '20px'}} className="table table-bordered table-striped"
@@ -76,7 +77,6 @@ function AppointmentSchedule() {
                                 <td>{index + 1}</td>
                                 <td>
                                     <div className={"d-flex flex-column"}>
-                                        <p>Mã Bác sĩ: {booking?.doctor?.id}</p>
                                         <p>Bác sĩ: {booking?.doctor?.doctorName}</p>
                                         <p>Phòng khám: {booking?.doctor?.clinic?.clinicName} </p>
                                         <p>Chuyên khoa: {booking?.doctor?.speciality?.specialtyName} </p>
@@ -84,7 +84,6 @@ function AppointmentSchedule() {
                                     </div>
                                 </td>
                                 <td>
-                                    <p>Mã bệnh nhân: {booking?.customer?.id}</p>
                                     <p>Bệnh nhân: {booking?.customer?.fullName}</p>
                                     <p>Giới tính: {
                                         booking?.customer?.gender && (() => {
@@ -102,7 +101,7 @@ function AppointmentSchedule() {
                                 </td>
                                 <td>{booking?.bookingDate}</td>
                                 <td>{booking?.schedule?.timeItem}</td>
-                                <td>{booking?.fee}</td>
+                                <td>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</td>
                                 <td>
                                     {booking?.status && (
                                         (() => {

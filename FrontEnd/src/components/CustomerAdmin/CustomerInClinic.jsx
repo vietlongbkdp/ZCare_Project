@@ -12,10 +12,11 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import * as React from "react";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import { Pagination, Typography } from "@mui/material";
+import { Pagination, TextField, Typography } from "@mui/material";
 import Loading from "../Loading/Loading";
 import Cookies from "js-cookie";
 import BookingListCustomerInClinic from "./BookingListCustomerInClinic";
+import './customer.css';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -54,12 +55,28 @@ function CustomerInClinic() {
     const [clinicId, setClinicId] = useState();
     const [customerId, setCustomerId] = useState();
     const userId = Cookies.get('userId');
+    const [searchText, setSearchText] = useState('');
+    const [search, setSearch] = useState(true)
+
+    const handleSearch = () => {
+        setSearch(!search);
+    };
+
+    const handleChange = (event) => {
+        setSearchText(event.target.value);
+    };
 
     useEffect(() => {
         const getCustomers = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/customer/clinic/${userId}`);
+                const response = await axios.get(`http://localhost:8080/api/customer/clinic/${userId}`,
+                    { params: { searchText } }
+                );
                 const result = await response.data;
+                result.map(cus => {
+                    const [year, month, day] = cus.dob;
+                    cus.dob = new Date(year, month - 1, day).toLocaleDateString('en-GB');;
+                });
                 setCustomerList(result);
                 setLoading(false)
             } catch (error) {
@@ -68,7 +85,7 @@ function CustomerInClinic() {
             }
         }
         getCustomers();
-    }, [updateShow, currentPage]);
+    }, [updateShow, currentPage, search]);
 
     useEffect(() => {
         const getClinic = async () => {
@@ -129,13 +146,24 @@ function CustomerInClinic() {
     return (
         <>
             {loading && <Loading />}
-            {showBookingList && <BookingListCustomerInClinic 
-                customerId={customerId} 
+            {showBookingList && <BookingListCustomerInClinic
+                customerId={customerId}
                 clinicId={clinicId}
                 handleHideBookingHistory={handleHideBookingHistory} />}
             {showCustomer &&
                 <>
-                    <Typography variant="h5" align="center" gutterBottom>Danh sách bệnh nhân trên hệ thống</Typography>
+                    <Typography variant="h5" align="center" gutterBottom>DANH SÁCH BỆNH NHÂN TRÊN HỆ THỐNG</Typography>
+                    <div style={{ marginBottom: '10px', height: '40px' }}>
+                        <TextField
+                            label="Tìm kiếm bệnh nhân"
+                            value={searchText}
+                            variant="outlined"
+                            onChange={handleChange}
+                            inputProps={{ style: { height: '9px' } }}
+                            sx={{ marginRight: '5px', width: '300px' }}
+                        />
+                        <Button variant="contained" color="secondary" onClick={handleSearch} sx={{ height: '41.6px' }}>Tìm kiếm</Button>
+                    </div>
                     <TableContainer component={Paper}>
                         <Table sx={{ minWidth: 700 }} aria-label="customized table">
                             <TableHead>

@@ -174,7 +174,7 @@ export default function CustomizedTables() {
             {loading && <Loading/>}
             <Box>
                 {showCreateBtn && <>
-                    <Typography variant="h5" align="center" gutterBottom>Danh sách phòng khám trên hệ thống</Typography>
+                    <Typography variant="h5" align="center" gutterBottom>DANH SÁCH PHÒNG KHÁM TRÊN HỆ THỐNG</Typography>
                     <Button
                         type="submit"
                         variant="contained"

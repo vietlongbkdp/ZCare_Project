@@ -6,7 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Box, Container, Grid, Stack } from '@mui/material';
-import {useContext, useEffect} from 'react';
+import { useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
 import ScheduleCreate from '../ScheduleCreate/ScheduleCreate';
@@ -15,7 +15,7 @@ import AddDoctor from './AddDoctor';
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import DoctorDetail from './DoctorDetail';
-import {ApiContext} from "../ApiContext/ApiProvider";
+import { ApiContext } from "../ApiContext/ApiProvider";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
 
@@ -30,23 +30,23 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     const [showSchedule, setShowSchedule] = useState(false)
     const [showDoctorDetail, setShowDoctorDetail] = useState(false)
     const [doctorId, setDoctorId] = useState();
-    const [clinicUserId, setClinicUserId]= useState();
+    const [clinicUserId, setClinicUserId] = useState();
     const [loading, setLoading] = useState(true);
     const storedUserId = Cookies.get('userId');
 
-    useEffect(()=>{
+    useEffect(() => {
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
                 setClinicUserId(response.data.id)
                 setLoading(false)
-            }catch (error) {
+            } catch (error) {
                 console.error(error);
                 setLoading(false)
             }
         }
         finddUser();
-    },[])
+    }, [])
 
     useEffect(() => {
         if (clinicId !== undefined) {
@@ -65,7 +65,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
             getDoctors();
         }
 
-        if (clinicUserId!==undefined){
+        if (clinicUserId !== undefined) {
             const getDoctors1 = async () => {
                 try {
                     axios.defaults.withCredentials = true;
@@ -141,116 +141,117 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
 
     return (
         <>
-        {loading && <Loading/>}
-        <Container>
-            {buttonCreate &&
-                <>
-                    {clinicId !== undefined ? (
+            {loading && <Loading />}
+            <Container>
+                {buttonCreate &&
+                    <>
+                        <Typography variant='h5' align='center' gutterBottom>DANH SÁCH BÁC SĨ TRONG PHÒNG KHÁM</Typography>
+                        {clinicId !== undefined ? (
+                            <Button
+                                type="button"
+                                variant="contained"
+                                sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
+                                onClick={handleHideDoctor}
+                            >
+                                Trở lại
+                            </Button>
+                        ) : null}
                         <Button
                             type="button"
                             variant="contained"
-                            sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
-                            onClick={handleHideDoctor}
+                            color='success'
+                            sx={{ mb: 1 }}
+                            onClick={handleOpenDoctor}
                         >
-                            Trở lại
+                            Tạo bác sĩ
                         </Button>
-                    ) : null}
-                    <Button
-                        type="button"
-                        variant="contained"
-                        color='success'
-                        sx={{ mb: 1 }}
-                        onClick={handleOpenDoctor}
-                    >
-                        Tạo bác sĩ
-                    </Button>
-                </>}
-            {showAdd && <AddDoctor
-                setShowAdd={setShowAdd}
-                setUpdateShow={setUpdateShow}
-                handleShowDoctorInClinic={handleShowDoctorInClinic}
-                clinicId={clinicId}
-            />}
-            {showEdit && <EditDoctor
-                doctorId={doctorId}
-                setShowEdit={setShowEdit}
-                handleShowDoctorInClinic={handleShowDoctorInClinic}
-                setUpdateShow={setUpdateShow}
-                clinicId={clinicId}
-            />}
-            {showSchedule && <ScheduleCreate
-                doctorId={doctorId}
-                handleShowDoctorInClinic={handleShowDoctorInClinic}
-                setShowSchedule={setShowSchedule}
-            />}
-            {showDoctorDetail && <DoctorDetail
-                doctorId={doctorId}
-                handleShowDoctorInClinic={handleShowDoctorInClinic}
-                setShowDoctorDetail={setShowDoctorDetail} />}
+                    </>}
+                {showAdd && <AddDoctor
+                    setShowAdd={setShowAdd}
+                    setUpdateShow={setUpdateShow}
+                    handleShowDoctorInClinic={handleShowDoctorInClinic}
+                    clinicId={clinicId}
+                />}
+                {showEdit && <EditDoctor
+                    doctorId={doctorId}
+                    setShowEdit={setShowEdit}
+                    handleShowDoctorInClinic={handleShowDoctorInClinic}
+                    setUpdateShow={setUpdateShow}
+                    clinicId={clinicId}
+                />}
+                {showSchedule && <ScheduleCreate
+                    doctorId={doctorId}
+                    handleShowDoctorInClinic={handleShowDoctorInClinic}
+                    setShowSchedule={setShowSchedule}
+                />}
+                {showDoctorDetail && <DoctorDetail
+                    doctorId={doctorId}
+                    handleShowDoctorInClinic={handleShowDoctorInClinic}
+                    setShowDoctorDetail={setShowDoctorDetail} />}
 
-            <Grid container spacing={2}>
-                {
-                    showData &&
-                    doctorList.map((doctor) => (
-                        <Grid item xs={6} key={doctor?.id}>
-                            <Card sx={{ height: '280px', display: 'flex', flexDirection: 'column' }}>
-                                <Stack direction='row' sx={{ height: '210px' }}>
-                                    <CardMedia
-                                        sx={{ height: 170, width: 170, p: 2, borderRadius: '20px' }}
-                                        component="img"
-                                        image={doctor?.avatarImg}
-                                        title="green iguana"
-                                    />
-                                    <CardContent>
-                                        <Typography gutterBottom variant="h6">
-                                            {doctor?.doctorName}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" pb='5px'>
-                                            Chức danh: {doctor?.position?.name}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" pb='5px'>
-                                            Chuyên khoa: {doctor?.speciality?.specialtyName}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" pb='5px'>
-                                            Giá khám : {doctor?.fee} đ
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary" pb='5px'>
-                                            Đánh giá: {doctor?.star}
-                                        </Typography>
-                                    </CardContent>
-                                </Stack>
+                <Grid container spacing={2}>
+                    {
+                        showData &&
+                        doctorList.map((doctor) => (
+                            <Grid item xs={6} key={doctor?.id}>
+                                <Card sx={{ height: '280px', display: 'flex', flexDirection: 'column' }}>
+                                    <Stack direction='row' sx={{ height: '210px' }}>
+                                        <CardMedia
+                                            sx={{ height: 170, width: 170, p: 2, borderRadius: '20px' }}
+                                            component="img"
+                                            image={doctor?.avatarImg}
+                                            title="green iguana"
+                                        />
+                                        <CardContent>
+                                            <Typography gutterBottom variant="h6">
+                                                {doctor?.doctorName}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary" pb='5px'>
+                                                Chức danh: {doctor?.position?.name}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary" pb='5px'>
+                                                Chuyên khoa: {doctor?.speciality?.specialtyName}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary" pb='5px'>
+                                                Giá khám : {doctor && doctor.fee ? (doctor.fee * 1000).toLocaleString() + " đ" : ""}
+                                            </Typography>
+                                            <Typography variant="body2" color="text.secondary" pb='5px'>
+                                                Đánh giá: {doctor?.star}
+                                            </Typography>
+                                        </CardContent>
+                                    </Stack>
 
-                                <CardActions sx={{ height: '60px' }}>
-                                    <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
-                                        <Button variant='outlined' color='primary' sx={{ width: '90px' }}
-                                            onClick={() => handleShowDetail(doctor?.id)}
-                                        >
-                                            Chi tiết
-                                        </Button>
-                                        <Button variant='outlined' color='secondary' sx={{ width: '110px' }}
-                                            onClick={() => handleShowSchedule(doctor?.id)}
-                                        >
-                                            Lịch khám
-                                        </Button>
-                                        <Button variant="outlined" color="warning" sx={{ width: '100px' }}
-                                            onClick={() => handleEditId(doctor?.id)}
-                                        >
-                                            Cập nhật
-                                        </Button>
-                                        <Button
-                                            variant="outlined" color="error" sx={{ width: '90px' }}
-                                            onClick={() => handleChangeLock(doctor?.id, doctor?.user.id)}
-                                        >
-                                            Khóa
-                                        </Button>
-                                    </Box>
-                                </CardActions>
-                            </Card>
-                        </Grid>
-                    ))
-                }
-            </Grid>
-        </Container>
+                                    <CardActions sx={{ height: '60px' }}>
+                                        <Box sx={{ height: '100%', width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-around' }}>
+                                            <Button variant='outlined' color='primary' sx={{ width: '90px' }}
+                                                onClick={() => handleShowDetail(doctor?.id)}
+                                            >
+                                                Chi tiết
+                                            </Button>
+                                            <Button variant='outlined' color='secondary' sx={{ width: '110px' }}
+                                                onClick={() => handleShowSchedule(doctor?.id)}
+                                            >
+                                                Lịch khám
+                                            </Button>
+                                            <Button variant="outlined" color="warning" sx={{ width: '100px' }}
+                                                onClick={() => handleEditId(doctor?.id)}
+                                            >
+                                                Cập nhật
+                                            </Button>
+                                            <Button
+                                                variant="outlined" color="error" sx={{ width: '90px' }}
+                                                onClick={() => handleChangeLock(doctor?.id, doctor?.user.id)}
+                                            >
+                                                Khóa
+                                            </Button>
+                                        </Box>
+                                    </CardActions>
+                                </Card>
+                            </Grid>
+                        ))
+                    }
+                </Grid>
+            </Container>
         </>
     )
 }

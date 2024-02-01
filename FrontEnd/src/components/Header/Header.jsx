@@ -14,6 +14,7 @@ import Cookies from "js-cookie";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import ReminderTimer from "../ReminderTimer/ReminderTimer";
+import {jwtDecode} from "jwt-decode";
 
 library.add(fas)
 export default function Header() {
@@ -87,85 +88,185 @@ export default function Header() {
         window.location.href = '/login';
     };
 
+    const token = Cookies.get('JWT');
+    let userRole = '';
+
+    if (token) {
+        const decodedToken = jwtDecode(token);
+        userRole = decodedToken.roles[0];
+    }
     return (
         <>
-        <ReminderTimer/>
-        <div className={"container-fluid"} style={{ padding: 0 }}>
-            <div className={"d-flex justify-content-between align-items-center fw-bold topHead"}>
-                <div className={"d-flex justify-content-between"}>
-                    <div className={"mx-4"}>
-                        <FontAwesomeIcon icon="fas fa-map-marked-alt" className={"mx-2"} />
-                        28 Nguyễn Tri Phương
+            <ReminderTimer/>
+            <div className={"container-fluid"} style={{ padding: 0 }}>
+                <div className={"d-flex justify-content-between align-items-center fw-bold topHead"}>
+                    <div className={"d-flex justify-content-between"}>
+                        <div className={"mx-4"}>
+                            <FontAwesomeIcon icon="fas fa-map-marked-alt" className={"mx-2"} />
+                            28 Nguyễn Tri Phương
+                        </div>
+                        <div className={"mx-4"}>
+                            <FontAwesomeIcon icon="fas fa-mobile-alt" className={"mx-2"} />
+                            (0913 331 916)
+                        </div>
                     </div>
-                    <div className={"mx-4"}>
-                        <FontAwesomeIcon icon="fas fa-mobile-alt" className={"mx-2"} />
-                        (0913 331 916)
+                    <div className={"d-flex justify-content-between align-items-center"}>
+                        <div className={"mx-4"}>
+                            <FontAwesomeIcon icon="fas fa-calendar-check" className={"mx-2"} />
+                            T.2 - CN: 6h30 AM - 20h30 PM
+                        </div>
+                        <div className={"mx-4 d-flex align-items-center"} style={{cursor: "pointer"}}>
+                            <FontAwesomeIcon icon="fas fa-user" className={"mx-2"}/>
+                            {userId ? (
+                                <div>
+                                    {userRole === "ROLE_CUSTOMER" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {customer.fullName}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/information-customer">
+                                                    <MenuItem onClick={handleClose}>Cập nhập</MenuItem>
+                                                </Link>
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/appointment-schedule">
+                                                    <MenuItem onClick={handleClose}>Lịch hẹn</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                    {userRole === "ROLE_DOCTOR" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {'DOCTOR'}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/doctoradmin">
+                                                    <MenuItem onClick={handleClose}>Trang cá nhân</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                    {userRole === "ROLE_ADMIN_CLINIC" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {'ADMIN-CLINIC'}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/clinicadmin">
+                                                    <MenuItem onClick={handleClose}>phòng khám</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                    {userRole === "ROLE_ADMIN" && (
+                                        <div>
+                                            <Button
+                                                id="basic-button"
+                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                aria-haspopup="true"
+                                                aria-expanded={open ? 'true' : undefined}
+                                                onClick={handleClick}
+                                            >
+                                                {'ADMIN'}
+                                            </Button>
+                                            <Menu
+                                                id="basic-menu"
+                                                anchorEl={anchorEl}
+                                                open={open}
+                                                onClose={handleClose}
+                                                MenuListProps={{
+                                                    'aria-labelledby': 'basic-button',
+                                                }}
+                                            >
+                                                <Link style={{ textDecoration: 'none', color: 'black' }} to="/admin">
+                                                    <MenuItem onClick={handleClose}>Admin</MenuItem>
+                                                </Link>
+                                                <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
+                                            </Menu>
+                                        </div>
+                                    )}
+
+                                </div>
+                            ) : (
+                                <Link style={{textDecoration: 'none', color: 'black'}} to='/login'>Đăng ký/ Đăng nhập</Link>
+                            )}
+                        </div>
                     </div>
                 </div>
-                <div className={"d-flex justify-content-between align-items-center"}>
-                    <div className={"mx-4"}>
-                        <FontAwesomeIcon icon="fas fa-calendar-check" className={"mx-2"} />
-                        T.2 - CN: 6h30 AM - 20h30 PM
+                <div className={"d-flex justify-content-around fw-bold bodyHead"}>
+                    <Link to='/home' style={linkStyle} className={"fs-2 d-flex homeHead"}>
+                        <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{margin: "auto"}}/>
+                        <p style={{margin: "auto"}}>ZCARE</p>
+                    </Link>
+                    <div className={"d-flex justify-content-between detailHead"}>
+                        <p><Link to='/home' style={linkStyle}>TRANG CHỦ</Link></p>
+                        <p><Link to='/home/introduce' style={linkStyle}>GIỚI THIỆU</Link></p>
+                        <p><Link to='/home/clinic-page' style={linkStyle}>PHÒNG KHÁM</Link></p>
+                        <p><Link to='/home/speciality-page' style={linkStyle}>CHUYÊN KHOA</Link></p>
+                        <p><Link to='/home/cooperate' style={linkStyle}>HỢP TÁC</Link></p>
                     </div>
-                    <div className={"mx-4 d-flex align-items-center"} style={{cursor: "pointer"}}>
-                        <FontAwesomeIcon icon="fas fa-user" className={"mx-2"}/>
-                        {userId ? (
-                            <div>
-                                <Button
-                                    id="basic-button"
-                                    aria-controls={open ? 'basic-menu' : undefined}
-                                    aria-haspopup="true"
-                                    aria-expanded={open ? 'true' : undefined}
-                                    onClick={handleClick}
-                                >
-                                    {customer.fullName}
-                                </Button>
-                                <Menu
-                                    id="basic-menu"
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    MenuListProps={{
-                                        'aria-labelledby': 'basic-button',
-                                    }}
-                                >
-                                    <Link style={{textDecoration: 'none', color: 'black'}} to='/information-customer'> <MenuItem onClick={handleClose}>Cập nhập</MenuItem></Link>
-                                    <Link style={{textDecoration: 'none', color: 'black'}} to='/appointment-schedule'> <MenuItem onClick={handleClose}>Lịch hẹn</MenuItem></Link>
-                                    <Link style={{textDecoration: 'none', color: 'black'}} to='' onClick={handleLogout}>  <MenuItem onClick={handleClose}>Đăng xuất</MenuItem></Link>
-                                </Menu>
-                            </div>
-                        ) : (
-                            <Link style={{textDecoration: 'none', color: 'black'}} to='/login'>Đăng ký/ Đăng nhập</Link>
-                        )}
+                    <div className={"searchHead my-auto"}>
+                        <Search className={"inputSearch"}>
+                            <SearchIconWrapper>
+                                <SearchIcon />
+                            </SearchIconWrapper>
+                            <StyledInputBase
+                                placeholder="Search…"
+                                inputProps={{ 'aria-label': 'search' }}
+                                style={{ maxWidth: 150 }}
+                            />
+                        </Search>
                     </div>
                 </div>
             </div>
-            <div className={"d-flex justify-content-around fw-bold bodyHead"}>
-                <Link to='/home' style={linkStyle} className={"fs-2 d-flex homeHead"}>
-                    <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{margin: "auto"}}/>
-                    <p style={{margin: "auto"}}>ZCARE</p>
-                </Link>
-                <div className={"d-flex justify-content-between detailHead"}>
-                    <p><Link to='/home' style={linkStyle}>TRANG CHỦ</Link></p>
-                    <p><Link to='/home/introduce' style={linkStyle}>GIỚI THIỆU</Link></p>
-                    <p><Link to='/home/clinic-page' style={linkStyle}>PHÒNG KHÁM</Link></p>
-                    <p><Link to='/home/speciality-page' style={linkStyle}>CHUYÊN KHOA</Link></p>
-                    <p><Link to='/home/cooperate' style={linkStyle}>HỢP TÁC</Link></p>
-                </div>
-                <div className={"searchHead my-auto"}>
-                    <Search className={"inputSearch"}>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                            style={{ maxWidth: 150 }}
-                        />
-                    </Search>
-                </div>
-            </div>
-        </div>
         </>
     )
 } 

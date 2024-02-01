@@ -50,9 +50,9 @@ public class CustomerAPI {
     }
 
     @GetMapping("/clinic/{userId}")
-    public ResponseEntity<?> getAllCustomerInClinic(@PathVariable Long userId) {
+    public ResponseEntity<?> getAllCustomerInClinic(@PathVariable Long userId, @RequestParam String searchText) {
         Clinic clinic = clinicService.findByUser_Id(userId);
-        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinic.getId());
+        List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndSearch(clinic.getId(), searchText);
         List<Customer> customerList = bookingList.stream().map(Booking::getCustomer).distinct().toList();
         return new ResponseEntity<>(customerList, HttpStatus.OK);
     }

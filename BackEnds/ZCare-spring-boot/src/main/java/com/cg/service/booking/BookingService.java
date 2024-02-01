@@ -74,6 +74,10 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findAllByClinicId(clinicId);
     }
 
+    public List<Booking> getAllBookingByClinicIdAndSearch(Long clinicId, String search) {
+        return iBookingRepository.findAllByClinicIdAndSearch(clinicId, search);
+    }
+
     @Override
     public List<Booking> findAllByDoctorId(Long doctorId) {
         return iBookingRepository.findAllByDoctorId(doctorId);
@@ -147,11 +151,11 @@ public class BookingService implements IBookingService {
 
     @Scheduled(cron = "0 */5 * * * *")
     public void setSchedule() {
-        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/M/yyyy"));
+        String currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("d/M/yyyy"));
         List<Booking> bookingSetSchedule = iBookingRepository.findAll();
         for(Booking booking :bookingSetSchedule){
-            LocalDate bookingDate = LocalDate.parse(booking.getBookingDate(), DateTimeFormatter.ofPattern("dd/M/yyyy"));
-            LocalDate currentDateParsed = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern("dd/M/yyyy"));
+            LocalDate bookingDate = LocalDate.parse(booking.getBookingDate(), DateTimeFormatter.ofPattern("d/M/yyyy"));
+            LocalDate currentDateParsed = LocalDate.parse(currentDate, DateTimeFormatter.ofPattern("d/M/yyyy"));
             if (currentDateParsed.isAfter(bookingDate)) {
                 Schedule schedule = scheduleService.findById(booking.getSchedule().getId()).get();
                 schedule.setStatus(EStatus.AVAILABLE);

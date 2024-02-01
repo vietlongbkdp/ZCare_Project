@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import {parse} from "date-fns";
 import Cookies from "js-cookie";
 import axios from "axios";
-import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead} from "@mui/material";
+import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead, Typography} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import TableCell, {tableCellClasses} from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -97,6 +97,7 @@ function BookingListDoctor() {
 
     return (
         <div>
+            <Typography variant='h5' align='center'>DANH SÁCH ĐẶT KHÁM</Typography>
             <div>
                 <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
                     <InputLabel id="recent-dates-label">Ngày</InputLabel>
@@ -164,7 +165,7 @@ function BookingListDoctor() {
                                 </StyledTableCell>
                                 <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                 <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
-                                <StyledTableCell>{booking?.fee}</StyledTableCell>
+                                <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</StyledTableCell>
                                 <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
                                 <StyledTableCell>
                                     <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "15px", textAlign: "center"}} onClick={()=>{handleExaming(booking.customer.id, booking.doctor.id, booking.id)}}>Khám</Button>
@@ -174,7 +175,7 @@ function BookingListDoctor() {
                         ))
                     ) : (
                         <p className="d-flex justify-content-center" style={{color: "red"}}>
-                            Bạn chưa có lịch hẹn!
+                            Bạn chưa có lịch hẹn khám vào hôm nay!
                         </p>
                     )}
                     </TableBody>
