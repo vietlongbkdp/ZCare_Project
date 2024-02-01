@@ -38,6 +38,27 @@ function AppointmentSchedule() {
                 setLoading(false)
             });
     }, [UserId]);
+    const handleClickDownload = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const arrayBuffer = new Uint8Array(fileBytes).buffer;
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                downloadBlob(blob, "123.pdf");
+            }
+        });
+    };
+    function downloadBlob(blob, fileName) {
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
 
     return (
         <div>
@@ -92,7 +113,7 @@ function AppointmentSchedule() {
                                 <td>{booking?.bookingDate}</td>
                                 <td>{booking?.schedule?.timeItem}</td>
                                 <td>{booking?.fee}</td>
-                                <td>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</td>
+                                <td>{(booking?.result?.file) ? (<button type="button" class="btn btn-success" onClick={()=>{handleClickDownload(booking.id)}}>Tải</button>) : "Chưa có kết quả"}</td>
                                 <td>
                                     {booking?.status && (
                                         (() => {
