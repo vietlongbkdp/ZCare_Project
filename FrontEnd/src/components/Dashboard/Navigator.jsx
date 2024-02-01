@@ -7,7 +7,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import DnsRoundedIcon from '@mui/icons-material/DnsRounded';
 import PermMediaOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActual';
@@ -17,47 +16,59 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import TimerIcon from '@mui/icons-material/Timer';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup';
-import {Link} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useLocation } from 'react-router-dom';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./dashboard.css"
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const categories = [
     {
         id: 'ADMIN',
         children: [
             {
-                id: 'Danh sách lịch khám ',
+                id: 'Trang chủ ',
                 icon: <PeopleIcon />,
                 active: true,
-                // url: "booking"
+                url: ''
             },
-            { id: 'Phòng khám', icon: <PublicIcon /> , url: "clinic"},
+            { id: 'Phòng khám', icon: <PublicIcon />, url: "clinic" },
             {
                 id: 'Bác sĩ',
                 icon: <SettingsInputComponentIcon />,
                 url: "doctor"
             },
-            { id: 'Chuyên khoa', icon: <DnsRoundedIcon /> },
-            { id: 'Bệnh nhân', icon: <PermMediaOutlinedIcon /> },
-            { id: 'Lịch làm việc', icon: <PermMediaOutlinedIcon /> },
-            { id: 'Thông tin lịch khám', icon: <PermMediaOutlinedIcon /> },
-
-            { id: 'Liên hệ', icon: <SettingsEthernetIcon /> , url: "doctorInfor"},
+            { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "bookingHistory" },
+            { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
+            { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
 
         ],
     },
     {
-        id: 'CLINIC-DOCTOR',
+        id: 'ADMIN_CLINIC',
         children: [
-            { id: 'Analytics', icon: <SettingsIcon /> },
-            { id: 'Performance', icon: <TimerIcon /> },
-            { id: 'Test Lab', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
+            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "list-clinic" },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "booking" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
+            { id: 'Bệnh nhân', icon: <TimerIcon />, url: 'customer' },
+            { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
+            { id: 'Đặt lịch khám tại quầy', icon: <CalendarMonthIcon />, url: "registerCustomerAdmin" },
+        ],
+    },
+    {
+        id: 'DOCTOR',
+        children: [
+            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
+            { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctorBooking" },
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
+            { id: 'Trả kết quả', icon: <PhonelinkSetupIcon />, url: "clinic" },
         ],
     },
     {
         id: 'CUSTOMER',
         children: [
             { id: 'TOTAL', icon: <SettingsIcon /> },
-            { id: 'HISTORY', icon: <TimerIcon /> , url:"" },
+            { id: 'HISTORY', icon: <TimerIcon />, url: "" },
             { id: 'CUSTOMER', icon: <PhonelinkSetupIcon />, url: "doctorInfor" },
         ],
     },
@@ -81,45 +92,40 @@ const itemCategory = {
 export default function Navigator(props) {
     const location = useLocation();
     const isAdmin = location.pathname.startsWith('/admin');
-    const isCooperate = location.pathname.startsWith('/cooperate');
-    const isUser = location.pathname.startsWith('/user');
+    const isAdminClinic = location.pathname.startsWith(`/clinicadmin`);
+    const isUser = location.pathname.startsWith('/customer');
+    const isDoctor = location.pathname.startsWith('/doctoradmin');
 
-    let filteredCategories=[];
+    let filteredCategories = [];
 
     if (isAdmin) {
         filteredCategories = categories.filter((category) => category.id === 'ADMIN');
     } else if (isUser) {
         filteredCategories = categories.filter((category) => category.id === 'CUSTOMER');
-    } else if (isCooperate) {
-        filteredCategories = categories.filter((category) => category.id === 'CLINIC-DOCTOR');
+    } else if (isAdminClinic) {
+        filteredCategories = categories.filter((category) => category.id === 'ADMIN_CLINIC');
+    } else if (isDoctor) {
+        filteredCategories = categories.filter((category) => category.id === 'DOCTOR');
     }
-    // const filteredCategories = categories.filter(
-    //     category => isAdmin ? category.id === 'ADMIN' : category.id === 'CLINIC-DOCTOR'
-    // );
 
     const { ...other } = props;
 
     return (
         <Drawer variant="permanent" {...other}>
             <List disablePadding>
-                <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
-                    Paperbase
-                </ListItem>
-                <ListItem sx={{ ...item, ...itemCategory }}>
-                    <ListItemIcon>
-                        <HomeIcon />
-                    </ListItemIcon>
-                    <ListItemText>Project Overview</ListItemText>
+                <ListItem sx={{ ...item, ...itemCategory, fontSize: 20, color: '#fff', backgroundColor: '#18a2b9', '&:hover': { backgroundColor: '#18a2b9' } }}>
+                    <FontAwesomeIcon icon="fas fa-hospital-user" className={"mx-2"} style={{ margin: "auto" }} />
+                    Quản trị Website
                 </ListItem>
                 {filteredCategories.map(({ id, children }) => (
-                    <Box key={id} sx={{ bgcolor: '#101F33' }}>
-                        <ListItem sx={{ py: 2, px: 3 }}>
-                            <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
+                    <Box key={id} sx={{ bgcolor: '#353944' }}>
+                        <ListItem sx={{ py: 2, px: 3, borderBottom: '1px solid #8e89897a' }}>
+                            <ListItemText sx={{ color: '#fff', textAlign: 'center', fontSize: '18px !important' }}>{id}</ListItemText>
                         </ListItem>
                         {children.map(({ id: childId, url, icon, active }) => (
-                            <ListItem disablePadding key={childId}>
-                                <Link to={url}>
-                                    <ListItemButton selected={active} sx={item}>
+                            <ListItem disablePadding key={childId} className='navBarItem'>
+                                <Link to={url} style={{ textDecoration: 'none', width: '100%', height: '100%'}}>
+                                    <ListItemButton selected={active} sx={item} style={{ height: '100%', paddingTop: 0, paddingBottom: 0 }}>
                                         <ListItemIcon>{icon}</ListItemIcon>
                                         <ListItemText>{childId}</ListItemText>
                                     </ListItemButton>

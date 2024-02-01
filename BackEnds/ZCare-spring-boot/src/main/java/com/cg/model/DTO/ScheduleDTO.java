@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ScheduleDTO {
-    private Long idDoctor;
+    private Long doctorId;
     private List<ScheduleWeekDTO> listSchedule;
 }

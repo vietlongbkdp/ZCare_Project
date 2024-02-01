@@ -5,7 +5,6 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
 import * as yup from "yup";
-import ResultList from "./ResultList";
 const schema = yup.object().shape({
     file: yup.mixed().required("File không được để trống"),
 });
@@ -22,8 +21,6 @@ function Result() {
         const formData = new FormData();
         formData.append("file", data.file[0]);
         formData.append("editorContent", editorContent);
-        console.log(formData.get("file"));
-        console.log(formData.get("editorContent"));
         try {
             await axios.post("http://localhost:8080/api/result", formData);
             toast.success("Gửi API thành công");

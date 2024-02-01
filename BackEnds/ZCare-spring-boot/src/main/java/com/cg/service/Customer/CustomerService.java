@@ -1,5 +1,4 @@
 package com.cg.service.Customer;
-
 import com.cg.model.Customer;
 import com.cg.model.DTO.CustomerReqDTO;
 import com.cg.model.DTO.EmailReqDTO;
@@ -9,11 +8,15 @@ import com.cg.model.enumeration.EGender;
 import com.cg.model.enumeration.ERole;
 import com.cg.repository.ICustomerRepository;
 import com.cg.repository.IUserRepository;
-import com.cg.until.*;
+import com.cg.util.EmailUtil;
+import com.cg.util.PasswordEncryptionUtil;
+import com.cg.util.RandomCode;
+import com.cg.util.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 @Service
@@ -25,7 +28,7 @@ public class CustomerService implements ICustomerService {
     private IUserRepository iUserRepository;
 
     @Autowired
-    private EmailUntil emailUntil;
+    private EmailUtil emailUtil;
     @Override
     public List<Customer> findAll() {
         return iCustomerRepository.findAll();
@@ -51,7 +54,7 @@ public class CustomerService implements ICustomerService {
         User user = new User();
         user.setEmail(customerReqDTO.getEmail());
         user.setPassword(PasswordEncryptionUtil.encryptPassword(customerReqDTO.getPassword()));
-        user.setRole(ERole.ROLE_USER);
+        user.setRole(ERole.ROLE_CUSTOMER);
         iUserRepository.save(user);
 
         String date = customerReqDTO.getDob();
@@ -61,7 +64,7 @@ public class CustomerService implements ICustomerService {
         customer.setPhone(customerReqDTO.getPhone());
         customer.setEmail(customerReqDTO.getEmail());
         customer.setAddress(customerReqDTO.getAddress());
-        customer.setDob(PassDate.convertToDate(date));
+        customer.setDob(LocalDate.parse(date));
         customer.setGender(EGender.valueOf(customerReqDTO.getGender()));
         iCustomerRepository.save(customer);
     }
@@ -81,7 +84,7 @@ public class CustomerService implements ICustomerService {
             user.setCode(code);
             iUserRepository.save(user);
             String body= SendEmail.EmailResetPassword(user.getEmail(),code);
-            emailUntil.sendEmail(email,title,body);
+            emailUtil.sendEmail(email,title,body);
             return true;
         } else {
             return false;
@@ -93,4 +96,15 @@ public class CustomerService implements ICustomerService {
         User user = iUserRepository.findByEmail(forgotPassword.getEmail()).get();
         return user != null && (forgotPassword.getCode()).equals(user.getCode());
     }
+
+    @Override
+    public List<Customer> findAllByUser_Unlock(boolean user_unlock) {
+        return iCustomerRepository.findAllByUser_Unlock(user_unlock);
+    }
+
+    @Override
+    public Customer findByUser_Id(Long id) {
+        return iCustomerRepository.findByUser_Id(id);
+    }
+
 }

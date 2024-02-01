@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { UserContext } from "../utils/ApiUserLogin"
 import {
   Box,
   Typography,
@@ -15,6 +16,8 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { getRoleInCookie } from "../Utils/ApiComponent";
+import Cookies from 'js-cookie';
+import { jwtDecode } from 'jwt-decode';
 
 const schema = yup.object({
   email: yup
@@ -25,8 +28,7 @@ const schema = yup.object({
 });
 
 function AuthLogin() {
-  const navigate = useNavigate();
-
+  const { API_USER } = useContext(UserContext);
   const {
     register,
     handleSubmit,
@@ -36,18 +38,45 @@ function AuthLogin() {
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
+  console.log(API_USER)
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post("http://localhost:8080/api/customer/login", data);
+      const response = await axios.post("http://localhost:8080/api/user/login", data);
+      console.log(response)
+      const userId = response.data.id;
+      Cookies.set('userId', userId, { expires: 7, secure: true });
+      const storedUserId = Cookies.get('userId');
+      console.log(storedUserId)
       const token = response.data.token;
       Cookies.set('JWT', token, { expires: 7, secure: true });
       toast.success("Đăng nhập thành công");
-      const userRole = getRoleInCookie();
+      const decodedToken = jwtDecode(token);
+
+      const userRole = decodedToken.roles[0];
+      console.log(userRole)
       if (userRole === "ROLE_ADMIN") {
-        navigate("/admin");
-      } else if (userRole === "ROLE_USER") {
-        navigate("/home")
+        window.location.href = "/admin";
+      } else if (userRole === "ROLE_CUSTOMER") {
+        const currentPath = window.location.pathname;
+        console.log(currentPath)
+        if (!currentPath.includes("/admin")) {
+          window.location.href = "/home";
+        } else {
+          window.location.href = "/home";
+        }
+      } else if (userRole === "ROLE_ADMIN_CLINIC") {
+        window.location.href = `/clinicadmin`;
+      } else if (userRole === "ROLE_DOCTOR") {
+        window.location.href = `/doctoradmin`;
       }
+      reset();
     } catch (error) {
       if (error.response) {
         const errorMessage = error.response.data;
@@ -120,6 +149,7 @@ function AuthLogin() {
               variant="outlined"
               error={!!errors.password}
               helperText={errors.password?.message}
+              onKeyDown={handleKeyDown}
             />
           </Box>
           <Box
@@ -178,6 +208,7 @@ function AuthLogin() {
             <span className="ms-2"> Facebook</span>
           </Button>
         </Box>
+        <Link to='/home' style={{ marginTop: 4, width: 'fit-content' }}>Trở về trang chủ</Link>
       </Box>
     </Box>
   );

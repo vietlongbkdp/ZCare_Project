@@ -5,11 +5,12 @@ import Box from "@mui/material/Box";
 import { Facebook, Instagram, LinkedIn, Twitter } from "@mui/icons-material";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
-import { getHeader } from '../Utils/ApiComponent';
+import {Link} from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 function ClinicList() {
     const [clinicData, setClinicData] = useState(null);
-
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -19,13 +20,12 @@ function ClinicList() {
                 });
 
                 setClinicData(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error('Lỗi khi gọi API:', error);
-            }
-        };
-
-        fetchData();
+                setLoading(false)
+            })
+            .catch(error => {
+                console.error(error);
+                setLoading(false)
+            });
     }, []);
 
     if (!clinicData) {
@@ -34,6 +34,7 @@ function ClinicList() {
 
     return (
         <>
+            {loading && <Loading/>}
             <div className={"w-100 d-flex flex-column justify-content-center align-items-center"}
                 style={{ height: "200px", backgroundColor: "rgb(237 255 250)" }}>
                 <h2 className={" mt-2"}>Danh sách phòng khám</h2>
@@ -44,6 +45,7 @@ function ClinicList() {
                     <Container
                         key={clinic.id}
                         style={{
+                            flex: '0 0 30%',
                             display: 'flex',
                             borderRadius: '4px',
                             border: '1px solid',
@@ -52,18 +54,24 @@ function ClinicList() {
                             marginTop: '8px',
                             marginRight: "10px",
                             marginLeft: "10px",
-                            width: '25%',
+                            width: '30%',
                             boxSizing: 'border-box',
+                            height: '250px',
+                            wordWrap: 'break-word',
+                            wordBreak: 'break-all',
                         }}
                     >
+                        <Link to={`/list-clinic/${clinic.id}`} style={{ textDecoration: 'none',color:"black" }}>
                         <Grid container spacing={2}>
                             <Grid item xs={8}>
                                 <Box display="flex" flexDirection="column" marginRight="10px" marginLeft="10px">
-                                    <Typography variant="h6" style={{ color: '#74b9ff' }}>{clinic.clinicName}</Typography>
-                                    <Typography variant="subtitle1" style={{ color: '#81ecec' }} className={"address"}>
+                                    <Typography variant="h6" style={{color: '#74b9ff', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', wordWrap: 'break-word', whiteSpace: 'pre-line',}}  align='center' height='80px'>
+                                        {clinic.clinicName}
+                                    </Typography>
+                                    <Typography variant="subtitle1" style={{ color: '#81ecec', flexShrink: 1, overflow: 'hidden', textOverflow: 'ellipsis', wordWrap: 'break-word', whiteSpace: 'pre-line', }} fontSize='1rem' align='center' height='80px'>
                                         {clinic.address}
                                     </Typography>
-                                    <div style={{ display: 'flex' }}>
+                                    <div style={{ display: 'flex' }} >
                                         <IconButton style={{ marginRight: '8px' }}>
                                             <Facebook />
                                         </IconButton>
@@ -79,22 +87,21 @@ function ClinicList() {
                                     </div>
                                 </Box>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                                 <Box style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
                                     marginLeft: '8px',
-                                    marginRight: '16px'
+                                    marginRight: '16px',
+                                    verticalAlign: 'middle',
                                 }}>
                                     <img
                                         src={clinic.clinicLogo}
                                         alt=""
-                                        style={{ width: '100px', margin: '0 auto' }}
+                                        style={{width: '120px', margin: '0 auto'}}
                                     />
                                 </Box>
                             </Grid>
                         </Grid>
+                        </Link>
                     </Container>
                 ))}
             </Grid>

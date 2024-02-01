@@ -8,7 +8,7 @@ import com.cg.security.careUser.CareUserDetails;
 import com.cg.security.jwt.JwtUtils;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.User.UserService;
-import com.cg.until.PasswordEncryptionUtil;
+import com.cg.util.PasswordEncryptionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

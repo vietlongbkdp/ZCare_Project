@@ -16,6 +16,7 @@ import {Search} from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import {alpha, styled} from "@mui/material/styles";
 import {InputBase} from "@mui/material";
+import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
 
 const pages = ['Products', 'Pricing', 'Blog'];
@@ -81,6 +82,7 @@ function ResponsiveAppBar() {
 
     return (
         <AppBar position="static">
+            <ReminderTimer/>
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
                     <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />

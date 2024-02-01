@@ -1,0 +1,22 @@
+.css-gzh6bc-MuiListItemText-root .MuiListItemText-primary {
+    font-size: 18px !important;
+    font-weight: 400 !important;
+}
+
+.css-1vsovlu-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
+    background-color: initial !important;
+}
+
+.navBarItem {
+    border-bottom: 1px solid #8e89897a;
+    height: 45px
+}
+
+.navBarItem:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    cursor: pointer;
+}
+
+.css-1vsovlu-MuiButtonBase-root-MuiListItemButton-root:hover, .css-1vsovlu-MuiButtonBase-root-MuiListItemButton-root:focus {
+    background-color: initial !important;
+}

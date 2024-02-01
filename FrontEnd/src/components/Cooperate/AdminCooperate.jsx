@@ -2,30 +2,61 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import axios from 'axios';
 import { toast } from "react-toastify";
+import {styled} from "@mui/material/styles";
+import {tableCellClasses} from "@mui/material/TableCell";
+import Paper from "@mui/material/Paper";
+import Loading from "../Loading/Loading";
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+        backgroundColor: 'white',
+        color: theme.palette.common.black,
+        textAlign: 'left'
+    },
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+        textAlign: 'left'
+    },
+}));
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
 function AdminCooperate() {
     const [cooperateList, setCooperateList] = useState([]);
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getAllCooperate = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/cooperate');
                 setCooperateList(response.data);
+                setLoading(false)
             } catch (error) {
                 console.error(error);
+                setLoading(false)
             }
         };
         getAllCooperate();
-    }, [currentPage]);
+    }, [currentPage, loading]);
 
     const handleClick = async (id) => {
+        setLoading(true)
         try {
-            await axios.get(`http://localhost:8080/api/cooperate/${id}`);
-            toast.success("Xác nhận thành công");
+            const res = await axios.get(`http://localhost:8080/api/cooperate/${id}`);
+            if (res.status === 200) {
+                toast.success("Xác nhận thành công");
+                setLoading(false)
+            }
         } catch (error) {
             console.error(error);
+            setLoading(false)
         }
     };
 
@@ -38,36 +69,37 @@ function AdminCooperate() {
     const currentCooperateList = cooperateList.slice(startIndex, endIndex);
 
     return (
-        <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4, mb: 5, pb: 5 }}>
-            <Typography variant="h4" align="center" gutterBottom>
+        <>
+            {loading && <Loading/>}
+            <Typography variant="h5" align="center" gutterBottom>
                 Danh sách hợp tác cùng ZCare
             </Typography>
-            <TableContainer>
-                <Table>
+            <TableContainer component={Paper}>
+                <Table  sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>#</TableCell>
-                            <TableCell>Tên</TableCell>
-                            <TableCell>Số Điện thoại</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Tên phòng khám</TableCell>
-                            <TableCell>Địa chỉ</TableCell>
-                            <TableCell>Nội dung</TableCell>
-                            <TableCell>Hành động</TableCell>
+                            <StyledTableCell>#</StyledTableCell>
+                            <StyledTableCell>Tên</StyledTableCell>
+                            <StyledTableCell>Số Điện thoại</StyledTableCell>
+                            <StyledTableCell>Email</StyledTableCell>
+                            <StyledTableCell>Tên phòng khám</StyledTableCell>
+                            <StyledTableCell>Địa chỉ</StyledTableCell>
+                            <StyledTableCell>Nội dung</StyledTableCell>
+                            <StyledTableCell>Hành động</StyledTableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {currentCooperateList.length > 0 ? (
                             currentCooperateList.map((cooperate) => (
-                                <TableRow key={cooperate.id}>
-                                    <TableCell>{cooperate.id}</TableCell>
-                                    <TableCell>{cooperate.fullName}</TableCell>
-                                    <TableCell>{cooperate.phone}</TableCell>
-                                    <TableCell>{cooperate.email}</TableCell>
-                                    <TableCell>{cooperate.clinicName}</TableCell>
-                                    <TableCell>{cooperate.address}</TableCell>
-                                    <TableCell>{cooperate.content}</TableCell>
-                                    <TableCell>
+                                <StyledTableRow key={cooperate.id}>
+                                    <StyledTableCell>{cooperate.id}</StyledTableCell>
+                                    <StyledTableCell>{cooperate.fullName}</StyledTableCell>
+                                    <StyledTableCell>{cooperate.phone}</StyledTableCell>
+                                    <StyledTableCell>{cooperate.email}</StyledTableCell>
+                                    <StyledTableCell>{cooperate.clinicName}</StyledTableCell>
+                                    <StyledTableCell>{cooperate.address}</StyledTableCell>
+                                    <StyledTableCell>{cooperate.content}</StyledTableCell>
+                                    <StyledTableCell>
                                         <Button
                                             variant={cooperate.status === 'SELECTED' ? 'outlined' : 'contained'}
                                             color={cooperate.status === 'SELECTED' ? 'secondary' : 'primary'}
@@ -76,13 +108,13 @@ function AdminCooperate() {
                                         >
                                             {cooperate.status === 'SELECTED' ? 'Đã xác nhận' : 'Xác nhận'}
                                         </Button>
-                                    </TableCell>
-                                </TableRow>
+                                    </StyledTableCell>
+                                </StyledTableRow>
                             ))
                         ) : (
-                            <TableRow>
-                                <TableCell colSpan={8}>No data available</TableCell>
-                            </TableRow>
+                            <StyledTableRow>
+                                <StyledTableCell colSpan={8}>No data available</StyledTableCell>
+                            </StyledTableRow>
                         )}
                     </TableBody>
                 </Table>
@@ -96,7 +128,7 @@ function AdminCooperate() {
                 showLastButton
                 style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
             />
-        </Container>
+        </>
     );
 }
 

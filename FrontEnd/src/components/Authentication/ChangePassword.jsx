@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {
   Box,
   Typography,
@@ -11,6 +11,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { useParams, useNavigate } from "react-router-dom";
+import Loading from "../Loading/Loading";
 
 const schema = yup.object({
   password: yup.string().required("không được để trống"),
@@ -28,6 +29,7 @@ export default function ChangePassword() {
   });
   const password = watch("password");
   const newPassword = watch("newPassword");
+    const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const isPasswordMatch = password === newPassword;
 
@@ -39,24 +41,29 @@ export default function ChangePassword() {
   const { userId } = useParams();
 
   const onSubmit = async (data) => {
+    setLoading(true)
     try {
       const requestData = {
         ...data,
         userId: userId,
       };
       const response = await axios.post(
-        "http://localhost:8080/api/customer/change-password",
+        "http://localhost:8080/api/user/change-password",
         requestData
       );
       console.log(response.data);
+        setLoading(false)
       toast.success("Đổi mật khẩu thành công");
       navigate(`/login`);
     } catch (error) {
       toast.error("Đổi mật khẩu thất bại.");
+        setLoading(false)
     }
   };
 
   return (
+      <>
+      {loading && <Loading/>}
     <Box
       sx={{
         display: "flex",
@@ -131,5 +138,6 @@ export default function ChangePassword() {
         </form>
       </Box>
     </Box>
+      </>
   );
 }

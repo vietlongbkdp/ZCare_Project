@@ -5,6 +5,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
+import {Link} from "react-router-dom";
 
 export default function SpecialityListHome() {
   const [specialityList, setSpecialityList] = useState([]);
@@ -48,7 +49,8 @@ export default function SpecialityListHome() {
         <Slider {...settings}>
           {
             specialityList.map((item, index) => (
-              <Card key={index} sx={{ borderRadius: '15px' }}>
+              <Card key={item.id} sx={{ borderRadius: '15px' }}>
+                <Link to={`/list-speciality/${item.id}`} style={{ textDecoration: 'none',color:"black" }}>
                 <CardActionArea>
                   <CardMedia
                     component="img"
@@ -62,6 +64,7 @@ export default function SpecialityListHome() {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
+                </Link>
               </Card>
             ))
           }

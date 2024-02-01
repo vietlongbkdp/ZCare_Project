@@ -6,34 +6,50 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Paper, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React from "react";
+import React, {useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from '../CkEditor/ClinicEditor';
+import Loading from "../Loading/Loading";
 
-const schema = yup.object({
+const schema = yup.object().shape({
     clinicName: yup.string()
         .required("Tên không được để trống")
-        .min(2, 'Quá ngắn')
-        .max(50, 'Quá dài'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(200, 'Nhập dưới 200 kí tự'),
     address: yup.string()
         .required("Địa chỉ không đuược để trống")
-        .min(2, 'Quá ngắn')
-        .max(50, 'Quá dài'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(200, 'Nhập dưới 200 kí tự'),
     legalRepresentative: yup.string()
         .required("Tên người đại diện không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(200, 'Nhập dưới 200 kí tự'),
+    email: yup.string()
+        .required("Email không được để trống")
+        .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
     hotline: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
     operatingLicence: yup.string()
         .required("GPHĐ không đuược để trống")
-        .min(5, 'Quá ngắn')
-        .max(30, 'Quá dài'),
+        .min(5, 'Nhập trên 5 kí tự')
+        .max(30, 'Nhập dưới 30 kí tự'),
+    clinicLogo: yup.mixed().test("file", "Logo không được để trống", (value) => {
+        if (value.length > 0) {
+            return true;
+        }
+        return false;
+    }),
 })
+
+const StyledErrorText = styled('p')({
+    color: '#d32f2f',
+    fontSize: '14px',
+    marginTop: '8px',
+});
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -68,8 +84,10 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm(
         { resolver: yupResolver(schema) }
     );
+    const [loading, setLoading] = useState(false);
 
     const createClinic = async (data) => {
+        setLoading(true)
         console.log('data', data);
         let imagesImport = Array.from(data.clinicLogo);
         const formData = new FormData();
@@ -81,6 +99,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
             console.log(response);
             if (response.status == '200') {
                 toast.success("Tạo phòng khám thành công!")
+                setLoading(false);
                 reset();
                 setShowContent(true)
                 setShowCreateBtn(true)
@@ -91,15 +110,18 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
             else {
                 await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
                 toast.error("Tạo phòng khám thất bại!")
+                setLoading(false);
             }
         }
         else {
             toast.error("Tải logo thất bại!")
+            setLoading(false);
         }
     }
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     TẠO PHÒNG KHÁM
@@ -109,7 +131,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                         <Grid item xs={3} >
                             <Item>
                                 <Button component="label" sx={{ textAlign: 'center' }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
+                                    <img id={"blah"} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
                                         alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         if (event.target.files && event.target.files[0]) {
@@ -119,6 +141,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                                         }
                                     }} />
                                 </Button>
+                                {errors?.clinicLogo && <StyledErrorText>{errors?.clinicLogo?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>
@@ -165,6 +188,17 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                                                 error={Boolean(errors.legalRepresentative)}
                                                 helperText={errors.legalRepresentative?.message || ''}
                                                 {...register("legalRepresentative")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} mb={1}>
+                                            <TextField
+                                                autoComplete="email"
+                                                fullWidth
+                                                id="email"
+                                                label="Email"
+                                                error={Boolean(errors.email)}
+                                                helperText={errors.email?.message || ''}
+                                                {...register("email")}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>

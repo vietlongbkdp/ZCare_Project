@@ -2,3 +2,8 @@
     display: flex;
     justify-content: center;
 }
+
+.css-16w7xnd-MuiTableCell-root {
+    padding: 10px!important;
+    height: 70px!important;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -11,7 +11,6 @@ import './CkEditor.css'
 // });
 
 export default function ClinicEditor({ setValue, getValues }) {
-
     function handleFileUpload(loader) {
         return {
             upload: () => {
@@ -25,7 +24,6 @@ export default function ClinicEditor({ setValue, getValues }) {
                             },
                         })
                             .then((response) => {
-                                console.log('my res', response.data.fileUrl);
                                 resolve({ default: `${response.data.fileUrl}` })
                             })
                             .catch((error) => {
@@ -42,15 +40,6 @@ export default function ClinicEditor({ setValue, getValues }) {
             return handleFileUpload(loader);
         };
     }
-
-    // const parsedContent = HTMLReactParser(dataInput, {
-    //     replace: (domNode) => {
-    //         if (domNode.name === 'img') {
-    //             domNode.attribs.class = 'custom-image';
-    //         }
-    //         return undefined;
-    //     },
-    // });
 
     return (
         <>

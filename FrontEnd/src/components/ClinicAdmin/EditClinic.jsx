@@ -9,33 +9,44 @@ import {
     TextField
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from "../CkEditor/ClinicEditor";
-const schema = yup.object({
+import Loading from "../Loading/Loading";
+
+const schema = yup.object().shape({
     clinicName: yup.string()
-        .required("tên không được để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Tên không được để trống")
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(200, 'Nhập dưới 200 kí tự'),
     address: yup.string()
-        .required("tên không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .required("Địa chỉ không đuược để trống")
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(100, 'Nhập dưới 100 kí tự'),
     legalRepresentative: yup.string()
         .required("Tên người đại diện không đuược để trống")
-        .min(2, 'Too short')
-        .max(50, 'Too long'),
+        .min(2, 'Nhập trên 2 kí tự')
+        .max(100, 'Nhập dưới 100 kí tự'),
+    email: yup.string()
+        .required("Email không được để trống")
+        .matches(/^.+@.+\..+$/, "Email không hợp lệ"),
     hotline: yup.string()
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
     operatingLicence: yup.string()
         .required("GPHĐ không đuược để trống")
-        .min(5, 'Quá ngắn')
-        .max(30, 'Quá dài')
+        .min(5, 'Nhập trên 5 kí tự')
+        .max(30, 'Nhập dưới 30 kí tự'),
 })
+
+const StyledErrorText = styled('p')({
+    color: '#d32f2f',
+    fontSize: '14px',
+    marginTop: '8px',
+});
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -48,6 +59,7 @@ const VisuallyHiddenInput = styled('input')({
     whiteSpace: 'nowrap',
     width: 1,
 });
+
 const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -56,49 +68,55 @@ const Item = styled(Paper)(({ theme }) => ({
     color: theme.palette.text.secondary,
     boxShadow: 'none'
 }));
+
+let updateAvatar;
+let presentAvatar;
+
 export default function EditClinic({ setShow, setISupdate, clinicId, setShowContent, setShowCreateBtn, setShowPagination }) {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
-    let updateAvatar;
-    let presentAvatar;
+    const [loading, setLoading] = useState(true);
     const resetModal = () => {
         setShow(false)
         setShowContent(true)
         setShowCreateBtn(true)
         setShowPagination(true)
     }
-
+    console.log('vao trang edit');
     useEffect(() => {
         if (clinicId) {
+            console.log('vao use effect');
             const getClinic = async () => {
                 const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`);
                 const result = await res.data;
                 setValue("clinicName", result.clinicName)
                 setValue("legalRepresentative", result.legalRepresentative)
+                setValue("email", result.email)
                 setValue("hotline", result.hotline)
                 setValue("operatingLicence", result.operatingLicence)
                 setValue("address", result.address)
                 setValue("clinicInfo", result.clinicInfo)
                 presentAvatar = result.clinicLogo;
                 updateAvatar = result.clinicLogo;
-                console.log(presentAvatar);
                 document.getElementById('blah').src = presentAvatar;
+                setLoading(false)
             }
             getClinic();
         }
     }, [clinicId]);
 
 
-    const updateClinic = async (data) => {
+    const handleUpdateClinic = async (data) => {
+        setLoading(true)
         if (presentAvatar === updateAvatar) {
             data.clinicLogo = presentAvatar;
-            console.log("presentAvatar", presentAvatar);
         } else {
             data.clinicLogo = updateAvatar;
         }
         try {
-            await axios.patch(`http://localhost:8080/api/clinic/${clinicId}`, data);
+            await axios.put(`http://localhost:8080/api/clinic/${clinicId}`, data);
             toast.success("Cập nhật phòng khám thành công!")
             reset();
+            setLoading(false)
             setShowContent(true)
             setShowCreateBtn(true)
             setShow(false)
@@ -106,12 +124,12 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
             setISupdate(prev => !prev);
         } catch (error) {
             toast.error("Cập nhật phòng khám thất bại!")
+            setLoading(false)
         }
     };
 
     const handleUpload = async (e) => {
         let imagesImport = Array.from(e.target.files);
-
         const formData = new FormData();
         formData.append('image', imagesImport[0])
         const res = await axios.post('http://localhost:8080/api/avatar', formData)
@@ -121,21 +139,23 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
 
     return (
         <>
+            {loading && <Loading/>}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     Cập nhật phòng khám
                 </Typography>
-                <Box component="form" onSubmit={handleSubmit(updateClinic)} sx={{ width: '100%' }} mt={3}>
+                <Box component="form" onSubmit={handleSubmit(handleUpdateClinic)} sx={{ width: '100%' }} mt={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={3} >
                             <Item>
                                 <Button component="label" sx={{ borderRadius: 50 }}>
-                                    <img id={"blah"} style={{ borderRadius: 100 }} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
-                                        alt={"avatar"} />
+                                    <img id={"blah"} src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Circle-icons-upload.svg/1200px-Circle-icons-upload.svg.png" width={170} height={170}
+                                         alt={"avatar"} />
                                     <VisuallyHiddenInput  {...register("clinicLogo")} type="file" onChange={(event) => {
                                         handleUpload(event)
                                     }} />
                                 </Button>
+                                {errors?.clinicLogo && <StyledErrorText>{errors?.clinicLogo?.message}</StyledErrorText>}
                                 <Typography variant="p" fontWeight={"bold"} component="p" mt={1}>
                                     Tải ảnh phòng khám tại đây
                                 </Typography>
@@ -155,6 +175,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="clinicName"
                                                 label="Tên phòng khám"
                                                 type="text"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.clinicName)}
                                                 helperText={errors.clinicName?.message || ''}
                                                 {...register('clinicName')}
@@ -167,6 +188,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="address"
                                                 type={"text"}
                                                 label="Địa chỉ"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.address)}
                                                 helperText={errors.address?.message || ''}
                                                 {...register("address")}
@@ -179,9 +201,21 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="legalRepresentative"
                                                 type={"text"}
                                                 label="Người đại diện"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.legalRepresentative)}
                                                 helperText={errors.legalRepresentative?.message || ''}
                                                 {...register("legalRepresentative")}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6} mb={1}>
+                                            <TextField
+                                                autoComplete="email"
+                                                fullWidth
+                                                id="email"
+                                                label="Email"
+                                                error={Boolean(errors.email)}
+                                                helperText={errors.email?.message || ''}
+                                                {...register("email")}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6} mb={1}>
@@ -191,6 +225,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 id="hotline"
                                                 label="Hotline"
                                                 type="tel"
+                                                InputLabelProps={{ shrink: true }}
                                                 error={Boolean(errors.hotline)}
                                                 helperText={errors.hotline?.message || ''}
                                                 {...register("hotline")}
@@ -202,6 +237,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                                 fullWidth
                                                 id="operatingLicence"
                                                 type={"text"}
+                                                InputLabelProps={{ shrink: true }}
                                                 label="Giấy phép hoạt động"
                                                 error={Boolean(errors.operatingLicence)}
                                                 helperText={errors.operatingLicence?.message || ''}
@@ -227,7 +263,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
                                     Cập nhật
                                 </Button>
                                 <Button variant="contained" onClick={resetModal}
-                                    sx={{ mt: 3, mb: 1 }}>
+                                        sx={{ mt: 3, mb: 1 }}>
                                     Hủy
                                 </Button>
                             </Grid>

@@ -1,11 +1,14 @@
 package com.cg.controller.api;
 
 import com.cg.model.DTO.RatingReqDTO;
+import com.cg.model.Rating;
 import com.cg.service.Rating.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/rating")
@@ -20,9 +23,15 @@ public class RatingAPI {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("create")
-    public ResponseEntity<?> createRating(@RequestBody RatingReqDTO ratingReqDTO) {
-        ratingService.createRating(ratingReqDTO);
+    @GetMapping("/{doctorId}")
+    public ResponseEntity<?> getAllRatingByDoctorId(@PathVariable Long doctorId ){
+      List<Rating> ratings= ratingService.findByDoctorId(doctorId);
+        return new ResponseEntity<>(ratings,HttpStatus.OK);
+    }
+
+    @PostMapping("/create/{doctorId}/{userId}")
+    public ResponseEntity<?> createRating(@PathVariable Long doctorId,@PathVariable Long userId,@RequestBody RatingReqDTO ratingReqDTO) {
+        ratingService.createRating(ratingReqDTO,doctorId,userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
