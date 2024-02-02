@@ -64,7 +64,7 @@ export default function DoctorListHome() {
                                             {item.speciality.specialtyName}
                                         </Typography>
                                         <Typography gutterBottom variant="subtitle1" fontSize='1rem' align='center' height='20px' >
-                                            <Rating value={item?.star} max={5} readOnly />
+                                            <Rating value={item?.star} max={5} name="half-rating" precision={0.5} readOnly />
                                         </Typography>
                                     </CardContent>
                                 </CardActionArea>

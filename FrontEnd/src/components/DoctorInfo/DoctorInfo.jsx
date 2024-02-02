@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
-import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
+import React, { useEffect, useState } from 'react';
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import "./Doctorinfo.css"
 import dayjs from "dayjs";
-import {parse} from "date-fns";
+import { parse } from "date-fns";
 import axios from "axios";
-import {Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import HTMLReactParser from "html-react-parser";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -22,24 +22,10 @@ function DoctorInfo() {
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
     const [ratingList, setRatingList] = useState([]);
+    const [ratingValue, setRatingValue] = useState(0);
     const [ratingSubmitted, setRatingSubmitted] = useState(false);
     const [loading, setLoading] = useState(true);
-    const {doctorId} = useParams();
-    useEffect(() => {
-        setCurrentDate(new Date());
-        const getRecentDates = () => {
-            const today = new Date();
-            const recentDates = [];
-            for (let i = 0; i < 6; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() + i);
-                recentDates.push(date);
-            }
-            setRecentDates(recentDates);
-            setLoading(false)
-        };
-        getRecentDates();
-    }, []);
+    const { doctorId } = useParams();
 
     useEffect(() => {
         const fetchDoctorInfo = async () => {
@@ -47,6 +33,7 @@ function DoctorInfo() {
                 const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
+                    setRatingValue(response.data.star);
                     setLoading(false)
                 }
             } catch (error) {
@@ -72,11 +59,27 @@ function DoctorInfo() {
         fetchScheduleData();
     }, [selectedWeekday]);
 
+    useEffect(() => {
+        setCurrentDate(new Date());
+        const getRecentDates = () => {
+            const today = new Date();
+            const recentDates = [];
+            for (let i = 0; i < 6; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+                recentDates.push(date);
+            }
+            setRecentDates(recentDates);
+            setLoading(false)
+        };
+        getRecentDates();
+    }, []);
+
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
         setSelectedDate(dateValue);
         const parsedDate = parse(dateValue, 'd/M/yyyy', new Date());
-        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
+        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', { weekday: 'long' });
         setSelectedWeekday(selectedWeekday);
 
     };
@@ -100,10 +103,10 @@ function DoctorInfo() {
     }, [selectedDate]);
 
     return (<>
-        {loading && <Loading/>}
-        <Header/>
+        {loading && <Loading />}
+        <Header />
         <div className="w-100" >
-            <div className="d-flex justify-content-center align-items-center" style={{backgroundColor: "rgb(237 255 250)",height:"150px"}}>
+            <div className="d-flex justify-content-center align-items-center" style={{ backgroundColor: "rgb(237 255 250)", height: "150px" }}>
                 <h2>THÔNG TIN BÁC SỸ</h2>
             </div>
 
@@ -113,17 +116,20 @@ function DoctorInfo() {
                         <div className="avatar">
                             <div className="w-24 rounded">
                                 <img src={doctorInfo?.avatarImg}
-                                     alt={""}
-                                     className="rounded-circle" style={{width: "100px"}}/>
+                                    alt={""}
+                                    className="rounded-circle" style={{ width: "100px" }} />
                             </div>
                         </div>
                         <div className={"d-flex flex-column justify-content-center col-7 ms-3"}>
                             <div>
                                 <h3>{doctorInfo?.doctorName} </h3>
                             </div>
-                            <div className={""}>
+                            <div>
                                 <p>Chức danh: {doctorInfo?.position?.name}</p>
                                 <p>Chuyên khoa: {doctorInfo?.speciality?.specialtyName}</p>
+                                <p className='d-flex'>Đánh giá :
+                                    <Rating value={ratingValue} max={5} name="half-rating" precision={0.5} readOnly />
+                                </p>
                             </div>
                             <div className={"d-flex"}>
                                 <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>
@@ -134,10 +140,10 @@ function DoctorInfo() {
                     <div className={"d-flex mt-5"}>
                         <div className={"d-flex flex-column col-6 border-end"}>
                             <div>
-                                <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
+                                <FormControl required variant="standard" sx={{ m: 1, minWidth: 120 }}>
                                     <InputLabel id="recent-dates-label">Ngày</InputLabel>
                                     <Select
-                                        style={{color: "#0097e6"}}
+                                        style={{ color: "#0097e6" }}
                                         labelId="recent-dates-label"
                                         id="date"
                                         value={selectedDate || currentDate.toLocaleDateString()}
@@ -149,7 +155,7 @@ function DoctorInfo() {
                                             value={date.toLocaleDateString()}
                                             selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
                                         >
-                                            {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', {weekday: 'long'})})`}
+                                            {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', { weekday: 'long' })})`}
                                         </MenuItem>))}
                                     </Select>
                                 </FormControl>
@@ -186,7 +192,7 @@ function DoctorInfo() {
                     </div>
                 </div>
             </div>
-            <div className={"container-fluid border-bottom mt-3"} style={{backgroundColor: "rgb(248 250 250)"}}>
+            <div className={"container-fluid border-bottom mt-3"} style={{ backgroundColor: "rgb(248 250 250)" }}>
                 <div className={"container pb-4"}>
                     <div className={"d-flex flex-column pt-4"}>
                         {doctorInfo && doctorInfo.doctorInfo && HTMLReactParser(doctorInfo.doctorInfo)}
@@ -202,22 +208,22 @@ function DoctorInfo() {
                         <div> <Rating value={rating?.star} max={5} readOnly /></div>
                         <div key={rating.id} className="d-flex ">
                             <div className="me-1">{rating?.customer?.fullName}</div>
-                            <span style={{color: "#48dbfb"}}>
+                            <span style={{ color: "#48dbfb" }}>
                                 <i className="fa-regular fa-circle-check"></i>
-                                </span>
-                            <span className="ms-2" style={{color: "#48dbfb"}}>
-                               đã khám ngày {rating?.createAt}
-                                 </span>
+                            </span>
+                            <span className="ms-2" style={{ color: "#48dbfb" }}>
+                                đã khám ngày {rating?.createAt}
+                            </span>
                         </div>
                         <div className="border-bottom py-3">{rating?.comment}</div>
                     </>))}
                     <div className={"mt-3 pb-3"}>
-                        <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>
+                        <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted} />
                     </div>
                 </div>
             </div>
         </div>
-        <Footer/>
+        <Footer />
     </>);
 }
 

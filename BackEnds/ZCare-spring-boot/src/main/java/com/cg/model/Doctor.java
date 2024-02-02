@@ -3,6 +3,8 @@ import com.cg.model.enumeration.ELockStatus;
 import com.cg.model.DTO.DoctorResDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,8 +45,10 @@ public class Doctor {
     private Clinic clinic;
     @Column(name = "avatar_img")
     private String avatarImg;
-    @Column(columnDefinition = "integer default 0")
-    private Integer star;
+    @Column(columnDefinition = "decimal(2,1) default 0.0")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMax(value = "5.0")
+    private Float star;
     @Column(name = "doctor_info", columnDefinition = "LONGTEXT")
     private String doctorInfo;
     @ManyToOne
