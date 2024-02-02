@@ -75,7 +75,7 @@ public class ResultAPI {
             }
         Long idBooking = Long.parseLong(resultJsonDTO.getIdBooking());
             Booking booking = bookingService.findById(idBooking).get();
-            booking.setStatus(EStatusBooking.RESULTING);
+            booking.setStatus(EStatusBooking.PAID);
             booking.setResult(result);
             bookingService.save(booking);
 

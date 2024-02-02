@@ -8,6 +8,7 @@ import {styled} from "@mui/material/styles";
 import TableCell, {tableCellClasses} from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { saveAs } from 'file-saver';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -107,6 +108,37 @@ function MedicalBookingList() {
         const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
         setSelectedWeekday(selectedWeekday);
     };
+    const handleClickView = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                window.open(url);
+            }
+        });
+    };
+    const handleClickDownload = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                saveAs(blob, item?.customer?.fullName + "_" + item?.bookingDate + '.pdf');
+            }
+        });
+    };
 
     return (
         <div>
@@ -180,7 +212,18 @@ function MedicalBookingList() {
                                     <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                     <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
                                     <StyledTableCell>{booking?.fee}</StyledTableCell>
-                                    <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
+                                    <StyledTableCell>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
+                                        <button type="button" className="btn btn-success"
+                                                style={{width: "150px", marginBottom: "10px"}} onClick={() => {
+                                            handleClickDownload(booking.id)
+                                        }}>Download
+                                        </button>
+                                        <button type="button" className="btn btn-warning" style={{width: "150px"}}
+                                                onClick={() => {
+                                                    handleClickView(booking.id)
+                                                }}>Xem kết quả
+                                        </button>
+                                    </div>) : "Chưa có kết quả"}</StyledTableCell>
                                     <StyledTableCell>
                                         {booking?.status && (
                                             <select
