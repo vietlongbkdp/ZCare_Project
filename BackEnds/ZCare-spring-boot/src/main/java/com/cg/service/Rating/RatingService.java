@@ -57,7 +57,11 @@ public class RatingService implements IRatingService {
         Customer customer = customerService.findByUser_Id(userId);
         int star = Integer.parseInt(ratingReqDTO.getStar());
         Booking booking = bookingService.findByCustomerIdAndDoctorIdAndStatus(customer.getId(), doctor.getId(), EStatusBooking.PAID);
-        if (booking != null && !booking.getRated()) {
+        if (booking == null) {
+            throw new RuntimeException("Bạn chưa đặt lịch, vui lòng đặt lịch trước khi đánh giá.");
+        } else if (booking.getRated()) {
+            throw new RuntimeException("Bạn đã đánh giá bác sĩ này trước đó, không được đánh giá lại.");
+        } else {
             String comment = ratingReqDTO.getComment();
             Rating rating = new Rating();
             rating.setStar(star);
@@ -69,8 +73,6 @@ public class RatingService implements IRatingService {
             booking.setRated(true);
             bookingService.save(booking);
             return true;
-        } else {
-            return false;
         }
     }
 
