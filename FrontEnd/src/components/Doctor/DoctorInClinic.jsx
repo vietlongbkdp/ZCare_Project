@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Box, Container, Grid, Stack } from '@mui/material';
+import { Box, Container, Grid, Rating, Stack } from '@mui/material';
 import { useContext, useEffect } from 'react';
 import axios from 'axios';
 import { useState } from 'react';
@@ -215,8 +215,9 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                                             <Typography variant="body2" color="text.secondary" pb='5px'>
                                                 Giá khám : {doctor && doctor.fee ? (doctor.fee * 1000).toLocaleString() + " đ" : ""}
                                             </Typography>
-                                            <Typography variant="body2" color="text.secondary" pb='5px'>
-                                                Đánh giá: {doctor?.star}
+                                            <Typography variant="body2" color="text.secondary" display={'flex'} pb='5px'>
+                                                Đánh giá: 
+                                                <Rating value={doctor?.star} max={5} name="half-rating" precision={0.5} readOnly />
                                             </Typography>
                                         </CardContent>
                                     </Stack>
