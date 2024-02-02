@@ -53,17 +53,6 @@ public class ResultAPI {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(result.getFile());
     }
-
-//    @PostMapping
-//    public ResponseEntity<?> create(@ModelAttribute ResultReqDTO resultReqDTO) {
-//        try {
-//            resultService.Create(resultReqDTO);
-//            return new ResponseEntity<>("Lưu dữ liệu thành công", HttpStatus.OK);
-//        } catch (Exception e) {
-//            return new ResponseEntity<>("Lưu dữ liệu thất bại: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
-
         @PostMapping
     public ResponseEntity<?> createResult(@ModelAttribute ResultReqFormDTO resultReqFormDTO) throws IOException, MessagingException {
             Gson gson = new Gson();
