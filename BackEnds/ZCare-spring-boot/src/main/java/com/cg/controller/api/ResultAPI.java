@@ -1,18 +1,14 @@
 package com.cg.controller.api;
-
 import com.cg.model.Booking;
 import com.cg.model.DTO.MedicineDTO;
 import com.cg.model.DTO.ResultJsonDTO;
 import com.cg.model.DTO.ResultReqDTO;
 import com.cg.model.DTO.ResultReqFormDTO;
-import com.cg.model.MedicineDetail;
 import com.cg.model.Result;
-import com.cg.model.Schedule;
 import com.cg.model.enumeration.EStatusBooking;
 import com.cg.service.Result.ResultService;
 import com.cg.service.booking.IBookingService;
 import com.cg.service.medicineDetail.IMedicineDetailService;
-import com.cg.service.schedule.IScheduleService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.List;
 

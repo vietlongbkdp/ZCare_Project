@@ -121,7 +121,7 @@ function AuthLogin() {
             Bạn chưa có tài khoản?
           </Link>
         </Box>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}  autocomplete={"off"}>
           <Box
             sx={{ display: "flex", flexDirection: "column", marginTop: "25px" }}
           >
@@ -134,6 +134,7 @@ function AuthLogin() {
               helperText={errors.email?.message}
               type="email"
               variant="outlined"
+
             />
           </Box>
           <Box
