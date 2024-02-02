@@ -216,8 +216,8 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                                                 Giá khám : {doctor && doctor.fee ? (doctor.fee * 1000).toLocaleString() + " đ" : ""}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary" display={'flex'} pb='5px'>
-                                                Đánh giá: 
-                                                <Rating value={doctor?.star} max={5} name="half-rating" precision={0.5} readOnly />
+                                                Đánh giá:
+                                                <Rating value={doctor?.star} max={5} name="half-rating" sx={{ fontSize: '1.1rem' }} precision={0.5} readOnly />
                                             </Typography>
                                         </CardContent>
                                     </Stack>

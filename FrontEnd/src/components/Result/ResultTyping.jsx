@@ -31,8 +31,7 @@ const schema = yup.object().shape({
     advice: yup.string().required("Bác sĩ cần đưa ra lời khuyên cho bệnh nhân")
 });
 function ResultTyping() {
-    const {idCustomer, idDoctor} = useParams();
-    console.log(idCustomer, idDoctor)
+    const {idCustomer, idDoctor, idBooking} = useParams();
     const [customer, setCustomer] = useState(null);
     const [doctor, setDoctor] = useState(null);
     const [medicine, setMedicine] = useState(null);
@@ -74,17 +73,33 @@ function ResultTyping() {
     const onSubmit = async (data) => {
         const dataNew = {
             ...data,
+            idBooking: idBooking,
             medicineList: listMedicine
-        }
-        console.log(dataNew)
-        const resp = await axios.post("http://localhost:8080/api/result", dataNew)
-        if (resp.status == '200') {
-            await createPDF(dataNew, customer, doctor, "open");
-            toast.success("Đã tạo được đơn thuốc");
-            reset();
-            setListMedicine([]);
-        } else {
-            toast.error("Có lỗi, chưa lưu được")
+        };
+
+        try {
+            const blob = await getFilePDF(dataNew, customer, doctor);
+            const formData = new FormData();
+            formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
+            formData.append('data', JSON.stringify(dataNew));
+
+            const resp = await axios.post('http://localhost:8080/api/result', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (resp.status === 200) {
+                openBlob(blob);
+                toast.success('Đã tạo được đơn thuốc');
+                reset();
+                setListMedicine([]);
+            } else {
+                toast.error('Có lỗi, chưa lưu được');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('Có lỗi xảy ra');
         }
     };
     const checkExistMedicine = (listMed, medicineName) =>{
@@ -140,8 +155,7 @@ function ResultTyping() {
             }
         });
     }
-
-    function createPDF(data, customer, doctor, action) {
+    function getFilePDF(data, customer, doctor) {
         const documentDefinition = {
             content: [
                 {
@@ -229,13 +243,17 @@ function ResultTyping() {
                 }
             }
         };
-        if(action === "open"){
-            pdfMake.createPdf(documentDefinition).open();
-        }else if(action === "print"){
-            pdfMake.createPdf(documentDefinition).print();
-        }else if(action === "download"){
-            pdfMake.createPdf(documentDefinition).download(customer?.fullName + dayjs().format("DD/MM/YYYY") + '.pdf');
-        }
+        return new Promise((resolve, reject) => {
+            pdfMake.createPdf(documentDefinition).getBlob((blob) => {
+                resolve(blob);
+            }, (error) => {
+                reject(error);
+            });
+        });
+    }
+    function openBlob(blob) {
+        const url = URL.createObjectURL(blob);
+        window.open(url);
     }
     return (
         <div>

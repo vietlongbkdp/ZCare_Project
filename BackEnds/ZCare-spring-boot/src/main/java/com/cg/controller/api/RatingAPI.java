@@ -30,8 +30,12 @@ public class RatingAPI {
     }
 
     @PostMapping("/create/{doctorId}/{userId}")
-    public ResponseEntity<?> createRating(@PathVariable Long doctorId,@PathVariable Long userId,@RequestBody RatingReqDTO ratingReqDTO) {
-        ratingService.createRating(ratingReqDTO,doctorId,userId);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<?> createRating(@PathVariable Long doctorId, @PathVariable Long userId, @RequestBody RatingReqDTO ratingReqDTO) {
+        boolean created = ratingService.createRating(ratingReqDTO, doctorId, userId);
+        if (created) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Đã đánh giá, không được đánh giá lại", HttpStatus.CONFLICT);
+        }
     }
 }

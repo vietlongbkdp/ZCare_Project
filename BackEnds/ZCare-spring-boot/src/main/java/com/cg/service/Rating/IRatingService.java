@@ -7,6 +7,6 @@ import com.cg.service.IGeneralService;
 import java.util.List;
 
 public interface IRatingService extends IGeneralService<Rating,Long> {
-    void createRating(RatingReqDTO ratingReqDTO,Long doctorId,Long userId);
+    boolean createRating(RatingReqDTO ratingReqDTO, Long doctorId, Long userId);
     List<Rating> findByDoctorId(Long doctorId);
 }

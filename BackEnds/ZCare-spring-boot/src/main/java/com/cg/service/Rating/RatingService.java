@@ -1,11 +1,14 @@
 package com.cg.service.Rating;
 
+import com.cg.model.Booking;
 import com.cg.model.Customer;
 import com.cg.model.DTO.RatingReqDTO;
 import com.cg.model.Doctor;
 import com.cg.model.Rating;
+import com.cg.model.enumeration.EStatusBooking;
 import com.cg.repository.IRatingRepository;
 import com.cg.service.Customer.CustomerService;
+import com.cg.service.booking.BookingService;
 import com.cg.service.doctor.DoctorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,17 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
+
 @Service
 @Transactional
-public class RatingService implements IRatingService{
+public class RatingService implements IRatingService {
     @Autowired
     private IRatingRepository iRatingRepository;
     @Autowired
     private CustomerService customerService;
     @Autowired
     private DoctorServiceImpl doctorService;
+    @Autowired
+    private BookingService bookingService;
 
     @Override
     public List<Rating> findAll() {
@@ -47,18 +52,26 @@ public class RatingService implements IRatingService{
     }
 
     @Override
-    public void createRating(RatingReqDTO ratingReqDTO,Long doctorId,Long userId) {
+    public boolean createRating(RatingReqDTO ratingReqDTO, Long doctorId, Long userId) {
         Doctor doctor = doctorService.findById(doctorId).get();
         Customer customer = customerService.findByUser_Id(userId);
         int star = Integer.parseInt(ratingReqDTO.getStar());
-        String comment = ratingReqDTO.getComment();
-        Rating rating = new Rating();
-        rating.setStar(star);
-        rating.setComment(comment);
-        rating.setDoctor(doctor);
-        rating.setCustomer(customer);
-        rating.setCreateAt(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-        iRatingRepository.save(rating);
+        Booking booking = bookingService.findByCustomerIdAndDoctorIdAndStatus(customer.getId(), doctor.getId(), EStatusBooking.PAID);
+        if (booking != null && !booking.getRated()) {
+            String comment = ratingReqDTO.getComment();
+            Rating rating = new Rating();
+            rating.setStar(star);
+            rating.setComment(comment);
+            rating.setDoctor(doctor);
+            rating.setCustomer(customer);
+            rating.setCreateAt(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+            iRatingRepository.save(rating);
+            booking.setRated(true);
+            bookingService.save(booking);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

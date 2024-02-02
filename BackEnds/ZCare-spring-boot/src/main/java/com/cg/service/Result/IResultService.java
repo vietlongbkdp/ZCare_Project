@@ -10,5 +10,4 @@ import jakarta.mail.MessagingException;
 import java.io.IOException;
 
 public interface IResultService extends IGeneralService<Result,Long> {
-    void Create(ResultReqDTO resultReqDTO) throws IOException, MessagingException;
 }

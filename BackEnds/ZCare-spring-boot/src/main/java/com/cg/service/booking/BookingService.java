@@ -88,6 +88,16 @@ public class BookingService implements IBookingService {
         return iBookingRepository.findByClinicIdAndDoctorIdAndBookingDateAndStatus(clinic_id,doctor_id,bookingDate,status);
     }
 
+    @Override
+    public boolean existsByCustomerIdAndDoctorIdAndStatus(Long customer_id, Long doctor_id, EStatusBooking status) {
+        return iBookingRepository.existsByCustomerIdAndDoctorIdAndStatus(customer_id,doctor_id,status);
+    }
+
+    @Override
+    public Booking findByCustomerIdAndDoctorIdAndStatus(Long customerId, Long doctorId, EStatusBooking status) {
+        return iBookingRepository.findByCustomerIdAndDoctorIdAndStatus(customerId,doctorId,status);
+    }
+
 
     public List<Booking> getAllBookingByClinicIdAndCustomerId(Long clinicId, Long customerId) {
         return iBookingRepository.findAllByClinicIdAndCustomerId(clinicId, customerId);

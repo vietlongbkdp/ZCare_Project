@@ -38,7 +38,7 @@ public class EmailUtil {
         helper.addAttachment(fileName, dataSource);
 
         mailSender.send(message);
-        System.out.println("Gửi email thành công ...");
+        System.out.println("Gửi email trả kết quả thành công ...");
     }
 
 
