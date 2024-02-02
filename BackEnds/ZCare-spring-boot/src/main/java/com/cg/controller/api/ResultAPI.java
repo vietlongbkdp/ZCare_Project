@@ -9,7 +9,10 @@ import com.cg.model.enumeration.EStatusBooking;
 import com.cg.service.Result.ResultService;
 import com.cg.service.booking.IBookingService;
 import com.cg.service.medicineDetail.IMedicineDetailService;
+import com.cg.util.EmailUtil;
+import com.cg.util.SendEmail;
 import com.google.gson.Gson;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,8 @@ public class ResultAPI {
     private IMedicineDetailService medicineDetailService;
     @Autowired
     private IBookingService bookingService;
+    @Autowired
+    private EmailUtil emailUtil;
 
     @GetMapping
     public ResponseEntity<?> getAll(){
@@ -58,10 +63,10 @@ public class ResultAPI {
 //    }
 
         @PostMapping
-    public ResponseEntity<?> createResult(@ModelAttribute ResultReqFormDTO resultReqFormDTO) throws IOException {
+    public ResponseEntity<?> createResult(@ModelAttribute ResultReqFormDTO resultReqFormDTO) throws IOException, MessagingException {
             Gson gson = new Gson();
             ResultJsonDTO resultJsonDTO = gson.fromJson(resultReqFormDTO.getData(), ResultJsonDTO.class);
-        ResultReqDTO resultReqDTO = new ResultReqDTO().setFile(resultReqFormDTO.getFile().getBytes()).setFileName(resultReqFormDTO.getFile().getName())
+        ResultReqDTO resultReqDTO = new ResultReqDTO().setFile(resultReqFormDTO.getFile().getBytes()).setFileName(resultReqFormDTO.getFile().getOriginalFilename())
                 .setFileType("PDF")
                 .setDiagResult(resultJsonDTO.getDiagResult()).setAdvice(resultJsonDTO.getAdvice())
                 .setDoctorNotice(resultJsonDTO.getDoctorNotice()).setMedicineList(resultJsonDTO.getMedicineList());
@@ -82,6 +87,12 @@ public class ResultAPI {
             booking.setStatus(EStatusBooking.RESULTING);
             booking.setResult(result);
             bookingService.save(booking);
+
+            String toEmail = booking.getCustomer().getEmail();
+            String subject = "Trả kết quả khám ngày " + booking.getBookingDate();
+            String body = SendEmail.Resulting(booking.getCustomer().getFullName(), booking.getBookingDate());
+
+            emailUtil.sendEmailWithAttachment(toEmail, subject, body, booking.getResult().getFile(), booking.getResult().getFileName());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

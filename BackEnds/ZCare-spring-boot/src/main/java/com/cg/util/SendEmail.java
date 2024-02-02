@@ -50,4 +50,14 @@ public class SendEmail {
                 + "Trân trọng,\n"
                 + "ZCare Team";
     }
+    public static String Resulting(String name, String bookingDate) {
+        return "Xin chào " + name + ",\n\n"
+                + "Cảm ơn bạn đã tin tưởng chọn và ủng hộ hệ thống của chúng tôi"
+                + "Email này chúng tôi xin gửi trả kết quả khám và đơn thuốc của lịch khám ngày " + bookingDate
+                +" ở file đính kèm bên dưới, " + "\n"
+                + " Vui lòng xem qua và phản hồi cho đội ngũ của chúng tôi nếu có bất cứ thắc mắc nào" + "\n"
+                + "Vui lòng xem"
+                + "Trân trọng,\n"
+                + "ZCare Team";
+    }
 }
