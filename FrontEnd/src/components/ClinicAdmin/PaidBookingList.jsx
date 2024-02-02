@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import axios from "axios";
+import Cookies from "js-cookie";
 import dayjs from "dayjs";
-import axios from 'axios';
+import './custom.css'
+import { Pagination, Typography } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
-import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import './customer.css'
-import { Typography } from '@mui/material';
 import { saveAs } from 'file-saver';
+import { toast } from 'react-toastify';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,21 +37,39 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-export default function BookingListCustomerInClinic({ clinicId, customerId, handleHideBookingHistory }) {
-    const [booking, setBooking] = useState([]);
+function PaidBookingList() {
+    const itemsPerPage = 6;
+    const [currentPage, setCurrentPage] = useState(1);
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const [bookingCustomer, setbookingCustomer] = useState([]);
+    const [filteredBooking, setFilteredBooking] = useState([]);
+    const userId = Cookies.get('userId');
+    const [pre, setPre] = useState(true);
+    const statusColors = {
+        CUSTOMERCONFIMED: "green",
+        EXAMINING: "blue",
+        RESULTING: "purple",
+        PAID: "orange",
+        CANCEL: "red",
+    };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/${clinicId}/${customerId}`)
+        axios.get(`http://localhost:8080/api/booking/adminClinic/resulting/${userId}`)
             .then(response => {
-                setBooking(response.data);
+                setbookingCustomer(response.data);
+                setFilteredBooking(response.data);
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, []);
+    }, [userId, currentPage, pre]);
 
     const handleClickView = (idBooking) => {
-        booking.forEach((item) => {
+        bookingCustomer.forEach((item) => {
             if (item.id === idBooking) {
                 const fileBytes = item.result.file;
                 const decodedData = atob(fileBytes);
@@ -66,7 +85,7 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
         });
     };
     const handleClickDownload = (idBooking) => {
-        booking.forEach((item) => {
+        bookingCustomer.forEach((item) => {
             if (item.id === idBooking) {
                 const fileBytes = item.result.file;
                 const decodedData = atob(fileBytes);
@@ -81,17 +100,32 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
         });
     };
 
+    const handleChangeStatus = (bookingId, event) => {
+        const selectedStatus = event.target.value;
+        const selectElement = event.target;
+        selectElement.style.backgroundColor = statusColors[selectedStatus];
+        const data = {
+            bookingId,
+            selectedStatus
+        }
+        axios.post('http://localhost:8080/api/booking/changeStatus', data)
+            .then(response => {
+                setbookingCustomer(response.data);
+                setPre(!pre);
+                toast.success("Thanh toán thành công!")
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error("Thanh toán thất bại!")
+            });
+    };
+
+    const currentCustomerBookingList = filteredBooking.slice(startIndex, endIndex);
+
     return (
-        <>
-            <Button
-                type="button"
-                variant="contained"
-                sx={{ mb: 1, mr: 1, backgroundColor: 'grey', '&:hover': { backgroundColor: 'gray' } }}
-                onClick={handleHideBookingHistory}
-            >
-                Trở lại
-            </Button>
-            <Typography variant='h5' align='center' gutterBottom>LỊCH SỬ KHÁM BỆNH</Typography>
+        <div>
+            <Typography variant='h5' align='center' gutterBottom>DANH SÁCH CHỜ THANH TOÁN</Typography>
+
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
@@ -108,8 +142,8 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {booking.length > 0 ? (
-                            booking.map((booking, index) => (
+                        {currentCustomerBookingList.length > 0 ? (
+                            currentCustomerBookingList.map((booking, index) => (
                                 <StyledTableRow key={booking.id} className='tableContent'>
                                     <StyledTableCell sx={{ textAlign: 'center !important' }}>{index + 1}</StyledTableCell>
                                     <StyledTableCell>
@@ -140,38 +174,66 @@ export default function BookingListCustomerInClinic({ clinicId, customerId, hand
                                                 handleClickView(booking.id)
                                             }}>Xem kết quả
                                         </button>
-                                    </div>) : "Chưa có kết quả"}
-                                    </StyledTableCell>
+                                    </div>) : "Chưa có kết quả"}</StyledTableCell>
                                     <StyledTableCell>
                                         {booking?.status && (
-                                            (() => {
-                                                if (booking?.status === "CONFIRMING") {
-                                                    return "Chưa xác nhận";
-                                                } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                    return "Đã xác nhận";
-                                                } else if (booking?.status === "PAID") {
-                                                    return "Đã Thanh toán";
-                                                } else if (booking?.status === "EXAMINING") {
-                                                    return "Đang khám";
-                                                } else if (booking?.status === "RESULTING") {
-                                                    return "Đã trả kết quả";
-                                                } else if (booking?.status === "CANCEL"){
-                                                    return "Đã hủy";
-                                                }
-                                            })()
+                                            <select
+                                                style={{
+                                                    border: 'none',
+                                                    borderRadius: '5px',
+                                                    backgroundColor: statusColors[booking?.status],
+                                                    color: 'white',
+                                                    padding: 3,
+                                                    appearance: 'none',
+                                                    WebkitAppearance: 'none',
+                                                    MozAppearance: 'none',
+                                                    textAlign: 'center',
+                                                }}
+                                                value={booking?.status}
+                                                onChange={(event) => {
+                                                    handleChangeStatus(booking?.id, event)
+                                                }}
+                                            >
+                                                <option value="CUSTOMERCONFIMED"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã xác nhận
+                                                </option>
+                                                <option value="EXAMINING"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
+                                                </option>
+                                                <option value="RESULTING"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã trả kết quả
+                                                </option>
+                                                <option value="PAID" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                    Thanh toán
+                                                </option>
+                                                <option value="CANCEL" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                    hủy
+                                                </option>
+                                            </select>
                                         )}
                                     </StyledTableCell>
                                     <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
                                 </StyledTableRow>
                             ))
                         ) : (
-                            <p className="d-flex justify-content-center" style={{ color: "red" }}>
-                                Bạn chưa có lịch hẹn!
+                            <p className="d-flex justify-content-center" style={{ color: "red", marginTop: '12px', marginLeft: '10px' }}>
+                                Không còn danh sách chờ thanh toán!
                             </p>
                         )}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </>
+            <Pagination
+                count={Math.ceil(filteredBooking.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+                showFirstButton
+                showLastButton
+                style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+            />
+        </div>
     );
 }
+
+export default PaidBookingList;

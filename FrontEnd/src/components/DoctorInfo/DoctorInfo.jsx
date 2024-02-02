@@ -57,7 +57,7 @@ function DoctorInfo() {
 
         fetchDoctorInfo();
         fetchScheduleData();
-    }, [selectedWeekday]);
+    }, [selectedWeekday,ratingSubmitted]);
 
     useEffect(() => {
         setCurrentDate(new Date());

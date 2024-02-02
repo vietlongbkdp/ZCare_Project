@@ -106,18 +106,16 @@ function AppointmentSchedule() {
                                     {booking?.status && (
                                         (() => {
                                             if (booking?.status === "CONFIRMING") {
-                                                return "Tiếp nhận";
+                                                return "Chưa xác nhận";
                                             } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                return "Khách hàng đã xác nhận";
-                                            } else if (booking?.status === "DOCTORCONFIRMED") {
-                                                return "Bác sỹ đã xác nhận";
+                                                return "Đã xác nhận";
                                             } else if (booking?.status === "PAID") {
                                                 return "Đã Thanh toán";
-                                            } else if (booking?.status === "EXAMINED") {
-                                                return "Đã khám";
+                                            } else if (booking?.status === "EXAMINING") {
+                                                return "Đang khám";
                                             } else if (booking?.status === "RESULTING") {
                                                 return "Đã trả kết quả";
-                                            } else if (booking?.status === "CANCEL") {
+                                            } else if (booking?.status === "CANCEL"){
                                                 return "Đã hủy";
                                             }
                                         })()

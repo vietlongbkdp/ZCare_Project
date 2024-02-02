@@ -44,7 +44,7 @@ export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
                         <Box px={2} mx={3}>
                             <img src={clinicDetail?.clinicLogo} style={{ width: '200px', height: '130px' }} alt="Logo" />
                         </Box>
-                        <Box pr={3}>
+                        <Box pr={3} width='180px'>
                             <Typography variant='subtitle1'>Người đại diện:</Typography>
                             <Typography variant='subtitle1'>Email:</Typography>
                             <Typography variant='subtitle1'>Đường dây nóng:</Typography>

@@ -53,6 +53,7 @@ function AppointmentSchedule() {
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);
+                console.log(response.data);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -168,15 +169,13 @@ function AppointmentSchedule() {
                                                     return "Chưa xác nhận";
                                                 } else if (booking?.status === "CUSTOMERCONFIMED") {
                                                     return "Đã xác nhận";
-                                                } else if (booking?.status === "DOCTORCONFIRMED") {
-                                                    return "Bác sỹ đã xác nhận";
                                                 } else if (booking?.status === "PAID") {
                                                     return "Đã Thanh toán";
-                                                } else if (booking?.status === "EXAMINED") {
-                                                    return "Đã khám";
+                                                } else if (booking?.status === "EXAMINING") {
+                                                    return "Đang khám";
                                                 } else if (booking?.status === "RESULTING") {
                                                     return "Đã trả kết quả";
-                                                } else if (booking?.status === "CANCEL") {
+                                                } else if (booking?.status === "CANCEL"){
                                                     return "Đã hủy";
                                                 }
                                             })()
@@ -186,8 +185,8 @@ function AppointmentSchedule() {
                                 </StyledTableRow>
                             ))
                         ) : (
-                            <p className="d-flex justify-content-center" style={{ color: "red" }}>
-                                Bạn chưa có lịch hẹn!
+                            <p className="d-flex justify-content-center" style={{ color: "red", marginTop: '12px', marginLeft: '10px' }}>
+                                Không có lịch sử khám bệnh!
                             </p>
                         )}
                     </TableBody>

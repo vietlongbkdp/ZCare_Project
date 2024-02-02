@@ -40,6 +40,7 @@ import CustomerInClinic from "./components/CustomerAdmin/CustomerInClinic";
 import MedicalBookingList from "./components/ClinicAdmin/MedicalBookingList";
 import BookingListDoctor from "./components/Doctor/BookingListDoctor";
 import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
+import PaidBookingList from "./components/ClinicAdmin/PaidBookingList";
 
 
 export default function App() {
@@ -71,6 +72,7 @@ export default function App() {
             <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
             <Route path="bookingHistory" element={<CustomerBookingAdminClinic/>}></Route>
             <Route path="booking" element={<MedicalBookingList/>}></Route>
+            <Route path="paid" element={<PaidBookingList/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
             <Route path="customer" element={<CustomerInClinic />}></Route>
@@ -102,7 +104,6 @@ export default function App() {
           <Route path="/information-customer" element={<CustomerDashboard />} />
           <Route path="/appointment-schedule" element={<AppointmentSchedule />} />
         </Route>
-
       </Routes>
     </>
   );

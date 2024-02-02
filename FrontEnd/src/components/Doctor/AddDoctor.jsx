@@ -86,7 +86,6 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
 
     const createDoctor = async (data) => {
         setLoading(true)
-        console.log('data', data);
         let imagesImport = Array.from(data.avatarImg);
         const formData = new FormData();
         formData.append('image', imagesImport[0])
@@ -111,6 +110,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
         }
         else {
             toast.error("Tải ảnh đại diện thất bại!")
+            setLoading(false)
         }
     }
 

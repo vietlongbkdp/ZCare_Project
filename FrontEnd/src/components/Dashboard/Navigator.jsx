@@ -52,6 +52,7 @@ const categories = [
         children: [
             { id: ' Trang chủ ', icon: <ApartmentIcon />, url: "list-clinic" },
             { id: 'Danh sách đặt khám', icon: <AssignmentIcon />, url: "booking" },
+            { id: 'Danh sách chờ thanh toán', icon: <AssignmentIcon />, url: "paid" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Bệnh nhân', icon: <PeopleAltIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },

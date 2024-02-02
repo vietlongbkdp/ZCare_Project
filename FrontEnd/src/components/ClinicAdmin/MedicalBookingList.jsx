@@ -53,13 +53,11 @@ function MedicalBookingList() {
         axios.get(`http://localhost:8080/api/booking/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
-                console.log(response.data)
             })
             .catch(error => {
                 console.error('Error:', error);
             });
     }, [userId, pre, selectedDate]);
-
 
     useEffect(() => {
         setCurrentDate(new Date());
@@ -266,7 +264,7 @@ function MedicalBookingList() {
                                 </StyledTableRow>
                             ))
                         ) : (
-                            <p className="d-flex justify-content-center" style={{ color: "red" }}>
+                            <p className="d-flex justify-content-center" style={{ color: "red", marginTop: '12px', marginLeft: '10px' }}>
                                 Hôm nay chưa có lịch hẹn khám!
                             </p>
                         )}
