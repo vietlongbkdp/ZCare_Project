@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Cookies from "js-cookie";
 import axios from "axios";
 import dayjs from "dayjs";
-import {FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead, Typography} from "@mui/material";
-import {parse} from "date-fns";
-import {styled} from "@mui/material/styles";
-import TableCell, {tableCellClasses} from "@mui/material/TableCell";
+import { FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableContainer, TableHead, Typography } from "@mui/material";
+import { parse } from "date-fns";
+import { styled } from "@mui/material/styles";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { saveAs } from 'file-saver';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -32,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 function MedicalBookingList() {
     const [booking, setBooking] = useState([]);
-    const [pre,setPre] = useState(true);
+    const [pre, setPre] = useState(true);
     const dateNows = dayjs().format('D/M/YYYY');
     const parsedDate = parse(dateNows, 'd/M/yyyy', new Date()).toLocaleDateString('vi-VN', { weekday: 'long' });
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -82,15 +83,15 @@ function MedicalBookingList() {
         }
     }, [selectedDate]);
 
-    const handleChangeStatus = (bookingId,event) => {
+    const handleChangeStatus = (bookingId, event) => {
         const selectedStatus = event.target.value;
         const selectElement = event.target;
         selectElement.style.backgroundColor = statusColors[selectedStatus];
-       const data={
-           bookingId,
-           selectedStatus
-       }
-        axios.post('http://localhost:8080/api/booking/changeStatus',data)
+        const data = {
+            bookingId,
+            selectedStatus
+        }
+        axios.post('http://localhost:8080/api/booking/changeStatus', data)
             .then(response => {
                 setBooking(response.data);
                 setPre(!pre);
@@ -104,19 +105,50 @@ function MedicalBookingList() {
         const dateValue = event.target.value;
         setSelectedDate(dateValue);
         const parsedDate = parse(dateValue, 'd/M/yyyy', new Date());
-        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
+        const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', { weekday: 'long' });
         setSelectedWeekday(selectedWeekday);
+    };
+    const handleClickView = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                window.open(url);
+            }
+        });
+    };
+    const handleClickDownload = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                saveAs(blob, item?.customer?.fullName + "_" + item?.bookingDate + '.pdf');
+            }
+        });
     };
 
     return (
         <div>
             <Typography variant='h5' align='center'>DANH SÁCH ĐẶT KHÁM</Typography>
-        
+
             <div>
-                <FormControl required variant="standard" sx={{m: 1, minWidth: 120}}>
+                <FormControl required variant="standard" sx={{ m: 1, minWidth: 120 }}>
                     <InputLabel id="recent-dates-label">Ngày</InputLabel>
                     <Select
-                        style={{color: "#0097e6"}}
+                        style={{ color: "#0097e6" }}
                         labelId="recent-dates-label"
                         id="date"
                         value={selectedDate || currentDate.toLocaleDateString()}
@@ -128,7 +160,7 @@ function MedicalBookingList() {
                             value={date.toLocaleDateString()}
                             selected={currentDate.toLocaleDateString() === date.toLocaleDateString()}
                         >
-                            {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', {weekday: 'long'})})`}
+                            {`${date.toLocaleDateString()} (${date.toLocaleDateString('vi-VN', { weekday: 'long' })})`}
                         </MenuItem>))}
                     </Select>
                 </FormControl>
@@ -179,8 +211,20 @@ function MedicalBookingList() {
                                     </StyledTableCell>
                                     <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                     <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
-                                    <StyledTableCell>{booking?.fee}</StyledTableCell>
-                                    <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
+                                    <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + "đ" : ""}</StyledTableCell>
+                                    <StyledTableCell>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
+                                        <button type="button" className="btn btn-success"
+                                            style={{ width: "100px", height: '30px', fontSize: 'small', marginBottom: "10px" }} onClick={() => {
+                                                handleClickDownload(booking.id)
+                                            }}>Download
+                                        </button>
+                                        <button type="button" className="btn btn-warning" style={{ width: "100px", height: '30px', fontSize: 'small' }}
+                                            onClick={() => {
+                                                handleClickView(booking.id)
+                                            }}>Xem kết quả
+                                        </button>
+                                    </div>) : "Chưa có kết quả"}
+                                    </StyledTableCell>
                                     <StyledTableCell>
                                         {booking?.status && (
                                             <select
@@ -200,29 +244,29 @@ function MedicalBookingList() {
                                                     handleChangeStatus(booking?.id, event)
                                                 }}
                                             >
-                                            <option value="CUSTOMERCONFIMED"
-                                                    style={{backgroundColor: 'white', color: 'black'}}>Đã xác nhận
-                                            </option>
-                                            <option value="EXAMINING"
-                                                    style={{backgroundColor: 'white', color: 'black'}}>Đang khám
-                                            </option>
-                                            <option value="RESULTING"
-                                                    style={{backgroundColor: 'white', color: 'black'}}>Đã trả kết quả
-                                            </option>
-                                            <option value="PAID" style={{backgroundColor: 'white', color: 'black'}}>Đã
-                                                Thanh toán
-                                            </option>
-                                            <option value="CANCEL" style={{backgroundColor: 'white', color: 'black'}}>Đã
-                                                hủy
-                                            </option>
-                                        </select>
-                                    )}
+                                                <option value="CUSTOMERCONFIMED"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã xác nhận
+                                                </option>
+                                                <option value="EXAMINING"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
+                                                </option>
+                                                <option value="RESULTING"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã trả kết quả
+                                                </option>
+                                                <option value="PAID" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                    Thanh toán
+                                                </option>
+                                                <option value="CANCEL" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                    hủy
+                                                </option>
+                                            </select>
+                                        )}
                                     </StyledTableCell>
                                     <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
                                 </StyledTableRow>
                             ))
                         ) : (
-                            <p className="d-flex justify-content-center" style={{color: "red"}}>
+                            <p className="d-flex justify-content-center" style={{ color: "red" }}>
                                 Hôm nay chưa có lịch hẹn khám!
                             </p>
                         )}

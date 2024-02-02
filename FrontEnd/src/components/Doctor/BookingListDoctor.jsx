@@ -10,6 +10,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
+import { saveAs } from 'file-saver';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -82,7 +83,37 @@ function BookingListDoctor() {
         }
     }, [selectedDate]);
 
-
+    const handleClickView = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                window.open(url);
+            }
+        });
+    };
+    const handleClickDownload = (idBooking) => {
+        booking.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                saveAs(blob, item?.customer?.fullName + "_" + item?.bookingDate + '.pdf');
+            }
+        });
+    };
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
@@ -166,19 +197,34 @@ function BookingListDoctor() {
                                 <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                 <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
                                 <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</StyledTableCell>
-                                <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
+                                <StyledTableCell>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
+                                        <button type="button" className="btn btn-success"
+                                                style={{width: "150px", marginBottom: "10px"}} onClick={() => {
+                                            handleClickDownload(booking.id)
+                                        }}>Download
+                                        </button>
+                                        <button type="button" className="btn btn-warning" style={{width: "150px"}}
+                                                onClick={() => {
+                                                    handleClickView(booking.id)
+                                                }}>Xem kết quả
+                                        </button>
+                                    </div>) : "Chưa có kết quả"}
+                                </StyledTableCell>
                                 <StyledTableCell>
-                                    <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "15px", textAlign: "center"}} onClick={()=>{handleExaming(booking.customer.id, booking.doctor.id, booking.id)}}>Khám</Button>
+                                    <Button type={"button"} variant="contained" color="primary"
+                                            sx={{marginTop: "15px", textAlign: "center"}} onClick={() => {
+                                        handleExaming(booking.customer.id, booking.doctor.id, booking.id)
+                                    }}>Khám</Button>
                                 </StyledTableCell>
                                 <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
                             </StyledTableRow>
                         ))
-                    ) : (
+                        ) : (
                         <p className="d-flex justify-content-center" style={{color: "red"}}>
-                            Bạn chưa có lịch hẹn khám vào hôm nay!
-                        </p>
+                        Bạn chưa có lịch hẹn khám vào hôm nay!
+                    </p>
                     )}
-                    </TableBody>
+                </TableBody>
                 </Table>
             </TableContainer>
         </div>
