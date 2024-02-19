@@ -109,7 +109,7 @@ function AppointmentSchedule() {
     return (
         <div>
             <Typography variant='h5' align='center' gutterBottom>LỊCH SỬ KHÁM BỆNH TRÊN PHÒNG KHÁM</Typography>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '10px' }}>
                 <h6 style={{ marginRight: '10px' }}> Tìm kiếm theo ngày: </h6>
                 <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)} />
             </div>
