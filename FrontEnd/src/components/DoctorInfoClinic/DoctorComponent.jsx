@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "./DoctorInfoClinic.css"
 import { FormControl, InputLabel, MenuItem, Rating, Select } from '@mui/material';
 import dayjs from "dayjs";
-import { parse } from "date-fns";
+import { parse,format,compareAsc} from "date-fns";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Loading from "../Loading/Loading";
@@ -17,15 +17,29 @@ function DoctorComponent({ doctor }) {
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
     const [scheduleList, setScheduleList] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const formatTime = (date) => {
+        return format(date, 'HH:mm');
+    };
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 10000);
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, []);
+
     const convertStringDetailToNumDetail = (timeItem) => {
         const [startTime, endTime] = timeItem.split(' - ');
         const [startHour, startMinute] = startTime.split(':').map(Number);
         return [startHour, startMinute];
     };
+
     const compareStartTime = (a, b) => {
         const startTimeA = convertStringDetailToNumDetail(a.timeItem);
         const startTimeB = convertStringDetailToNumDetail(b.timeItem);
-
         if (startTimeA[0] < startTimeB[0] || (startTimeA[0] === startTimeB[0] && startTimeA[1] < startTimeB[1])) {
             return -1;
         } else if (startTimeA[0] > startTimeB[0] || (startTimeA[0] === startTimeB[0] && startTimeA[1] > startTimeB[1])) {
@@ -34,6 +48,18 @@ function DoctorComponent({ doctor }) {
             return 0;
         }
     };
+    const filterAndRenderSchedule = (scheduleList) => {
+        const currentTime = convertStringDetailToNumDetail(formatTime(new Date()));
+        const filteredList = selectedWeekday === parsedDate ? scheduleList.filter((schedule) => {
+            const startTimeA = convertStringDetailToNumDetail(schedule.timeItem);
+            return (
+                startTimeA[0] > currentTime[0] ||
+                (startTimeA[0] === currentTime[0] && startTimeA[1] > currentTime[1])
+            );
+        }) : scheduleList;
+        return filteredList;
+    };
+
     const sortObjectsByStartTime = (objectsList) => {
         return objectsList.sort(compareStartTime);
     };
@@ -58,7 +84,8 @@ function DoctorComponent({ doctor }) {
             const response = await axios.get(`http://localhost:8080/api/schedule/${doctor.id}/${selectedWeekday}`);
             if (response.status === 200) {
                 const sortedScheduleList = sortObjectsByStartTime(response.data);
-                setScheduleList(sortedScheduleList);
+                const filteredList = filterAndRenderSchedule(sortedScheduleList);
+                setScheduleList(filteredList);
                 setLoading(false)
             }
         } catch (error) {
@@ -69,7 +96,7 @@ function DoctorComponent({ doctor }) {
 
     useEffect(() => {
         fetchScheduleData();
-    }, [selectedWeekday]);
+    }, [selectedWeekday,currentTime]);
 
     const handleDateChange = (event) => {
         const dateValue = event.target.value;
