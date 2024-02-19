@@ -56,24 +56,36 @@ public class RatingService implements IRatingService {
         Doctor doctor = doctorService.findById(doctorId).get();
         Customer customer = customerService.findByUser_Id(userId);
         int star = Integer.parseInt(ratingReqDTO.getStar());
-        Booking booking = bookingService.findByCustomerIdAndDoctorIdAndStatus(customer.getId(), doctor.getId(), EStatusBooking.PAID);
-        if (booking == null) {
+        List<Booking> bookingList = bookingService.findByCustomerIdAndDoctorIdAndStatus(customer.getId(), doctor.getId(), EStatusBooking.PAID);
+        if (bookingList.isEmpty()) {
             throw new RuntimeException("Bạn chưa đặt lịch, vui lòng đặt lịch trước khi đánh giá.");
-        } else if (booking.getRated()) {
-            throw new RuntimeException("Bạn đã đánh giá bác sĩ này trước đó, không được đánh giá lại.");
-        } else {
-            String comment = ratingReqDTO.getComment();
-            Rating rating = new Rating();
-            rating.setStar(star);
-            rating.setComment(comment);
-            rating.setDoctor(doctor);
-            rating.setCustomer(customer);
-            rating.setCreateAt(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-            iRatingRepository.save(rating);
-            booking.setRated(true);
-            bookingService.save(booking);
-            return true;
         }
+        for (Booking booking : bookingList) {
+            if (!booking.getRated()) {
+                String comment = ratingReqDTO.getComment();
+                Rating rating = new Rating();
+                rating.setStar(star);
+                rating.setComment(comment);
+                rating.setDoctor(doctor);
+                rating.setCustomer(customer);
+                rating.setCreateAt(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+                iRatingRepository.save(rating);
+                booking.setRated(true);
+                bookingService.save(booking);
+
+                List<Rating> ratingList = findByDoctorId(doctorId);
+                Float avg_star = 0.0F;
+                for (Rating item : ratingList) {
+                    avg_star += item.getStar();
+                }
+                Float avg = avg_star / ratingList.size();
+                doctor.setStar(avg);
+                doctorService.save(doctor);
+
+                return true;
+            }
+        }
+        throw new RuntimeException("Bạn đã đánh giá bác sĩ này trước đó, không được đánh giá lại.");
     }
 
     @Override

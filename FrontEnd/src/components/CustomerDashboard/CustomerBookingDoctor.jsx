@@ -11,7 +11,8 @@ import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { Pagination, TextField, Typography } from "@mui/material";
+import { Pagination, Typography } from "@mui/material";
+import { saveAs } from 'file-saver';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -75,6 +76,38 @@ function AppointmentSchedule() {
         }
     };
 
+    const handleClickView = (idBooking) => {
+        bookingCustomer.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                window.open(url);
+            }
+        });
+    };
+    const handleClickDownload = (idBooking) => {
+        bookingCustomer.forEach((item) => {
+            if (item.id === idBooking) {
+                const fileBytes = item.result.file;
+                const decodedData = atob(fileBytes);
+                const arrayBuffer = new ArrayBuffer(decodedData.length);
+                const uint8Array = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < decodedData.length; i++) {
+                    uint8Array[i] = decodedData.charCodeAt(i);
+                }
+                const blob = new Blob([arrayBuffer], { type: 'application/pdf' });
+                saveAs(blob, item?.customer?.fullName + "_" + item?.bookingDate + '.pdf');
+            }
+        });
+    };
+
     const currentCustomerBookingList = filteredBooking.slice(startIndex, endIndex);
 
     return (
@@ -121,8 +154,19 @@ function AppointmentSchedule() {
                                         </StyledTableCell>
                                         <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                         <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
-                                        <StyledTableCell>{booking?.fee}</StyledTableCell>
-                                        <StyledTableCell>{booking?.result?.file ? booking?.result?.file : "Chưa có kết quả"}</StyledTableCell>
+                                        <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + "đ" : ""}</StyledTableCell>
+                                        <StyledTableCell>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
+                                            <button type="button" className="btn btn-success"
+                                                style={{ width: "100px", height: '30px', fontSize: 'small', marginBottom: "10px" }} onClick={() => {
+                                                    handleClickDownload(booking.id)
+                                                }}>Download
+                                            </button>
+                                            <button type="button" className="btn btn-warning" style={{ width: "100px", height: '30px', fontSize: 'small' }}
+                                                onClick={() => {
+                                                    handleClickView(booking.id)
+                                                }}>Xem kết quả
+                                            </button>
+                                        </div>) : "Chưa có kết quả"}</StyledTableCell>
                                         <StyledTableCell>
                                             {booking?.status && (
                                                 (() => {
@@ -130,12 +174,10 @@ function AppointmentSchedule() {
                                                         return "Chưa xác nhận";
                                                     } else if (booking?.status === "CUSTOMERCONFIMED") {
                                                         return "Đã xác nhận";
-                                                    } else if (booking?.status === "DOCTORCONFIRMED") {
-                                                        return "Bác sỹ đã xác nhận";
                                                     } else if (booking?.status === "PAID") {
                                                         return "Đã Thanh toán";
-                                                    } else if (booking?.status === "EXAMINED") {
-                                                        return "Đã khám";
+                                                    } else if (booking?.status === "EXAMINING") {
+                                                        return "Đang khám";
                                                     } else if (booking?.status === "RESULTING") {
                                                         return "Đã trả kết quả";
                                                     } else if (booking?.status === "CANCEL") {

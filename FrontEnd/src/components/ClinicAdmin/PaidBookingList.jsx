@@ -3,6 +3,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
 import './custom.css'
+import { Pagination, Typography } from "@mui/material";
 import TableContainer from "@mui/material/TableContainer";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -11,8 +12,8 @@ import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import { Pagination, Typography } from "@mui/material";
 import { saveAs } from 'file-saver';
+import { toast } from 'react-toastify';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -36,22 +37,28 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function AppointmentSchedule() {
+function PaidBookingList() {
     const itemsPerPage = 6;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
     };
-
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-
     const [bookingCustomer, setbookingCustomer] = useState([]);
     const [filteredBooking, setFilteredBooking] = useState([]);
     const userId = Cookies.get('userId');
+    const [pre, setPre] = useState(true);
+    const statusColors = {
+        CUSTOMERCONFIMED: "green",
+        EXAMINING: "blue",
+        RESULTING: "purple",
+        PAID: "orange",
+        CANCEL: "red",
+    };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking`)
+        axios.get(`http://localhost:8080/api/booking/adminClinic/resulting/${userId}`)
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);
@@ -59,22 +66,7 @@ function AppointmentSchedule() {
             .catch(error => {
                 console.error('Error:', error);
             });
-    }, [userId, currentPage]);
-
-
-
-    const filterBookingByDate = (date) => {
-        const formattedDate = dayjs(date).format("D/M/YYYY");
-        console.log(formattedDate);
-        if (formattedDate !== "Invalid Date") {
-            const filtered = bookingCustomer.filter(
-                (item) => item.bookingDate === formattedDate
-            );
-            setFilteredBooking(filtered);
-        } else {
-            setFilteredBooking(bookingCustomer);
-        }
-    };
+    }, [userId, currentPage, pre]);
 
     const handleClickView = (idBooking) => {
         bookingCustomer.forEach((item) => {
@@ -108,15 +100,32 @@ function AppointmentSchedule() {
         });
     };
 
+    const handleChangeStatus = (bookingId, event) => {
+        const selectedStatus = event.target.value;
+        const selectElement = event.target;
+        selectElement.style.backgroundColor = statusColors[selectedStatus];
+        const data = {
+            bookingId,
+            selectedStatus
+        }
+        axios.post('http://localhost:8080/api/booking/changeStatus', data)
+            .then(response => {
+                setbookingCustomer(response.data);
+                setPre(!pre);
+                toast.success("Thanh toán thành công!")
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                toast.error("Thanh toán thất bại!")
+            });
+    };
+
     const currentCustomerBookingList = filteredBooking.slice(startIndex, endIndex);
 
     return (
         <div>
-            <Typography variant='h5' align='center'>LỊCH SỬ KHÁM BỆNH TRÊN HỆ THỐNG</Typography>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '10px' }}>
-                <h6 style={{ marginRight: '10px' }}> Tìm kiếm theo ngày: </h6>
-                <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)} />
-            </div>
+            <Typography variant='h5' align='center' gutterBottom>DANH SÁCH CHỜ THANH TOÁN</Typography>
+
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 700 }} aria-label="customized table">
                     <TableHead>
@@ -168,21 +177,39 @@ function AppointmentSchedule() {
                                     </div>) : "Chưa có kết quả"}</StyledTableCell>
                                     <StyledTableCell>
                                         {booking?.status && (
-                                            (() => {
-                                                if (booking?.status === "CONFIRMING") {
-                                                    return "Chưa xác nhận";
-                                                } else if (booking?.status === "CUSTOMERCONFIMED") {
-                                                    return "Đã xác nhận";
-                                                } else if (booking?.status === "PAID") {
-                                                    return "Đã Thanh toán";
-                                                } else if (booking?.status === "EXAMINING") {
-                                                    return "Đang khám";
-                                                } else if (booking?.status === "RESULTING") {
-                                                    return "Đã trả kết quả";
-                                                } else if (booking?.status === "CANCEL") {
-                                                    return "Đã hủy";
-                                                }
-                                            })()
+                                            <select
+                                                style={{
+                                                    border: 'none',
+                                                    borderRadius: '5px',
+                                                    backgroundColor: statusColors[booking?.status],
+                                                    color: 'white',
+                                                    padding: 3,
+                                                    appearance: 'none',
+                                                    WebkitAppearance: 'none',
+                                                    MozAppearance: 'none',
+                                                    textAlign: 'center',
+                                                }}
+                                                value={booking?.status}
+                                                onChange={(event) => {
+                                                    handleChangeStatus(booking?.id, event)
+                                                }}
+                                            >
+                                                <option value="CUSTOMERCONFIMED"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã xác nhận
+                                                </option>
+                                                <option value="EXAMINING"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
+                                                </option>
+                                                <option value="RESULTING"
+                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã trả kết quả
+                                                </option>
+                                                <option value="PAID" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                    Thanh toán
+                                                </option>
+                                                <option value="CANCEL" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                    hủy
+                                                </option>
+                                            </select>
                                         )}
                                     </StyledTableCell>
                                     <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
@@ -190,7 +217,7 @@ function AppointmentSchedule() {
                             ))
                         ) : (
                             <p className="d-flex justify-content-center" style={{ color: "red", marginTop: '12px', marginLeft: '10px' }}>
-                                Không có lịch sử khám bệnh!
+                                Không còn danh sách chờ thanh toán!
                             </p>
                         )}
                     </TableBody>
@@ -209,4 +236,4 @@ function AppointmentSchedule() {
     );
 }
 
-export default AppointmentSchedule;
+export default PaidBookingList;

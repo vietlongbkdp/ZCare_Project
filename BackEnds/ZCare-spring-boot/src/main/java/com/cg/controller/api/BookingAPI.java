@@ -133,6 +133,19 @@ public class BookingAPI {
         return new ResponseEntity<>(bookings, HttpStatus.OK);
     }
 
+    @GetMapping("/adminClinic/resulting/{userId}")
+    public ResponseEntity<?> getResultingBookingByUserId(@PathVariable Long userId) {
+        Clinic clinic = clinicService.findByUser_Id(userId);
+        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinic.getId());
+        List<Booking> bookings = new ArrayList<>();
+        for(Booking booking: bookingList){
+            if(booking.getStatus()== EStatusBooking.RESULTING){
+                bookings.add(booking);
+            }
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+
     @GetMapping("/doctor/{userId}")
     public ResponseEntity<?> getAllBookingByDoctorId(@PathVariable Long userId) {
         Doctor doctor = doctorService.findByUser_Id(userId);

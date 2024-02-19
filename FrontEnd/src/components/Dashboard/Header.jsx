@@ -19,7 +19,6 @@ import ReminderTimer from "../ReminderTimer/ReminderTimer";
 
 function ResponsiveAppBar() {
     const [dashboarduser, setDashboarduser] = useState('');
-
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -47,9 +46,7 @@ function ResponsiveAppBar() {
         const finddUser = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                console.log(response.data.id)
                 setDashboarduser(response.data)
-                console.log(dashboarduser)
             } catch (error) {
                 console.error(error);
             }

@@ -46,7 +46,7 @@ public class Doctor {
     @Column(name = "avatar_img")
     private String avatarImg;
     @Column(columnDefinition = "decimal(2,1) default 0.0")
-    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMin(value = "0.0")
     @DecimalMax(value = "5.0")
     private Float star;
     @Column(name = "doctor_info", columnDefinition = "LONGTEXT")
