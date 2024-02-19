@@ -81,7 +81,7 @@ function ResultTyping() {
         reset,
         setValue,
     } = useForm({ resolver: yupResolver(schema),});
-    const unitMedicine = ["Viên", "Vỉ", "Hộp", " Típ", "Gói"]
+    const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
         const dataNew = {
             ...data,
