@@ -134,7 +134,7 @@ public class BookingService implements IBookingService {
                 timer.cancel();
             }
         };
-        timer.schedule(task, 60*1000);
+        timer.schedule(task, 5*60*1000);
     }
 
 

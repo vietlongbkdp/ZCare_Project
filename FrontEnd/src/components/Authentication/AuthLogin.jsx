@@ -121,7 +121,7 @@ function AuthLogin() {
             Bạn chưa có tài khoản?
           </Link>
         </Box>
-        <form onSubmit={handleSubmit(onSubmit)}  autoComplete={"off"}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box
             sx={{ display: "flex", flexDirection: "column", marginTop: "25px" }}
           >

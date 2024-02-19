@@ -108,7 +108,7 @@ function AppointmentSchedule() {
                 style={{ backgroundColor: "rgb(237 255 250)", height: "150px" }}>
                 <h2>THÔNG TIN LỊCH HẸN</h2>
             </div>
-            <div className={"container justify-content-center"}>
+            <div className={"container justify-content-center mt-3 mb-5"}>
                 <Link to='/home' className="d-flex" style={{ textDecoration: 'none' }}>
                     <span className="me-2"><i className="fa-solid fa-house"></i></span>
                     /
