@@ -23,13 +23,14 @@ import Autocomplete from '@mui/material/Autocomplete';
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import {Sheet} from "@mui/joy";
 import {checkboxClasses} from "@mui/material/Checkbox";
 import Textarea from "@mui/joy/Textarea";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Loading from "../Loading/Loading";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const schema = yup.object().shape({
@@ -45,30 +46,36 @@ function ResultTyping() {
     const [morningChecked, setMorningChecked] = useState(false);
     const [afternoonChecked, setAfternoonChecked] = useState(false);
     const [eveningChecked, setEveningChecked] = useState(false);
-
-
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
     let savedConcatenatedValues;
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const responseCustomer = await axios.get("http://localhost:8080/api/customer/getCustomer/" + idCustomer);
                 setCustomer(responseCustomer.data);
+                setLoading(false)
             } catch (errorCustomer) {
                 console.error('Lỗi lấy Customer:', errorCustomer);
+                setLoading(false)
             }
 
             try {
                 const responseDoctor = await axios.get("http://localhost:8080/api/doctor/" + idDoctor);
                 setDoctor(responseDoctor.data);
+                setLoading(false)
             } catch (errorDoctor) {
                 console.error('Lỗi lấy Doctor:', errorDoctor);
+                setLoading(false)
             }
 
             try {
                 const responseMedicine = await axios.get("http://localhost:8080/api/medicine");
                 setMedicine(responseMedicine.data);
+                setLoading(false)
             } catch (errorMedicine) {
                 console.error('Lỗi lấy Medicine:', errorMedicine);
+                setLoading(false)
             }
         };
 
@@ -83,6 +90,7 @@ function ResultTyping() {
     } = useForm({ resolver: yupResolver(schema),});
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
+        setLoading(true);
         const dataNew = {
             ...data,
             idBooking: idBooking,
@@ -106,12 +114,16 @@ function ResultTyping() {
                 toast.success('Đã tạo được đơn thuốc');
                 reset();
                 setListMedicine([]);
+                setLoading(false)
+                navigate(`/doctoradmin/bookingHistory`);
             } else {
                 toast.error('Có lỗi, chưa lưu được');
+                setLoading(false)
             }
         } catch (error) {
             console.error(error);
             toast.error('Có lỗi xảy ra');
+            setLoading(false)
         }
     };
     const checkExistMedicine = (listMed, medicineName) =>{
@@ -295,6 +307,7 @@ function ResultTyping() {
     }
     return (
         <div>
+            {loading && <Loading/>}
                 <div className={"d-flex flex-column justify-content-center col-6 ms-3"}>
                     <div>
                         <h5>{doctor?.doctorName} </h5>

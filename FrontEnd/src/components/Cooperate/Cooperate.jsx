@@ -66,7 +66,6 @@ function Cooperate() {
               className={`form-control w-50 ${errors?.fullName?.message ? "is-invalid" : ""
                 }`}
               {...register("fullName")}
-              placeholder={"(Bắt buộc)"}
             />
             <span className="text-danger">{errors?.fullName?.message}</span>
           </div>
@@ -77,7 +76,6 @@ function Cooperate() {
               className={`form-control w-50 ${errors?.phone?.message ? "is-invalid" : ""
                 }`}
               {...register("phone")}
-              placeholder={"(Bắt buộc)"}
             />
             <span className="text-danger">{errors?.phone?.message}</span>
           </div>
@@ -88,7 +86,6 @@ function Cooperate() {
               className={`form-control w-50 ${errors?.email?.message ? "is-invalid" : ""
                 }`}
               {...register("email")}
-              placeholder={"(Bắt buộc)"}
             />
             <span className="text-danger">{errors?.email?.message}</span>
           </div>
