@@ -47,6 +47,7 @@ public class MedicineDetailService implements IMedicineDetailService{
                 .setQuantity(medicineDTO.getQuantity())
                 .setUnitMedicine(EUnitMedicine.getByUnit(medicineDTO.getUnit()))
                 .setUseNote(medicineDTO.getUseNote())
+                .setDosage(medicineDTO.getDosage())
                 .setResult(result);
         medicineDetailRepository.save(medicineDetail);
     }

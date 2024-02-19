@@ -29,4 +29,5 @@ public class MedicineDetail {
     @JoinColumn(name="result_id")
     private Result result;
     private String useNote;
+    private String dosage;
 }
