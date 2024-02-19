@@ -41,6 +41,7 @@ import MedicalBookingList from "./components/ClinicAdmin/MedicalBookingList";
 import BookingListDoctor from "./components/Doctor/BookingListDoctor";
 import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
 import PaidBookingList from "./components/ClinicAdmin/PaidBookingList";
+import ThePresentTime from "./components/DoctorInfoClinic/ThePresentTime";
 
 
 export default function App() {
@@ -99,7 +100,8 @@ export default function App() {
         <Route path="/list-speciality/:specialityId" element={<DoctorListBySpeciality />} />
         <Route path="/list-clinic/:clinicId" element={<DoctorListByClinic />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/doctorDetail/:doctorId" element={<DoctorInfo />} />
+        <Route path="/doctorDetail/:doctorId" element={<DoctorInfo/>} />
+        <Route path="/ThePresentTime" element={<ThePresentTime/>} />
         <Route element={<PrivateRouteCustomer />}>
           <Route path="/information-customer" element={<CustomerDashboard />} />
           <Route path="/appointment-schedule" element={<AppointmentSchedule />} />
