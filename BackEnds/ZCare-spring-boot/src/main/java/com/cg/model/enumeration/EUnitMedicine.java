@@ -4,7 +4,7 @@ public enum EUnitMedicine {
     VIEN(1L, "Viên"),
     CHAI(2L, "Chai"),
     VI(3L, "Vỉ"),
-    LO(4L, "Lọ"),
+    TIP(4L, "Típ"),
     GOI(5L, "Gói"),
     HOP(6L, "Hộp");
     private final Long id;
