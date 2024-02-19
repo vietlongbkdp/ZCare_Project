@@ -205,9 +205,30 @@ function ResultTyping() {
             }
         });
     }
-    function getFilePDF(data, customer, doctor) {
+    async function getImageBase64(url) {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error('Error loading image:', error);
+            return null;
+        }
+    }
+    async function getFilePDF(data, customer, doctor) {
         const documentDefinition = {
             content: [
+                {
+                    image: await getImageBase64('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705982574/clinic-avatar/35d99de9-0998-4142-887f-688e293c3129.png'),
+                    width: 120,
+                    alignment: 'left',
+                    margin: [10, 10, 10]
+                },
                 {
                     text: 'Kết quả khám chữa bệnh',
                     style: 'header'
@@ -226,7 +247,7 @@ function ResultTyping() {
                         'Ghi chú thêm: '+ data.doctorNotice,
                     ],
                     style: 'openSans',
-                    margin: [0, 0, 10, 5] // margin top-bottom-left-right
+                    margin: [40, 0, 10, 5] // margin left-top-right-bottom
                 },
                 {
                     text: 'Đơn thuốc',
@@ -236,7 +257,7 @@ function ResultTyping() {
                     layout: 'lightHorizontalLines lightVerticalLines', // optional
                     table: {
                         headerRows: 1,
-                        widths: [ 30, 'auto', 50 , 50 ,'auto', 'auto' ],
+                        widths: [ 30, 130, 50 , 50 ,90, 120 ],
 
                         body: [
                             [ { text: 'Stt', bold: true, alignment: 'center' }, { text: 'Tên thuốc', bold: true, alignment: 'center' }, { text: 'Số lượng', bold: true, alignment: 'center' }, { text: 'Đơn vị', bold: true, alignment: 'center' }, { text: ' Liều lượng', bold: true, alignment: 'center' }, { text: 'Sử dụng', bold: true, alignment: 'center' } ],
