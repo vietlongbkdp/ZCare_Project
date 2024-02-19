@@ -104,6 +104,7 @@ function AdminCooperate() {
                                             variant={cooperate.status === 'SELECTED' ? 'outlined' : 'contained'}
                                             color={cooperate.status === 'SELECTED' ? 'secondary' : 'primary'}
                                             onClick={() => handleClick(cooperate.id)}
+                                            type='button'
                                             disabled={cooperate.status === 'SELECTED'}
                                         >
                                             {cooperate.status === 'SELECTED' ? 'Đã xác nhận' : 'Xác nhận'}

@@ -154,19 +154,19 @@ function AppointmentSchedule() {
                                         </StyledTableCell>
                                         <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                         <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
-                                        <StyledTableCell>{booking?.fee}</StyledTableCell>
+                                        <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + "đ" : ""}</StyledTableCell>
                                         <StyledTableCell>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
-                                        <button type="button" className="btn btn-success"
-                                            style={{ width: "100px", height: '30px', fontSize: 'small', marginBottom: "10px" }} onClick={() => {
-                                                handleClickDownload(booking.id)
-                                            }}>Download
-                                        </button>
-                                        <button type="button" className="btn btn-warning" style={{ width: "100px", height: '30px', fontSize: 'small' }}
-                                            onClick={() => {
-                                                handleClickView(booking.id)
-                                            }}>Xem kết quả
-                                        </button>
-                                    </div>) : "Chưa có kết quả"}</StyledTableCell>
+                                            <button type="button" className="btn btn-success"
+                                                style={{ width: "100px", height: '30px', fontSize: 'small', marginBottom: "10px" }} onClick={() => {
+                                                    handleClickDownload(booking.id)
+                                                }}>Download
+                                            </button>
+                                            <button type="button" className="btn btn-warning" style={{ width: "100px", height: '30px', fontSize: 'small' }}
+                                                onClick={() => {
+                                                    handleClickView(booking.id)
+                                                }}>Xem kết quả
+                                            </button>
+                                        </div>) : "Chưa có kết quả"}</StyledTableCell>
                                         <StyledTableCell>
                                             {booking?.status && (
                                                 (() => {
@@ -180,7 +180,7 @@ function AppointmentSchedule() {
                                                         return "Đang khám";
                                                     } else if (booking?.status === "RESULTING") {
                                                         return "Đã trả kết quả";
-                                                    } else if (booking?.status === "CANCEL"){
+                                                    } else if (booking?.status === "CANCEL") {
                                                         return "Đã hủy";
                                                     }
                                                 })()

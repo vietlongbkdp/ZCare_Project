@@ -35,7 +35,7 @@ function ClinicList() {
                 <h2 className={" mt-2"}>Danh sách phòng khám</h2>
                 <p className={" mt-3"}>Giúp bạn dễ dàng tìm kiếm và lựa chọn phòng khám phù hợp với nhu cầu của mình.</p>
             </div>
-            <Grid style={{display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap"}}>
+            <Grid style={{display: "flex", gap: "8px", justifyContent: "center", flexWrap: "wrap"}} my={5}>
                 {clinicData.map(clinic => (
                     <Container
                         key={clinic.id}

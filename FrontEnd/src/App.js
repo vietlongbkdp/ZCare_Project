@@ -41,6 +41,7 @@ import MedicalBookingList from "./components/ClinicAdmin/MedicalBookingList";
 import BookingListDoctor from "./components/Doctor/BookingListDoctor";
 import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
 import PaidBookingList from "./components/ClinicAdmin/PaidBookingList";
+import AdminCooperate from "./components/Cooperate/AdminCooperate";
 
 
 
@@ -60,7 +61,7 @@ export default function App() {
           <Route path="/admin" element={<Pagerbase />}>
             <Route path="" element={<AdminViewer />}></Route>
             <Route path="doctor" element={<DoctorAdmin API_URL={API_DOCTOR} />}></Route>
-            <Route path="doctorInfor" element={<DoctorInfor />}></Route>
+            <Route path="cooperate" element={<AdminCooperate />}></Route>
             <Route path="clinic" element={<ClinicAdmin />}></Route>
             <Route path="customer" element={<CustomerAdmin />}></Route>
             <Route path="bookingHistory" element={<CustomerBookingAdmin/>}></Route>
@@ -69,11 +70,9 @@ export default function App() {
         <Route element={<PrivateRouteClinicAdmin />}>
           <Route path="/clinicadmin" element={<Pagerbase />}>
             <Route path="" element={<DoctorListByClinicAdmin />} />
-            <Route path="list-clinic" element={<DoctorListByClinicAdmin />} />
-            <Route path="doctorInfor" element={<DoctorInfor/>}></Route>
-            <Route path="bookingHistory" element={<CustomerBookingAdminClinic/>}></Route>
             <Route path="booking" element={<MedicalBookingList/>}></Route>
             <Route path="paid" element={<PaidBookingList/>}></Route>
+            <Route path="bookingHistory" element={<CustomerBookingAdminClinic/>}></Route>
             <Route path="doctor" element={<DoctorInClinic />}></Route>
             <Route path="editClinic" element={<EditAdminClinic />}></Route>
             <Route path="customer" element={<CustomerInClinic />}></Route>
@@ -84,11 +83,9 @@ export default function App() {
         <Route element={<PrivateRouteDoctor redirectTo="/doctoradmin/doctorInfor"/>}>
           <Route path="/doctoradmin" element={<Pagerbase/>}>
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
-            <Route path="doctorInfor" element={<DoctorByAdminClinic/>}></Route>
             <Route path="bookingHistory" element={<CustomerBookingDoctor/>}></Route>
             <Route path="doctorBooking" element={<BookingListDoctor/>}></Route>
             <Route path="clinic/:idCustomer/:idDoctor/:idBooking" element={<ResultTyping/>}></Route>
-            <Route path="doctorInfor1" element={<DoctorInfor/>}></Route>
           </Route>
         </Route>
         <Route path="/customer" element={<Pagerbase />}>
