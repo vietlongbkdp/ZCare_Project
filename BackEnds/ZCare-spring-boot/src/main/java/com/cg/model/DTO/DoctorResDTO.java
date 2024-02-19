@@ -29,7 +29,7 @@ public class DoctorResDTO {
     private BigDecimal fee;
     private Clinic clinic;
     private String avatarImg;
-    private Integer star;
+    private Float star;
     private String doctorInfo;
     private Speciality speciality;
     private List<Schedule> scheduleList;

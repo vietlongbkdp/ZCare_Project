@@ -1,0 +1,10 @@
+.customTable p {
+    margin-bottom: 2px
+}
+.custom-input {
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    width: 200px;
+}

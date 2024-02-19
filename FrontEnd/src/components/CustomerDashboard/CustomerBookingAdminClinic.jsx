@@ -53,6 +53,7 @@ function AppointmentSchedule() {
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);
+                console.log(response.data);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -108,7 +109,7 @@ function AppointmentSchedule() {
     return (
         <div>
             <Typography variant='h5' align='center' gutterBottom>LỊCH SỬ KHÁM BỆNH TRÊN PHÒNG KHÁM</Typography>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px', marginTop: '10px' }}>
                 <h6 style={{ marginRight: '10px' }}> Tìm kiếm theo ngày: </h6>
                 <input className="custom-input" type="date" onChange={(event) => filterBookingByDate(event.target.value)} />
             </div>
@@ -148,17 +149,17 @@ function AppointmentSchedule() {
                                     </StyledTableCell>
                                     <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                     <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
-                                    <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + " đ" : ""}</StyledTableCell>
+                                    <StyledTableCell>{booking && booking.fee ? (booking.fee * 1000).toLocaleString() + "đ" : ""}</StyledTableCell>
                                     <StyledTableCell>{(booking?.result?.file) ? (<div className={"d-flex flex-column"}>
                                         <button type="button" className="btn btn-success"
-                                                style={{width: "150px", marginBottom: "10px"}} onClick={() => {
-                                            handleClickDownload(booking.id)
-                                        }}>Download
+                                            style={{ width: "100px", height: '30px', fontSize: 'small', marginBottom: "10px" }} onClick={() => {
+                                                handleClickDownload(booking.id)
+                                            }}>Download
                                         </button>
-                                        <button type="button" className="btn btn-warning" style={{width: "150px"}}
-                                                onClick={() => {
-                                                    handleClickView(booking.id)
-                                                }}>Xem kết quả
+                                        <button type="button" className="btn btn-warning" style={{ width: "100px", height: '30px', fontSize: 'small' }}
+                                            onClick={() => {
+                                                handleClickView(booking.id)
+                                            }}>Xem kết quả
                                         </button>
                                     </div>) : "Chưa có kết quả"}</StyledTableCell>
                                     <StyledTableCell>
@@ -168,15 +169,13 @@ function AppointmentSchedule() {
                                                     return "Chưa xác nhận";
                                                 } else if (booking?.status === "CUSTOMERCONFIMED") {
                                                     return "Đã xác nhận";
-                                                } else if (booking?.status === "DOCTORCONFIRMED") {
-                                                    return "Bác sỹ đã xác nhận";
                                                 } else if (booking?.status === "PAID") {
                                                     return "Đã Thanh toán";
-                                                } else if (booking?.status === "EXAMINED") {
-                                                    return "Đã khám";
+                                                } else if (booking?.status === "EXAMINING") {
+                                                    return "Đang khám";
                                                 } else if (booking?.status === "RESULTING") {
                                                     return "Đã trả kết quả";
-                                                } else if (booking?.status === "CANCEL") {
+                                                } else if (booking?.status === "CANCEL"){
                                                     return "Đã hủy";
                                                 }
                                             })()
@@ -186,22 +185,22 @@ function AppointmentSchedule() {
                                 </StyledTableRow>
                             ))
                         ) : (
-                            <p className="d-flex justify-content-center" style={{ color: "red" }}>
-                                Bạn chưa có lịch hẹn!
+                            <p className="d-flex justify-content-center" style={{ color: "red", marginTop: '12px', marginLeft: '10px' }}>
+                                Không có lịch sử khám bệnh!
                             </p>
                         )}
                     </TableBody>
                 </Table>
             </TableContainer>
             <Pagination
-                    count={Math.ceil(filteredBooking.length / itemsPerPage)}
-                    page={currentPage}
-                    onChange={handlePageChange}
-                    color="primary"
-                    showFirstButton
-                    showLastButton
-                    style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
-                />
+                count={Math.ceil(filteredBooking.length / itemsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                color="primary"
+                showFirstButton
+                showLastButton
+                style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}
+            />
         </div>
     );
 }

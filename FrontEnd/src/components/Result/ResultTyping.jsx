@@ -17,13 +17,20 @@ import axios from "axios";
 import {toast} from "react-toastify";
 import * as yup from "yup";
 import Grid from "@mui/material/Grid";
-import {TextField} from "@mui/material";
+import {Checkbox, TextareaAutosize, TextField} from "@mui/material";
 import Box from "@mui/material/Box";
 import Autocomplete from '@mui/material/Autocomplete';
 import Swal from "sweetalert2";
 import Button from "@mui/material/Button";
 import dayjs from "dayjs";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
+import ListItem from "@mui/material/ListItem";
+import List from "@mui/material/List";
+import {Sheet} from "@mui/joy";
+import {checkboxClasses} from "@mui/material/Checkbox";
+import Textarea from "@mui/joy/Textarea";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Loading from "../Loading/Loading";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const schema = yup.object().shape({
@@ -36,27 +43,39 @@ function ResultTyping() {
     const [doctor, setDoctor] = useState(null);
     const [medicine, setMedicine] = useState(null);
     const [listMedicine, setListMedicine] = useState([])
+    const [morningChecked, setMorningChecked] = useState(false);
+    const [afternoonChecked, setAfternoonChecked] = useState(false);
+    const [eveningChecked, setEveningChecked] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    let savedConcatenatedValues;
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const responseCustomer = await axios.get("http://localhost:8080/api/customer/getCustomer/" + idCustomer);
                 setCustomer(responseCustomer.data);
+                setLoading(false)
             } catch (errorCustomer) {
                 console.error('Lỗi lấy Customer:', errorCustomer);
+                setLoading(false)
             }
 
             try {
                 const responseDoctor = await axios.get("http://localhost:8080/api/doctor/" + idDoctor);
                 setDoctor(responseDoctor.data);
+                setLoading(false)
             } catch (errorDoctor) {
                 console.error('Lỗi lấy Doctor:', errorDoctor);
+                setLoading(false)
             }
 
             try {
                 const responseMedicine = await axios.get("http://localhost:8080/api/medicine");
                 setMedicine(responseMedicine.data);
+                setLoading(false)
             } catch (errorMedicine) {
                 console.error('Lỗi lấy Medicine:', errorMedicine);
+                setLoading(false)
             }
         };
 
@@ -69,8 +88,9 @@ function ResultTyping() {
         reset,
         setValue,
     } = useForm({ resolver: yupResolver(schema),});
-    const unitMedicine = ["Viên", "Vỉ", "Hộp", "Lọ", "Gói"]
+    const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
+        setLoading(true);
         const dataNew = {
             ...data,
             idBooking: idBooking,
@@ -94,12 +114,16 @@ function ResultTyping() {
                 toast.success('Đã tạo được đơn thuốc');
                 reset();
                 setListMedicine([]);
+                setLoading(false)
+                navigate(`/doctoradmin/bookingHistory`);
             } else {
                 toast.error('Có lỗi, chưa lưu được');
+                setLoading(false)
             }
         } catch (error) {
             console.error(error);
             toast.error('Có lỗi xảy ra');
+            setLoading(false)
         }
     };
     const checkExistMedicine = (listMed, medicineName) =>{
@@ -116,6 +140,25 @@ function ResultTyping() {
         const quantity = parseInt(document.getElementById("quantity").value);
         const unit = document.getElementById("unit").value;
         const useNote = document.getElementById("useNote").value;
+
+
+        const selectedValues = [];
+
+
+        if (morningChecked) {
+            selectedValues.push("Sáng");
+        }
+        if (afternoonChecked) {
+            selectedValues.push("Chiều");
+        }
+        if (eveningChecked) {
+            selectedValues.push("Tối");
+        }
+
+
+        const concatenatedValues = selectedValues.join(", ");
+        console.log(morningChecked)
+
         if(medicineName === ""|| isNaN(quantity) || unit === ""|| useNote === ""){
             toast.error("Cần nhập đầy đủ thông tin thuốc")
         }else{
@@ -126,16 +169,23 @@ function ResultTyping() {
                         medicineName: medicineName,
                         quantity: quantity,
                         unit: unit,
+                        dosage: concatenatedValues,
                         useNote: useNote
                     }
                 ])
                 document.getElementById("quantity").value = "";
                 document.getElementById("useNote").value = "";
+                setMorningChecked(false);
+                setAfternoonChecked(false);
+                setEveningChecked(false);
+
             }else{
                 toast.error("Thuốc này đã tồn tại")
             }
         }
     }
+
+    console.log(listMedicine)
     const handleDeleteMedicine = (index) =>{
         Swal.fire({
             title: "Xác nhận xoá thuốc này",
@@ -186,11 +236,11 @@ function ResultTyping() {
                     layout: 'lightHorizontalLines lightVerticalLines', // optional
                     table: {
                         headerRows: 1,
-                        widths: [ 30, 'auto', 50 , 50 , 'auto' ],
+                        widths: [ 30, 'auto', 50 , 50 ,'auto', 'auto' ],
 
                         body: [
-                            [ { text: 'Stt', bold: true, alignment: 'center' }, { text: 'Tên thuốc', bold: true, alignment: 'center' }, { text: 'Số lượng', bold: true, alignment: 'center' }, { text: 'Đơn vị', bold: true, alignment: 'center' }, { text: 'Sử dụng', bold: true, alignment: 'center' } ],
-                            ...data.medicineList.map(((item, index) => [{text: index+1, alignment: 'center'},{text: item.medicineName}, {text: item.quantity, alignment: 'center'} , {text: item.unit, alignment: 'center'}, {text: item.useNote, alignment: 'center'}]))]
+                            [ { text: 'Stt', bold: true, alignment: 'center' }, { text: 'Tên thuốc', bold: true, alignment: 'center' }, { text: 'Số lượng', bold: true, alignment: 'center' }, { text: 'Đơn vị', bold: true, alignment: 'center' }, { text: ' Liều lượng', bold: true, alignment: 'center' }, { text: 'Sử dụng', bold: true, alignment: 'center' } ],
+                            ...data.medicineList.map(((item, index) => [{text: index+1, alignment: 'center'},{text: item.medicineName}, {text: item.quantity, alignment: 'center'} , {text: item.unit, alignment: 'center'}, {text: item.dosage, alignment: 'center'}, {text: item.useNote, alignment: 'center'}]))]
                     }
                 },
                 {
@@ -257,6 +307,7 @@ function ResultTyping() {
     }
     return (
         <div>
+            {loading && <Loading/>}
                 <div className={"d-flex flex-column justify-content-center col-6 ms-3"}>
                     <div>
                         <h5>{doctor?.doctorName} </h5>
@@ -276,39 +327,66 @@ function ResultTyping() {
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Số điện thoại: {customer?.phone}</p>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Địa chỉ: {customer?.address}</p>
                             <Grid item xs={12} sm={6} mb={2} mx={10}>
-                                <TextField
+                                <TextareaAutosize minRows={2}
                                     autoComplete="diagResult"
                                     id="diagResult"
                                     fullWidth
                                     label="Kết quả chuẩn đoán"
+                                                  placeholder={"Kết quả chuẩn đoán"}
                                     type="text"
                                     error={Boolean(errors.diagResult)}
                                     helperText={errors.diagResult?.message || ''}
                                     {...register('diagResult')}
+                                                  style={{
+                                                      width: '100%',
+                                                      padding: '10px',
+                                                      border: '1px solid #ccc',
+                                                      borderRadius: '8px',
+                                                      resize: 'vertical',
+                                                      background: 'rgb(234 239 241)'
+                                                  }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} mb={2} mx={10}>
-                                <TextField
+                                <TextareaAutosize minRows={2}
                                     autoComplete="advice"
                                     fullWidth
                                     id="advice"
                                     type={"text"}
+                                                  placeholder={"Lời khuyên điều trị"}
                                     label="Lời khuyên điều trị"
                                     error={Boolean(errors.advice)}
                                     helperText={errors.advice?.message || ''}
                                     {...register("advice")}
+                                                  style={{
+                                                      width: '100%',
+                                                      padding: '10px',
+                                                      border: '1px solid #ccc',
+                                                      borderRadius: '8px',
+                                                      resize: 'vertical',
+                                                      background: 'rgb(234 239 241)'
+                                                  }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} mb={2} mx={10}>
-                                <TextField
+                                <TextareaAutosize minRows={2}
                                     autoComplete="doctorNotice"
                                     fullWidth
                                     id="doctorNotice"
                                     type={"text"}
                                     label="Ghi chú Bác sĩ"
+                                                  placeholder={"Ghi chú Bác sĩ"}
                                     error={Boolean(errors.doctorNotice)}
                                     helperText={errors.doctorNotice?.message || ''}
                                     {...register("doctorNotice")}
+                                           style={{
+                                               width: '100%',
+                                               padding: '10px',
+                                               border: '1px solid #ccc',
+                                               borderRadius: '8px',
+                                               resize: 'vertical',
+                                               background: 'rgb(234 239 241)'
+                                           }}
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6} mb={2} marginLeft={"20px"} marginRight={"20px"}>
@@ -324,7 +402,8 @@ function ResultTyping() {
                                                 <TableCell align="center">Tên thuốc</TableCell>
                                                 <TableCell align="center">Số lượng</TableCell>
                                                 <TableCell align="center">Đơn vị</TableCell>
-                                                <TableCell align="center">Cách sử dụng</TableCell>
+                                                <TableCell align="center">Liều lượng</TableCell>
+                                                <TableCell align="center">Chú thích</TableCell>
                                                 <TableCell align="center"></TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -340,6 +419,9 @@ function ResultTyping() {
                                                     <TableCell align="left">{item?.medicineName}</TableCell>
                                                     <TableCell align="center">{item?.quantity}</TableCell>
                                                     <TableCell align="center">{item?.unit}</TableCell>
+                                                    <TableCell align="center">
+                                                        {item?.dosage}
+                                                    </TableCell>
                                                     <TableCell align="center">{item?.useNote}</TableCell>
                                                     <TableCell align="center">
                                                         <IconButton aria-label="delete" onClick={() => {
@@ -352,7 +434,7 @@ function ResultTyping() {
                                                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
                                                 key={listMedicine.length + 1}
                                             >
-                                                <TableCell component="th" scope="row">{listMedicine.length + 1}
+                                            <TableCell component="th" scope="row">{listMedicine.length + 1}
                                                 </TableCell>
                                                 <TableCell align="right">
                                                     <Autocomplete
@@ -362,7 +444,7 @@ function ResultTyping() {
                                                         id="medicineSelect"
                                                         options={medicine}
                                                         getOptionLabel={(option) => option?.medicineName}
-                                                        sx={{width: 400}}
+                                                        sx={{width: 380}}
                                                         renderInput={(params) => <TextField {...params}
                                                                                             label="Chọn thuốc"/>}
                                                     />
@@ -372,7 +454,7 @@ function ResultTyping() {
                                                         autoComplete="number"
                                                         fullWidth
                                                         id="quantity"
-                                                        sx={{width: 150}}
+                                                        sx={{width: 120}}
                                                         type={"number"}
                                                         label="Số lượng"
                                                     />
@@ -383,11 +465,50 @@ function ResultTyping() {
                                                         marginRight={"20px"}
                                                         disablePortal
                                                         id="unit"
-                                                        sx={{width: 150}}
+                                                        sx={{width: 120}}
                                                         options={unitMedicine}
                                                         renderInput={(params) => <TextField {...params}
                                                                                             label="Đơn vị"/>}
                                                     />
+                                                </TableCell>
+                                                <TableCell align="center">
+                                                    <div role="group" aria-labelledby="sandwich-group">
+                                                        <List size="sm">
+                                                            <ListItem sx={{ mb: -4, mt: -4 }}>
+                                                                <FormControlLabel
+                                                                    control={
+                                                                        <Checkbox
+                                                                            checked={morningChecked}
+                                                                            onChange={(event) => setMorningChecked(event.target.checked)}
+                                                                        />
+                                                                    }
+                                                                    label="Sáng"
+                                                                />
+                                                            </ListItem>
+                                                            <ListItem sx={{ mb: -4 }}>
+                                                                <FormControlLabel
+                                                                    control={
+                                                                        <Checkbox
+                                                                            checked={afternoonChecked}
+                                                                            onChange={(event) => setAfternoonChecked(event.target.checked)}
+                                                                        />
+                                                                    }
+                                                                    label="Chiều"
+                                                                />
+                                                            </ListItem>
+                                                            <ListItem sx={{ mb: -4 }}>
+                                                                <FormControlLabel
+                                                                    control={
+                                                                        <Checkbox
+                                                                            checked={eveningChecked}
+                                                                            onChange={(event) => setEveningChecked(event.target.checked)}
+                                                                        />
+                                                                    }
+                                                                    label="Tối"
+                                                                />
+                                                            </ListItem>
+                                                        </List>
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <TextField
@@ -396,6 +517,7 @@ function ResultTyping() {
                                                         id="useNote"
                                                         type={"text"}
                                                         label="Sử dụng"
+                                                        sx={{width: '160px'}}
                                                     />
                                                 </TableCell>
                                                 <TableCell align="center">

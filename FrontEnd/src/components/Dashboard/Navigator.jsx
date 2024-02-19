@@ -43,15 +43,15 @@ const categories = [
             },
             { id: 'Lịch sử khám bệnh', icon: <PermMediaOutlinedIcon />, url: "bookingHistory" },
             { id: 'Bệnh nhân', icon: <DnsRoundedIcon />, url: "customer" },
-            { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "doctorInfor" },
-
+            { id: 'Hợp tác', icon: <SettingsEthernetIcon />, url: "cooperate" },
         ],
     },
     {
         id: 'ADMIN_CLINIC',
         children: [
-            { id: ' Trang chủ ', icon: <ApartmentIcon />, url: "list-clinic" },
+            { id: ' Trang chủ ', icon: <ApartmentIcon />, url: "" },
             { id: 'Danh sách đặt khám', icon: <AssignmentIcon />, url: "booking" },
+            { id: 'Danh sách chờ thanh toán', icon: <AssignmentIcon />, url: "paid" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
             { id: 'Bệnh nhân', icon: <PeopleAltIcon />, url: 'customer' },
             { id: 'Bác sĩ', icon: <PhonelinkSetupIcon />, url: "doctor" },
@@ -61,7 +61,7 @@ const categories = [
     {
         id: 'DOCTOR',
         children: [
-            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "doctorInfor" },
+            { id: ' Trang chủ ', icon: <SettingsIcon />, url: "" },
             { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctorBooking" },
             { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" }
 

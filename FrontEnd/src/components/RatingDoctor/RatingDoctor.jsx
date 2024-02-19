@@ -44,7 +44,7 @@ function RatingDoctor({doctorId,setRatingSubmitted,ratingSubmitted}) {
                 if (error.response && error.response.status === 409) {
                     toast.error("Đã đánh giá, không được đánh giá lại");
                 } else {
-                    toast.error("Bạn cần phải booking mới được đánh giá")
+                    toast.error("Bạn cần phải khám bệnh trước khi đánh giá")
                 }
                 console.error('Error:', error);
             });

@@ -16,4 +16,5 @@ public class MedicineDTO {
     private Long quantity;
     private String unit;
     private String useNote;
+    private String dosage;
 }

@@ -7,7 +7,6 @@ import com.cg.model.DTO.BookingDTO;
 import com.cg.model.DTO.ChangeStatusDTO;
 import com.cg.model.enumeration.EStatus;
 import com.cg.model.enumeration.EStatusBooking;
-import com.cg.model.enumeration.EWeekday;
 import com.cg.repository.IBookingRepository;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.booking.BookingService;
@@ -127,6 +126,19 @@ public class BookingAPI {
         List<Booking> bookings = new ArrayList<>();
         for(Booking booking: bookingList){
             if(booking.getStatus()== EStatusBooking.PAID){
+                bookings.add(booking);
+            }
+        }
+        return new ResponseEntity<>(bookings, HttpStatus.OK);
+    }
+
+    @GetMapping("/adminClinic/resulting/{userId}")
+    public ResponseEntity<?> getResultingBookingByUserId(@PathVariable Long userId) {
+        Clinic clinic = clinicService.findByUser_Id(userId);
+        List<Booking> bookingList = bookingService.getAllBookingByClinicId(clinic.getId());
+        List<Booking> bookings = new ArrayList<>();
+        for(Booking booking: bookingList){
+            if(booking.getStatus()== EStatusBooking.RESULTING){
                 bookings.add(booking);
             }
         }

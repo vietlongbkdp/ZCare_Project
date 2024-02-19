@@ -199,7 +199,7 @@ export default function Header() {
                                                 }}
                                             >
                                                 <Link style={{ textDecoration: 'none', color: 'black' }} to="/clinicadmin">
-                                                    <MenuItem onClick={handleClose}>phòng khám</MenuItem>
+                                                    <MenuItem onClick={handleClose}>Phòng khám</MenuItem>
                                                 </Link>
                                                 <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
                                             </Menu>

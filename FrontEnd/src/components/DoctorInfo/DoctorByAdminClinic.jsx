@@ -204,29 +204,6 @@ function DoctorInfo() {
                     </div>
                 </div>
             </div>
-            {/*<div className={"container"}>*/}
-            {/*    <div className={"d-flex flex-column"}>*/}
-            {/*        <div>*/}
-            {/*            <h5 className={"mt-4 border-bottom py-3"}>Phản hồi của bệnh nhân sau khi đi khám</h5>*/}
-            {/*        </div>*/}
-            {/*        {ratingList.map((rating, index) => (<>*/}
-            {/*            <div> <Rating value={rating?.star} max={5} readOnly /></div>*/}
-            {/*            <div key={rating.id} className="d-flex ">*/}
-            {/*                <div className="me-1">{rating?.customer?.fullName}</div>*/}
-            {/*                <span style={{color: "#48dbfb"}}>*/}
-            {/*                    <i className="fa-regular fa-circle-check"></i>*/}
-            {/*                    </span>*/}
-            {/*                <span className="ms-2" style={{color: "#48dbfb"}}>*/}
-            {/*                   đã khám ngày {rating?.createAt}*/}
-            {/*                     </span>*/}
-            {/*            </div>*/}
-            {/*            <div className="border-bottom py-3">{rating?.comment}</div>*/}
-            {/*        </>))}*/}
-            {/*        <div className={"mt-3 pb-3"}>*/}
-            {/*            <RatingDoctor doctorId={doctorId} setRatingSubmitted={setRatingSubmitted}/>*/}
-            {/*        </div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
         </div>
     </>);
 }
