@@ -598,8 +598,6 @@ function ResultTyping() {
                                 </TableContainer>
                             </Grid>
                             <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px", marginRight: "20px"}}>Lưu đơn thuốc</Button>
-                            <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "20px", marginRight: "20px"}}>Download</Button>
-                            <Button type={"button"} variant="contained" color="info" sx={{marginTop: "20px", marginRight: "20px"}}>In đơn thuốc</Button>
                         </Box>
                         <div className="border" style={{height: "auto", marginTop: "20px", borderRadius: "5px"}}>
                         </div>

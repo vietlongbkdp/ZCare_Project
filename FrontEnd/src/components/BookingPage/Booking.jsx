@@ -152,7 +152,7 @@ export default function Booking(){
                             </Typography>
                         </Stack>
                     </Stack>
-                    <Stack mt={2} alignItems={"center"}>
+                    <Stack mt={2} alignItems={"center"} hidden >
                         <RadioGroup
                             aria-labelledby="demo-controlled-radio-buttons-group"
                             name="controlled-radio-buttons-group"
@@ -205,7 +205,7 @@ export default function Booking(){
                                                     aria-labelledby="demo-controlled-radio-buttons"
                                                     name="radioGender"
                                                     row
-                                                    defaultValue={gender}
+                                                    value={gender}
                                                     {...register("gender")}
                                                     error={Boolean(errors.gender)}
                                                     helperText={errors.gender?.message || ''}
