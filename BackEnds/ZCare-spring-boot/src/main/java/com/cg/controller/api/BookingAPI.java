@@ -165,7 +165,7 @@ public class BookingAPI {
 
         List<Booking> filteredBookings = new ArrayList<>();
         for (Booking booking : bookingList) {
-            if (booking.getStatus()== EStatusBooking.CONFIRMING  || booking.getStatus()==EStatusBooking.PAID ) {
+            if (booking.getStatus()== EStatusBooking.CONFIRMING  || booking.getStatus()==EStatusBooking.PAID || booking.getStatus()==EStatusBooking.RESULTING) {
                 continue;
             }
             filteredBookings.add(booking);

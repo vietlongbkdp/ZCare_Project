@@ -122,7 +122,7 @@ function AppointmentSchedule() {
                                 <StyledTableCell>STT</StyledTableCell>
                                 <StyledTableCell>Thông tin bác sĩ</StyledTableCell>
                                 <StyledTableCell>Thông tin bệnh nhân</StyledTableCell>
-                                <StyledTableCell>Ngày đặt</StyledTableCell>
+                                <StyledTableCell>Ngày khám</StyledTableCell>
                                 <StyledTableCell>Thời gian</StyledTableCell>
                                 <StyledTableCell> Giá </StyledTableCell>
                                 <StyledTableCell> Kết quả</StyledTableCell>
