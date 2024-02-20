@@ -41,6 +41,7 @@ function ResultTyping() {
     const {idCustomer, idDoctor, idBooking} = useParams();
     const [customer, setCustomer] = useState(null);
     const [doctor, setDoctor] = useState(null);
+    const [clinic, setClinic] = useState(null);
     const [medicine, setMedicine] = useState(null);
     const [listMedicine, setListMedicine] = useState([])
     const [morningChecked, setMorningChecked] = useState(false);
@@ -57,6 +58,14 @@ function ResultTyping() {
                 setLoading(false)
             } catch (errorCustomer) {
                 console.error('Lỗi lấy Customer:', errorCustomer);
+                setLoading(false)
+            }
+            try {
+                const responseClinic = await axios.get("http://localhost:8080/api/clinic/getClinicbyIdDoctor/" + idDoctor);
+                setClinic(responseClinic.data);
+                setLoading(false)
+            } catch (errorClinic) {
+                console.error('Lỗi lấy Clinic:', errorClinic);
                 setLoading(false)
             }
 
@@ -220,17 +229,49 @@ function ResultTyping() {
             return null;
         }
     }
+    const urlImageClinic = clinic?.clinicLogo;
     async function getFilePDF(data, customer, doctor) {
         const documentDefinition = {
             content: [
                 {
-                    image: await getImageBase64('https://res.cloudinary.com/dqcrxfewu/image/upload/v1705982574/clinic-avatar/35d99de9-0998-4142-887f-688e293c3129.png'),
-                    width: 120,
-                    alignment: 'left',
-                    margin: [10, 10, 10]
+                    columns: [
+                                {
+                                    image: await getImageBase64(urlImageClinic),
+                                    width: 120,
+                                    margin: [30, 0, 10, 20] // margin left-top-right-bottom
+                                },
+                                {
+                                    stack:[
+                                        {
+                                            text: clinic.clinicName.toUpperCase(),
+                                            bold: true,
+                                            fontSize: 11,
+                                        },
+                                        {
+                                            text: 'Địa chỉ: ' + clinic.address,
+                                            fontSize: 10,
+                                        },
+                                        {
+                                            text: 'Hotline: ' + clinic.hotline,
+                                            fontSize: 10,
+                                        },
+                                        {
+                                            text: 'GPKD: ' + clinic.operatingLicence,
+                                            fontSize: 10,
+                                        },
+                                        {
+                                            text: 'Email: ' + clinic.email,
+                                            fontSize: 10,
+                                        },
+                                    ],
+                                    width: '*' ,// Canh đều theo chiều ngang
+                                    alignment: 'left'
+                                }
+                            ],
+                    columnGap: 50
                 },
                 {
-                    text: 'Kết quả khám chữa bệnh',
+                    text: 'KẾT QUẢ KHÁM CHỮA BỆNH',
                     style: 'header'
                 },
                 {
@@ -265,9 +306,15 @@ function ResultTyping() {
                     }
                 },
                 {
+                    text: 'Ngày ' + dayjs().format('DD') + ' tháng ' + dayjs().format('MM') + ' năm ' + dayjs().format('YYYY'),
+                    italics: true,
+                    margin: [300, 15, 0,0],
+                    fontSize: 12
+                },
+                {
                     text: 'Xác nhận của bác sĩ',
                     bold: true,
-                    margin: [300, 30, 0,0],
+                    margin: [300, 10, 0,0],
                     fontSize: 15
                 },
                 {
@@ -282,7 +329,7 @@ function ResultTyping() {
                     fontSize: 25,
                     bold: true,
                     alignment: 'center',
-                    margin: [0, 0, 0, 20]
+                    margin: [0, 20, 0, 20]
                 },
                 openSans: {
                     fontFamily: 'Open Sans',

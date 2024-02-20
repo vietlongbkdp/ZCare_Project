@@ -1,5 +1,6 @@
 package com.cg.repository;
 
+import com.cg.model.Clinic;
 import com.cg.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
