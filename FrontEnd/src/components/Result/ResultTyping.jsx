@@ -99,40 +99,49 @@ function ResultTyping() {
     } = useForm({ resolver: yupResolver(schema),});
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
-        setLoading(true);
-        const dataNew = {
-            ...data,
-            idBooking: idBooking,
-            medicineList: listMedicine
-        };
-
         try {
-            const blob = await getFilePDF(dataNew, customer, doctor);
-            const formData = new FormData();
-            formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
-            formData.append('data', JSON.stringify(dataNew));
+            const responseBookingStatus = await axios.get("http://localhost:8080/api/booking/getBookingById/" + idBooking);
+            if(responseBookingStatus.data === 'EXAMINING'){
+                setLoading(true);
+                const dataNew = {
+                    ...data,
+                    idBooking: idBooking,
+                    medicineList: listMedicine
+                };
 
-            const resp = await axios.post('http://localhost:8080/api/result', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+                try {
+                    const blob = await getFilePDF(dataNew, customer, doctor);
+                    const formData = new FormData();
+                    formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
+                    formData.append('data', JSON.stringify(dataNew));
+
+                    const resp = await axios.post('http://localhost:8080/api/result', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+                    if (resp.status === 200) {
+                        openBlob(blob);
+                        toast.success('Đã tạo được đơn thuốc');
+                        reset();
+                        setListMedicine([]);
+                        setLoading(false)
+                        navigate(`/doctoradmin/bookingHistory`);
+                    } else {
+                        toast.error('Có lỗi, chưa lưu được');
+                        setLoading(false)
+                    }
+                } catch (error) {
+                    console.error(error);
+                    toast.error('Có lỗi xảy ra');
+                    setLoading(false)
                 }
-            });
-
-            if (resp.status === 200) {
-                openBlob(blob);
-                toast.success('Đã tạo được đơn thuốc');
-                reset();
-                setListMedicine([]);
-                setLoading(false)
-                navigate(`/doctoradmin/bookingHistory`);
-            } else {
-                toast.error('Có lỗi, chưa lưu được');
-                setLoading(false)
+            }else{
+                toast.error('Đã trả kết quả khám trước đó rồi, vui lòng kiểm tra lại!!!')
             }
-        } catch (error) {
-            console.error(error);
-            toast.error('Có lỗi xảy ra');
-            setLoading(false)
+        } catch (errorBooking) {
+            console.error('Lỗi lấy Booking:', errorBooking);
         }
     };
     const checkExistMedicine = (listMed, medicineName) =>{
