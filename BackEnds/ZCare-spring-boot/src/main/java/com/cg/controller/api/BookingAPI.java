@@ -201,4 +201,9 @@ public class BookingAPI {
         bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @GetMapping("/getBookingById/{idBooking}")
+    public ResponseEntity<?> getBookingById(@PathVariable Long idBooking){
+        String status = String.valueOf(bookingService.findById(idBooking).get().getStatus());
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
 }

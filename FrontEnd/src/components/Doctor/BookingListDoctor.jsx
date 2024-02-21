@@ -122,8 +122,8 @@ function BookingListDoctor() {
         const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
         setSelectedWeekday(selectedWeekday);
     };
-    const handleExaming = (idCustomer, idDoctor, idBooking)=>{
-        navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}/${idBooking}`)
+    const handleExaming = async (idCustomer, idDoctor, idBooking)=>{
+                navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}/${idBooking}`)
     }
 
     return (
