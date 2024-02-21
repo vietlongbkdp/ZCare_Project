@@ -292,6 +292,7 @@ function ResultTyping() {
                 {
                     ul: [
                         'Họ và tên bệnh nhân: ' + customer?.fullName,
+                        'Tuổi: ' + parseInt(dayjs().format("YYYY"))-customer?.dob[0],
                         'Giới tính: ' + customer?.gender.valueOf(),
                         'Số điện thoại: ' + customer?.phone,
                         'Địa chỉ: ' + customer?.address,
