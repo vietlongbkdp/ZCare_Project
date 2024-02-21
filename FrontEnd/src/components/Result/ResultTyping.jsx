@@ -26,9 +26,6 @@ import dayjs from "dayjs";
 import {useNavigate, useParams} from "react-router-dom";
 import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
-import {Sheet} from "@mui/joy";
-import {checkboxClasses} from "@mui/material/Checkbox";
-import Textarea from "@mui/joy/Textarea";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Loading from "../Loading/Loading";
 
@@ -49,7 +46,6 @@ function ResultTyping() {
     const [eveningChecked, setEveningChecked] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-    let savedConcatenatedValues;
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -100,6 +96,14 @@ function ResultTyping() {
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
         setLoading(true);
+        // try {
+        //     const responseBooking = await axios.get("http://localhost:8080/api/booking/" + idBooking);
+        //     setMedicine(responseMedicine.data);
+        //     setLoading(false)
+        // } catch (errorMedicine) {
+        //     console.error('Lỗi lấy Medicine:', errorMedicine);
+        //     setLoading(false)
+        // }
         const dataNew = {
             ...data,
             idBooking: idBooking,
