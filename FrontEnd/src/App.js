@@ -93,7 +93,6 @@ export default function App() {
         </Route>
         <Route path="/createSchedule" element={<ScheduleCreate />} />
         <Route path="/showDoctor" element={<DoctorInfoClinic />} />
-        <Route path="/booking/:scheduleId/:day/:month/:year" element={<Booking />} />
         <Route path="/list-speciality/:specialityId" element={<DoctorListBySpeciality />} />
         <Route path="/list-clinic/:clinicId" element={<DoctorListByClinic />} />
         <Route path="/search" element={<Search />} />
@@ -101,6 +100,7 @@ export default function App() {
         <Route element={<PrivateRouteCustomer />}>
           <Route path="/information-customer" element={<CustomerDashboard />} />
           <Route path="/appointment-schedule" element={<AppointmentSchedule />} />
+          <Route path="/booking/:scheduleId/:day/:month/:year" element={<Booking />} />
         </Route>
       </Routes>
     </>
