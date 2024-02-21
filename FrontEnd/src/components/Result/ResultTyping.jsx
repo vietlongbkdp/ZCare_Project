@@ -91,48 +91,58 @@ function ResultTyping() {
         handleSubmit,
         formState: { errors },
         reset,
-        setValue,
     } = useForm({ resolver: yupResolver(schema),});
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
         try {
             const responseBookingStatus = await axios.get("http://localhost:8080/api/booking/getBookingById/" + idBooking);
             if(responseBookingStatus.data === 'EXAMINING'){
-                setLoading(true);
-                const dataNew = {
-                    ...data,
-                    idBooking: idBooking,
-                    medicineList: listMedicine
-                };
+                Swal.fire({
+                    title: "Xác nhận xoá thuốc này",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Đồng ý!",
+                    cancelButtonText: "Huỷ"
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        setLoading(true);
+                        const dataNew = {
+                            ...data,
+                            idBooking: idBooking,
+                            medicineList: listMedicine
+                        };
+                        try {
+                            const blob = await getFilePDF(dataNew, customer, doctor);
+                            const formData = new FormData();
+                            formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
+                            formData.append('data', JSON.stringify(dataNew));
 
-                try {
-                    const blob = await getFilePDF(dataNew, customer, doctor);
-                    const formData = new FormData();
-                    formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
-                    formData.append('data', JSON.stringify(dataNew));
-
-                    const resp = await axios.post('http://localhost:8080/api/result', formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
+                            const resp = await axios.post('http://localhost:8080/api/result', formData, {
+                                headers: {
+                                    'Content-Type': 'multipart/form-data'
+                                }
+                            });
+                            if (resp.status === 200) {
+                                openBlob(blob);
+                                toast.success('Đã tạo được đơn thuốc');
+                                reset();
+                                setListMedicine([]);
+                                setLoading(false)
+                                navigate(`/doctoradmin/bookingHistory`);
+                            } else {
+                                toast.error('Có lỗi, chưa lưu được');
+                                setLoading(false)
+                            }
+                        } catch (error) {
+                            console.error(error);
+                            toast.error('Có lỗi xảy ra');
+                            setLoading(false)
                         }
-                    });
-
-                    if (resp.status === 200) {
-                        openBlob(blob);
-                        toast.success('Đã tạo được đơn thuốc');
-                        reset();
-                        setListMedicine([]);
-                        setLoading(false)
-                        navigate(`/doctoradmin/bookingHistory`);
-                    } else {
-                        toast.error('Có lỗi, chưa lưu được');
-                        setLoading(false)
                     }
-                } catch (error) {
-                    console.error(error);
-                    toast.error('Có lỗi xảy ra');
-                    setLoading(false)
-                }
+                });
+
             }else{
                 toast.error('Đã trả kết quả khám trước đó rồi, vui lòng kiểm tra lại!!!')
             }
@@ -202,12 +212,12 @@ function ResultTyping() {
     console.log(listMedicine)
     const handleDeleteMedicine = (index) =>{
         Swal.fire({
-            title: "Xác nhận xoá thuốc này",
+            title: "Vui lòng kiểm tra kỹ thông tin phiếu khám bệnh trước khi lưu",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Đồng ý!",
+            confirmButtonText: "Xác nhận!",
             cancelButtonText: "Huỷ"
         }).then(async (result) => {
             if (result.isConfirmed) {
@@ -215,7 +225,7 @@ function ResultTyping() {
                 setListMedicine([
                     ...listMedicine
                 ])
-                toast.success("Đã xoá khỏi đơn thuốc!");
+                toast.success("Đã lưu phiếu khám bệnh thành công!");
             }
         });
     }
