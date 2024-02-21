@@ -50,8 +50,6 @@ function PaidBookingList() {
     const userId = Cookies.get('userId');
     const [pre, setPre] = useState(true);
     const statusColors = {
-        CUSTOMERCONFIMED: "green",
-        EXAMINING: "blue",
         RESULTING: "purple",
         PAID: "orange",
         CANCEL: "red",
@@ -133,7 +131,7 @@ function PaidBookingList() {
                             <StyledTableCell>STT</StyledTableCell>
                             <StyledTableCell>Thông tin bác sĩ</StyledTableCell>
                             <StyledTableCell>Thông tin bệnh nhân</StyledTableCell>
-                            <StyledTableCell>Ngày đặt</StyledTableCell>
+                            <StyledTableCell>Ngày khám</StyledTableCell>
                             <StyledTableCell>Thời gian</StyledTableCell>
                             <StyledTableCell> Giá </StyledTableCell>
                             <StyledTableCell> Kết quả</StyledTableCell>
@@ -194,12 +192,6 @@ function PaidBookingList() {
                                                     handleChangeStatus(booking?.id, event)
                                                 }}
                                             >
-                                                <option value="CUSTOMERCONFIMED"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã xác nhận
-                                                </option>
-                                                <option value="EXAMINING"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
-                                                </option>
                                                 <option value="RESULTING"
                                                     style={{ backgroundColor: 'white', color: 'black' }}>Đã trả kết quả
                                                 </option>

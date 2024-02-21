@@ -44,8 +44,6 @@ function MedicalBookingList() {
     const statusColors = {
         CUSTOMERCONFIMED: "green",
         EXAMINING: "blue",
-        RESULTING: "purple",
-        PAID: "orange",
         CANCEL: "red",
     };
 
@@ -170,7 +168,7 @@ function MedicalBookingList() {
                             <StyledTableCell >STT</StyledTableCell>
                             <StyledTableCell >Thông tin bác sĩ</StyledTableCell>
                             <StyledTableCell >Thông tin bệnh nhân</StyledTableCell>
-                            <StyledTableCell >Ngày đặt</StyledTableCell>
+                            <StyledTableCell >Ngày khám</StyledTableCell>
                             <StyledTableCell>Thời gian</StyledTableCell>
                             <StyledTableCell>Giá</StyledTableCell>
                             <StyledTableCell>Kết quả</StyledTableCell>
@@ -247,12 +245,6 @@ function MedicalBookingList() {
                                                 </option>
                                                 <option value="EXAMINING"
                                                     style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
-                                                </option>
-                                                <option value="RESULTING"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã trả kết quả
-                                                </option>
-                                                <option value="PAID" style={{ backgroundColor: 'white', color: 'black' }}>Đã
-                                                    Thanh toán
                                                 </option>
                                                 <option value="CANCEL" style={{ backgroundColor: 'white', color: 'black' }}>Đã
                                                     hủy

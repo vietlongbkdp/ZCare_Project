@@ -22,6 +22,7 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import Swal from 'sweetalert2';
 import Loading from "../Loading/Loading";
+import dayjs from "dayjs";
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -48,7 +49,8 @@ const schemaBooking = yup.object().shape({
 })
 export default function Booking(){
     const { scheduleId, day,month,year } = useParams();
-    const bookDay = day + "/" + month + "/" + year;
+
+    const bookDay = dayjs().locale('vi').set('date', day).set('month', month - 1).set('year', year).format('D/M/YYYY');
     const userId = Cookies.get('userId');
     const [schedule,setSchedule]=useState('');
     const [bookFor, setBookFor] = useState("me")
@@ -152,7 +154,7 @@ export default function Booking(){
                             </Typography>
                         </Stack>
                     </Stack>
-                    <Stack mt={2} alignItems={"center"}>
+                    <Stack mt={2} alignItems={"center"} hidden >
                         <RadioGroup
                             aria-labelledby="demo-controlled-radio-buttons-group"
                             name="controlled-radio-buttons-group"
@@ -205,7 +207,7 @@ export default function Booking(){
                                                     aria-labelledby="demo-controlled-radio-buttons"
                                                     name="radioGender"
                                                     row
-                                                    defaultValue={gender}
+                                                    value={gender}
                                                     {...register("gender")}
                                                     error={Boolean(errors.gender)}
                                                     helperText={errors.gender?.message || ''}

@@ -41,6 +41,11 @@ public class ClinicAPI {
         Clinic clinic = clinicService.findById(id).get();
         return new ResponseEntity<>(clinic, HttpStatus.OK);
     }
+    @GetMapping("/getClinicbyIdDoctor/{idDoctor}")
+    public ResponseEntity<?> getClinicByDoctorId(@PathVariable Long idDoctor){
+        Clinic clinic = doctorService.findById(idDoctor).get().getClinic();
+        return new ResponseEntity<>(clinic, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<?> createClinic(@RequestBody Clinic clinic) {

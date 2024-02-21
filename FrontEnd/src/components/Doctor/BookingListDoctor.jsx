@@ -122,8 +122,8 @@ function BookingListDoctor() {
         const selectedWeekday = parsedDate.toLocaleDateString('vi-VN', {weekday: 'long'});
         setSelectedWeekday(selectedWeekday);
     };
-    const handleExaming = (idCustomer, idDoctor, idBooking)=>{
-        navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}/${idBooking}`)
+    const handleExaming = async (idCustomer, idDoctor, idBooking)=>{
+                navigate(`/doctoradmin/clinic/${idCustomer}/${idDoctor}/${idBooking}`)
     }
 
     return (
@@ -157,7 +157,7 @@ function BookingListDoctor() {
                         <StyledTableCell >STT</StyledTableCell>
                         <StyledTableCell >Thông tin bác sĩ</StyledTableCell>
                         <StyledTableCell >Thông tin bệnh nhân</StyledTableCell>
-                        <StyledTableCell >Ngày đặt</StyledTableCell>
+                        <StyledTableCell >Ngày khám</StyledTableCell>
                         <StyledTableCell>Thời gian</StyledTableCell>
                         <StyledTableCell>Giá</StyledTableCell>
                         <StyledTableCell>Kết quả</StyledTableCell>

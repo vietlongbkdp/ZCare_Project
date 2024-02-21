@@ -41,6 +41,7 @@ function ResultTyping() {
     const {idCustomer, idDoctor, idBooking} = useParams();
     const [customer, setCustomer] = useState(null);
     const [doctor, setDoctor] = useState(null);
+    const [clinic, setClinic] = useState(null);
     const [medicine, setMedicine] = useState(null);
     const [listMedicine, setListMedicine] = useState([])
     const [morningChecked, setMorningChecked] = useState(false);
@@ -57,6 +58,14 @@ function ResultTyping() {
                 setLoading(false)
             } catch (errorCustomer) {
                 console.error('Lỗi lấy Customer:', errorCustomer);
+                setLoading(false)
+            }
+            try {
+                const responseClinic = await axios.get("http://localhost:8080/api/clinic/getClinicbyIdDoctor/" + idDoctor);
+                setClinic(responseClinic.data);
+                setLoading(false)
+            } catch (errorClinic) {
+                console.error('Lỗi lấy Clinic:', errorClinic);
                 setLoading(false)
             }
 
@@ -90,40 +99,49 @@ function ResultTyping() {
     } = useForm({ resolver: yupResolver(schema),});
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
-        setLoading(true);
-        const dataNew = {
-            ...data,
-            idBooking: idBooking,
-            medicineList: listMedicine
-        };
-
         try {
-            const blob = await getFilePDF(dataNew, customer, doctor);
-            const formData = new FormData();
-            formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
-            formData.append('data', JSON.stringify(dataNew));
+            const responseBookingStatus = await axios.get("http://localhost:8080/api/booking/getBookingById/" + idBooking);
+            if(responseBookingStatus.data === 'EXAMINING'){
+                setLoading(true);
+                const dataNew = {
+                    ...data,
+                    idBooking: idBooking,
+                    medicineList: listMedicine
+                };
 
-            const resp = await axios.post('http://localhost:8080/api/result', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
+                try {
+                    const blob = await getFilePDF(dataNew, customer, doctor);
+                    const formData = new FormData();
+                    formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
+                    formData.append('data', JSON.stringify(dataNew));
+
+                    const resp = await axios.post('http://localhost:8080/api/result', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+                    if (resp.status === 200) {
+                        openBlob(blob);
+                        toast.success('Đã tạo được đơn thuốc');
+                        reset();
+                        setListMedicine([]);
+                        setLoading(false)
+                        navigate(`/doctoradmin/bookingHistory`);
+                    } else {
+                        toast.error('Có lỗi, chưa lưu được');
+                        setLoading(false)
+                    }
+                } catch (error) {
+                    console.error(error);
+                    toast.error('Có lỗi xảy ra');
+                    setLoading(false)
                 }
-            });
-
-            if (resp.status === 200) {
-                openBlob(blob);
-                toast.success('Đã tạo được đơn thuốc');
-                reset();
-                setListMedicine([]);
-                setLoading(false)
-                navigate(`/doctoradmin/bookingHistory`);
-            } else {
-                toast.error('Có lỗi, chưa lưu được');
-                setLoading(false)
+            }else{
+                toast.error('Đã trả kết quả khám trước đó rồi, vui lòng kiểm tra lại!!!')
             }
-        } catch (error) {
-            console.error(error);
-            toast.error('Có lỗi xảy ra');
-            setLoading(false)
+        } catch (errorBooking) {
+            console.error('Lỗi lấy Booking:', errorBooking);
         }
     };
     const checkExistMedicine = (listMed, medicineName) =>{
@@ -205,11 +223,64 @@ function ResultTyping() {
             }
         });
     }
-    function getFilePDF(data, customer, doctor) {
+    async function getImageBase64(url) {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        } catch (error) {
+            console.error('Error loading image:', error);
+            return null;
+        }
+    }
+    const urlImageClinic = clinic?.clinicLogo;
+    async function getFilePDF(data, customer, doctor) {
         const documentDefinition = {
             content: [
                 {
-                    text: 'Kết quả khám chữa bệnh',
+                    columns: [
+                                {
+                                    image: await getImageBase64(urlImageClinic),
+                                    width: 120,
+                                    margin: [30, 0, 10, 20] // margin left-top-right-bottom
+                                },
+                                {
+                                    stack:[
+                                        {
+                                            text: clinic.clinicName.toUpperCase(),
+                                            bold: true,
+                                            fontSize: 11,
+                                        },
+                                        {
+                                            text: 'Địa chỉ: ' + clinic.address,
+                                            fontSize: 10,
+                                        },
+                                        {
+                                            text: 'Hotline: ' + clinic.hotline,
+                                            fontSize: 10,
+                                        },
+                                        {
+                                            text: 'GPKD: ' + clinic.operatingLicence,
+                                            fontSize: 10,
+                                        },
+                                        {
+                                            text: 'Email: ' + clinic.email,
+                                            fontSize: 10,
+                                        },
+                                    ],
+                                    width: '*' ,// Canh đều theo chiều ngang
+                                    alignment: 'left'
+                                }
+                            ],
+                    columnGap: 50
+                },
+                {
+                    text: 'KẾT QUẢ KHÁM CHỮA BỆNH',
                     style: 'header'
                 },
                 {
@@ -226,7 +297,7 @@ function ResultTyping() {
                         'Ghi chú thêm: '+ data.doctorNotice,
                     ],
                     style: 'openSans',
-                    margin: [0, 0, 10, 5] // margin top-bottom-left-right
+                    margin: [40, 0, 10, 5] // margin left-top-right-bottom
                 },
                 {
                     text: 'Đơn thuốc',
@@ -236,7 +307,7 @@ function ResultTyping() {
                     layout: 'lightHorizontalLines lightVerticalLines', // optional
                     table: {
                         headerRows: 1,
-                        widths: [ 30, 'auto', 50 , 50 ,'auto', 'auto' ],
+                        widths: [ 30, 130, 50 , 50 ,90, 120 ],
 
                         body: [
                             [ { text: 'Stt', bold: true, alignment: 'center' }, { text: 'Tên thuốc', bold: true, alignment: 'center' }, { text: 'Số lượng', bold: true, alignment: 'center' }, { text: 'Đơn vị', bold: true, alignment: 'center' }, { text: ' Liều lượng', bold: true, alignment: 'center' }, { text: 'Sử dụng', bold: true, alignment: 'center' } ],
@@ -244,9 +315,15 @@ function ResultTyping() {
                     }
                 },
                 {
+                    text: 'Ngày ' + dayjs().format('DD') + ' tháng ' + dayjs().format('MM') + ' năm ' + dayjs().format('YYYY'),
+                    italics: true,
+                    margin: [300, 15, 0,0],
+                    fontSize: 12
+                },
+                {
                     text: 'Xác nhận của bác sĩ',
                     bold: true,
-                    margin: [300, 30, 0,0],
+                    margin: [300, 10, 0,0],
                     fontSize: 15
                 },
                 {
@@ -261,7 +338,7 @@ function ResultTyping() {
                     fontSize: 25,
                     bold: true,
                     alignment: 'center',
-                    margin: [0, 0, 0, 20]
+                    margin: [0, 20, 0, 20]
                 },
                 openSans: {
                     fontFamily: 'Open Sans',
@@ -530,8 +607,6 @@ function ResultTyping() {
                                 </TableContainer>
                             </Grid>
                             <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px", marginRight: "20px"}}>Lưu đơn thuốc</Button>
-                            <Button type={"button"} variant="contained" color="primary" sx={{marginTop: "20px", marginRight: "20px"}}>Download</Button>
-                            <Button type={"button"} variant="contained" color="info" sx={{marginTop: "20px", marginRight: "20px"}}>In đơn thuốc</Button>
                         </Box>
                         <div className="border" style={{height: "auto", marginTop: "20px", borderRadius: "5px"}}>
                         </div>

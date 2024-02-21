@@ -165,7 +165,7 @@ public class BookingAPI {
 
         List<Booking> filteredBookings = new ArrayList<>();
         for (Booking booking : bookingList) {
-            if (booking.getStatus()== EStatusBooking.CONFIRMING  || booking.getStatus()==EStatusBooking.PAID ) {
+            if (booking.getStatus()== EStatusBooking.CONFIRMING  || booking.getStatus()==EStatusBooking.PAID || booking.getStatus()==EStatusBooking.RESULTING) {
                 continue;
             }
             filteredBookings.add(booking);
@@ -200,5 +200,10 @@ public class BookingAPI {
         booking.setStatus(EStatusBooking.valueOf(changeStatusDTO.getSelectedStatus()));
         bookingService.save(booking);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    @GetMapping("/getBookingById/{idBooking}")
+    public ResponseEntity<?> getBookingById(@PathVariable Long idBooking){
+        String status = String.valueOf(bookingService.findById(idBooking).get().getStatus());
+        return new ResponseEntity<>(status, HttpStatus.OK);
     }
 }
