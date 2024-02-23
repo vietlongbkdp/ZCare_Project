@@ -10,8 +10,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import Loading from "../Loading/Loading";
+import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";
 
 const schema = yup.object({
   password: yup.string().required("không được để trống"),
@@ -30,7 +32,6 @@ export default function ChangePassword() {
   const password = watch("password");
   const newPassword = watch("newPassword");
     const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const isPasswordMatch = password === newPassword;
 
   const handleNewPasswordChange = (e) => {
@@ -47,14 +48,43 @@ export default function ChangePassword() {
         ...data,
         userId: userId,
       };
-      const response = await axios.post(
+      const responses = await axios.post(
         "http://localhost:8080/api/user/change-password",
         requestData
       );
-      console.log(response.data);
         setLoading(false)
       toast.success("Đổi mật khẩu thành công");
-      navigate(`/login`);
+       const object={
+         email:responses.data.email,
+         password:data.password
+       };
+      const response = await axios.post("http://localhost:8080/api/user/login", object);
+      console.log(response)
+      Cookies.set('userId', userId, { expires: 7, secure: true });
+      const storedUserId = Cookies.get('userId');
+      console.log(storedUserId)
+      const token = response.data.token;
+      Cookies.set('JWT', token, { expires: 7, secure: true });
+      toast.success("Đăng nhập thành công");
+      const decodedToken = jwtDecode(token);
+
+      const userRole = decodedToken.roles[0];
+      console.log(userRole)
+      if (userRole === "ROLE_ADMIN") {
+        window.location.href = "/admin";
+      } else if (userRole === "ROLE_CUSTOMER") {
+        const currentPath = window.location.pathname;
+        console.log(currentPath)
+        if (!currentPath.includes("/admin")) {
+          window.location.href = "/home";
+        } else {
+          window.location.href = "/home";
+        }
+      } else if (userRole === "ROLE_ADMIN_CLINIC") {
+        window.location.href = `/clinicadmin`;
+      } else if (userRole === "ROLE_DOCTOR") {
+        window.location.href = `/doctoradmin`;
+      }
     } catch (error) {
       toast.error("Đổi mật khẩu thất bại.");
         setLoading(false)

@@ -162,7 +162,7 @@ private UserService userService;
         User user = iUserRepository.findById(changePassword.getUserId()).get();
         user.setPassword(PasswordEncryptionUtil.encryptPassword(changePassword.getPassword()));
         iUserRepository.save(user);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(user,HttpStatus.OK);
     }
 
 //    @PutMapping("/{id}")
