@@ -17,7 +17,8 @@ public interface IDoctorRepository extends JpaRepository<Doctor, Long> {
     @Query("SELECT d FROM Doctor d " +
             "WHERE (:specialityId IS NULL OR d.speciality.id = :specialityId) " +
             "  AND (:clinicId IS NULL OR d.clinic.id = :clinicId) " +
-            "  AND (:doctorName IS NULL OR LOWER(d.doctorName) LIKE LOWER(CONCAT('%', :doctorName, '%'))) ")
+            "  AND (:doctorName IS NULL OR LOWER(d.doctorName) LIKE LOWER(CONCAT('%', :doctorName, '%'))) " +
+            "  AND d.user.unlock = true")
     List<Doctor> findDoctorsWithFilters(@Param("specialityId") Long specialityId,
                                         @Param("clinicId") Long clinicId,
                                         @Param("doctorName") String doctorName);
