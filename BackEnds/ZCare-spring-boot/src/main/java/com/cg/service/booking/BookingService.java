@@ -114,7 +114,7 @@ public class BookingService implements IBookingService {
             booking.setPatientName(bookingDTO.getPatientName());
         }
         iBookingRepository.save(booking);
-        String url = "http://localhost:8080/api/booking/confirm/" + booking.getCustomer().getId() + "/" + booking.getSchedule().getId();
+        String url = "http://192.168.1.64:3001/api/booking/confirm/" + booking.getCustomer().getId() + "/" + booking.getSchedule().getId();
         String title="Xác nhận đặt lịch hẹn khám tại ZCare";
         String body= SendEmail.EmailScheduledSuccessfully(
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
