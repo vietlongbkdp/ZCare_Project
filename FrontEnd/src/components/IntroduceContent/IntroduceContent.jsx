@@ -123,37 +123,48 @@ export default function IntroduceContent() {
                     <Box sx={{ flexGrow: 1 }}>
                         <Grid container spacing={1}>
                             <Grid container item spacing={10}>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     <Box>
                                         <CardMedia
                                             component="img"
-                                            image='https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-6/418431473_1597327954414234_8801241719182602824_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=BfYIDy9Qpi4AX8YqeV1&_nc_ht=scontent.fhan20-1.fna&oh=00_AfCSd6r1TAyjdeO1sVwMNKHHhDykqa0lnu9AZUAfgAY66A&oe=65AA6ABC'
+                                            image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917826/example/ybajbiit1gab4czif6jv.jpg'
                                             alt="Error image"
                                         />
-                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Nguyễn Văn A</Typography>
-                                        <Typography>Tổng giám đốc: CEO </Typography>
+                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Nguyễn Viết Long</Typography>
+                                        <Typography>Giám đốc điều hành - CEO </Typography>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     <Box>
                                         <CardMedia
                                             component="img"
-                                            image='https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-6/418431473_1597327954414234_8801241719182602824_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=BfYIDy9Qpi4AX8YqeV1&_nc_ht=scontent.fhan20-1.fna&oh=00_AfCSd6r1TAyjdeO1sVwMNKHHhDykqa0lnu9AZUAfgAY66A&oe=65AA6ABC'
+                                            image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917828/example/pac0t2ty0fd06wth9g5o.jpg'
                                             alt="Error image"
                                         />
-                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Nguyễn Văn B</Typography>
-                                        <Typography>Marketing Director </Typography>
+                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Hàng Quốc Đạt</Typography>
+                                        <Typography>Giám đốc tài chính - CFO</Typography>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={4}>
+                                <Grid item xs={3}>
                                     <Box>
                                         <CardMedia
                                             component="img"
-                                            image='https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-6/418431473_1597327954414234_8801241719182602824_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=BfYIDy9Qpi4AX8YqeV1&_nc_ht=scontent.fhan20-1.fna&oh=00_AfCSd6r1TAyjdeO1sVwMNKHHhDykqa0lnu9AZUAfgAY66A&oe=65AA6ABC'
+                                            image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917826/example/hczgkvbninrhwi2o2pbk.jpg'
                                             alt="Error image"
                                         />
-                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Nguyễn Văn C</Typography>
-                                        <Typography>Operations Manager </Typography>
+                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Lê Bá Tường</Typography>
+                                        <Typography>Giám đốc Marketing - CMO</Typography>
+                                    </Box>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Box>
+                                        <CardMedia
+                                            component="img"
+                                            image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917827/example/ot7vg1rcxgagj0pbp6sh.png'
+                                            alt="Error image"
+                                        />
+                                        <Typography alignItems={'left'} sx={{mt: 2, fontWeight: 'bold'}}>Đoàn Văn Phước Vinh</Typography>
+                                        <Typography>Giám đốc pháp lý - CLO</Typography>
                                     </Box>
                                 </Grid>
                             </Grid>
