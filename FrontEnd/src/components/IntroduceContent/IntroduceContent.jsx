@@ -127,6 +127,8 @@ export default function IntroduceContent() {
                                     <Box>
                                         <CardMedia
                                             component="img"
+                                            height='230px'
+                                            width='230px'
                                             image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917826/example/ybajbiit1gab4czif6jv.jpg'
                                             alt="Error image"
                                         />
@@ -138,6 +140,8 @@ export default function IntroduceContent() {
                                     <Box>
                                         <CardMedia
                                             component="img"
+                                            height='230px'
+                                            width='230px'
                                             image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917828/example/pac0t2ty0fd06wth9g5o.jpg'
                                             alt="Error image"
                                         />
@@ -149,6 +153,8 @@ export default function IntroduceContent() {
                                     <Box>
                                         <CardMedia
                                             component="img"
+                                            height='230px'
+                                            width='230px'
                                             image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917826/example/hczgkvbninrhwi2o2pbk.jpg'
                                             alt="Error image"
                                         />
@@ -160,6 +166,8 @@ export default function IntroduceContent() {
                                     <Box>
                                         <CardMedia
                                             component="img"
+                                            height='230px'
+                                            width='230px'
                                             image='https://res.cloudinary.com/dqcrxfewu/image/upload/v1708917827/example/ot7vg1rcxgagj0pbp6sh.png'
                                             alt="Error image"
                                         />
