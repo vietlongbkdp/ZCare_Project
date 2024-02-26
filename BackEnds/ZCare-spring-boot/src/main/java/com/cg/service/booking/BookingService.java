@@ -144,7 +144,7 @@ public class BookingService implements IBookingService {
         List<Booking> bookings = iBookingRepository.findByBookingDate(currentDate);
         String title = "Nhắc nhở lịch khám bệnh";
         for (Booking booking : bookings) {
-            if (!booking.getReminderSent()) {
+            if (!booking.getReminderSent() && booking.getStatus()==EStatusBooking.CUSTOMERCONFIMED) {
                 String body = SendEmail.ExamScheduleReminder(booking.getCustomer().getFullName(), booking.getBookingDate(), booking.getBookingTime());
                 emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
                 booking.setReminderSent(true);
