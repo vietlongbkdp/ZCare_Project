@@ -1,13 +1,14 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import axios from "axios";
 import {Link} from "react-router-dom";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function SpecialityContent() {
     const [specialityList, setSpecialityList] = useState(null);
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get('http://localhost:8080/api/speciality')
+        axios.get(`${API}/api/speciality`)
             .then(response => {
                 setSpecialityList(response.data);
                 console.log(response.data);

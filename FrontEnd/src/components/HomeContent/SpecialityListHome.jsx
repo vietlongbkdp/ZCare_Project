@@ -1,15 +1,16 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function SpecialityListHome() {
   const [specialityList, setSpecialityList] = useState([]);
-
+  const { API } = useContext(ApiContext)
   const settings = {
     dots: true,
     infinite: true,
@@ -20,7 +21,7 @@ export default function SpecialityListHome() {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/speciality')
+    axios.get(`${API}/api/speciality`)
         .then(response => {
           setSpecialityList(response.data);
         })

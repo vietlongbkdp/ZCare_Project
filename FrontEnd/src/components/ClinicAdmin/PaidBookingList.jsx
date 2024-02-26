@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import axios from "axios";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { saveAs } from 'file-saver';
 import { toast } from 'react-toastify';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -49,6 +50,7 @@ function PaidBookingList() {
     const [filteredBooking, setFilteredBooking] = useState([]);
     const userId = Cookies.get('userId');
     const [pre, setPre] = useState(true);
+    const { API } = useContext(ApiContext)
     const statusColors = {
         RESULTING: "purple",
         PAID: "orange",
@@ -56,7 +58,7 @@ function PaidBookingList() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/adminClinic/resulting/${userId}`)
+        axios.get(`${API}/api/booking/adminClinic/resulting/${userId}`)
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);
@@ -106,7 +108,7 @@ function PaidBookingList() {
             bookingId,
             selectedStatus
         }
-        axios.post('http://localhost:8080/api/booking/changeStatus', data)
+        axios.post(`${API}/api/booking/changeStatus`, data)
             .then(response => {
                 setbookingCustomer(response.data);
                 setPre(!pre);

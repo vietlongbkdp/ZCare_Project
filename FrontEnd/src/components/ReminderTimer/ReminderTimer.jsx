@@ -1,10 +1,12 @@
-import { useEffect } from 'react';
+import {useContext, useEffect} from 'react';
 import axios from 'axios';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const ReminderTimer = () => {
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.post('http://localhost:8080/api/booking/send')
+            axios.post(`${API}/api/booking/send`)
                 .then(res => {
                     console.log('Reminder emails sent successfully.');
                 })
@@ -20,7 +22,7 @@ const ReminderTimer = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            axios.post('http://localhost:8080/api/booking/setSchedule')
+            axios.post(`${API}/api/booking/setSchedule`)
                 .then(res => {
                     console.log('cập nhâp trạng thái thành công');
                 })

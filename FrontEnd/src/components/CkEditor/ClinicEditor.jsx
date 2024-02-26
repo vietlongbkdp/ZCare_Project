@@ -1,9 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { Typography } from '@mui/material';
 import './CkEditor.css'
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 // ClassicEditor.create(document.querySelector('#editor'), {
 //     plugins: [AlignmentPlugin], 
@@ -11,6 +12,7 @@ import './CkEditor.css'
 // });
 
 export default function ClinicEditor({ setValue, getValues }) {
+    const { API } = useContext(ApiContext)
     function handleFileUpload(loader) {
         return {
             upload: () => {
@@ -18,7 +20,7 @@ export default function ClinicEditor({ setValue, getValues }) {
                     const body = new FormData();
                     loader.file.then((file) => {
                         body.append('image', file);
-                        axios.post('http://localhost:8080/api/avatar', body, {
+                        axios.post(`${API}/api/avatar`, body, {
                             headers: {
                                 "Content-Type": "multipart/form-data",
                             },

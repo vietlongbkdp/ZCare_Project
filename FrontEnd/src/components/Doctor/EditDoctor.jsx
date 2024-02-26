@@ -14,12 +14,13 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import DoctorEditor from "../CkEditor/DoctorEditor";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -78,7 +79,7 @@ let updateAvatar;
 let presentAvatar;
 
 export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInClinic, setUpdateShow }) {
-
+    const { API } = useContext(ApiContext)
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
     const [clinicId, setClinicId] = useState(0);
@@ -100,7 +101,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
         try {
             data.clinicId = clinicId;
             console.log(data)
-            await axios.put(`http://localhost:8080/api/doctor/update/${doctorId}`, data);
+            await axios.put(`${API}/api/doctor/update/${doctorId}`, data);
             toast.success("Cập nhật bác sĩ thành công")
             setLoading(false)
             reset();
@@ -117,7 +118,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
     useEffect(() => {
         if (doctorId) {
             const getDoctor = async () => {
-                const res = await axios.get(`http://localhost:8080/api/doctor/${doctorId}`);
+                const res = await axios.get(`${API}/api/doctor/${doctorId}`);
                 const result = await res.data;
                 setClinicId(result.clinic.id)
                 setPosition(result.position.id)
@@ -145,7 +146,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
     useEffect(() => {
         const getPositions = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/position');
+                const response = await axios.get(`${API}/api/position`);
                 setPositionList(response.data);
                 setLoading(false)
             } catch (error) {
@@ -159,7 +160,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
     useEffect(() => {
         const getSpeciality = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/speciality');
+                const response = await axios.get(`${API}/api/speciality`);
                 setSpecialityList(response.data);
                 setLoading(false)
             } catch (error) {
@@ -179,7 +180,7 @@ export default function EditDoctor({ doctorId, setShowEdit, handleShowDoctorInCl
         let imagesImport = Array.from(e.target.files);
         const formData = new FormData();
         formData.append('image', imagesImport[0])
-        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        const res = await axios.post(`${API}/api/avatar`, formData)
         updateAvatar = await res.data.fileUrl
         document.getElementById('blah').src = updateAvatar;
     }

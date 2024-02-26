@@ -1,8 +1,9 @@
 import { Box, Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, Stack, TextField } from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function SearchBar() {
     const [clinicList, setClinicList] = useState([]);
@@ -11,8 +12,9 @@ export default function SearchBar() {
     const [selectedSpeciality, setSelectedSpeciality] = useState('');
     const [doctorName, setDoctorName] = useState('');
     const navigate = useNavigate();
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get('http://localhost:8080/api/clinic')
+        axios.get(`${API}/api/clinic`)
             .then(response => {
                 setClinicList(response.data);
             })
@@ -22,7 +24,7 @@ export default function SearchBar() {
     }, []);
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/speciality')
+        axios.get(`${API}/api/speciality`)
             .then(response => {
                 setSpecialityList(response.data);
             })

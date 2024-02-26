@@ -6,13 +6,14 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Paper, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from '../CkEditor/ClinicEditor';
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -85,17 +86,17 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
         { resolver: yupResolver(schema) }
     );
     const [loading, setLoading] = useState(false);
-
+    const { API } = useContext(ApiContext)
     const createClinic = async (data) => {
         setLoading(true)
         console.log('data', data);
         let imagesImport = Array.from(data.clinicLogo);
         const formData = new FormData();
         formData.append('image', imagesImport[0])
-        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        const res = await axios.post(`${API}/api/avatar`, formData)
         if (res.status == '200') {
             data.clinicLogo = await res.data.fileUrl
-            const response = await axios.post('http://localhost:8080/api/clinic', data);
+            const response = await axios.post(`${API}/api/clinic`, data);
             console.log(response);
             if (response.status == '200') {
                 toast.success("Tạo phòng khám thành công!")
@@ -108,7 +109,7 @@ export default function AddClinic({ setShow, setISupdate, setShowContent, setSho
                 setISupdate(pre => !pre);
             }
             else {
-                await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
+                await axios.delete(`${API}/api/avatar/${res.data.id}`)
                 toast.error("Tạo phòng khám thất bại!")
                 setLoading(false);
             }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import "./Doctorinfo.css"
 import dayjs from "dayjs";
@@ -8,6 +8,7 @@ import {Link, useParams} from "react-router-dom";
 import HTMLReactParser from "html-react-parser";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function DoctorInfo() {
     const dateNows = dayjs().format('D/M/YYYY')
@@ -22,7 +23,7 @@ function DoctorInfo() {
     const [ratingSubmitted, setRatingSubmitted] = useState(false);
     const [loading, setLoading] = useState(true);
     const {doctorId} = useParams();
-
+    const { API } = useContext(ApiContext)
     const [doctorUserId, setDoctorUserId]= useState();
 
     const storedUserId = Cookies.get('userId');
@@ -30,7 +31,7 @@ function DoctorInfo() {
     useEffect(()=>{
         const finddUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                const response = await axios.get(`${API}/api/user/userlogin/${storedUserId}`)
                 setDoctorUserId(response.data.id)
                 setLoading(false)
             }catch (error) {
@@ -60,7 +61,7 @@ function DoctorInfo() {
     useEffect(() => {
         const fetchDoctorInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorUserId);
+                const response = await axios.get(`${API}/api/doctor/` + doctorUserId);
                 console.log(response.data)
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
@@ -74,7 +75,7 @@ function DoctorInfo() {
 
         const fetchScheduleData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorUserId}/${selectedWeekday}`);
+                const response = await axios.get(`${API}/api/schedule/${doctorUserId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
                     setLoading(false)
@@ -99,7 +100,7 @@ function DoctorInfo() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/rating/${doctorUserId}`)
+        axios.get(`${API}/api/rating/${doctorUserId}`)
             .then(response => {
                 setRatingList(response.data);
             })

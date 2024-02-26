@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import { Paper, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React, { useEffect, useRef, useState } from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import ClinicEditor from "../CkEditor/ClinicEditor";
 import { useNavigate } from "react-router-dom";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -80,7 +81,7 @@ export default function EditAdminClinic() {
         setValue,
         getValues
     } = useForm({ resolver: yupResolver(schema) });
-
+    const { API } = useContext(ApiContext)
     const [clinicUserId, setClinicUserId] = useState();
     const [showCkEditor, setShowCkEditor] = useState(false);
     const storedUserId = Cookies.get('userId');
@@ -90,8 +91,8 @@ export default function EditAdminClinic() {
     useEffect(() => {
         const finddUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
-                const res = await axios.get(`http://localhost:8080/api/clinic/${response.data.id}`);
+                const response = await axios.get(`${API}/api/user/userlogin/${storedUserId}`)
+                const res = await axios.get(`${API}/api/clinic/${response.data.id}`);
                 if (res.status === 200) {
                     const result = await res.data;
                     setShowCkEditor(true)
@@ -124,7 +125,7 @@ export default function EditAdminClinic() {
             data.clinicLogo = updateAvatar;
         }
         try {
-            await axios.put(`http://localhost:8080/api/clinic/${clinicUserId}`, data);
+            await axios.put(`${API}/api/clinic/${clinicUserId}`, data);
             toast.success("Cập nhật phòng khám thành công!");
             navigate('/clinicadmin/list-clinic');
             setLoading(false)
@@ -139,7 +140,7 @@ export default function EditAdminClinic() {
         let imagesImport = Array.from(e.target.files);
         const formData = new FormData();
         formData.append('image', imagesImport[0])
-        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        const res = await axios.post(`${API}/api/avatar`, formData)
         updateAvatar = await res.data.fileUrl
         document.getElementById('blah').src = updateAvatar;
     }

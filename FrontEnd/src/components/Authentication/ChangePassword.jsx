@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
   Box,
   Typography,
@@ -14,6 +14,7 @@ import { useParams} from "react-router-dom";
 import Loading from "../Loading/Loading";
 import Cookies from "js-cookie";
 import {jwtDecode} from "jwt-decode";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object({
   password: yup.string().required("không được để trống"),
@@ -31,6 +32,7 @@ export default function ChangePassword() {
   });
   const password = watch("password");
   const newPassword = watch("newPassword");
+  const { API } = useContext(ApiContext)
     const [loading, setLoading] = useState(false);
   const isPasswordMatch = password === newPassword;
 
@@ -49,7 +51,7 @@ export default function ChangePassword() {
         userId: userId,
       };
       const responses = await axios.post(
-        "http://localhost:8080/api/user/change-password",
+        `${API}/api/user/change-password`,
         requestData
       );
         setLoading(false)
@@ -58,7 +60,7 @@ export default function ChangePassword() {
          email:responses.data.email,
          password:data.password
        };
-      const response = await axios.post("http://localhost:8080/api/user/login", object);
+      const response = await axios.post(`${API}/api/user/login`, object);
       console.log(response)
       Cookies.set('userId', userId, { expires: 7, secure: true });
       const storedUserId = Cookies.get('userId');

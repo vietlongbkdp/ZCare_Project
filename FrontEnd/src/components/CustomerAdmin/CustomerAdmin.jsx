@@ -5,7 +5,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import Button from "@mui/material/Button";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { Pagination, Typography } from "@mui/material";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -42,7 +43,7 @@ function GetCustomerAdmin() {
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
     };
-
+    const { API } = useContext(ApiContext)
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
 
@@ -52,7 +53,7 @@ function GetCustomerAdmin() {
     useEffect(() => {
         const getCustomers = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/customer');
+                const response = await axios.get(`${API}/api/customer`);
                 setCustomerList(response.data);
                 setLoading(false)
             } catch (error) {
@@ -77,7 +78,7 @@ function GetCustomerAdmin() {
             setLoading(true)
             if (result.isConfirmed) {
                 try {
-                    await axios.put(`http://localhost:8080/api/customer/lock/${id}`, {
+                    await axios.put(`${API}/api/customer/lock/${id}`, {
                         userId: currentLockStatus
                     });
                     toast.success("Khóa bệnh nhân thành công");

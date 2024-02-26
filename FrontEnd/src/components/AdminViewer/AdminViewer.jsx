@@ -2,15 +2,17 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Unstable_Grid2';
 import Typography from '@mui/material/Typography';
 import AppWidgetSummary from "./AppWidgetSummary";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {Link} from "react-router-dom";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function AdminViewer() {
     const [DoctorList,setDoctorList]=useState([]);
     const [totalDoctor, setTotalDoctor] = useState(0);
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get('http://localhost:8080/api/doctor')
+        axios.get(`${API}/api/doctor`)
             .then(response => {
                 setDoctorList(response.data);
             })
@@ -27,7 +29,7 @@ export default function AdminViewer() {
     const [ClinicList, setClinicList] = useState([]);
     const [totalClinic, setTotalClinic] = useState(0);
     useEffect(() => {
-        axios.get('http://localhost:8080/api/clinic')
+        axios.get(`${API}/api/clinic`)
             .then(response => {
                 setClinicList(response.data);
             })
@@ -43,7 +45,7 @@ export default function AdminViewer() {
     const [CustomerList, setCustomerList] = useState([]);
     const [totalCustomer, setTotalCustomer] = useState(0);
     useEffect(() => {
-        axios.get('http://localhost:8080/api/customer')
+        axios.get(`${API}/api/customer`)
             .then(response => {
                 setCustomerList(response.data);
             })
@@ -59,7 +61,7 @@ export default function AdminViewer() {
     const [SpecialityList, setSpecialityList] = useState([]);
     const [totalSpeciality, setTotalSpeciality] = useState(0);
     useEffect(() => {
-        axios.get('http://localhost:8080/api/speciality')
+        axios.get(`${API}/api/speciality`)
             .then(response => {
                 setSpecialityList(response.data);
             })
@@ -75,7 +77,7 @@ export default function AdminViewer() {
     const [bookingList, setBookingList] = useState([]);
     const [totalbooking, setTotalbooking] = useState(0);
     useEffect(() => {
-        axios.get('http://localhost:8080/api/booking/bookingDate')
+        axios.get(`${API}/api/booking/bookingDate`)
             .then(response => {
                 setBookingList(response.data);
             })

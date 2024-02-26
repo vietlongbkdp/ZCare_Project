@@ -6,7 +6,7 @@ import { styled } from "@mui/material/styles";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -28,6 +28,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, setShowSchedule }) {
     const [dateCreate, setDateCreate] = useState([])
@@ -48,6 +49,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
     const [timeValueEnd, setTimeValueEnd] = useState(null);
     const [betweenTime, setBetweenTime] = useState("30")
     const [loading, setLoading] = useState(true);
+    const { API } = useContext(ApiContext)
     const handleDeleteWeekday = (event) => {
         const strWeekdayDelete = event.target.closest(".chipWeekday").firstChild.innerText
         let listWeekdayUpdate = weekday.filter(item => item !== strWeekdayDelete)
@@ -77,7 +79,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
     useEffect(() => {
         const getScheduleAPI = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/schedule/' + doctorId);
+                const response = await axios.get(`${API}/api/schedule/` + doctorId);
                 const scheduleGet = sortObjectsByWeekdayAndTime(response.data)
                 let listTimeDetails = []
                 let strTemp = "temp"
@@ -211,7 +213,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
             detailTime: detailDelete
         }
         console.log(dataDeleteItem)
-        const resp = await axios.delete('http://localhost:8080/api/schedule/delete', { data: dataDeleteItem })
+        const resp = await axios.delete(`${API}/api/schedule/delete`, { data: dataDeleteItem })
         if (resp.status === 200) {
             const updatedDateCreate = [...dateCreate];
             updatedDateCreate[indexSetDelete].listDetailTimes = updatedDateCreate[indexSetDelete].listDetailTimes.filter(item => item.timeDetailShow !== detailDelete);
@@ -268,7 +270,7 @@ export default function ScheduleCreate({ doctorId, handleShowDoctorInClinic, set
             toast.error("Lịch đang trống, vui lòng kiểm tra lại")
             setLoading(false)
         } else {
-            const resp = await axios.post('http://localhost:8080/api/schedule/create', data)
+            const resp = await axios.post(`${API}/api/schedule/create`, data)
             if (resp.status === 200) {
                 setDateCreate([])
                 setLoadPage(prevState => !prevState)

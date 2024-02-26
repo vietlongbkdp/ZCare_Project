@@ -6,7 +6,6 @@ import Footer from "../Footer/Footer";
 function Search() {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
-
     const doctorName = queryParams.get('doctorName');
     const clinicId = queryParams.get('clinicId');
     const specialityId = queryParams.get('specialityId');

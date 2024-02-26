@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import "./DoctorInfoClinic.css"
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import dayjs from "dayjs";
@@ -6,6 +6,7 @@ import {format, parse} from "date-fns";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 
 function DoctorComponentAdmin({ doctor }) {
@@ -18,6 +19,7 @@ function DoctorComponentAdmin({ doctor }) {
     const [scheduleList, setScheduleList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const { API } = useContext(ApiContext)
     const formatTime = (date) => {
         return format(date, 'HH:mm');
     };
@@ -77,7 +79,7 @@ function DoctorComponentAdmin({ doctor }) {
 
     const fetchScheduleData = async () => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/schedule/${doctor.id}/${selectedWeekday}`);
+            const response = await axios.get(`${API}/api/schedule/${doctor.id}/${selectedWeekday}`);
             if (response.status === 200) {
                 const sortedScheduleList = sortObjectsByStartTime(response.data);
                 const filteredList = filterAndRenderSchedule(sortedScheduleList);

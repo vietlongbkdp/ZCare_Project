@@ -33,11 +33,11 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
     const [clinicUserId, setClinicUserId] = useState();
     const [loading, setLoading] = useState(true);
     const storedUserId = Cookies.get('userId');
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const finddUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                const response = await axios.get(`${API}/api/user/userlogin/${storedUserId}`)
                 setClinicUserId(response.data.id)
                 setLoading(false)
             } catch (error) {
@@ -53,7 +53,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
             const getDoctors = async () => {
                 try {
                     axios.defaults.withCredentials = true;
-                    const response = await axios.get(`${API_DOCTOR}/byClinicId/${clinicId}`);
+                    const response = await axios.get(`${API}/api/doctor/byClinicId/${clinicId}`);
                     console.log(response);
                     setDoctorList(response.data);
                     setLoading(false)
@@ -69,7 +69,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
             const getDoctors1 = async () => {
                 try {
                     axios.defaults.withCredentials = true;
-                    const response = await axios.get(`${API_DOCTOR}/byClinicId/${clinicUserId}`);
+                    const response = await axios.get(`${API}/api/doctor/byClinicId/${clinicUserId}`);
                     console.log(response);
                     setDoctorList(response.data);
                 } catch (error) {
@@ -127,7 +127,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.put(`http://localhost:8080/api/doctor/lock/${id}`, {
+                    await axios.put(`${API}/api/doctor/lock/${id}`, {
                         userId: currentLockStatus
                     });
                     toast.success("Thành công");
