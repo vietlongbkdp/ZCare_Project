@@ -114,7 +114,7 @@ public class BookingService implements IBookingService {
             booking.setPatientName(bookingDTO.getPatientName());
         }
         iBookingRepository.save(booking);
-        String url = "http://192.168.1.64:3001/api/booking/confirm/" + booking.getCustomer().getId() + "/" + booking.getSchedule().getId();
+        String url = "http://192.168.1.64:8080/api/booking/confirm/" + booking.getCustomer().getId() + "/" + booking.getSchedule().getId();
         String title="Xác nhận đặt lịch hẹn khám tại ZCare";
         String body= SendEmail.EmailScheduledSuccessfully(
                 booking.getCustomer().getFullName(),booking.getBookingDate(),schedule.getTimeItem(),url);
@@ -144,7 +144,7 @@ public class BookingService implements IBookingService {
         List<Booking> bookings = iBookingRepository.findByBookingDate(currentDate);
         String title = "Nhắc nhở lịch khám bệnh";
         for (Booking booking : bookings) {
-            if (!booking.getReminderSent()) {
+            if (!booking.getReminderSent() && booking.getStatus()==EStatusBooking.CUSTOMERCONFIMED) {
                 String body = SendEmail.ExamScheduleReminder(booking.getCustomer().getFullName(), booking.getBookingDate(), booking.getBookingTime());
                 emailUtil.sendEmail( booking.getCustomer().getEmail(),title,body);
                 booking.setReminderSent(true);

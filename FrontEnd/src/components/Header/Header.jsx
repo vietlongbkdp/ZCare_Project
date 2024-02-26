@@ -254,18 +254,6 @@ export default function Header() {
                         <p><Link to='/home/speciality-page' style={linkStyle}>CHUYÊN KHOA</Link></p>
                         <p><Link to='/home/cooperate' style={linkStyle}>HỢP TÁC</Link></p>
                     </div>
-                    <div className={"searchHead my-auto"}>
-                        <Search className={"inputSearch"}>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                                style={{ maxWidth: 150 }}
-                            />
-                        </Search>
-                    </div>
                 </div>
             </div>
         </>

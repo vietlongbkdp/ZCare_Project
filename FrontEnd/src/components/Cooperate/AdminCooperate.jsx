@@ -115,7 +115,7 @@ function AdminCooperate() {
                             ))
                         ) : (
                             <StyledTableRow>
-                                <StyledTableCell colSpan={8}>No data available</StyledTableCell>
+                                <StyledTableCell colSpan={8}>Không có danh sách đặt khám</StyledTableCell>
                             </StyledTableRow>
                         )}
                     </TableBody>
