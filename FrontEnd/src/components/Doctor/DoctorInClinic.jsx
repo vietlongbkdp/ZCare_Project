@@ -171,6 +171,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                     setUpdateShow={setUpdateShow}
                     handleShowDoctorInClinic={handleShowDoctorInClinic}
                     clinicId={clinicId}
+                    clinicUserId={clinicUserId}
                 />}
                 {showEdit && <EditDoctor
                     doctorId={doctorId}
@@ -213,7 +214,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                                                 Chuyên khoa: {doctor?.speciality?.specialtyName}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary" pb='5px'>
-                                                Giá khám : {doctor && doctor.fee ? (doctor.fee * 1000).toLocaleString() + " đ" : ""}
+                                                Giá khám : {doctor && doctor.fee ? (doctor.fee * 1000).toLocaleString() + "đ" : ""}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary" display={'flex'} pb='5px'>
                                                 Đánh giá:

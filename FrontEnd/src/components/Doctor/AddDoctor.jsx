@@ -74,7 +74,7 @@ const StyledErrorText = styled('p')({
     marginTop: '8px',
 });
 
-export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorInClinic, clinicId }) {
+export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorInClinic, clinicId, clinicUserId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -93,7 +93,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
         const res = await axios.post(`${API}/api/avatar`, formData)
         if (res.status == '200') {
             data.avatarImg = await res.data.fileUrl
-            data.clinicId = clinicId;
+            clinicId ? data.clinicId = clinicId : data.clinicId = clinicUserId;
             const response = await axios.post(`${API}/api/doctor`, data);
             if (response.status == '200') {
                 setShowAdd(false)
@@ -277,7 +277,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
                                             <TextField
                                                 fullWidth
                                                 id="fee"
-                                                label="Giá khám bệnh (VNĐ)"
+                                                label="Giá khám bệnh (x1000 VNĐ)"
                                                 type={"number"}
                                                 autoComplete="fee"
                                                 error={Boolean(errors.fee)}

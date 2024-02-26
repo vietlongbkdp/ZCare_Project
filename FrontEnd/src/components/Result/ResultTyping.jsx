@@ -227,7 +227,7 @@ function ResultTyping() {
                 setListMedicine([
                     ...listMedicine
                 ])
-                toast.success("Đã lưu phiếu khám bệnh thành công!");
+                toast.success("Đã xoá khỏi đơn thuốc!");
             }
         });
     }
@@ -294,8 +294,7 @@ function ResultTyping() {
                 {
                     ul: [
                         'Họ và tên bệnh nhân: ' + customer?.fullName,
-                        // 'Tuổi: ' + parseInt(dayjs().format("YYYY"))-customer?.dob[0],
-                        'Tuổi: ',
+                        'Tuổi: ' + (parseInt(dayjs().format("YYYY"))-customer?.dob[0]).toString(),
                         'Giới tính: ' + customer?.gender.valueOf(),
                         'Số điện thoại: ' + customer?.phone,
                         'Địa chỉ: ' + customer?.address,

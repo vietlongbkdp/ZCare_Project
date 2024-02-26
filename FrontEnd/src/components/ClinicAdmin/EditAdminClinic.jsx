@@ -127,7 +127,7 @@ export default function EditAdminClinic() {
         try {
             await axios.put(`${API}/api/clinic/${clinicUserId}`, data);
             toast.success("Cập nhật phòng khám thành công!");
-            navigate('/clinicadmin/list-clinic');
+            navigate('/clinicadmin');
             setLoading(false)
             reset();
         } catch (error) {
@@ -273,7 +273,7 @@ export default function EditAdminClinic() {
                                 >
                                     Cập nhật
                                 </Button>
-                                <Button variant="contained" onClick={() => navigate('/clinicadmin/list-clinic')}
+                                <Button variant="contained" onClick={() => navigate('/clinicadmin')}
                                     sx={{ mt: 3, mb: 1 }}>
                                     Hủy
                                 </Button>
