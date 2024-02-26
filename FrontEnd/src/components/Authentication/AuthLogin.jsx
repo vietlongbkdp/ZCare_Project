@@ -49,11 +49,11 @@ function AuthLogin() {
       const response = await axios.post(`${API}/api/user/login`, data);
       console.log(response)
       const userId = response.data.id;
-      Cookies.set('userId', userId, { expires: 7, secure: true });
+      Cookies.set('userId', userId, { expires: 7, secure: false });
       const storedUserId = Cookies.get('userId');
       console.log(storedUserId)
       const token = response.data.token;
-      Cookies.set('JWT', token, { expires: 7, secure: true });
+      Cookies.set('JWT', token, { expires: 7, secure: false });
       toast.success("Đăng nhập thành công");
       const decodedToken = jwtDecode(token);
       const userRole = decodedToken.roles[0];

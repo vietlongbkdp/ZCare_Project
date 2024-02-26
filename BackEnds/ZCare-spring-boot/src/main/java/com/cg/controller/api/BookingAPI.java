@@ -60,14 +60,14 @@ public class BookingAPI {
         String redirectUrl;
         if (booking == null) {
             String toastErrorMessage = "Lịch khám của bạn đã hết hạn, vui lòng đặt lại!";
-            redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:3001/appointment-schedule")
+            redirectUrl = UriComponentsBuilder.fromUriString("http://192.168.1.64:3001/appointment-schedule")
                     .queryParam("toastErrorMessage", toastErrorMessage)
                     .toUriString();
         } else {
             booking.setStatus(EStatusBooking.CUSTOMERCONFIMED);
             bookingService.save(booking);
             String toastSuccessMessage = "Xác nhận đặt lịch thành công!";
-            redirectUrl = UriComponentsBuilder.fromUriString("http://localhost:3001/appointment-schedule")
+            redirectUrl = UriComponentsBuilder.fromUriString("http://192.168.1.64:3001/appointment-schedule")
                     .queryParam("toastSuccessMessage", toastSuccessMessage)
                     .toUriString();
         }
