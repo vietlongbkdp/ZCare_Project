@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { UserContext } from "../utils/ApiUserLogin"
+import React, { useContext} from "react";
 import {
   Box,
   Typography,
@@ -16,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { jwtDecode } from 'jwt-decode';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object({
   email: yup
@@ -26,7 +26,7 @@ const schema = yup.object({
 });
 
 function AuthLogin() {
-  const { API_USER } = useContext(UserContext);
+  const { API } = useContext(ApiContext)
   const {
     register,
     handleSubmit,
@@ -43,11 +43,10 @@ function AuthLogin() {
     }
   };
 
-  console.log(API_USER)
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      const response = await axios.post("http://localhost:8080/api/user/login", data);
+      const response = await axios.post(`${API}/api/user/login`, data);
       console.log(response)
       const userId = response.data.id;
       Cookies.set('userId', userId, { expires: 7, secure: true });
@@ -57,7 +56,6 @@ function AuthLogin() {
       Cookies.set('JWT', token, { expires: 7, secure: true });
       toast.success("Đăng nhập thành công");
       const decodedToken = jwtDecode(token);
-
       const userRole = decodedToken.roles[0];
       console.log(userRole)
       if (userRole === "ROLE_ADMIN") {

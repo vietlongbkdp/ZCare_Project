@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import HTMLReactParser from 'html-react-parser';
 import axios from 'axios';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import {ApiContext} from "../ApiContext/ApiProvider";
 export default function CkEditor({ setEditorContent }) {
     const [dataInput, setDataInput] = useState('')
+    const { API } = useContext(ApiContext)
     function handleFileUpload(loader) {
         return {
             upload: () => {
@@ -12,7 +14,7 @@ export default function CkEditor({ setEditorContent }) {
                     const body = new FormData();
                     loader.file.then((file) => {
                         body.append('image', file);
-                        axios.post('http://localhost:8080/api/product-images', body, {
+                        axios.post(`${API}/api/product-images`, body, {
                             headers: {
                                 "Content-Type": "multipart/form-data",
                             },

@@ -47,7 +47,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CustomizedTables() {
     const { userId } = useParams();
-
+    const { API } = useContext(ApiContext)
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -76,7 +76,7 @@ export default function CustomizedTables() {
     useEffect(() => {
         const getClinics = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/clinic');
+                const response = await axios.get(`${API}/api/clinic`);
                 setLoading(false)
                 setClinicList(response.data);
             } catch (error) {
@@ -136,7 +136,7 @@ export default function CustomizedTables() {
     useEffect(() => {
         const findClinicidUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/clinic/${userId}`)
+                const response = await axios.get(`${API}/api/clinic/${userId}`)
                 setClinicAdminUser(response.data);
             } catch (error) {
                 console.error(error);
@@ -157,7 +157,7 @@ export default function CustomizedTables() {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.put(`http://localhost:8080/api/clinic/lock/${id}`, {
+                    await axios.put(`${API}/api/clinic/lock/${id}`, {
                         userId: currentLockStatus
                     });
                     toast.success("Khóa phòng khám thành công");

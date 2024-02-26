@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {
   Box,
   Typography,
@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import {Link, useNavigate} from "react-router-dom";
 import { differenceInYears } from "date-fns";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object({
   fullName: yup
@@ -55,10 +56,11 @@ function AuthRegister() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { API } = useContext(ApiContext)
   const onSubmit = async (data) => {
     setLoading(true)
     try {
-      await axios.post("http://localhost:8080/api/user", data);
+      await axios.post(`${API}/api/user`, data);
       toast.success("Đăng kí thành công");
       setLoading(false)
       reset();

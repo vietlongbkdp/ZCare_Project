@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import Header from "../Header/Header";
 import DoctorInfoClinic from "../DoctorInfoClinic/DoctorInfoClinic";
@@ -8,13 +8,15 @@ import axios from "axios";
 import Loading from "../Loading/Loading";
 import {Box, Container, Typography} from "@mui/material";
 import {Stack} from "@mui/system";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function DoctorListByClinic() {
     const {clinicId} = useParams();
     const [clinic, setClinic] = useState();
     const [loading, setLoading] = useState(true);
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
+        axios.get(`${API}/api/clinic/${clinicId}`)
             .then(response => {
                 setClinic(response.data);
                 setLoading(false)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import dayjs from "dayjs";
 import axios from 'axios';
 import TableContainer from "@mui/material/TableContainer";
@@ -13,6 +13,7 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import './customer.css'
 import { Typography } from '@mui/material';
 import { saveAs } from 'file-saver';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -38,9 +39,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function BookingListCustomerInClinic({ clinicId, customerId, handleHideBookingHistory }) {
     const [booking, setBooking] = useState([]);
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/${clinicId}/${customerId}`)
+        axios.get(`${API}/api/booking/${clinicId}/${customerId}`)
             .then(response => {
                 setBooking(response.data);
             })

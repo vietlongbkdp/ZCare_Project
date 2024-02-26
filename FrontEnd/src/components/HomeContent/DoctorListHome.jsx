@@ -1,5 +1,5 @@
 import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from '@mui/material'
-import React, {useEffect, useState} from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { LazyLoadImage } from 'react-lazy-load-image-component'
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
@@ -7,9 +7,11 @@ import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import Rating from "@mui/material/Rating";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function DoctorListHome() {
     const [DoctorList,setDoctorList]=useState([]);
+    const { API } = useContext(ApiContext)
     const settings = {
         dots: true,
         infinite: true,
@@ -19,7 +21,7 @@ export default function DoctorListHome() {
         margin: 2
       };
     useEffect(() => {
-        axios.get('http://localhost:8080/api/doctor')
+        axios.get(`${API}/api/doctor`)
             .then(response => {
                 setDoctorList(response.data);
             })

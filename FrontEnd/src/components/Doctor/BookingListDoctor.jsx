@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import dayjs from "dayjs";
 import {parse} from "date-fns";
 import Cookies from "js-cookie";
@@ -11,6 +11,7 @@ import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 import { saveAs } from 'file-saver';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -48,9 +49,9 @@ function BookingListDoctor() {
         RESULTING: "purple",
     };
     const navigate = useNavigate();
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/doctorBooking/${userId}/${selectedDate}`)
+        axios.get(`${API}/api/booking/doctorBooking/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
                 console.log(response.data)

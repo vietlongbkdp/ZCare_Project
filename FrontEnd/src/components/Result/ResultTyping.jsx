@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import IconButton from '@mui/material/IconButton';
@@ -28,6 +28,7 @@ import ListItem from "@mui/material/ListItem";
 import List from "@mui/material/List";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const schema = yup.object().shape({
@@ -46,10 +47,11 @@ function ResultTyping() {
     const [eveningChecked, setEveningChecked] = useState(false);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const responseCustomer = await axios.get("http://localhost:8080/api/customer/getCustomer/" + idCustomer);
+                const responseCustomer = await axios.get(`${API}/api/customer/getCustomer/` + idCustomer);
                 setCustomer(responseCustomer.data);
                 setLoading(false)
             } catch (errorCustomer) {
@@ -57,7 +59,7 @@ function ResultTyping() {
                 setLoading(false)
             }
             try {
-                const responseClinic = await axios.get("http://localhost:8080/api/clinic/getClinicbyIdDoctor/" + idDoctor);
+                const responseClinic = await axios.get(`${API}/api/clinic/getClinicbyIdDoctor/` + idDoctor);
                 setClinic(responseClinic.data);
                 setLoading(false)
             } catch (errorClinic) {
@@ -66,7 +68,7 @@ function ResultTyping() {
             }
 
             try {
-                const responseDoctor = await axios.get("http://localhost:8080/api/doctor/" + idDoctor);
+                const responseDoctor = await axios.get(`${API}/api/doctor/` + idDoctor);
                 setDoctor(responseDoctor.data);
                 setLoading(false)
             } catch (errorDoctor) {
@@ -75,7 +77,7 @@ function ResultTyping() {
             }
 
             try {
-                const responseMedicine = await axios.get("http://localhost:8080/api/medicine");
+                const responseMedicine = await axios.get(`${API}/api/medicine`);
                 setMedicine(responseMedicine.data);
                 setLoading(false)
             } catch (errorMedicine) {
@@ -95,7 +97,7 @@ function ResultTyping() {
     const unitMedicine = ["Viên", "Vỉ", "Hộp", "Chai", "Gói"]
     const onSubmit = async (data) => {
         try {
-            const responseBookingStatus = await axios.get("http://localhost:8080/api/booking/getBookingById/" + idBooking);
+            const responseBookingStatus = await axios.get(`${API}/api/booking/getBookingById/` + idBooking);
             if(responseBookingStatus.data === 'EXAMINING'){
                 Swal.fire({
                     title: "Xác nhận xoá thuốc này",
@@ -119,7 +121,7 @@ function ResultTyping() {
                             formData.append('file', blob, `${customer?.fullName} _ ${dayjs().format("DD/MM/YYYY")}.pdf`);
                             formData.append('data', JSON.stringify(dataNew));
 
-                            const resp = await axios.post('http://localhost:8080/api/result', formData, {
+                            const resp = await axios.post(`${API}/api/result`, formData, {
                                 headers: {
                                     'Content-Type': 'multipart/form-data'
                                 }

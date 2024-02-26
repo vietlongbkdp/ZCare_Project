@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Rating from '@mui/material/Rating';
 import Box from '@mui/material/Box';
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { Button, TextField } from "@mui/material";
 import axios from "axios";
 import Accordion from '@mui/material/Accordion';
@@ -11,12 +11,14 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {toast} from "react-toastify";
 import Cookies from "js-cookie";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function RatingDoctor({doctorId,setRatingSubmitted,ratingSubmitted}) {
     const [ratingValue, setRatingValue] = useState(0);
     const [commentValue, setCommentValue] = useState('');
     const [error, setError] = useState('');
     const userId = Cookies.get('userId');
+    const { API } = useContext(ApiContext)
     const handleCommentChange = (event) => {
         setCommentValue(event.target.value);
     };
@@ -32,7 +34,7 @@ function RatingDoctor({doctorId,setRatingSubmitted,ratingSubmitted}) {
         };
         console.log(data);
 
-        axios.post(`http://localhost:8080/api/rating/create/${doctorId}/${userId}`, data)
+        axios.post(`${API}/api/rating/create/${doctorId}/${userId}`, data)
             .then(response => {
                 console.log(response.data);
                 setRatingValue(0);

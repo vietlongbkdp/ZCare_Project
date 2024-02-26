@@ -1,10 +1,11 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import CkEditor from "../CkEditor/CkEditor";
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
 import axios from "axios";
 import {toast} from "react-toastify";
 import * as yup from "yup";
+import {ApiContext} from "../ApiContext/ApiProvider";
 const schema = yup.object().shape({
     file: yup.mixed().required("File không được để trống"),
 });
@@ -17,12 +18,13 @@ function Result() {
         setValue,
     } = useForm({ resolver: yupResolver(schema),});
     const [editorContent, setEditorContent] = useState("");
+    const { API } = useContext(ApiContext)
     const onSubmit = async (data) => {
         const formData = new FormData();
         formData.append("file", data.file[0]);
         formData.append("editorContent", editorContent);
         try {
-            await axios.post("http://localhost:8080/api/result", formData);
+            await axios.post(`${API}/api/result`, formData);
             toast.success("Gửi API thành công");
             reset();
             setEditorContent("");

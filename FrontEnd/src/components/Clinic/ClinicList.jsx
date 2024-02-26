@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Container, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -7,12 +7,14 @@ import IconButton from "@mui/material/IconButton";
 import axios from "axios";
 import {Link} from "react-router-dom";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function ClinicList() {
     const [clinicData, setClinicData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { API } = useContext(ApiContext)
     useEffect(() => {
-        axios.get('http://localhost:8080/api/clinic')
+        axios.get(`${API}/api/clinic`)
             .then(response => {
                 setClinicData(response.data);
                 setLoading(false)

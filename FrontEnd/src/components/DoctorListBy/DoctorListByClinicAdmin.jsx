@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import HTMLReactParser from "html-react-parser";
 import axios from "axios";
 import { Box, Container, Typography } from '@mui/material'
 import Loading from "../Loading/Loading";
 import { Stack } from '@mui/system';
 import Cookies from "js-cookie";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function DoctorListByClinic() {
     const [clinic, setClinic] = useState();
     const [clinicUserId, setClinicUserId] = useState();
     const [loading, setLoading] = useState(true);
-
+    const { API } = useContext(ApiContext)
     const storedUserId = Cookies.get('userId');
 
     useEffect(() => {
         const finddUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                const response = await axios.get(`${API}/api/user/userlogin/${storedUserId}`)
                 console.log(response.data)
                 setClinicUserId(response.data.id)
                 setLoading(false)
@@ -30,7 +31,7 @@ function DoctorListByClinic() {
 
     useEffect(() => {
         if (clinicUserId !== undefined) {
-            axios.get(`http://localhost:8080/api/clinic/${clinicUserId}`)
+            axios.get(`${API}/api/clinic/${clinicUserId}`)
                 .then(response => {
                     setClinic(response.data);
                     setLoading(false)

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Button, FormControl, InputLabel, Link, MenuItem, Select } from "@mui/material";
 import dayjs from "dayjs";
 import { parse } from "date-fns";
@@ -6,6 +6,7 @@ import axios from "axios";
 import HTMLReactParser from "html-react-parser";
 import { useLocation } from 'react-router-dom';
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShowDoctorInClinic, setShowDoctorList }) {
     const dateNows = dayjs().format('D/M/YYYY')
@@ -18,7 +19,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
     const [doctorInfo, setDoctorInfo] = useState('');
     const [loading, setLoading] = useState(true);
     const location = useLocation();
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         setCurrentDate(new Date());
         const getRecentDates = () => {
@@ -38,7 +39,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
     useEffect(() => {
         const fetchDoctorInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
+                const response = await axios.get(`${API}/api/doctor/` + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
                     setLoading(false)
@@ -51,7 +52,7 @@ export default function DoctorDetail({ doctorId, setShowDoctorDetail, handleShow
 
         const fetchScheduleData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
+                const response = await axios.get(`${API}/api/schedule/${doctorId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
                 }

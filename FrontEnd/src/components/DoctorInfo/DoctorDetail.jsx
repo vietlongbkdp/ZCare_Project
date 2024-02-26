@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {FormControl, InputLabel, Link, MenuItem, Select} from "@mui/material";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { parse } from 'date-fns';
 import dayjs from "dayjs";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function DoctorDetail() {
     const  dateNows = dayjs().format('D/M/YYYY')
@@ -18,7 +19,7 @@ function DoctorDetail() {
     const [scheduleList, setScheduleList] = useState([]);
     const [doctorInfo, setDoctorInfo] = useState('');
     const [loading, setLoading] = useState(true);
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         setCurrentDate(new Date());
         const getRecentDates = () => {
@@ -41,7 +42,7 @@ function DoctorDetail() {
     useEffect(() => {
         const fetchDoctorInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
+                const response = await axios.get(`${API}/api/doctor/` + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
                     setLoading(false)
@@ -54,7 +55,7 @@ function DoctorDetail() {
 
         const fetchScheduleData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
+                const response = await axios.get(`${API}/api/schedule/${doctorId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     setScheduleList(response.data);
                     setLoading(false)

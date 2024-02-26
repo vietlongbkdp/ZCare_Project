@@ -14,11 +14,12 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -83,17 +84,17 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
             resolver: yupResolver(schema)
         }
     );
-
+    const { API } = useContext(ApiContext)
     const createDoctor = async (data) => {
         setLoading(true)
         let imagesImport = Array.from(data.avatarImg);
         const formData = new FormData();
         formData.append('image', imagesImport[0])
-        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        const res = await axios.post(`${API}/api/avatar`, formData)
         if (res.status == '200') {
             data.avatarImg = await res.data.fileUrl
             data.clinicId = clinicId;
-            const response = await axios.post('http://localhost:8080/api/doctor', data);
+            const response = await axios.post(`${API}/api/doctor`, data);
             if (response.status == '200') {
                 setShowAdd(false)
                 toast.success("Tạo bác sĩ thành công")
@@ -103,7 +104,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
                 setLoading(false)
             }
             else {
-                await axios.delete(`http://localhost:8080/api/avatar/${res.data.id}`)
+                await axios.delete(`${API}/api/avatar/${res.data.id}`)
                 toast.error("Tạo bác sĩ thất bại!")
                 setLoading(false)
             }
@@ -117,7 +118,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
     useEffect(() => {
         const getClinics = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/clinic');
+                const response = await axios.get(`${API}/api/clinic`);
                 setClinicList(response.data);
                 setLoading(false)
             } catch (error) {
@@ -131,7 +132,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
     useEffect(() => {
         const getPositions = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/position');
+                const response = await axios.get(`${API}/api/position`);
                 setPositionList(response.data);
             } catch (error) {
                 console.error(error);
@@ -143,7 +144,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
     useEffect(() => {
         const getSpeciality = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/speciality');
+                const response = await axios.get(`${API}/api/speciality`);
                 setSpecialityList(response.data);
             } catch (error) {
                 console.error(error);

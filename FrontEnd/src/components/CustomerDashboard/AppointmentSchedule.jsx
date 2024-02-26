@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import axios from "axios";
@@ -17,6 +17,7 @@ import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -45,7 +46,7 @@ function AppointmentSchedule() {
     const [loading, setLoading] = useState(true);
     const UserId = Cookies.get('userId');
     const location = useLocation();
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
         const toastSuccessMessage = searchParams.get('toastSuccessMessage');
@@ -59,7 +60,7 @@ function AppointmentSchedule() {
     }, [location.search]);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/${UserId}`)
+        axios.get(`${API}/api/booking/${UserId}`)
             .then(response => {
                 setBooking(response.data);
                 setLoading(false)
