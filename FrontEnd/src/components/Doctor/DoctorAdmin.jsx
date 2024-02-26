@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import axios from "axios";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import Button from "@mui/material/Button";
 import { Box } from "@mui/system";
 import Swal from "sweetalert2";
@@ -18,6 +18,7 @@ import { getHeader } from '../utils/ApiComponen';
 import './style.css'
 import DoctorDetail from './DoctorDetail';
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -48,7 +49,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-
+    const { API } = useContext(ApiContext)
     const [doctorList, setDoctorList] = useState([])
     const [updateShow, setUpdateShow] = useState(false)
     const [buttonDisable, setButtonDisable] = useState(true)
@@ -99,7 +100,7 @@ export default function DoctorAdmin({ API_URL, handleHideDoctor, clinicId }) {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.put(`http://localhost:8080/api/doctor/lock/${id}`, {
+                    await axios.put(`${API}/api/doctor/lock/${id}`, {
                         userId: currentLockStatus
                     });
                     toast.success("Khóa bác sĩ thành công");

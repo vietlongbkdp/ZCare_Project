@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import { Box, Typography, Checkbox, Button, TextField, Divider } from '@mui/material';
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
@@ -7,6 +7,7 @@ import {toast} from "react-toastify";
 import { useForm } from 'react-hook-form';
 import { Link,useNavigate  } from 'react-router-dom';
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object({
     email: yup.string()
@@ -23,9 +24,10 @@ export default function ForgotPassword() {
         resolver: yupResolver(schema)
     });
     const [loading, setLoading] = useState(false);
+    const { API } = useContext(ApiContext)
     const onSubmit = async (data) => {
       try {
-        const response = await axios.post('http://localhost:8080/api/user/forgot-password', data);
+        const response = await axios.post(`${API}/api/user/forgot-password`, data);
         console.log(response.data);
         const UserId=response.data;
         toast.success("Gửi xác nhận thành công");
@@ -46,7 +48,7 @@ export default function ForgotPassword() {
               setLoading(false)
             return;
           }
-          const response = await axios.post('http://localhost:8080/api/user/email', { email: emailValue });
+          const response = await axios.post(`${API}/api/user/email`, { email: emailValue });
           console.log(response.data);
           toast.success("Mã xác nhận đã được gửi thành công!");
           setResendButtonDisabled(true);

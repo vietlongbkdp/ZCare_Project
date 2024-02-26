@@ -9,13 +9,14 @@ import {
     TextField
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ClinicEditor from "../CkEditor/ClinicEditor";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     clinicName: yup.string()
@@ -75,6 +76,7 @@ let presentAvatar;
 export default function EditClinic({ setShow, setISupdate, clinicId, setShowContent, setShowCreateBtn, setShowPagination }) {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
     const [loading, setLoading] = useState(true);
+    const { API } = useContext(ApiContext)
     const resetModal = () => {
         setShow(false)
         setShowContent(true)
@@ -86,7 +88,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
         if (clinicId) {
             console.log('vao use effect');
             const getClinic = async () => {
-                const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`);
+                const res = await axios.get(`${API}/api/clinic/${clinicId}`);
                 const result = await res.data;
                 setValue("clinicName", result.clinicName)
                 setValue("legalRepresentative", result.legalRepresentative)
@@ -113,7 +115,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
             data.clinicLogo = updateAvatar;
         }
         try {
-            await axios.put(`http://localhost:8080/api/clinic/${clinicId}`, data);
+            await axios.put(`${API}/api/clinic/${clinicId}`, data);
             toast.success("Cập nhật phòng khám thành công!")
             reset();
             setLoading(false)
@@ -132,7 +134,7 @@ export default function EditClinic({ setShow, setISupdate, clinicId, setShowCont
         let imagesImport = Array.from(e.target.files);
         const formData = new FormData();
         formData.append('image', imagesImport[0])
-        const res = await axios.post('http://localhost:8080/api/avatar', formData)
+        const res = await axios.post(`${API}/api/avatar`, formData)
         updateAvatar = await res.data.fileUrl
         document.getElementById('blah').src = updateAvatar;
     }

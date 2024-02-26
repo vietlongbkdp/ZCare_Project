@@ -1,18 +1,19 @@
 import { Box, Button, Container, Typography } from '@mui/material'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import Loading from "../Loading/Loading";
 import { Stack } from '@mui/system';
 import HTMLReactParser from 'html-react-parser';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 export default function ClinicDetail({ clinicId, handleHideClinicDetail }) {
     const [clinicDetail, setClinicDetail] = useState();
     const [buttonCreate, setButtonCreate] = useState(true)
     const [loading, setLoading] = useState(true);
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const getClinicById = async () => {
-            const res = await axios.get(`http://localhost:8080/api/clinic/${clinicId}`)
+            const res = await axios.get(`${API}/api/clinic/${clinicId}`)
             if (res.status === 200) {
                 setClinicDetail(res.data)
                 console.log(clinicDetail);

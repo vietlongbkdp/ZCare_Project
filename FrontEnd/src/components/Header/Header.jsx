@@ -11,16 +11,18 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Cookies from "js-cookie";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import ReminderTimer from "../ReminderTimer/ReminderTimer";
 import {jwtDecode} from "jwt-decode";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 library.add(fas)
 export default function Header() {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [customer,setCustomer]=useState('');
     const open = Boolean(anchorEl);
+    const { API } = useContext(ApiContext)
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -28,7 +30,6 @@ export default function Header() {
         setAnchorEl(null);
     };
     const userId = Cookies.get('userId');
-
     const Search = styled('div')(({ theme }) => ({
         position: 'relative',
         borderRadius: theme.shape.borderRadius,
@@ -73,7 +74,7 @@ export default function Header() {
         color: 'white'
     };
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/customer/${userId}`)
+        axios.get(`${API}/api/customer/${userId}`)
             .then(response => {
                 setCustomer(response.data);
             })

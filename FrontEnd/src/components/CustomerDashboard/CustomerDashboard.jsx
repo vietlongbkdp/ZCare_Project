@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import {FormControl, InputLabel, MenuItem, Paper, Select, TextField} from "@mui/material";
@@ -17,6 +17,7 @@ import moment from 'moment';
 import {Link} from "react-router-dom";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     fullName: yup.string()
@@ -52,11 +53,11 @@ function CustomerDashboard() {
     const { register, handleSubmit, formState: { errors }, reset, setValue, getValues } = useForm({ resolver: yupResolver(schema) });
     const UserId = Cookies.get('userId');
     const [loading, setLoading] = useState(true);
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         if (UserId) {
             const getCustomer = async () => {
-                const res = await axios.get(`http://localhost:8080/api/customer/${UserId}`);
+                const res = await axios.get(`${API}/api/customer/${UserId}`);
                 const result = await res.data;
                 setValue("fullName", result.fullName)
                 setValue("gender",setGender(result.gender))
@@ -79,7 +80,7 @@ function CustomerDashboard() {
             gender:gender
         }
         try {
-            await axios.put(`http://localhost:8080/api/customer/${UserId}`, obj);
+            await axios.put(`${API}/api/customer/${UserId}`, obj);
             toast.success("Cập nhật thông tin thành công!")
             setLoading(false)
         } catch (error) {

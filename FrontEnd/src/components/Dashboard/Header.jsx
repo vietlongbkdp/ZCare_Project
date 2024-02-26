@@ -11,11 +11,12 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { jwtDecode } from 'jwt-decode';
 import ReminderTimer from "../ReminderTimer/ReminderTimer";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function ResponsiveAppBar() {
     const [dashboarduser, setDashboarduser] = useState('');
@@ -41,11 +42,11 @@ function ResponsiveAppBar() {
     };
 
     const storedUserId = Cookies.get('userId');
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const finddUser = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${storedUserId}`)
+                const response = await axios.get(`${API}/api/user/userlogin/${storedUserId}`)
                 setDashboarduser(response.data)
             } catch (error) {
                 console.error(error);

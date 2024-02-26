@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Cookies from "js-cookie";
 import axios from "axios";
 import dayjs from "dayjs";
@@ -9,6 +9,7 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { saveAs } from 'file-saver';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -40,6 +41,7 @@ function MedicalBookingList() {
     const [recentDates, setRecentDates] = useState([]);
     const [selectedDate, setSelectedDate] = useState(dateNows);
     const [selectedWeekday, setSelectedWeekday] = useState(parsedDate);
+    const { API } = useContext(ApiContext)
     const userId = Cookies.get('userId');
     const statusColors = {
         CUSTOMERCONFIMED: "green",
@@ -48,7 +50,7 @@ function MedicalBookingList() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/${userId}/${selectedDate}`)
+        axios.get(`${API}/api/booking/${userId}/${selectedDate}`)
             .then(response => {
                 setBooking(response.data);
             })
@@ -87,7 +89,7 @@ function MedicalBookingList() {
             bookingId,
             selectedStatus
         }
-        axios.post('http://localhost:8080/api/booking/changeStatus', data)
+        axios.post(`${API}/api/booking/changeStatus`, data)
             .then(response => {
                 setBooking(response.data);
                 setPre(!pre);

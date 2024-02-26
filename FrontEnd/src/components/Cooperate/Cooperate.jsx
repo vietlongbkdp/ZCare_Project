@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import ReCAPTCHA from "react-google-recaptcha";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schema = yup.object({
   fullName: yup.string().required("Tên không được để trống"),
@@ -31,10 +32,11 @@ function Cooperate() {
   });
   const [loading, setLoading] = useState(false);
   const [capVal, setCapVal] = useState(null);
+  const { API } = useContext(ApiContext)
   const onSubmit = async (data) => {
     setLoading(true)
     try {
-      await axios.post("http://localhost:8080/api/cooperate", data);
+      await axios.post(`${API}/api/cooperate`, data);
       toast.success("Gửi thông tin thành công");
       reset();
       setLoading(false)

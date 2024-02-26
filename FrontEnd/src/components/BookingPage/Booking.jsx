@@ -6,7 +6,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -23,6 +23,7 @@ import Footer from "../Footer/Footer";
 import Swal from 'sweetalert2';
 import Loading from "../Loading/Loading";
 import dayjs from "dayjs";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -49,7 +50,7 @@ const schemaBooking = yup.object().shape({
 })
 export default function Booking(){
     const { scheduleId, day,month,year } = useParams();
-
+    const { API } = useContext(ApiContext)
     const bookDay = dayjs().locale('vi').set('date', day).set('month', month - 1).set('year', year).format('D/M/YYYY');
     const userId = Cookies.get('userId');
     const [schedule,setSchedule]=useState('');
@@ -61,7 +62,7 @@ export default function Booking(){
     const [gender, setGender] = useState(null)
     const [loading, setLoading] = useState(true);
     useEffect(() => {
-        axios.get('http://localhost:8080/api/customer/get/'+ userId).then(response => {
+        axios.get(`${API}/api/customer/get/`+ userId).then(response => {
             const [year, month, day] = response.data.dob;
             const dob = new Date(year, month - 1, day);
             setValue("customerName", response.data.fullName)
@@ -80,7 +81,7 @@ export default function Booking(){
     }, []);
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
+        axios.get(`${API}/api/schedule/get/${scheduleId}`)
             .then(response => {
                 setSchedule(response.data);
                 setLoading(false)
@@ -109,7 +110,7 @@ export default function Booking(){
         }
         const res = await axios({
             method: 'post',
-            url: 'http://localhost:8080/api/booking',
+            url: `${API}/api/booking`,
             data: {...fullData}
         });
             if(res.status == '200'){

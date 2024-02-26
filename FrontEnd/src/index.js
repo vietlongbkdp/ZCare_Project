@@ -12,7 +12,7 @@ root.render(
     <BrowserRouter>
         <UserProvider>
                 <ApiProvider>
-                    <App />
+                    <App/>
                     <ToastContainer />
                 </ApiProvider>
         </UserProvider>

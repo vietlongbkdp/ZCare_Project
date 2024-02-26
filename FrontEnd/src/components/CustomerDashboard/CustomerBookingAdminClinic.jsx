@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import axios from "axios";
 import Cookies from "js-cookie";
 import dayjs from "dayjs";
@@ -13,6 +13,7 @@ import TableBody from "@mui/material/TableBody";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import { saveAs } from 'file-saver';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -39,6 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function AppointmentSchedule() {
     const itemsPerPage = 6;
     const [currentPage, setCurrentPage] = useState(1);
+    const { API } = useContext(ApiContext)
     const handlePageChange = (event, value) => {
         setCurrentPage(value);
     };
@@ -49,7 +51,7 @@ function AppointmentSchedule() {
     const userId = Cookies.get('userId');
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/booking/adminClinic/${userId}`)
+        axios.get(`${API}/api/booking/adminClinic/${userId}`)
             .then(response => {
                 setbookingCustomer(response.data);
                 setFilteredBooking(response.data);

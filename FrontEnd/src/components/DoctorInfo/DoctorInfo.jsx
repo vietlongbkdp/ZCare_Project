@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import "./Doctorinfo.css"
 import dayjs from "dayjs";
@@ -11,6 +11,7 @@ import Footer from "../Footer/Footer";
 import Rating from '@mui/material/Rating';
 import RatingDoctor from "../RatingDoctor/RatingDoctor";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 function DoctorInfo() {
     const dateNows = dayjs().format('D/M/YYYY');
@@ -27,6 +28,7 @@ function DoctorInfo() {
     const [loading, setLoading] = useState(true);
     const [currentTime, setCurrentTime] = useState(new Date());
     const { doctorId } = useParams();
+    const { API } = useContext(ApiContext)
     const formatTime = (date) => {
         return format(date, 'HH:mm');
     };
@@ -75,7 +77,7 @@ function DoctorInfo() {
     useEffect(() => {
         const fetchDoctorInfo = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/doctor/' + doctorId);
+                const response = await axios.get(`${API}/api/doctor/` + doctorId);
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
                     setRatingValue(response.data.star);
@@ -89,7 +91,7 @@ function DoctorInfo() {
 
         const fetchScheduleData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/schedule/${doctorId}/${selectedWeekday}`);
+                const response = await axios.get(`${API}/api/schedule/${doctorId}/${selectedWeekday}`);
                 if (response.status === 200) {
                     const sortedScheduleList = sortObjectsByStartTime(response.data);
                     const filteredList = filterAndRenderSchedule(sortedScheduleList);
@@ -132,7 +134,7 @@ function DoctorInfo() {
     };
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/rating/${doctorId}`)
+        axios.get(`${API}/api/rating/${doctorId}`)
             .then(response => {
                 setRatingList(response.data);
             })

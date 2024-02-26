@@ -6,7 +6,7 @@ import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Link from "@mui/material/Link";
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -20,6 +20,7 @@ import {toast} from "react-toastify";
 import {useNavigate, useParams} from "react-router-dom";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 
 const schemaBooking = yup.object().shape({
@@ -55,6 +56,7 @@ export default function BookingAdmin(){
     const [gender, setGender] = useState('MALE');
     const [selectedGender, setSelectedGender] = useState('MALE');
     const [loading, setLoading] = useState(true);
+    const { API } = useContext(ApiContext)
     const handleGenderChange = (event) => {
         const selectedGender = event.target.value;
         setSelectedGender(selectedGender);
@@ -63,7 +65,7 @@ export default function BookingAdmin(){
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/schedule/get/${scheduleId}`)
+        axios.get(`${API}/api/schedule/get/${scheduleId}`)
             .then(response => {
                 setSchedule(response.data);
                 setLoading(false);
@@ -92,7 +94,7 @@ export default function BookingAdmin(){
         }
         setLoading(true);
         try {
-            await axios.post("http://localhost:8080/api/booking/admin", fullData);
+            await axios.post(`${API}/api/booking/admin`, fullData);
             toast.success("Đặt lịch thành công");
             reset();
             setLoading(false);

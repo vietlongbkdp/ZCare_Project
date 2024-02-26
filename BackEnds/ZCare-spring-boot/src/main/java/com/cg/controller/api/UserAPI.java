@@ -120,6 +120,7 @@ private UserService userService;
                     .path("/")
                     .maxAge(60 * 1000)
                     .domain(".localhost")
+//                    .domain(".192.168.64.1")
                     .build();
 
             return ResponseEntity

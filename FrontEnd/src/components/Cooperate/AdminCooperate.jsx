@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { Button, Container, Pagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import axios from 'axios';
 import {toast } from "react-toastify";
@@ -6,6 +6,7 @@ import {styled} from "@mui/material/styles";
 import {tableCellClasses} from "@mui/material/TableCell";
 import Paper from "@mui/material/Paper";
 import Loading from "../Loading/Loading";
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -31,11 +32,11 @@ function AdminCooperate() {
     const itemsPerPage = 10;
     const [currentPage, setCurrentPage] = useState(1);
     const [loading, setLoading] = useState(true);
-
+    const { API } = useContext(ApiContext)
     useEffect(() => {
         const getAllCooperate = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/cooperate');
+                const response = await axios.get(`${API}/api/cooperate`);
                 setCooperateList(response.data);
                 setLoading(false)
             } catch (error) {
@@ -49,7 +50,7 @@ function AdminCooperate() {
     const handleClick = async (id) => {
         setLoading(true)
         try {
-            const res = await axios.get(`http://localhost:8080/api/cooperate/${id}`);
+            const res = await axios.get(`${API}/api/cooperate/${id}`);
             if (res.status === 200) {
                 toast.success("Xác nhận thành công");
                 setLoading(false)

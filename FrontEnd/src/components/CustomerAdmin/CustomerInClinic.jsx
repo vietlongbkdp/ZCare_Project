@@ -5,7 +5,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TableBody from "@mui/material/TableBody";
 import Button from "@mui/material/Button";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import { styled } from "@mui/material/styles";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -17,6 +17,7 @@ import Loading from "../Loading/Loading";
 import Cookies from "js-cookie";
 import BookingListCustomerInClinic from "./BookingListCustomerInClinic";
 import './customer.css';
+import {ApiContext} from "../ApiContext/ApiProvider";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -57,7 +58,7 @@ function CustomerInClinic() {
     const userId = Cookies.get('userId');
     const [searchText, setSearchText] = useState('');
     const [search, setSearch] = useState(true)
-
+    const { API } = useContext(ApiContext)
     const handleSearch = () => {
         setSearch(!search);
     };
@@ -69,7 +70,7 @@ function CustomerInClinic() {
     useEffect(() => {
         const getCustomers = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/customer/clinic/${userId}`,
+                const response = await axios.get(`${API}/api/customer/clinic/${userId}`,
                     { params: { searchText } }
                 );
                 const result = await response.data;
@@ -90,7 +91,7 @@ function CustomerInClinic() {
     useEffect(() => {
         const getClinic = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/user/userlogin/${userId}`)
+                const response = await axios.get(`${API}/api/user/userlogin/${userId}`)
                 const result = await response.data;
                 setClinicId(result.id)
             } catch (error) {
@@ -115,7 +116,7 @@ function CustomerInClinic() {
             setLoading(true)
             if (result.isConfirmed) {
                 try {
-                    await axios.put(`http://localhost:8080/api/customer/lock/${id}`, {
+                    await axios.put(`${API}/api/customer/lock/${id}`, {
                         userId: currentLockStatus
                     });
                     toast.success("Khóa bệnh nhân thành công");
