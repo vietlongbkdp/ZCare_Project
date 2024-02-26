@@ -18,6 +18,7 @@ import {Link} from "react-router-dom";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
 import {ApiContext} from "../ApiContext/ApiProvider";
+import {differenceInYears} from "date-fns";
 
 const schema = yup.object().shape({
     fullName: yup.string()
@@ -35,7 +36,13 @@ const schema = yup.object().shape({
         .required("Số điện thoại không được để trống")
         .matches(/^(02|03|07|09)\d{8}$/, "Số điện thoại bắt đầu bằng 02;03;07;09 và gồm 10 chữ số"),
     dob: yup.string()
-        .required("Ngày sinh không đuược để trống"),
+        .required("Ngày sinh không được để trống")
+        .test("dob", "Bạn phải lớn hơn 15 tuổi", function (value) {
+            return differenceInYears(new Date(), new Date(value)) >= 15;
+        })
+        .test("dob", "Tuổi không hợp lệ", function (value) {
+            return differenceInYears(new Date(), new Date(value)) <= 120;
+        }),
 })
 
 
