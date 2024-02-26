@@ -100,7 +100,7 @@ function ResultTyping() {
             const responseBookingStatus = await axios.get(`${API}/api/booking/getBookingById/` + idBooking);
             if(responseBookingStatus.data === 'EXAMINING'){
                 Swal.fire({
-                    title: "Xác nhận xoá thuốc này",
+                    title: "Vui lòng kiểm tra kỹ thông tin phiếu khám bệnh trước khi lưu",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
@@ -214,7 +214,7 @@ function ResultTyping() {
     console.log(listMedicine)
     const handleDeleteMedicine = (index) =>{
         Swal.fire({
-            title: "Vui lòng kiểm tra kỹ thông tin phiếu khám bệnh trước khi lưu",
+            title: "Bạn có chắc chăn muốn xoá khỏi đơn thuốc",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
