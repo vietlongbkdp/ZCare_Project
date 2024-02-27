@@ -26,9 +26,9 @@ const schema = yup.object().shape({
         .min(2, 'Nhập trên 2 kí tự')
         .max(200, 'Nhập dưới 200 kí tự'),
     address: yup.string()
-        .required("Địa chỉ không đuược để trống")
-        .min(2, 'Nhập trên 2 kí tự')
-        .max(200, 'Nhập dưới 200 kí tự'),
+        .required("Địa chỉ không được để trống")
+        .min(5, 'Địa chỉ phải trên 5 ký tự')
+        .max(100, 'Địa chỉ phải ít hơn 100 ký tự'),
     email: yup.string()
         .required("Email không được để trống")
         .matches(/^.+@.+\..+$/, "Email không hợp lệ"),

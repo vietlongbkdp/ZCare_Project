@@ -7,6 +7,7 @@ import axios from "axios";
 import {Link} from "react-router-dom";
 import Loading from "../Loading/Loading";
 import {ApiContext} from "../ApiContext/ApiProvider";
+import Rating from "@mui/material/Rating";
 
 
 function DoctorComponentAdmin({ doctor }) {
@@ -136,7 +137,9 @@ function DoctorComponentAdmin({ doctor }) {
                             <div>
                                 <p>Chức danh: {doctor?.position?.name}</p>
                                 <p>Chuyên khoa: {doctor?.speciality?.specialtyName}</p>
-                                <p>Đánh giá: {doctor?.star}</p>
+                                <p>Đánh giá:
+                                <Rating value={doctor?.star} max={5} name="half-rating" precision={0.5} readOnly />
+                                </p>
                             </div>
                             <div className={"d-flex"}>
                                 <span className={"me-2"}><i className="fa-solid fa-location-dot"></i></span>

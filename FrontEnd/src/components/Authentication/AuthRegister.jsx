@@ -35,9 +35,9 @@ const schema = yup.object({
         .min(10, "Số điện thoại tối thiểu phải 10 số")
         .required("Số điện thoại không được để trống"),
     address: yup.string()
-        .required("Địa chỉ không đuược để trống")
-        .min(2, 'Nhập trên 2 kí tự')
-        .max(200, 'Nhập dưới 200 kí tự'),
+        .required("Địa chỉ không được để trống")
+        .min(5, 'Địa chỉ phải trên 5 ký tự')
+        .max(100, 'Địa chỉ phải ít hơn 100 ký tự'),
     gender: yup.string().required("Giới tính không được để trống"),
     password: yup.string().required("Mật khẩu không được để trống"),
     dob: yup.string()
@@ -72,7 +72,7 @@ function AuthRegister() {
             reset();
             navigate(`/login`);
         } catch (error) {
-            toast.error("Đăng kí thất bại");
+            toast.error("Đăng kí thất bại, vui lòng kiểm tra thông tin");
             setLoading(false)
             console.error(error);
         }

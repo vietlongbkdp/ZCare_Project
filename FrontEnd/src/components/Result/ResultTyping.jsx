@@ -46,6 +46,7 @@ function ResultTyping() {
     const [afternoonChecked, setAfternoonChecked] = useState(false);
     const [eveningChecked, setEveningChecked] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [gender, setGender] = useState(null)
     const navigate = useNavigate();
     const { API } = useContext(ApiContext)
     useEffect(() => {
@@ -53,6 +54,14 @@ function ResultTyping() {
             try {
                 const responseCustomer = await axios.get(`${API}/api/customer/getCustomer/` + idCustomer);
                 setCustomer(responseCustomer.data);
+                console.log(responseCustomer.data.gender)
+                if(responseCustomer.data.gender === 'MALE'){
+                    setGender('Nam')
+                }else if(responseCustomer.data.gender === 'FEMALE'){
+                    setGender('Nữ')
+                } else if(responseCustomer.data.gender === 'OTHER'){
+                    setGender('Khác')
+                }
                 setLoading(false)
             } catch (errorCustomer) {
                 console.error('Lỗi lấy Customer:', errorCustomer);
@@ -295,7 +304,7 @@ function ResultTyping() {
                     ul: [
                         'Họ và tên bệnh nhân: ' + customer?.fullName,
                         'Tuổi: ' + (parseInt(dayjs().format("YYYY"))-customer?.dob[0]).toString(),
-                        'Giới tính: ' + customer?.gender.valueOf(),
+                        'Giới tính: ' + gender,
                         'Số điện thoại: ' + customer?.phone,
                         'Địa chỉ: ' + customer?.address,
                         'Bác sĩ khám: '+ doctor?.doctorName,
@@ -409,7 +418,7 @@ function ResultTyping() {
                         <h3 className="fw-bold text-center mt-2">Phiếu trả kết quả khám chữa bệnh</h3>
                         <Box sx={{mt: 3}}>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Họ và tên bệnh nhân : {customer?.fullName}</p>
-                            <p style={{fontSize: 20, marginLeft: "20px"}}>Giới tính: {customer?.gender.valueOf()}</p>
+                            <p style={{fontSize: 20, marginLeft: "20px"}}>Giới tính: {gender}</p>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Số điện thoại: {customer?.phone}</p>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Địa chỉ: {customer?.address}</p>
                             <Grid item xs={12} sm={6} mb={2} mx={10}>

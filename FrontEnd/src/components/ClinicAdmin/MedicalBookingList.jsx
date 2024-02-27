@@ -243,12 +243,16 @@ function MedicalBookingList() {
                                                 }}
                                             >
                                                 <option value="CUSTOMERCONFIMED"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã xác nhận
+                                                        style={{backgroundColor: 'white', color: 'black'}}>Đã xác nhận
                                                 </option>
-                                                <option value="EXAMINING"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
-                                                </option>
-                                                <option value="CANCEL" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                {(selectedDate === dateNows) ? (<option value="EXAMINING"
+                                                                                    style={{
+                                                                                        backgroundColor: 'white',
+                                                                                        color: 'black'
+                                                                                    }}>Đang khám
+                                                                            </option>) : ""}
+                                                <option value="CANCEL"
+                                                        style={{backgroundColor: 'white', color: 'black'}}>Đã
                                                     hủy
                                                 </option>
                                             </select>
