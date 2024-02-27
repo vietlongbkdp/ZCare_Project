@@ -196,7 +196,10 @@ function ResultTyping() {
 
         if(medicineName === ""|| isNaN(quantity) || unit === ""|| useNote === ""){
             toast.error("Cần nhập đầy đủ thông tin thuốc")
-        }else{
+        }else if(quantity < 1 || quantity > 200){
+            toast.error("Số lượng phải từ 1 đến 200")
+        }
+            else{
             if(checkExistMedicine(listMedicine, medicineName) === false){
                 setListMedicine([
                     ...listMedicine,
@@ -399,6 +402,9 @@ function ResultTyping() {
     function openBlob(blob) {
         const url = URL.createObjectURL(blob);
         window.open(url);
+    }
+    const handleBack = async ()=>{
+        navigate(`/doctoradmin/doctorBooking`)
     }
     return (
         <div>
@@ -625,6 +631,7 @@ function ResultTyping() {
                                 </TableContainer>
                             </Grid>
                             <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px", marginRight: "20px"}}>Lưu đơn thuốc</Button>
+                            <Button type={"button"} onClick={handleBack} variant="contained" color="error" sx={{marginTop: "20px", marginRight: "20px"}}>Quay lại</Button>
                         </Box>
                         <div className="border" style={{height: "auto", marginTop: "20px", borderRadius: "5px"}}>
                         </div>

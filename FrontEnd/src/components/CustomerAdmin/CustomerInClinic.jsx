@@ -196,13 +196,13 @@ function CustomerInClinic() {
                                         <StyledTableCell>{
                                             item?.gender && (() => {
                                                 if (item?.gender == "MALE") {
-                                                    return "NAM"
+                                                    return "Nam"
                                                 }
                                                 else if (item?.gender == "FEMALE") {
-                                                    return "NỮ"
+                                                    return "Nữ"
                                                 }
                                                 else {
-                                                    return "KHÁC"
+                                                    return "Khác"
                                                 }
                                             })()}
                                         </StyledTableCell>
