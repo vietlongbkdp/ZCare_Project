@@ -171,6 +171,7 @@ export default function DoctorInClinic({ API_URL, handleHideDoctor, clinicId }) 
                     setUpdateShow={setUpdateShow}
                     handleShowDoctorInClinic={handleShowDoctorInClinic}
                     clinicId={clinicId}
+                    clinicUserId={clinicUserId}
                 />}
                 {showEdit && <EditDoctor
                     doctorId={doctorId}

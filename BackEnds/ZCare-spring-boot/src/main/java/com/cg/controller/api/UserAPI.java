@@ -35,8 +35,6 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class UserAPI {
     @Autowired
-    private ICustomerRepository customerRepository;
-    @Autowired
     private CustomerService customerService;
     @Autowired
     private IDoctorService doctorService;
@@ -48,42 +46,38 @@ public class UserAPI {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JwtUtils jwtUtils;
-@Autowired
-private UserService userService;
-
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserByID(@PathVariable Long id){
+    public ResponseEntity<?> getUserByID(@PathVariable Long id) {
         User user = userService.findById(id).get();
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping("/userlogin/{storedUserId}")
-    public ResponseEntity<?> getUserIDUser(@PathVariable Long storedUserId){
+    public ResponseEntity<?> getUserIDUser(@PathVariable Long storedUserId) {
         User user = userService.findById(storedUserId).orElse(null);
         if (user != null) {
             if (user.getRole() == ERole.ROLE_DOCTOR) {
                 Doctor doctor = doctorService.findByUser_Id(storedUserId);
-                    return ResponseEntity.ok(doctor);
-            } else if (user.getRole()==ERole.ROLE_CUSTOMER) {
+                return ResponseEntity.ok(doctor);
+            } else if (user.getRole() == ERole.ROLE_CUSTOMER) {
                 Customer customer = customerService.findByUser_Id(storedUserId);
-                    return ResponseEntity.ok(customer);
-            }else if (user.getRole()==ERole.ROLE_ADMIN_CLINIC) {
+                return ResponseEntity.ok(customer);
+            } else if (user.getRole() == ERole.ROLE_ADMIN_CLINIC) {
                 Clinic clinic = clinicService.findByUser_Id(storedUserId);
                 return ResponseEntity.ok(clinic);
             }
         }
         return ResponseEntity.notFound().build();
-
     }
 
     @GetMapping("/finduser/{useremail}")
-    public ResponseEntity<?> getUserByemail(@PathVariable String useremail){
+    public ResponseEntity<?> getUserByemail(@PathVariable String useremail) {
         User user = iUserRepository.findByEmail(useremail).get();
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
@@ -133,55 +127,38 @@ private UserService userService;
     }
 
     @PostMapping
-    public ResponseEntity<?> Register(@RequestBody CustomerReqDTO customerReqDTO){
+    public ResponseEntity<?> Register(@RequestBody CustomerReqDTO customerReqDTO) {
         customerService.register(customerReqDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("email")
-    public ResponseEntity<?> senderEmail(@RequestBody EmailReqDTO emailReqDTO){
-        boolean isConfirmed= customerService.confirmEmail(emailReqDTO);
+    public ResponseEntity<?> senderEmail(@RequestBody EmailReqDTO emailReqDTO) {
+        boolean isConfirmed = customerService.confirmEmail(emailReqDTO);
         if (isConfirmed) {
             return ResponseEntity.ok("Gửi mail thành công");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("email không tồn tại");
         }
     }
+
     @PostMapping("forgot-password")
-    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword forgotPassword){
-        boolean isConfirmed= customerService.forgotPassword(forgotPassword);
+    public ResponseEntity<?> forgotPassword(@RequestBody ForgotPassword forgotPassword) {
+        boolean isConfirmed = customerService.forgotPassword(forgotPassword);
         if (isConfirmed) {
             User user = iUserRepository.findByEmail(forgotPassword.getEmail()).get();
-            Long userId=user.getId();
+            Long userId = user.getId();
             return ResponseEntity.ok(userId);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Mã xác nhân không đúng");
         }
     }
+
     @PostMapping("change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePassword changePassword){
+    public ResponseEntity<?> changePassword(@RequestBody ChangePassword changePassword) {
         User user = iUserRepository.findById(changePassword.getUserId()).get();
         user.setPassword(PasswordEncryptionUtil.encryptPassword(changePassword.getPassword()));
         iUserRepository.save(user);
-        return new ResponseEntity<>(user,HttpStatus.OK);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
-//    @PutMapping("/{id}")
-//    public ResponseEntity<?> ChangeLock(@PathVariable Long id, @RequestBody LockStatusReqDTO lockStatusReqDTO){
-//        Customer customer = customerService.findById(id).get();
-//
-//
-//        if (lockStatusReqDTO.getLockStatus().equals("LOCK")) {
-//            customer.setLockStatus(ELockStatus.UNLOCK);
-//        } else if (lockStatusReqDTO.getLockStatus().equals("UNLOCK")) {
-//            customer.setLockStatus(ELockStatus.LOCK);
-//        } else {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        customerService.save(customer);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-
 }

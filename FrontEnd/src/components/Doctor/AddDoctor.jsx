@@ -14,12 +14,12 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Loading from "../Loading/Loading";
-import {ApiContext} from "../ApiContext/ApiProvider";
+import { ApiContext } from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -74,7 +74,7 @@ const StyledErrorText = styled('p')({
     marginTop: '8px',
 });
 
-export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorInClinic, clinicId }) {
+export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorInClinic, clinicId, clinicUserId }) {
     const [clinicList, setClinicList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [specialityList, setSpecialityList] = useState([]);
@@ -85,6 +85,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
         }
     );
     const { API } = useContext(ApiContext)
+
     const createDoctor = async (data) => {
         setLoading(true)
         let imagesImport = Array.from(data.avatarImg);
@@ -93,7 +94,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
         const res = await axios.post(`${API}/api/avatar`, formData)
         if (res.status == '200') {
             data.avatarImg = await res.data.fileUrl
-            data.clinicId = clinicId;
+            clinicId ? data.clinicId = clinicId : data.clinicId = clinicUserId ;
             const response = await axios.post(`${API}/api/doctor`, data);
             if (response.status == '200') {
                 setShowAdd(false)
@@ -160,7 +161,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
 
     return (
         <>
-            {loading && <Loading/>}
+            {loading && <Loading />}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     TẠO BÁC SĨ
