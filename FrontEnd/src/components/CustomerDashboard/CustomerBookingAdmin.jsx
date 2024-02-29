@@ -54,8 +54,9 @@ function AppointmentSchedule() {
     useEffect(() => {
         axios.get(`${API}/api/booking`)
             .then(response => {
-                setbookingCustomer(response.data);
-                setFilteredBooking(response.data);
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setbookingCustomer(sortedData);
+                setFilteredBooking(sortedData);
             })
             .catch(error => {
                 console.error('Error:', error);

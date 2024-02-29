@@ -33,6 +33,7 @@ public class Cooperate {
     private String clinicName;
     @NotEmpty(message = "Địa chỉ không được để trống")
     private String address;
+    @Column(columnDefinition = "LONGTEXT")
     private String content;
     @Enumerated(EnumType.STRING)
     private EStatus status;
