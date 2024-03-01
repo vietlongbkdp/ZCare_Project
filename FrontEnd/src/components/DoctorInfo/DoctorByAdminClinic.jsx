@@ -62,7 +62,6 @@ function DoctorInfo() {
         const fetchDoctorInfo = async () => {
             try {
                 const response = await axios.get(`${API}/api/doctor/` + doctorUserId);
-                console.log(response.data)
                 if (response.status === 200) {
                     setDoctorInfo(response.data);
                     setLoading(false)

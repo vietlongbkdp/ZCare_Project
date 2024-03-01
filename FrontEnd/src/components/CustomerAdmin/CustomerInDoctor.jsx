@@ -40,7 +40,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
         border: 0,
     },
 }));
-function CustomerInClinic() {
+function CustomerInDoctor() {
     const itemsPerPage = 7;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (event, value) => {
@@ -70,7 +70,7 @@ function CustomerInClinic() {
     useEffect(() => {
         const getCustomers = async () => {
             try {
-                const response = await axios.get(`${API}/api/customer/clinic/${userId}`,
+                const response = await axios.get(`${API}/api/customer/doctor/${userId}`,
                     { params: { searchText } }
                 );
                 const result = await response.data;
@@ -243,4 +243,4 @@ function CustomerInClinic() {
     )
 }
 
-export default CustomerInClinic;
+export default CustomerInDoctor;

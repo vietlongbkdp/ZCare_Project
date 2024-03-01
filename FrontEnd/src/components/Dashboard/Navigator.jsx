@@ -63,8 +63,8 @@ const categories = [
         children: [
             { id: ' Trang chủ ', icon: <SettingsIcon />, url: "" },
             { id: 'Danh sách đặt khám', icon: <TimerIcon />, url: "doctorBooking" },
-            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" }
-
+            { id: 'Lịch sử khám', icon: <TimerIcon />, url: "bookingHistory" },
+            { id: 'Bệnh nhân', icon: <PeopleAltIcon />, url: 'customer' },
         ],
     },
     {

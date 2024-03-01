@@ -54,8 +54,9 @@ function AppointmentSchedule() {
     useEffect(() => {
         axios.get(`${API}/api/booking/doctor/${userId}`)
             .then(response => {
-                setbookingCustomer(response.data);
-                setFilteredBooking(response.data);
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setbookingCustomer(sortedData);
+                setFilteredBooking(sortedData);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -152,6 +153,7 @@ function AppointmentSchedule() {
                                             <p>Giới tính: {booking?.customer?.gender} </p>
                                             <p>Phone: {booking?.customer?.phone} </p>
                                             <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
+                                            <p>Lý do khám: {booking?.reason} </p>
                                         </StyledTableCell>
                                         <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                         <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>

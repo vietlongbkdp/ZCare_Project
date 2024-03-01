@@ -14,12 +14,12 @@ import {
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import React, {useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Loading from "../Loading/Loading";
-import {ApiContext} from "../ApiContext/ApiProvider";
+import { ApiContext } from "../ApiContext/ApiProvider";
 
 const schema = yup.object().shape({
     doctorName: yup.string()
@@ -85,6 +85,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
         }
     );
     const { API } = useContext(ApiContext)
+
     const createDoctor = async (data) => {
         setLoading(true)
         let imagesImport = Array.from(data.avatarImg);
@@ -160,7 +161,7 @@ export default function AddDoctor({ setShowAdd, setUpdateShow, handleShowDoctorI
 
     return (
         <>
-            {loading && <Loading/>}
+            {loading && <Loading />}
             <Container sx={{ backgroundColor: 'white', paddingY: '15px', borderRadius: '10px' }}>
                 <Typography variant="h5" fontWeight={"bold"} textAlign='center' component="h2">
                     TẠO BÁC SĨ

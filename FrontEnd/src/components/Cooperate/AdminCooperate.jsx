@@ -37,7 +37,8 @@ function AdminCooperate() {
         const getAllCooperate = async () => {
             try {
                 const response = await axios.get(`${API}/api/cooperate`);
-                setCooperateList(response.data);
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setCooperateList(sortedData);
                 setLoading(false)
             } catch (error) {
                 console.error(error);

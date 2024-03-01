@@ -24,6 +24,7 @@ import Swal from 'sweetalert2';
 import Loading from "../Loading/Loading";
 import dayjs from "dayjs";
 import {ApiContext} from "../ApiContext/ApiProvider";
+import {toast} from "react-toastify";
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
@@ -55,6 +56,7 @@ export default function Booking(){
     const userId = Cookies.get('userId');
     const [schedule,setSchedule]=useState('');
     const [bookFor, setBookFor] = useState("me")
+    const [quantityBooking, setQuantityBooking] = useState(0);
     const handleChangeBookFor =(event) =>{
         setBookFor(event.target.value)
     }
@@ -91,6 +93,17 @@ export default function Booking(){
                 setLoading(false)
             });
     }, []);
+    useEffect(() => {
+        axios.get(`${API}/api/booking/notDone/${userId}`)
+            .then(response => {
+                setQuantityBooking(response.data);
+                setLoading(false)
+            })
+            .catch(error => {
+                console.error('Lỗi lấy Booking chưa hoàn thành:', error);
+                setLoading(false)
+            });
+    }, []);
 
     const Item = styled(Paper)(({theme}) => ({
         backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -101,26 +114,31 @@ export default function Booking(){
     }));
     const {register, handleSubmit, formState: { errors }, reset,setValue} = useForm({resolver: yupResolver(schemaBooking)})
     async function createBooking(data){
-        setLoading(true)
-        const fullData = {
-            ...data,
-            scheduleId,
-            bookDay,
-            userId
-        }
-        const res = await axios({
-            method: 'post',
-            url: `${API}/api/booking`,
-            data: {...fullData}
-        });
+        if(quantityBooking >=3){
+            toast.error("Xin lỗi, chúng tôi giới hạn số lượng lịch hẹn khám là 3, bạn có thể đă thêm khi các lịch khám khác đã hoàn thành")
+        }else{
+            setLoading(true)
+            const fullData = {
+                ...data,
+                scheduleId,
+                bookDay,
+                userId
+            }
+            const res = await axios({
+                method: 'post',
+                url: `${API}/api/booking`,
+                data: {...fullData}
+            });
             if(res.status == '200'){
                 Swal.fire({
                     title: "Bạn đã đặt lịch thành công!",
-                    text: "Vui lòng kiểm tra mail để xác nhận đặt khám!"
+                    text: "Vui lòng kiểm tra mail để xác nhận đặt khám!",
+                    footer: 'Lịch khám sẽ bị huỷ sau 5 phút nếu chưa được xác nhận!'
                 })
                 navigate('/appointment-schedule')
                 setLoading(false)
             }
+        }
     }
     return(
         <>

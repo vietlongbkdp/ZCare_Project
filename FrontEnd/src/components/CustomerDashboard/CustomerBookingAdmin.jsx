@@ -54,8 +54,9 @@ function AppointmentSchedule() {
     useEffect(() => {
         axios.get(`${API}/api/booking`)
             .then(response => {
-                setbookingCustomer(response.data);
-                setFilteredBooking(response.data);
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setbookingCustomer(sortedData);
+                setFilteredBooking(sortedData);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -148,9 +149,22 @@ function AppointmentSchedule() {
                                     </StyledTableCell>
                                     <StyledTableCell>
                                         <p>Bệnh nhân: {booking?.customer?.fullName}</p>
-                                        <p>Giới tính: {booking?.customer?.gender} </p>
+                                        <p>Giới tính: {
+                                            booking?.customer?.gender && (() => {
+                                                if (booking?.customer?.gender == "MALE") {
+                                                    return "Nam"
+                                                }
+                                                else if (booking?.customer?.gender == "FEMALE") {
+                                                    return "Nữ"
+                                                }
+                                                else {
+                                                    return "Khác"
+                                                }
+                                            })()
+                                        } </p>
                                         <p>Phone: {booking?.customer?.phone} </p>
                                         <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
+                                        <p>Lý do khám: {booking?.reason} </p>
                                     </StyledTableCell>
                                     <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                     <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>

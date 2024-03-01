@@ -42,8 +42,7 @@ import BookingListDoctor from "./components/Doctor/BookingListDoctor";
 import CustomerBookingAdmin from "./components/CustomerDashboard/CustomerBookingAdmin";
 import PaidBookingList from "./components/ClinicAdmin/PaidBookingList";
 import AdminCooperate from "./components/Cooperate/AdminCooperate";
-
-
+import CustomerInDoctor from "./components/CustomerAdmin/CustomerInDoctor";
 
 export default function App() {
   const { API_DOCTOR } = useContext(ApiContext)
@@ -85,6 +84,7 @@ export default function App() {
             <Route path="" element={<DoctorByAdminClinic/>}></Route>
             <Route path="bookingHistory" element={<CustomerBookingDoctor/>}></Route>
             <Route path="doctorBooking" element={<BookingListDoctor/>}></Route>
+            <Route path="customer" element={<CustomerInDoctor />}></Route>
             <Route path="clinic/:idCustomer/:idDoctor/:idBooking" element={<ResultTyping/>}></Route>
           </Route>
         </Route>

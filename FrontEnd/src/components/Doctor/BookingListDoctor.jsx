@@ -194,6 +194,7 @@ function BookingListDoctor() {
                                     } </p>
                                     <p>Phone: {booking?.customer?.phone} </p>
                                     <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
+                                    <p>Lý do khám: {booking?.reason} </p>
                                 </StyledTableCell>
                                 <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                 <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
