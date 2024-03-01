@@ -21,30 +21,30 @@ import {useNavigate, useParams} from "react-router-dom";
 import Cookies from "js-cookie";
 import Loading from "../Loading/Loading";
 import {ApiContext} from "../ApiContext/ApiProvider";
+import {differenceInYears} from "date-fns";
 
 
 const schemaBooking = yup.object().shape({
     customerName: yup.string()
         .required("Tên không được để trống")
-        .min(2, 'Nhập trên 2 kí tự')
-        .max(40, 'Tên quá dài'),
+        .min(2, "Tên phải tối thiểu 2 kí tự"),
     // gender: yup.string()
     //     .required("Hãy lựa chọn giới tính"),
-    dobCus: yup
-        .string()
-        .required("Cần nhập ngày sinh")
-        .test('is-valid-dob', 'Ngày sinh phải lớn hơn ngày hiện tại', function(value) {
-            const currentDate = new Date();
-            const selectedDate = new Date(value);
-            return selectedDate < currentDate;
+    dobCus: yup.string()
+        .required("Ngày sinh không được để trống")
+        .test("dob", "Bạn phải lớn hơn 15 tuổi", function (value) {
+            return differenceInYears(new Date(), new Date(value)) >= 15;
+        })
+        .test("dob", "Tuổi không hợp lệ", function (value) {
+            return differenceInYears(new Date(), new Date(value)) <= 120;
         }),
     emailCus:yup.string()
         .required("email không được để trống")
         .email("email phải đúng định dạng"),
     address: yup.string()
         .required("Địa chỉ không được để trống")
-        .min(5, 'Địa chỉ quá ngắn')
-        .max(100, 'Địa chỉ quá dài'),
+        .min(5, 'Địa chỉ phải trên 5 ký tự')
+        .max(100, 'Địa chỉ phải ít hơn 100 ký tự'),
     phoneCus: yup.string()
         .required("Số điện thoại không được để trống"),
 })

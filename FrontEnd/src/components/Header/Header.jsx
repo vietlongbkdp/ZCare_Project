@@ -104,11 +104,11 @@ export default function Header() {
                     <div className={"d-flex justify-content-between"}>
                         <div className={"mx-4"}>
                             <FontAwesomeIcon icon="fas fa-map-marked-alt" className={"mx-2"} />
-                            28 Nguyễn Tri Phương
+                            28 Nguyễn Đình Chiểu , Phường Võ Thị Sáu, Quận 3
                         </div>
                         <div className={"mx-4"}>
                             <FontAwesomeIcon icon="fas fa-mobile-alt" className={"mx-2"} />
-                            (0913 331 916)
+                            (028 3331 916)
                         </div>
                     </div>
                     <div className={"d-flex justify-content-between align-items-center"}>
@@ -253,18 +253,6 @@ export default function Header() {
                         <p><Link to='/home/clinic-page' style={linkStyle}>PHÒNG KHÁM</Link></p>
                         <p><Link to='/home/speciality-page' style={linkStyle}>CHUYÊN KHOA</Link></p>
                         <p><Link to='/home/cooperate' style={linkStyle}>HỢP TÁC</Link></p>
-                    </div>
-                    <div className={"searchHead my-auto"}>
-                        <Search className={"inputSearch"}>
-                            <SearchIconWrapper>
-                                <SearchIcon />
-                            </SearchIconWrapper>
-                            <StyledInputBase
-                                placeholder="Search…"
-                                inputProps={{ 'aria-label': 'search' }}
-                                style={{ maxWidth: 150 }}
-                            />
-                        </Search>
                     </div>
                 </div>
             </div>

@@ -206,6 +206,7 @@ function MedicalBookingList() {
                                         } </p>
                                         <p>Phone: {booking?.customer?.phone} </p>
                                         <p>Ngày sinh: {dayjs(booking?.customer?.dob).format('DD/MM/YYYY')} </p>
+                                        <p>Lý do khám: {booking?.reason} </p>
                                     </StyledTableCell>
                                     <StyledTableCell>{booking?.bookingDate}</StyledTableCell>
                                     <StyledTableCell>{booking?.schedule?.timeItem}</StyledTableCell>
@@ -243,12 +244,16 @@ function MedicalBookingList() {
                                                 }}
                                             >
                                                 <option value="CUSTOMERCONFIMED"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đã xác nhận
+                                                        style={{backgroundColor: 'white', color: 'black'}}>Đã xác nhận
                                                 </option>
-                                                <option value="EXAMINING"
-                                                    style={{ backgroundColor: 'white', color: 'black' }}>Đang khám
-                                                </option>
-                                                <option value="CANCEL" style={{ backgroundColor: 'white', color: 'black' }}>Đã
+                                                {(selectedDate === dateNows) ? (<option value="EXAMINING"
+                                                                                    style={{
+                                                                                        backgroundColor: 'white',
+                                                                                        color: 'black'
+                                                                                    }}>Đang khám
+                                                                            </option>) : ""}
+                                                <option value="CANCEL"
+                                                        style={{backgroundColor: 'white', color: 'black'}}>Đã
                                                     hủy
                                                 </option>
                                             </select>

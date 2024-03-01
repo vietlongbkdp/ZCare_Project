@@ -46,6 +46,7 @@ function ResultTyping() {
     const [afternoonChecked, setAfternoonChecked] = useState(false);
     const [eveningChecked, setEveningChecked] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [gender, setGender] = useState(null)
     const navigate = useNavigate();
     const { API } = useContext(ApiContext)
     useEffect(() => {
@@ -53,6 +54,14 @@ function ResultTyping() {
             try {
                 const responseCustomer = await axios.get(`${API}/api/customer/getCustomer/` + idCustomer);
                 setCustomer(responseCustomer.data);
+                console.log(responseCustomer.data.gender)
+                if(responseCustomer.data.gender === 'MALE'){
+                    setGender('Nam')
+                }else if(responseCustomer.data.gender === 'FEMALE'){
+                    setGender('Nữ')
+                } else if(responseCustomer.data.gender === 'OTHER'){
+                    setGender('Khác')
+                }
                 setLoading(false)
             } catch (errorCustomer) {
                 console.error('Lỗi lấy Customer:', errorCustomer);
@@ -100,7 +109,7 @@ function ResultTyping() {
             const responseBookingStatus = await axios.get(`${API}/api/booking/getBookingById/` + idBooking);
             if(responseBookingStatus.data === 'EXAMINING'){
                 Swal.fire({
-                    title: "Xác nhận xoá thuốc này",
+                    title: "Vui lòng kiểm tra kỹ thông tin phiếu khám bệnh trước khi lưu",
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
@@ -187,7 +196,10 @@ function ResultTyping() {
 
         if(medicineName === ""|| isNaN(quantity) || unit === ""|| useNote === ""){
             toast.error("Cần nhập đầy đủ thông tin thuốc")
-        }else{
+        }else if(quantity < 1 || quantity > 200){
+            toast.error("Số lượng phải từ 1 đến 200")
+        }
+            else{
             if(checkExistMedicine(listMedicine, medicineName) === false){
                 setListMedicine([
                     ...listMedicine,
@@ -214,7 +226,7 @@ function ResultTyping() {
     console.log(listMedicine)
     const handleDeleteMedicine = (index) =>{
         Swal.fire({
-            title: "Vui lòng kiểm tra kỹ thông tin phiếu khám bệnh trước khi lưu",
+            title: "Bạn có chắc chắn muốn xoá khỏi đơn thuốc",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
@@ -227,7 +239,7 @@ function ResultTyping() {
                 setListMedicine([
                     ...listMedicine
                 ])
-                toast.success("Đã lưu phiếu khám bệnh thành công!");
+                toast.success("Đã xoá khỏi đơn thuốc!");
             }
         });
     }
@@ -294,8 +306,8 @@ function ResultTyping() {
                 {
                     ul: [
                         'Họ và tên bệnh nhân: ' + customer?.fullName,
-                        'Tuổi: ' + parseInt(dayjs().format("YYYY"))-customer?.dob[0],
-                        'Giới tính: ' + customer?.gender.valueOf(),
+                        'Tuổi: ' + (parseInt(dayjs().format("YYYY"))-customer?.dob[0]).toString(),
+                        'Giới tính: ' + gender,
                         'Số điện thoại: ' + customer?.phone,
                         'Địa chỉ: ' + customer?.address,
                         'Bác sĩ khám: '+ doctor?.doctorName,
@@ -391,6 +403,9 @@ function ResultTyping() {
         const url = URL.createObjectURL(blob);
         window.open(url);
     }
+    const handleBack = async ()=>{
+        navigate(`/doctoradmin/doctorBooking`)
+    }
     return (
         <div>
             {loading && <Loading/>}
@@ -409,7 +424,7 @@ function ResultTyping() {
                         <h3 className="fw-bold text-center mt-2">Phiếu trả kết quả khám chữa bệnh</h3>
                         <Box sx={{mt: 3}}>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Họ và tên bệnh nhân : {customer?.fullName}</p>
-                            <p style={{fontSize: 20, marginLeft: "20px"}}>Giới tính: {customer?.gender.valueOf()}</p>
+                            <p style={{fontSize: 20, marginLeft: "20px"}}>Giới tính: {gender}</p>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Số điện thoại: {customer?.phone}</p>
                             <p style={{fontSize: 20, marginLeft: "20px"}}>Địa chỉ: {customer?.address}</p>
                             <Grid item xs={12} sm={6} mb={2} mx={10}>
@@ -616,6 +631,7 @@ function ResultTyping() {
                                 </TableContainer>
                             </Grid>
                             <Button type={"submit"} variant="contained" color="success" sx={{marginTop: "20px", marginRight: "20px"}}>Lưu đơn thuốc</Button>
+                            <Button type={"button"} onClick={handleBack} variant="contained" color="error" sx={{marginTop: "20px", marginRight: "20px"}}>Quay lại</Button>
                         </Box>
                         <div className="border" style={{height: "auto", marginTop: "20px", borderRadius: "5px"}}>
                         </div>

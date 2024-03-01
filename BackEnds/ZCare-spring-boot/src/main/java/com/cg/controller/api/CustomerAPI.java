@@ -1,16 +1,14 @@
 package com.cg.controller.api;
 
-import com.cg.model.Booking;
-import com.cg.model.Clinic;
-import com.cg.model.Customer;
+import com.cg.model.*;
 import com.cg.model.DTO.LockStatusReqDTO;
 import com.cg.model.DTO.UpdateCustomer;
-import com.cg.model.User;
 import com.cg.model.enumeration.EGender;
 import com.cg.service.Customer.CustomerService;
 import com.cg.service.User.UserService;
 import com.cg.service.booking.BookingService;
 import com.cg.service.clinic.IClinicService;
+import com.cg.service.doctor.IDoctorService;
 import com.cg.util.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +28,8 @@ public class CustomerAPI {
     private IClinicService clinicService;
     @Autowired
     private BookingService bookingService;
+    @Autowired
+    private IDoctorService doctorService;
 
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -53,6 +53,14 @@ public class CustomerAPI {
     public ResponseEntity<?> getAllCustomerInClinic(@PathVariable Long userId, @RequestParam String searchText) {
         Clinic clinic = clinicService.findByUser_Id(userId);
         List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndSearch(clinic.getId(), searchText);
+        List<Customer> customerList = bookingList.stream().map(Booking::getCustomer).distinct().toList();
+        return new ResponseEntity<>(customerList, HttpStatus.OK);
+    }
+
+    @GetMapping("/doctor/{userId}")
+    public ResponseEntity<?> getAllCustomerInClinicByDoctor(@PathVariable Long userId, @RequestParam String searchText) {
+        Doctor doctor = doctorService.findByUser_Id(userId);
+        List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndSearch(doctor.getClinic().getId(), searchText);
         List<Customer> customerList = bookingList.stream().map(Booking::getCustomer).distinct().toList();
         return new ResponseEntity<>(customerList, HttpStatus.OK);
     }

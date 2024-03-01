@@ -113,8 +113,8 @@ public class UserAPI {
                     .sameSite("None")
                     .path("/")
                     .maxAge(60 * 1000)
-                    .domain(".localhost")
-//                    .domain(".192.168.64.1")
+//                    .domain(".localhost")
+                    .domain("192.168.1.64")
                     .build();
 
             return ResponseEntity

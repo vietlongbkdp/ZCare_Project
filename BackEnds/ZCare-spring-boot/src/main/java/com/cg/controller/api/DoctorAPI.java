@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,6 @@ public class DoctorAPI {
 
 
     @GetMapping
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getDoctors() {
         List<Doctor> doctorList = doctorService.findAllByUser_Unlock(true);
         return new ResponseEntity<>(doctorList, HttpStatus.OK);
@@ -60,9 +60,14 @@ public class DoctorAPI {
     public ResponseEntity<?> getAllDoctorByClinicId(@PathVariable Long userId) {
         Clinic clinic=clinicService.findByUser_Id(userId);
         List<Doctor> doctorList=doctorService.findAllByClinicId(clinic.getId());
-        return new ResponseEntity<>(doctorList, HttpStatus.OK);
+        List<Doctor> ListDoctor=new ArrayList<>();
+        for(Doctor doctor: doctorList){
+            if(doctor.getUser().isUnlock()){
+                ListDoctor.add(doctor);
+            }
+        }
+        return new ResponseEntity<>(ListDoctor, HttpStatus.OK);
     }
-
 
     @GetMapping("/schedule")
     public ResponseEntity<?> getDoctorSchedule() {

@@ -9,11 +9,11 @@ export default function Footer(){
                 <div className={"row d-flex justify-content-between px-5 p-3 botTop"}>
                     <div className={"col-5"}>
                         <h6>Công ty Cổ phần Công nghệ BookingCare</h6>
-                        <p><FontAwesomeIcon icon="fas fa-map-marker-alt" className={"mx-2"}/> 28 Nguyễn Tri Phương,
-                            Phường Phú Nhuận, TP. Huế, Tỉnh TT Huế</p>
+                        <p><FontAwesomeIcon icon="fas fa-map-marker-alt" className={"mx-2"}/> 28 Nguyễn Đình Chiểu ,
+                            Phường Võ Thị Sáu, Quận 3, TP.Hồ Chí Minh </p>
                         <p><FontAwesomeIcon icon="fas fa-check-square" className={"mx-2"}/>ĐKKD số. 0106790291. Sở KHĐT
-                            TTHuế cấp ngày 16/03/2015</p>
-                        <p><FontAwesomeIcon icon="fas fa-phone-alt" className={"mx-2"}/>024-7301-2468 (7h - 18h)</p>
+                            TP.Hồ Chí Minh cấp ngày 16/03/2015</p>
+                        <p><FontAwesomeIcon icon="fas fa-phone-alt" className={"mx-2"}/>028 3331 916 (7h - 18h)</p>
                         <p><FontAwesomeIcon icon="fas fa-envelope" className={"mx-2"}/>
                             zcarebooking@gmail.com (7h - 18h)</p>
                         <img src="http://online.gov.vn/Content/EndUser/LogoCCDVSaleNoti/logoCCDV.png" width={120}
