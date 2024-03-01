@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import axios from "axios";
-import { Link, useLocation } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import Cookies from "js-cookie";
 import './custom.css'
 import { toast } from 'react-toastify';
@@ -46,6 +46,7 @@ function AppointmentSchedule() {
     const [loading, setLoading] = useState(true);
     const UserId = Cookies.get('userId');
     const location = useLocation();
+    const navigate = useNavigate();
     const { API } = useContext(ApiContext)
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search);
@@ -62,12 +63,13 @@ function AppointmentSchedule() {
     useEffect(() => {
         axios.get(`${API}/api/booking/${UserId}`)
             .then(response => {
-                setBooking(response.data);
-                setLoading(false)
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setBooking(sortedData);
+                setLoading(false);
             })
             .catch(error => {
                 console.error('Error:', error);
-                setLoading(false)
+                setLoading(false);
             });
     }, [UserId]);
     const handleClickView = (idBooking) => {
@@ -101,6 +103,10 @@ function AppointmentSchedule() {
             }
         });
     };
+    const handleClickRating =(idDoctor)=>{
+        navigate(`/doctorDetail/${idDoctor}`);
+
+    }
     return (
         <div>
             {loading && <Loading />}
@@ -128,6 +134,7 @@ function AppointmentSchedule() {
                                 <StyledTableCell> Giá </StyledTableCell>
                                 <StyledTableCell> Kết quả</StyledTableCell>
                                 <StyledTableCell>Trạng thái</StyledTableCell>
+                                <StyledTableCell>Đánh giá</StyledTableCell>
                                 <StyledTableCell>Thời gian tạo</StyledTableCell>
                             </TableRow>
                         </TableHead>
@@ -186,11 +193,32 @@ function AppointmentSchedule() {
                                                 })()
                                             )}
                                         </StyledTableCell>
+                                        <StyledTableCell>
+                                            {booking?.status === "PAID" ? (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-success"
+                                                    style={{
+                                                        width: "100px",
+                                                        height: '30px',
+                                                        fontSize: 'small',
+                                                        marginBottom: "10px"
+                                                    }}
+                                                    onClick={() => {
+                                                        handleClickRating(booking.doctor.id);
+                                                    }}
+                                                >
+                                                    Đánh giá
+                                                </button>
+                                            ) : (
+                                                <span>Bạn cần thanh toán để đánh giá</span>
+                                            )}
+                                        </StyledTableCell>
                                         <StyledTableCell>{dayjs(booking.createAt).format("DD/MM/YYYY")}</StyledTableCell>
                                     </StyledTableRow>
                                 ))
                             ) : (
-                                <p className="d-flex justify-content-center" style={{ color: "red" }}>
+                                <p className="d-flex justify-content-center" style={{color: "red"}}>
                                     Bạn chưa đặt lịch hẹn trên trình duyệt này!
                                 </p>
                             )}

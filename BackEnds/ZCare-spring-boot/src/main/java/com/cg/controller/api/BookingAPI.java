@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -105,7 +106,15 @@ public class BookingAPI {
         List<Booking> booking = bookingService.findAllByCustomerId(customer.getId());
         return new ResponseEntity<>(booking, HttpStatus.OK);
     }
-
+    @GetMapping("notDone/{userId}")
+    public ResponseEntity<?> getAllBookingNotDoneByCustomerId(@PathVariable Long userId) {
+        Customer customer = customerService.findByUser_Id(userId);
+        List<Booking> booking = bookingService.findAllByCustomerId(customer.getId());
+        List<Booking> bookingNotDone = booking.stream()
+                .filter(booking1 -> booking1.getStatus() == EStatusBooking.CONFIRMING || booking1.getStatus() == EStatusBooking.CUSTOMERCONFIMED)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(bookingNotDone.size(), HttpStatus.OK);
+    }
     @GetMapping("{clinicId}/{customerId}")
     public ResponseEntity<?> getAllBookingByClinicId(@PathVariable Long clinicId, @PathVariable Long customerId) {
         List<Booking> bookingList = bookingService.getAllBookingByClinicIdAndCustomerId(clinicId, customerId);

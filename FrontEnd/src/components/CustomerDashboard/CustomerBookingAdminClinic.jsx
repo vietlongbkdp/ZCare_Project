@@ -53,8 +53,9 @@ function AppointmentSchedule() {
     useEffect(() => {
         axios.get(`${API}/api/booking/adminClinic/${userId}`)
             .then(response => {
-                setbookingCustomer(response.data);
-                setFilteredBooking(response.data);
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setbookingCustomer(sortedData);
+                setFilteredBooking(sortedData);
                 console.log(response.data);
             })
             .catch(error => {
