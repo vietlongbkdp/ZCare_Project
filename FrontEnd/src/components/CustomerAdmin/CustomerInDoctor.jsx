@@ -93,7 +93,7 @@ function CustomerInDoctor() {
             try {
                 const response = await axios.get(`${API}/api/user/userlogin/${userId}`)
                 const result = await response.data;
-                setClinicId(result.id)
+                setClinicId(result.clinic.id)
             } catch (error) {
                 console.error(error);
                 setLoading(false)

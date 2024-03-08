@@ -1,0 +1,75 @@
+version: '3.7'
+services:
+  mysql8-container:
+    container_name: mysql8-container
+    image: mysql:8.2.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: book_doctor_appointment
+    ports:
+      - 3307:3306
+    volumes:
+      - ./DataBase/book_doctor_appointment.sql:/docker-entrypoint-initdb.d/init-script.sql
+    networks:
+      - zcare-networks
+  
+  phpmyadmin8-container:
+    # intel host
+    image: phpmyadmin/phpmyadmin
+    # m1 host
+    # image: arm64v8/phpmyadmin
+    container_name: phpmyadmin8-container
+    restart: always
+    depends_on:
+      - mysql8-container
+    ports:
+      - 8100:80
+    environment:
+      PMA_HOST: mysql8-container
+    networks:
+      - zcare-networks
+
+  zcare-spb-container:
+    container_name: zcare-spb-container
+    build: 
+      context: .
+      dockerfile: DockerfileSpring
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql8-container:3306/book_doctor_appointment?useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false
+      - SPRING_DATASOURCE_PASSWORD=123456
+    depends_on:
+      - mysql8-container
+    networks:
+      - zcare-networks
+
+  zcare-react-container:
+    container_name: zcare-react-container
+    build: 
+      context: .
+      dockerfile: DockerfileReact
+    ports:
+      - 3001:80
+    restart: always
+    networks:
+      - zcare-networks
+    
+
+networks:
+  zcare-networks:
+    driver: bridge
+    name: zcare-network
+
+
+# docker-compose -f ./docker-compose.yml up -d mysql8-container
+# docker-compose logs mysql8-container
+# docker exec -it mysql8-container bash
+# whoami
+# mysql -u root -p
+# exit
+
+# docker-compose -f ./docker-compose.yml up -d phpmyadmin8-container
+
+# docker-compose -f ./docker-compose.yml up -d zcare-spb-container --build
