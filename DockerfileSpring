@@ -1,0 +1,11 @@
+FROM maven:3.8.4-openjdk-17-slim AS build
+WORKDIR /app
+COPY ./BackEnds/ZCare-spring-boot /app/zCare-spb
+RUN mvn package -f /app/zCare-spb/pom.xml
+
+FROM openjdk:17-slim
+WORKDIR /app
+COPY --from=build /app/zCare-spb/target/SpringBoot-ZCare-book-doctor-appointment-0.0.1-SNAPSHOT.war app.war
+
+EXPOSE 8080
+CMD ["java","-jar","app.war"]
