@@ -52,7 +52,8 @@ function MedicalBookingList() {
     useEffect(() => {
         axios.get(`${API}/api/booking/${userId}/${selectedDate}`)
             .then(response => {
-                setBooking(response.data);
+                const sortedData = response.data.sort((a, b) => b.id - a.id);
+                setBooking(sortedData);
             })
             .catch(error => {
                 console.error('Error:', error);
